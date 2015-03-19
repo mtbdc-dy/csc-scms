@@ -4,12 +4,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.http.converter.json.*;
 
-import java.util.ArrayList;
+
 
 /**
- * Created by Wang Zishi on 3/19/2015.
+ * Created by WangZishi on 3/19/2015.
  */
 @RestController
 @RequestMapping("/service/user")
