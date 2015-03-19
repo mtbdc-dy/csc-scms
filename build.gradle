@@ -3,7 +3,7 @@ apply plugin: 'idea'
 apply plugin: 'war'
 
 //sourceCompatibility = 1.6
-version = '0.1.0'
+
 
 repositories {
     flatDir { dirs "lib" }
@@ -39,7 +39,7 @@ dependencies {
 }
 
 war {
+    baseName = 'csc-scms'
+    version = '0.1.0'
     from 'web'
-//    webInf { from 'web/WEB-INF' }
-//    classpath fileTree('lib')
 }
