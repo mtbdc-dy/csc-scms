@@ -11,8 +11,6 @@
     <title></title>
   </head>
   <body>
-    kkkk
-  jjjjjj
-  llllll
+  this is my JSP!
   </body>
 </html>
