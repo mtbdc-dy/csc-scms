@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 @RestController
 @RequestMapping("/service/user")
-public class userController {
+public class UserController {
 //    UserService userService=new UserService();
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET,headers="Accept=application/json")
