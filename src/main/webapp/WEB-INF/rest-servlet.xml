@@ -18,6 +18,6 @@
     <mvc:annotation-driven/>
     <mvc:default-servlet-handler/>
 
-    <jee:jndi-lookup id="scmsDS" jndi-name="scmsDS"/>
+    <jee:jndi-lookup id="scmsDS" jndi-name="scmsDS" expected-type="javax.sql.DataSource"/>
 
 </beans>

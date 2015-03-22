@@ -8,4 +8,8 @@
        http://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:component-scan base-package="gov.gwssi.csc.scms"/>
+    <context:annotation-config/>
+
+    <bean class="gov.gwssi.csc.scms.AppConfig"/>
+
 </beans>

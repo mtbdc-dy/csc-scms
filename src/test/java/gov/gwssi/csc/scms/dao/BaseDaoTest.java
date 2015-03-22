@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.dao;
 
 //import junit.framework.TestCase;
+import gov.gwssi.csc.scms.MyDriverManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +30,13 @@ public class BaseDaoTest extends UnitTestBase {
 
     @Test
     public void testSave() throws Exception {
-        BaseDao baseDao = super.getBean("baseDao");
+        BaseDao baseDao = super.getBean("dao");
         baseDao.save("good");
+    }
+
+    @Test
+    public void testMyDriverManager() throws Exception {
+        MyDriverManager myDriverManager = super.getBean("dataSource");
+        System.out.println(myDriverManager.getClass().getName());
     }
 }
