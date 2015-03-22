@@ -27,6 +27,6 @@ public class BaseDaoTest extends UnitTestBase {
     @Test
     public void testSave() throws Exception {
         BaseDao baseDao = super.getBean("baseDao");
-        baseDao.save("lalala");
+        baseDao.save("good");
     }
 }

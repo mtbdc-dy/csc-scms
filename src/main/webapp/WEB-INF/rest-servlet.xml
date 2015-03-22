@@ -13,11 +13,7 @@
         http://www.springframework.org/schema/jee
         http://www.springframework.org/schema/jee/spring-jee.xsd">
 
-    <!--expected-type="javax.sql.DataSource"-->
-
-
-
-    <!--<context:component-scan base-package="gov.gwssi.csc.scms.service"/>-->
+    <context:component-scan base-package="gov.gwssi.csc.scms"/>
 
     <mvc:annotation-driven/>
     <mvc:default-servlet-handler/>
