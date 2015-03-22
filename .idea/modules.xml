@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/scms-restful-webservice.iml" filepath="$PROJECT_DIR$/scms-restful-webservice.iml" />
+      <module fileurl="file://$PROJECT_DIR$/testtt.iml" filepath="$PROJECT_DIR$/testtt.iml" />
     </modules>
   </component>
 </project>
