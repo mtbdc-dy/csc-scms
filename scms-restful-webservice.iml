@@ -3,7 +3,8 @@
   <component name="FacetManager">
     <facet type="Spring" name="Spring">
       <configuration process_explicitly_annotated="false">
-        <fileset id="fileset" name="Spring MVC Application Context" removed="false">
+        <fileset id="web rest servlet context" name="MVC rest servlet context" removed="true" />
+        <fileset id="fileset2" name="Spring Application Context" removed="false">
           <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/rest-servlet.xml</file>
           <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/spring-config.xml</file>
         </fileset>
