@@ -4,13 +4,16 @@ package gov.gwssi.csc.scms.dao;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import gov.gwssi.csc.scms.service.base.UnitTestBase;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 
+import gov.gwssi.csc.scms.service.base.UnitTestBase;
+
 import static org.junit.Assert.*;
 
+/**
+ * Created by WangZishi on 3/23/2015.
+ */
 @RunWith(BlockJUnit4ClassRunner.class)
 public class BaseDaoTest extends UnitTestBase {
 
