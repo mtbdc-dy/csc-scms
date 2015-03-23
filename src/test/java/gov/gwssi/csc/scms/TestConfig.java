@@ -11,7 +11,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
  */
 @Configuration
 @ImportResource("classpath:config.xml")
-public class AppConfig {
+public class TestConfig {
 
     @Value("${jdbc.url}")
     private String url;

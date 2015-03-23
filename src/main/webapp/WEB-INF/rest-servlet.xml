@@ -20,4 +20,6 @@
 
     <jee:jndi-lookup id="scmsDS" jndi-name="scmsDS" expected-type="javax.sql.DataSource"/>
 
+    <bean class="gov.gwssi.csc.scms.AppConfig"/>
+
 </beans>

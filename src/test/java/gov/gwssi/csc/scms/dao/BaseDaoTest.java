@@ -8,9 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 
-import gov.gwssi.csc.scms.service.base.UnitTestBase;
-
-import static org.junit.Assert.*;
+import gov.gwssi.csc.scms.base.UnitTestBase;
 
 /**
  * Created by WangZishi on 3/23/2015.

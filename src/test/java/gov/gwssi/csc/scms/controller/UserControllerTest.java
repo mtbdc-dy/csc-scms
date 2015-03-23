@@ -1,4 +1,4 @@
-package gov.gwssi.csc.scms.service.controller;
+package gov.gwssi.csc.scms.controller;
 
 import org.junit.After;
 import org.junit.Before;
@@ -6,9 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 
-import gov.gwssi.csc.scms.service.base.UnitTestBase;
-
-import static org.junit.Assert.*;
+import gov.gwssi.csc.scms.base.UnitTestBase;
 
 /**
  * Created by WangZishi on 3/22/2015.

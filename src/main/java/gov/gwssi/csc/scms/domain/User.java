@@ -1,19 +1,30 @@
-package gov.gwssi.csc.scms.service.domain;
+package gov.gwssi.csc.scms.domain;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Created by WangZishi on 3/20/2015.
  */
 public class User {
-    private int userid;
+
+    @Autowired
+    private ApplicationContext ctx;
+    private int userId;
+
     private String userName;
     private String userPassword;
     private String email;
 
-    public int getUserid() {
-        return userid;
+    public User() {
+        this.userId = new UserIdGenerator().next();
     }
-    public void setUserid(int userid) {
-        this.userid = userid;
+
+    public int getUserId() {
+        return userId;
+    }
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getUserName() {
@@ -39,7 +50,7 @@ public class User {
 
     @Override
     public String toString(){
-        return "User [userid=" + userid
+        return "User [userId=" + userId
                 + ", userName=" + userName
                 + ", userPassword=" + userPassword
                 + ", email=" + email + "]";

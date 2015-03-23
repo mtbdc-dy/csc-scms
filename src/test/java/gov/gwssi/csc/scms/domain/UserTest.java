@@ -1,14 +1,12 @@
-package gov.gwssi.csc.scms.service.domain;
+package gov.gwssi.csc.scms.domain;
 
-import gov.gwssi.csc.scms.service.base.UnitTestBase;
+import gov.gwssi.csc.scms.base.UnitTestBase;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by WangZishi on 3/22/2015.
@@ -27,12 +25,12 @@ public class UserTest extends UnitTestBase {
     }
 
     @Test
-    public void testGetUserid() throws Exception {
+    public void testGetUserId() throws Exception {
 
     }
 
     @Test
-    public void testSetUserid() throws Exception {
+    public void testSetUserId() throws Exception {
 
     }
 

@@ -1,4 +1,4 @@
-package gov.gwssi.csc.scms.service.base;
+package gov.gwssi.csc.scms.base;
 
 import org.junit.After;
 import org.junit.Before;
