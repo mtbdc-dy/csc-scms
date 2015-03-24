@@ -8,7 +8,6 @@ import javax.persistence.*;
 /**
  * Created by WangZishi on 3/20/2015.
  */
-@Table(name = "")
 @Entity
 public class User {
 
@@ -17,17 +16,14 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private int userId;
+    private Long userId;
 
     private String userName;
     private String userPassword;
     private String email;
 
-    public User() {
-        this.userId = new UserIdGenerator().next();
-    }
 
-    public int getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
@@ -51,7 +47,6 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
-
     @Override
     public String toString(){
         return "User [userId=" + userId

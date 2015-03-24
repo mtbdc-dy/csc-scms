@@ -14,8 +14,8 @@
         http://www.springframework.org/schema/jee/spring-jee.xsd">
 
     <context:component-scan base-package="gov.gwssi.csc.scms"/>
-
     <mvc:annotation-driven/>
+
     <mvc:default-servlet-handler/>
 
     <jee:jndi-lookup id="scmsDS" jndi-name="scmsDS" expected-type="javax.sql.DataSource"/>

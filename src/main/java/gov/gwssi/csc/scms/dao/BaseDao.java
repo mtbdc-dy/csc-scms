@@ -24,17 +24,25 @@ public class BaseDao {
     @Qualifier("scmsDS")
     private DataSource dataSource;
 
+    @Autowired(required = false)
+    @Qualifier("jdbcTemplate")
+    private JdbcTemplate jdbcTemplate;
+
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
+    }
+
+    public JdbcTemplate getJdbcTemplate(){
+        return jdbcTemplate;
     }
 
 
     public void save(String data) throws SQLException {
         // dataSource.getConnection();
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        // JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         System.out.println(jdbcTemplate.queryForInt("select 1 from DUAL"));
         System.out.println("[BaseDao] saving: " + data);
     }
 
-
 }
+

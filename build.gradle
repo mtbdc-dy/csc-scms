@@ -46,5 +46,4 @@ dependencies {
 war {
     baseName = 'csc-scms'
     version = '0.1.0'
-    from 'web'
 }
