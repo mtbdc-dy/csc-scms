@@ -3,13 +3,20 @@ package gov.gwssi.csc.scms.domain;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import javax.persistence.*;
+
 /**
  * Created by WangZishi on 3/20/2015.
  */
+@Table(name = "")
+@Entity
 public class User {
 
     @Autowired
     private ApplicationContext ctx;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int userId;
 
     private String userName;
@@ -22,9 +29,6 @@ public class User {
 
     public int getUserId() {
         return userId;
-    }
-    public void setUserId(int userId) {
-        this.userId = userId;
     }
 
     public String getUserName() {

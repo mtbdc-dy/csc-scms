@@ -14,7 +14,7 @@ import java.sql.SQLException;
  * Created by WangZishi on 3/22/2015.
  */
 @Scope
-@Repository("dao")
+@Repository
 public class BaseDao {
 
     @Autowired
@@ -35,4 +35,6 @@ public class BaseDao {
         System.out.println(jdbcTemplate.queryForInt("select 1 from DUAL"));
         System.out.println("[BaseDao] saving: " + data);
     }
+
+
 }
