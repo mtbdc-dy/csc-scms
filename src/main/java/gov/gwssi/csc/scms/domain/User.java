@@ -11,16 +11,19 @@ import javax.persistence.*;
 @Entity
 public class User {
 
-    @Autowired
-    private ApplicationContext ctx;
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long userId;
+    private long userId;
 
     private String userName;
     private String userPassword;
-    private String email;
+
+    public User(){}
+    public User(String userName, String userPassword) {
+        this.userName = userName;
+        this.userPassword = userPassword;
+
+    }
 
 
     public Long getUserId() {
@@ -41,17 +44,10 @@ public class User {
         this.userPassword = userPassword;
     }
 
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
     @Override
     public String toString(){
-        return "User [userId=" + userId
-                + ", userName=" + userName
-                + ", userPassword=" + userPassword
-                + ", email=" + email + "]";
+        return String.format(
+                "Customer[userId=%d, userName='%s', userPassword='%s']",
+                userId, userName, userPassword);
     }
 }
