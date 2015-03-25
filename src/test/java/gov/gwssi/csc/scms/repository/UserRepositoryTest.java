@@ -15,6 +15,8 @@ public class UserRepositoryTest extends UnitTestBase {
     @Autowired
     UserRepository repository;
     @Before
+    +
+
     public void setUp() throws Exception {
 
     }
