@@ -4,6 +4,7 @@ package gov.gwssi.csc.scms.domain;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created by WangZishi on 3/25/2015.
@@ -11,7 +12,7 @@ import javax.persistence.*;
 
 @Entity
 @NamedQuery(name = "allStudent", query = "from Student ")
-public class Student {
+public class Student implements Serializable{
 
     @Id
     private String cscNumber;

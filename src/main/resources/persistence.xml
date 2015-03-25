@@ -14,7 +14,7 @@
 
         <class>gov.gwssi.csc.scms.domain.User</class>
         <class>gov.gwssi.csc.scms.domain.Student</class>
-        <class>gov.gwssi.csc.scms.domain.WarningList</class>
+        <class>gov.gwssi.csc.scms.domain.Warning</class>
 
         <properties>
 

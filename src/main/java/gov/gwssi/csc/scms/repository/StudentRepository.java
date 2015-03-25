@@ -12,7 +12,7 @@ import java.util.List;
  *
  * Created by WangZishi on 3/25/2015.
  */
-@Repository
+@Repository("studentRepository")
 @RepositoryDefinition(domainClass = Student.class, idClass = String.class)
 public interface StudentRepository {
 

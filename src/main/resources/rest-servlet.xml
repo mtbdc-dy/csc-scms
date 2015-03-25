@@ -13,7 +13,10 @@
         http://www.springframework.org/schema/jee
         http://www.springframework.org/schema/jee/spring-jee.xsd">
 
-    <context:component-scan base-package="gov.gwssi.csc.scms"/>
+    <context:component-scan base-package="gov.gwssi.csc.scms.controller"/>
+    <context:component-scan base-package="gov.gwssi.csc.scms.service"/>
+    <context:component-scan base-package="gov.gwssi.csc.scms.dao"/>
+    <context:component-scan base-package="gov.gwssi.csc.scms.domain"/>
     <mvc:annotation-driven/>
 
     <mvc:default-servlet-handler/>
