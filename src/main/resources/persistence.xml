@@ -7,24 +7,23 @@
             http://java.sun.com/xml/ns/persistence
             http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
 
+    <persistence-unit name="scmsDS">
 
-    <persistence-unit name="User">
         <!--<class>org.springframework.data.jpa.example.repository.simple.User</class>-->
-        <jta-data-source></jta-data-source>
-        <non-jta-data-source>scmsDS</non-jta-data-source>
+        <jta-data-source>scmsDS</jta-data-source>
+
         <class>gov.gwssi.csc.scms.domain.User</class>
+
         <properties>
+
             <property name="hibernate.dialect"
                       value="org.hibernate.dialect.Oracle10gDialect" />
-            <property name="hibernate.connection.url"
-                      value="jdbc:oracle:thin:@172.30.11.132:1521:v9dxfs1" />
-            <property name="hibernate.connection.driver_class"
-                      value="oracle.jdbc.driver.OracleDriver" />
-            <property name="hibernate.connection.username"
-                      value="lhlxs" />
-            <property name="hibernate.connection.password"
-                      value="lhlxs" />
+
+            <property name="hibernate.show_sql"
+                      value="true" />
+
         </properties>
+
     </persistence-unit>
 
 </persistence>

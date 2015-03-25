@@ -22,13 +22,13 @@ public class User {
     public User(String userName, String userPassword) {
         this.userName = userName;
         this.userPassword = userPassword;
-
     }
 
 
-    public Long getUserId() {
+    public long getUserId() {
         return userId;
     }
+
 
     public String getUserName() {
         return userName;
