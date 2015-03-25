@@ -28,7 +28,7 @@ public class AppConfig {
     }
 
     @Bean(name = "jdbcTemplate")
-    @Scope("prototype")
+    @Scope("singleton")
     public JdbcTemplate getJbdcTemplate(){
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         return jdbcTemplate;

@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.service;
 
+import gov.gwssi.csc.scms.dao.BaseDao;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -13,6 +14,12 @@ public class BaseService {
 
     @Autowired
     private ApplicationContext context;
+    protected BaseDao baseDao;
+
+    public BaseService(){
+        baseDao = (BaseDao)getBean("baseDao");
+        System.out.println("BaseService的构造方法");
+    }
 
     @SuppressWarnings("unchecked")
     protected <T extends Object> T getBean(String beanId) {
