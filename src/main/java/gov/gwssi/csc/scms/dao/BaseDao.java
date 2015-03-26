@@ -21,11 +21,11 @@ public class BaseDao {
     private ApplicationContext ctx;
 
     @Autowired(required = false)
-    @Qualifier("scmsDS")
+//    @Qualifier("scmsDS")
     private DataSource dataSource;
 
     @Autowired(required = false)
-    @Qualifier("jdbcTemplate")
+//    @Qualifier("jdbcTemplate")
     private JdbcTemplate jdbcTemplate;
 
     public void setDataSource(DataSource dataSource) {

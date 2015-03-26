@@ -8,14 +8,14 @@ import javax.persistence.*;
  *
  */
 @Entity
-@Table
+//@Table
 public class Warning {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue
     private int id;
     private String reasonToAdd;
     private String addedTime;
-
+    @OneToOne
     private Student student;
 
 
@@ -27,7 +27,7 @@ public class Warning {
         this.id = id;
     }
 
-    @OneToOne
+
     // @JoinColumn(name = "student_id")
     public Student getStudent() {
         return student;

@@ -11,7 +11,7 @@ import java.io.Serializable;
  */
 
 @Entity
-@NamedQuery(name = "allStudent", query = "from Student ")
+//@NamedQuery(name = "allStudent", query = "select s from Student s")
 public class Student implements Serializable{
 
     @Id

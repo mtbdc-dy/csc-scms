@@ -14,22 +14,24 @@ import java.util.List;
  */
 @Service("warningService")
 public class WarningService {
-    @Autowired
-    private WarningRepository warningRepositiry;
+//
+//    @Autowired(required = false)
+//    private WarningRepository warningRepository;
+//
+//    @Transactional
+//    public Warning warn(Student student){
+//        Warning warning = new Warning();
+//
+//        warning.setReasonToAdd("too ugly!");
+//        warning.setAddedTime("today");
+//
+//        warning.setStudent(student);
+//
+//        return warningRepository.save(warning);
+//    }
+//
+//    public List<Warning> getWarningList(){
+//        return warningRepository.findAll();
+//    }
 
-    @Transactional
-    public Warning warn(Student student){
-        Warning warning = new Warning();
-
-        warning.setReasonToAdd("too ugly!");
-        warning.setAddedTime("today");
-
-        warning.setStudent(student);
-
-        return warningRepositiry.save(warning);
-    }
-
-    public List<Warning> getWarningList(){
-        return warningRepositiry.findAll();
-    }
 }

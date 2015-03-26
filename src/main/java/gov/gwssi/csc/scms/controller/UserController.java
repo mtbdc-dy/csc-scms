@@ -1,15 +1,16 @@
 package gov.gwssi.csc.scms.controller                                          ;
 
-import org.springframework.web.bind.annotation.PathVariable                    ;
-import org.springframework.web.bind.annotation.RequestMapping                  ;
-import org.springframework.web.bind.annotation.RequestMethod                   ;
-import org.springframework.web.bind.annotation.RestController                  ;
+import gov.gwssi.csc.scms.domain.Student;
+import gov.gwssi.csc.scms.domain.Warning;
+//import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 
 /**
  * Created by WangZishi on 3/19/2015.
  * Pythonfied by WangZishi on 3/24/2015.
  */
+//@Controller
 @RestController("userController")
 @RequestMapping("/service/user")
 public class UserController                                                    {
@@ -18,9 +19,20 @@ public class UserController                                                    {
         value   = "/{id}"                                                      ,
         method  = RequestMethod.GET                                            ,
         headers = "Accept=application/json"                                    )
-    public String
-    getUser(@PathVariable int id)                                              {
-        return id + ""                                                        ;}
+    public Student
+    getStudent(@PathVariable int id)                                           {
+        return new Student();}
+
+    @RequestMapping(
+        value = "/{id}",
+        method = RequestMethod.PUT,
+        headers = "accept=application/json"
+    )
+    public Student updateStudent(@PathVariable int id, @RequestBody String body){
+        System.out.println(body);
+        return new Student();
+    }
+
 
     @RequestMapping                                                            (
         method  = RequestMethod.GET                                            ,

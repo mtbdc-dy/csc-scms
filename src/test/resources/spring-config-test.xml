@@ -11,6 +11,6 @@
     <context:annotation-config/>
 
     <bean class="gov.gwssi.csc.scms.TestConfig"/>
-    <bean class="gov.gwssi.csc.scms.AppConfig"/>
+    <bean class="gov.gwssi.csc.scms.configuration.AppConfig"/>
 
 </beans>

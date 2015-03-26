@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService extends BaseService {
 
-    public int getCurrentMaxUserId() {
-
-        super.getBean("baseDao");
-
-        return 1;
-
-    }
+//    public int getCurrentMaxUserId() {
+//
+//        super.getBean("baseDao");
+//
+//        return 1;
+//
+//    }
 }
