@@ -9,7 +9,6 @@ import java.sql.SQLException;
  * Created by ynh2_000 on 3/23/2015.
  */
 @Service
-@Repository
 public class UserService extends BaseService {
 
     public int getCurrentMaxUserId() {

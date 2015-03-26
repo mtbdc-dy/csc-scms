@@ -18,7 +18,7 @@ import java.sql.SQLException;
 @Scope
 @Repository
 @Component
-@Service
+@Service("baseDao")
 public class BaseDao {
 
     @Autowired
