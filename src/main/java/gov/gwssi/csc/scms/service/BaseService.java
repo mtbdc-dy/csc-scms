@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * Created by WangZishi on 3/23/2015.
+ *
  */
 @Service
 public class BaseService {

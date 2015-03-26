@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * User: ryan
- * Date: 2/8/13
+ * Created by WangZishi on 3/27/2015.
+ *
  */
 @Service
 public class SampleServiceImpl implements SampleService {

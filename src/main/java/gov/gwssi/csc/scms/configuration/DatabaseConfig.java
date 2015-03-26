@@ -20,6 +20,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.persistence.EntityManagerFactory;
 import java.util.Properties;
 
+/**
+ * Created by WangZishi on 3/27/2015.
+ *
+ */
 @PropertySource(value = "classpath:db.properties")
 @EnableTransactionManagement(proxyTargetClass = true)
 @EnableJpaRepositories("gov.gwssi.csc.scms.repository")

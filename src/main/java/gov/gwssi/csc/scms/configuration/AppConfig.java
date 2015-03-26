@@ -11,11 +11,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 
 /**
- * User: ryan
- * Date: 2/7/13
+ * Created by WangZishi on 3/27/2015.
+ *
  */
 @EnableWebMvc
-@ComponentScan(basePackages = {"gov.gwssi.csc.scms.model", "gov.gwssi.csc.scms.controller", "gov.gwssi.csc.scms.service"})
+@ComponentScan(basePackages = {"gov.gwssi.csc.scms.domain", "gov.gwssi.csc.scms.controller", "gov.gwssi.csc.scms.service"})
 @Import(DatabaseConfig.class)
 @Configuration
 public class AppConfig extends WebMvcConfigurerAdapter {

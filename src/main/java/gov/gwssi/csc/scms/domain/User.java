@@ -5,8 +5,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 /**
- * User: ryan
- * Date: 2/20/13
+ * Created by WangZishi on 3/27/2015.
+ *
  */
 @Entity
 public class User {

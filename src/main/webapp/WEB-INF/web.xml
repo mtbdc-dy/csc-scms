@@ -9,12 +9,6 @@
     <display-name>scms</display-name>
     <distributable/>
 
-    <!-- Default Page Support -->
-    <!--<welcome-file-list>-->
-        <!--<welcome-file>index</welcome-file>-->
-    <!--</welcome-file-list>-->
-
-
     <!-- MVC Servlet - see sample-servlet.xml for specific configuration -->
     <servlet>
         <servlet-name>rest</servlet-name>
