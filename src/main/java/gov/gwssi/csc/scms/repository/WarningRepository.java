@@ -22,6 +22,7 @@ import java.util.List;
 //        @NamedQuery(name = "", query = ""),
 //        @NamedQuery(name = "", query = "")
 //)
+@Repository
 public interface WarningRepository extends CrudRepository<Warning, Integer>{
 
     @Override

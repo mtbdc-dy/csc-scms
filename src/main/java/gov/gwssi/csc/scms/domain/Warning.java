@@ -18,9 +18,9 @@ public class Warning {
     private String reasonToAdd;
     private String addedTime;
 
-//    @OneToOne
+    @OneToOne
 //    @JoinColumn()
-//    private Student student;
+    private Student student;
 
 
     public int getId() {
