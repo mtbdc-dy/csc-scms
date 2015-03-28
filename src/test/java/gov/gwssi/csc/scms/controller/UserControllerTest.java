@@ -33,4 +33,10 @@ public class UserControllerTest extends UnitTestBase {
     public void testGetAllUsers() throws Exception {
 
     }
+
+    @Test
+    public void testTestService() throws Exception {
+//        UserController userController = super.getBean("userController");
+//        System.out.println(userController.testService());
+    }
 }

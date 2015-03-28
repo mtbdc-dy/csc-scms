@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 
@@ -55,6 +56,11 @@ public class DatabaseConfig {
 
         return boneCPDataSource;
 
+    }
+
+    @Bean
+    public JdbcTemplate jdbcTemplate(){
+        return new JdbcTemplate(boneCPDataSource());
     }
 
     @Bean
