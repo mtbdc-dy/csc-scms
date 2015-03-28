@@ -7,7 +7,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+
+//import java.util.List;
 
 /**
  * Created by WangZishi on 3/25/2015.
@@ -16,10 +19,20 @@ import java.util.List;
 @Service("studentService")
 public class StudentService {
 
-//    @Autowired(required = true)
-//    @Qualifier("studentRepository")
-//    private StudentRepository studentRepository;
-//
+    @Autowired
+    StudentRepository studentRepository;
+
+    public List<Student> findAllStudent(){
+
+        List<Student> studentList = new ArrayList<Student>();
+
+        for (Student stu : studentRepository.findAll()){
+            studentList.add(stu);
+        }
+
+        return studentList;
+    }
+
 //    @Transactional
 //    public Student createNewStudent(String cscNumber, String certificateNumber, String name, String gender){
 //        Student student = new Student();

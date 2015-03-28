@@ -17,6 +17,7 @@ public class Student implements Serializable{
 
     @Id
     private String cscNumber;
+
     private String certificateNumber;
     private String name;
     private String gender;

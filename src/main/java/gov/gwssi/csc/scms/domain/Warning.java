@@ -10,12 +10,15 @@ import javax.persistence.*;
 @Entity
 //@Table
 public class Warning {
+
     @Id
     @GeneratedValue
     private int id;
+
     private String reasonToAdd;
     private String addedTime;
     @OneToOne
+//    @JoinColumn()
     private Student student;
 
 

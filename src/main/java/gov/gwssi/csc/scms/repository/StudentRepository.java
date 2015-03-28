@@ -17,9 +17,9 @@ import java.util.List;
 //@RepositoryDefinition(domainClass = Student.class, idClass = String.class)
 public interface StudentRepository extends CrudRepository<Student, String> {
 
-    Student save(Student student);
-
-    Student findByCscNumber(String cscNumber);
-
-    List<Student> findByGenderLike(String Gender);
+//    Student save(Student student);
+//
+//    Student findByCscNumber(String cscNumber);
+//
+//    List<Student> findByGenderLike(String Gender);
 }
