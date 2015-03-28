@@ -26,10 +26,10 @@ javax.persistence.OneToOne.orphanRemoval()
 们需要的API，并且优先级还要是最高。一番查阅之后发现了`PRE_CLASSPATH`这个属性
 ，并解决了这个问题。
 
-第一步：将用到的`hibernate-jpa-2.1-api-1.0.0.Final.jar`复制到Weblogic11g的
+- 将用到的`hibernate-jpa-2.1-api-1.0.0.Final.jar`复制到Weblogic11g的
 Modules文件夹下一般为`C:\Oracle\Middleware\modules`。
 
-第二步：在`%WL_HOME%`中找到`common\bin\commEnv.cmd`，如果为了不影响其他项目
+- 在`%WL_HOME%`中找到`common\bin\commEnv.cmd`，如果为了不影响其他项目
 也可以修改对应`Domain`中的`startWeblogic.cmd`，在里面加入
 
 ```
@@ -42,6 +42,6 @@ echo Hack JPA End
 @REM Hack JPA END
 ```
 
-第三步：重启`Weblogic`，搞定，收工。
+- 重启`Weblogic`，搞定，收工。
 
 最后，希望还在继续奋斗在Weblogic11g上各种坑的同胞们尽早脱离苦海o(*￣▽￣*)ブ
