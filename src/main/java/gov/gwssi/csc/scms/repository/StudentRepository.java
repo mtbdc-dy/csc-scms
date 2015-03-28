@@ -8,12 +8,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * 此写法等价于:
- * public interface StudentRepository extends Repository<Student, String> { …… }
  *
  * Created by WangZishi on 3/25/2015.
  */
-//@Repository("studentRepository")
+@Repository
 //@RepositoryDefinition(domainClass = Student.class, idClass = String.class)
 public interface StudentRepository extends CrudRepository<Student, String> {
 

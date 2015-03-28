@@ -17,9 +17,10 @@ public class Warning {
 
     private String reasonToAdd;
     private String addedTime;
-    @OneToOne
+
+//    @OneToOne
 //    @JoinColumn()
-    private Student student;
+//    private Student student;
 
 
     public int getId() {
@@ -32,13 +33,13 @@ public class Warning {
 
 
     // @JoinColumn(name = "student_id")
-    public Student getStudent() {
-        return student;
-    }
+//    public Student getStudent() {
+//        return student;
+//    }
 
-    public void setStudent(Student student) {
-        this.student = student;
-    }
+//    public void setStudent(Student student) {
+//        this.student = student;
+//    }
 
     public String getReasonToAdd() {
         return reasonToAdd;

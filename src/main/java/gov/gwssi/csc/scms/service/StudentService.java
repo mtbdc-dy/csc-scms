@@ -19,7 +19,7 @@ import java.util.List;
 @Service("studentService")
 public class StudentService {
 
-    @Autowired
+    @Autowired(required = false)
     StudentRepository studentRepository;
 
     public List<Student> findAllStudent(){
