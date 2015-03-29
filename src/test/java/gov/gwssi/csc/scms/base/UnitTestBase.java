@@ -1,17 +1,21 @@
 package gov.gwssi.csc.scms.base;
 
+import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.springframework.beans.BeansException;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import org.springframework.util.StringUtils;
 
 
 
 /**
  * Created by WangZishi on 3/22/2015.
+ *
  */
-public class UnitTestBase {
+
+public class UnitTestBase extends TestCase{
 
     private ClassPathXmlApplicationContext context;
 

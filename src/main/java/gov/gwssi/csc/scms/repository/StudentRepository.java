@@ -13,9 +13,4 @@ import java.util.List;
 @Repository
 public interface StudentRepository extends CrudRepository<Student, String> {
 
-    Student save(Student student);
-
-    Student findByCscNumber(String cscNumber);
-
-    List<Student> findByGenderLike(String Gender);
 }

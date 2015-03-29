@@ -17,12 +17,18 @@ import java.util.List;
  *
  */
 @Service("studentService")
-public class StudentService {
+public class StudentService extends BaseService{
 
-    @Autowired(required = false)
-    StudentRepository studentRepository;
+    @Autowired
+    @Qualifier("studentRepository")
+    private StudentRepository studentRepository;
+
+    public Student save (Student student){
+        return studentRepository.save(student);
+    }
 
     public List<Student> findAllStudent(){
+        StudentRepository studentRepository = super.getBean("studentRepository");
 
         List<Student> studentList = new ArrayList<Student>();
 
@@ -33,26 +39,4 @@ public class StudentService {
         return studentList;
     }
 
-//    @Transactional
-//    public Student createNewStudent(String cscNumber, String certificateNumber, String name, String gender){
-//        Student student = new Student();
-//        student.setCscNumber(cscNumber);
-//        student.setCertificateNumber(certificateNumber);
-//        student.setName(name);
-//        student.setGender(gender);
-//        return studentRepository.save(student);
-//    }
-//
-//    @Transactional
-//    public Student createNewStudent(Student student){
-//        return studentRepository.save(student);
-//    }
-//
-//    public Student findStudentByCscNumber(String cscNumber){
-//        return studentRepository.findByCscNumber(cscNumber);
-//    }
-//
-//    public List<Student> findStudentsByGender(String gender){
-//        return studentRepository.findByGenderLike(gender);
-//    }
 }

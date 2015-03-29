@@ -25,16 +25,4 @@ import java.util.List;
 @Repository
 public interface WarningRepository extends CrudRepository<Warning, Integer>{
 
-    @Override
-    List<Warning> findAll();
-
-    Warning findById(int id);
-
-    Warning findByAddedTime();
-
-    Warning findByStudent_CscNumber(String cscNumber);
-
-//    @Query(" :a")
-//    Warning lala(String a);
-
 }

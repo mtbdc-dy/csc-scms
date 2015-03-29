@@ -1,6 +1,5 @@
 package gov.gwssi.csc.scms.service;
 
-import gov.gwssi.csc.scms.dao.BaseDao;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,13 +17,6 @@ public class BaseService {
 
     @Autowired
     private ApplicationContext context;
-    @Autowired
-    protected BaseDao baseDao;
-
-//    public BaseService(){
-//        baseDao = (BaseDao)getBean("baseDao");
-//        System.out.println("BaseService");
-//    }
 
     @SuppressWarnings("unchecked")
     protected <T extends Object> T getBean(String beanId) {
