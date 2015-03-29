@@ -23,11 +23,9 @@ import java.util.Properties;
 /**
  * Created by WangZishi on 3/27/2015.
  *
+ * 与数据库相关的配置
+ * 包含了数据源Database, JdbcTemplate, SessionFactory, TransactionManager等。
  */
-//@PropertySource(value = "classpath:db.properties")
-////@EnableTransactionManagement(proxyTargetClass = true)
-//@EnableJpaRepositories("gov.gwssi.csc.scms.repository")
-//@Configuration
 @Configuration
 @EnableTransactionManagement
 @PropertySource({"classpath:db.properties"})
@@ -101,43 +99,4 @@ public class DatabaseConfig {
     {
         return new PersistenceExceptionTranslationPostProcessor();
     }
-//    @Bean
-//    @Autowired
-//    public EntityManagerFactory entityManagerFactory(/*BoneCPDataSource dataSource*/) {
-//        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-//        vendorAdapter.setGenerateDdl(true);
-//        vendorAdapter.setShowSql(false);
-//
-//        vendorAdapter.setDatabasePlatform("org.hibernate.dialect" +
-//                ".Oracle10gDialect");
-//        vendorAdapter.setDatabase(Database.ORACLE);
-//
-//        LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
-//        factory.setJpaVendorAdapter(vendorAdapter);
-//        factory.setPackagesToScan("gov.gwssi.csc.scms.repository.model");
-//        factory.setDataSource(boneCPDataSource());
-//
-//        Properties properties = new Properties();
-//        properties.setProperty("hibernate.cache.use_second_level_cache", "true");
-//        properties.setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.EhCacheRegionFactory");
-//        properties.setProperty("hibernate.cache.use_query_cache", "true");
-//        properties.setProperty("hibernate.generate_statistics", "true");
-//        properties.setProperty("hibernate.hbm2ddl.auto","create-drop");
-//
-//        factory.setJpaProperties(properties);
-//
-//        factory.afterPropertiesSet();
-//
-//        return factory.getObject();
-//    }
-
-//    @Bean
-//    public JpaTransactionManager transactionManager(/*EntityManagerFactory entityManagerFactory*/) {
-//        JpaTransactionManager txManager = new JpaTransactionManager();
-//        JpaDialect jpaDialect = new HibernateJpaDialect();
-//        txManager.setEntityManagerFactory(entityManagerFactory());
-//        txManager.setJpaDialect(jpaDialect);
-//        return txManager;
-//    }
-
 }

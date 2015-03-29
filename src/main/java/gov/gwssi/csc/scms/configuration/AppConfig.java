@@ -13,6 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 /**
  * Created by WangZishi on 3/27/2015.
  *
+ * Spring Bean的Java Config。
  */
 @EnableWebMvc
 @ComponentScan(
