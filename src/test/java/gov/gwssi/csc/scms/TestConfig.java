@@ -8,6 +8,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 /**
  * Created by WangZishi on 3/23/2015.
+ *
  */
 @Configuration
 @ImportResource("classpath:config.xml")
