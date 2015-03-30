@@ -1,4 +1,4 @@
-package gov.gwssi.csc.scms.controller;
+package gov.gwssi.csc.scms.controller.student;
 
 //import gov.gwssi.csc.scms.domain.Student;
 //import gov.gwssi.csc.scms.service.StudentService;
@@ -23,7 +23,7 @@ public class StudentController {
 
     @Autowired
     private StudentService studentService;
-//
+    //
 //    @RequestMapping (method  = RequestMethod.GET, headers = "Accept=application/json")
 //    public List<Student> getAllStudent(){
 //

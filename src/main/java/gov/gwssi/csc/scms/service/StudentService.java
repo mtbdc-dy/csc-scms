@@ -28,7 +28,7 @@ public class StudentService extends BaseService{
     }
 
     public List<Student> findAllStudent(){
-        StudentRepository studentRepository = super.getBean("studentRepository");
+//        StudentRepository studentRepository = super.getBean("studentRepository");
 
         List<Student> studentList = new ArrayList<Student>();
 

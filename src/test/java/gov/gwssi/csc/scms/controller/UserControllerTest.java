@@ -39,4 +39,6 @@ public class UserControllerTest extends UnitTestBase {
 //        UserController userController = super.getBean("userController");
 //        System.out.println(userController.testService());
     }
+
+
 }
