@@ -13,7 +13,7 @@ import java.io.Serializable;
 
 @Entity
 //@NamedQuery(name = "allStudent", query = "select s from Student s")
-public class Student implements Serializable{
+public class StudentWzs implements Serializable{
 
     @Id
     private String cscNumber;

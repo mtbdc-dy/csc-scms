@@ -1,11 +1,13 @@
 package gov.gwssi.csc.scms.base;
 
+import gov.gwssi.csc.scms.configuration.AppConfig;
 import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.springframework.beans.BeansException;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.util.StringUtils;
 
 
@@ -14,7 +16,7 @@ import org.springframework.util.StringUtils;
  * Created by WangZishi on 3/22/2015.
  *
  */
-
+@ContextConfiguration(classes = AppConfig.class)
 public class UnitTestBase extends TestCase{
 
     private ClassPathXmlApplicationContext context;

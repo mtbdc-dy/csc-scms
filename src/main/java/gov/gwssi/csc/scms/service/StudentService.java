@@ -1,11 +1,11 @@
 package gov.gwssi.csc.scms.service;
 
-import gov.gwssi.csc.scms.domain.Student;
-import gov.gwssi.csc.scms.repository.StudentRepository;
+import gov.gwssi.csc.scms.domain.StudentWzs;
+import gov.gwssi.csc.scms.domain.student.Student;
+import gov.gwssi.csc.scms.repository.student.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +27,7 @@ public class StudentService extends BaseService{
         return studentRepository.save(student);
     }
 
-    public List<Student> findAllStudent(){
-//        StudentRepository studentRepository = super.getBean("studentRepository");
-
+    public List<Student> getStuInfoList(){
         List<Student> studentList = new ArrayList<Student>();
 
         for (Student stu : studentRepository.findAll()){

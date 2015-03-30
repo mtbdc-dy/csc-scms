@@ -20,7 +20,7 @@ public class Warning {
 
     @OneToOne
 //    @JoinColumn()
-    private Student student;
+    private StudentWzs student;
 
 
     public int getId() {
