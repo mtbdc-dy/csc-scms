@@ -23,7 +23,7 @@ public class CountryPlan {
     private String enabled;
     private String zb;
 
-    public Long getId() {s
+    public Long getId() {
         return id;
     }
 
