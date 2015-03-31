@@ -1,7 +1,7 @@
 package gov.gwssi.csc.scms.domain.student;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Date;
 
 /**商议信息
  * Created by Wang Rui on 2015/3/30.
@@ -9,18 +9,18 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "LHLX_DISCUSS")
 public class Discuss {
+    @Id private Long id;
     private String specialty;
-    private String csc_id;
     private String remark;
-    private String is_hb;
-    private String hb_start_time;
+    private String is_chn_frm_needed;
+    private String chn_frm_start_time;
     private String stu_type;
-    private String hb_end_time;
+    private String chn_frm_end_time;
     private String specialty_end_time;
     private String a_provinces;
     private String fund;
-    private String jbqk;
-    private java.sql.Date update_date;
+    private String handle_situation;
+    private Date update_date;
     private String study_type;
     private String matriculate;
     private String c_provinces;
@@ -34,20 +34,16 @@ public class Discuss {
     private String update_by;
     private String specialty_start_time;
 
+    @OneToOne//(mappedBy = "student")
+//    @JoinColumn(name="csc_id",insertable=true,unique=true)
+    private Student student;
+
     public String getSpecialty() {
         return specialty;
     }
 
     public void setSpecialty(String specialty) {
         this.specialty = specialty;
-    }
-
-    public String getCsc_id() {
-        return csc_id;
-    }
-
-    public void setCsc_id(String csc_id) {
-        this.csc_id = csc_id;
     }
 
     public String getRemark() {
@@ -58,20 +54,20 @@ public class Discuss {
         this.remark = remark;
     }
 
-    public String getIs_hb() {
-        return is_hb;
+    public String getIs_chn_frm_needed() {
+        return is_chn_frm_needed;
     }
 
-    public void setIs_hb(String is_hb) {
-        this.is_hb = is_hb;
+    public void setIs_chn_frm_needed(String is_chn_frm_needed) {
+        this.is_chn_frm_needed = is_chn_frm_needed;
     }
 
-    public String getHb_start_time() {
-        return hb_start_time;
+    public String getChn_frm_start_time() {
+        return chn_frm_start_time;
     }
 
-    public void setHb_start_time(String hb_start_time) {
-        this.hb_start_time = hb_start_time;
+    public void setChn_frm_start_time(String chn_frm_start_time) {
+        this.chn_frm_start_time = chn_frm_start_time;
     }
 
     public String getStu_type() {
@@ -82,12 +78,12 @@ public class Discuss {
         this.stu_type = stu_type;
     }
 
-    public String getHb_end_time() {
-        return hb_end_time;
+    public String getChn_frm_end_time() {
+        return chn_frm_end_time;
     }
 
-    public void setHb_end_time(String hb_end_time) {
-        this.hb_end_time = hb_end_time;
+    public void setChn_frm_end_time(String chn_frm_end_time) {
+        this.chn_frm_end_time = chn_frm_end_time;
     }
 
     public String getSpecialty_end_time() {
@@ -114,19 +110,19 @@ public class Discuss {
         this.fund = fund;
     }
 
-    public String getJbqk() {
-        return jbqk;
+    public String getHandle_situation() {
+        return handle_situation;
     }
 
-    public void setJbqk(String jbqk) {
-        this.jbqk = jbqk;
+    public void setHandle_situation(String handle_situation) {
+        this.handle_situation = handle_situation;
     }
 
-    public java.sql.Date getUpdate_date() {
+    public Date getUpdate_date() {
         return update_date;
     }
 
-    public void setUpdate_date(java.sql.Date update_date) {
+    public void setUpdate_date(Date update_date) {
         this.update_date = update_date;
     }
 
@@ -226,5 +222,11 @@ public class Discuss {
         this.specialty_start_time = specialty_start_time;
     }
 
+    public Student getStudent() {
+        return student;
+    }
 
+    public void setStudent(Student student) {
+        this.student = student;
+    }
 }

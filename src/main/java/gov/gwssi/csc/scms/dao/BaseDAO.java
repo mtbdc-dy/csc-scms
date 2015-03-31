@@ -1,6 +1,8 @@
 package gov.gwssi.csc.scms.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -10,6 +12,8 @@ import java.util.*;
 /**
  * Created by Wang Rui on 2015/3/30.
  */
+//@Repository
+@Service
 public class BaseDAO {
 
     @Autowired

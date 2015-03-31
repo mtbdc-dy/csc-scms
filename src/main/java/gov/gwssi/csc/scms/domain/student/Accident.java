@@ -1,7 +1,6 @@
 package gov.gwssi.csc.scms.domain.student;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by Wang Rui on 2015/3/30.
@@ -19,7 +18,12 @@ public class Accident {
     private String reason;
     private String processing_status;
     private java.sql.Date update_date;
-    private String csc_id;
+    @Id
+    private String id;
+
+    @OneToOne
+//    @JoinColumn(name="student_csc_id",insertable=true,unique=true)
+    private Student student;
 
     public String getSummary() {
         return summary;
@@ -93,11 +97,11 @@ public class Accident {
         this.update_date = update_date;
     }
 
-    public String getCsc_id() {
-        return csc_id;
+    public Student getStudent() {
+        return student;
     }
 
-    public void setCsc_id(String csc_id) {
-        this.csc_id = csc_id;
+    public void setStudent(Student student) {
+        this.student = student;
     }
 }

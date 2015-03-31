@@ -1,7 +1,6 @@
 package gov.gwssi.csc.scms.domain.student;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**基本信息
  * Created by Wang Rui on 2015/3/30.
@@ -9,6 +8,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "LHLX_BASIC_INFO")
 public class BasicInfo {
+    @Id private Long id;
 
     private String remark;
     private int year;
@@ -16,9 +16,8 @@ public class BasicInfo {
     private java.sql.Date update_date;
     private String birthday;
     private String travel_name;
-    private String csc_id;
     private String nature_places;
-    private String sex;
+    private String gender;
     private String country_name;
     private String update_by;
     private String dispatch_name;
@@ -26,6 +25,8 @@ public class BasicInfo {
     private String project_type_name;
     private String passport_name;
     private String chinese_name;
+
+    @OneToOne private Student student;
 
     public String getRemark() {
         return remark;
@@ -75,14 +76,6 @@ public class BasicInfo {
         this.travel_name = travel_name;
     }
 
-    public String getCsc_id() {
-        return csc_id;
-    }
-
-    public void setCsc_id(String csc_id) {
-        this.csc_id = csc_id;
-    }
-
     public String getNature_places() {
         return nature_places;
     }
@@ -91,12 +84,12 @@ public class BasicInfo {
         this.nature_places = nature_places;
     }
 
-    public String getSex() {
-        return sex;
+    public String getGender() {
+        return gender;
     }
 
-    public void setSex(String sex) {
-        this.sex = sex;
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public String getCountry_name() {
@@ -155,4 +148,11 @@ public class BasicInfo {
         this.chinese_name = chinese_name;
     }
 
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
 }

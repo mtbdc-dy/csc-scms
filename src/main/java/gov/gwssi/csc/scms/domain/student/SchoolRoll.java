@@ -1,7 +1,6 @@
 package gov.gwssi.csc.scms.domain.student;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**学籍信息
  * Created by Wang Rui on 2015/3/30.
@@ -9,15 +8,17 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "LHLX_SCHOOLROLL")
 public class SchoolRoll {
+    @Id private Long id;
     private String state;
     private String state_jjw;
     private java.sql.Date time;
     private String user_id;
-    private String id;
     private String user_name;
-    private String csc_id;
     private String year;
     private String school;
+
+    @OneToOne
+    private Student student;
 
     public String getState() {
         return state;
@@ -51,11 +52,11 @@ public class SchoolRoll {
         this.user_id = user_id;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -65,14 +66,6 @@ public class SchoolRoll {
 
     public void setUser_name(String user_name) {
         this.user_name = user_name;
-    }
-
-    public String getCsc_id() {
-        return csc_id;
-    }
-
-    public void setCsc_id(String csc_id) {
-        this.csc_id = csc_id;
     }
 
     public String getYear() {
@@ -89,5 +82,13 @@ public class SchoolRoll {
 
     public void setSchool(String school) {
         this.school = school;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
     }
 }

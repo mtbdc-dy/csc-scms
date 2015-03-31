@@ -1,7 +1,6 @@
 package gov.gwssi.csc.scms.domain.student;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * 来华前概况、申请信息
@@ -10,6 +9,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name="LHLX_REGISTRATION_INFO")
 public class RegistrationInfo {
+    @Id private Long id;
     private String f_specialty;
     private String disciplines;
     private String c_provinces;
@@ -28,7 +28,6 @@ public class RegistrationInfo {
     private String b_university;
     private String b_provinces;
     private String a_provinces;
-    private String csc_id;
     private String work;
     private java.sql.Date update_date;
     private String end_study_time;
@@ -38,6 +37,9 @@ public class RegistrationInfo {
     private String c_university;
     private String health_checkup;
     private String fund;
+
+    @OneToOne
+    private Student student;
 
     public String getF_specialty() {
         return f_specialty;
@@ -183,14 +185,6 @@ public class RegistrationInfo {
         this.a_provinces = a_provinces;
     }
 
-    public String getCsc_id() {
-        return csc_id;
-    }
-
-    public void setCsc_id(String csc_id) {
-        this.csc_id = csc_id;
-    }
-
     public String getWork() {
         return work;
     }
@@ -263,4 +257,11 @@ public class RegistrationInfo {
         this.fund = fund;
     }
 
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
 }

@@ -44,7 +44,7 @@ public class DatabaseConfig {
         boneCPDataSource.setPartitionCount(3);
         boneCPDataSource.setAcquireIncrement(5);
         boneCPDataSource.setStatementsCacheSize(100);
-        boneCPDataSource.setReleaseHelperThreads(3);
+//        boneCPDataSource.setReleaseHelperThreads(3);
 
         return boneCPDataSource;
 
@@ -57,12 +57,12 @@ public class DatabaseConfig {
 
 
     @Bean(name = "entityManagerFactory")
+    @Autowired
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(BoneCPDataSource dataSource) {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setGenerateDdl(true);
-        vendorAdapter.setShowSql(false);
-        vendorAdapter.setDatabasePlatform("org.hibernate.dialect" +
-                ".Oracle10gDialect");
+        vendorAdapter.setShowSql(true);
+        vendorAdapter.setDatabasePlatform(env.getProperty("hibernate.dialect"));
         vendorAdapter.setDatabase(Database.ORACLE);
 
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
@@ -70,13 +70,14 @@ public class DatabaseConfig {
         factory.setPackagesToScan("gov.gwssi.csc.scms.domain");
         factory.setDataSource(dataSource);
 
-//        Properties properties = new Properties();
+        Properties properties = new Properties();
 //        properties.setProperty("hibernate.cache.use_second_level_cache", "true");
 //        properties.setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.EhCacheRegionFactory");
 //        properties.setProperty("hibernate.cache.use_query_cache", "true");
 //        properties.setProperty("hibernate.generate_statistics", "true");
+        properties.setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
 //
-//        factory.setJpaProperties(properties);
+        factory.setJpaProperties(properties);
 
 //        factory.afterPropertiesSet();
 

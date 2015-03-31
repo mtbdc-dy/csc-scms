@@ -1,7 +1,6 @@
 package gov.gwssi.csc.scms.domain.student;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**相关地址
  * Created by Wang Rui on 2015/3/30.
@@ -9,17 +8,20 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "LHLX_RELATED_ADDRESS")
 public class RelatedAddress {
+    @Id private Long id;
     private java.sql.Date update_date;
     private String type;
     private String fax;
     private String name;
     private String nature;
     private String update_by;
-    private String csc_id;
     private String address;
     private String email;
     private String remark;
     private String phone;
+
+    @OneToOne
+    private Student student;
 
     public java.sql.Date getUpdate_date() {
         return update_date;
@@ -69,14 +71,6 @@ public class RelatedAddress {
         this.update_by = update_by;
     }
 
-    public String getCsc_id() {
-        return csc_id;
-    }
-
-    public void setCsc_id(String csc_id) {
-        this.csc_id = csc_id;
-    }
-
     public String getAddress() {
         return address;
     }
@@ -109,4 +103,11 @@ public class RelatedAddress {
         this.phone = phone;
     }
 
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
 }
