@@ -6,6 +6,7 @@ import javax.persistence.Table;
 
 /**
  * Created by Murray on 2015/3/31.
+ *
  */
 @Entity
 @Table(name = "SCMS_ADDRESS_TYPE")
