@@ -7,7 +7,7 @@ import java.util.Date;
  * Created by Wang Rui on 2015/3/30.
  */
 @Entity
-@Table(name = "LHLX_DISCUSS")
+@Table(name = "SCMS_DISCUSS")
 public class Discuss {
     @Id private Long id;
     private String specialty;

@@ -6,7 +6,7 @@ import javax.persistence.*;
  * Created by Wang Rui on 2015/3/30.
  */
 @Entity
-@Table(name = "LHLX_BASIC_INFO")
+@Table(name = "SCMS_BASIC_INFO")
 public class BasicInfo {
     @Id private Long id;
 

@@ -7,7 +7,7 @@ import javax.persistence.*;
  * Created by Wang Rui on 2015/3/30.
  */
 @Entity
-@Table(name="LHLX_REGISTRATION_INFO")
+@Table(name="SCMS_REGISTRATION_INFO")
 public class RegistrationInfo {
     @Id private Long id;
     private String f_specialty;

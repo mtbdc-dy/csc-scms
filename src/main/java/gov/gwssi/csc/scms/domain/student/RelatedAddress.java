@@ -6,7 +6,7 @@ import javax.persistence.*;
  * Created by Wang Rui on 2015/3/30.
  */
 @Entity
-@Table(name = "LHLX_RELATED_ADDRESS")
+@Table(name = "SCMS_RELATED_ADDRESS")
 public class RelatedAddress {
     @Id private Long id;
     private java.sql.Date update_date;

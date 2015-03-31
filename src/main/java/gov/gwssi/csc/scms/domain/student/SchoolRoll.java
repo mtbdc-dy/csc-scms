@@ -6,7 +6,7 @@ import javax.persistence.*;
  * Created by Wang Rui on 2015/3/30.
  */
 @Entity
-@Table(name = "LHLX_SCHOOLROLL")
+@Table(name = "SCMS_SCHOOLROLL")
 public class SchoolRoll {
     @Id private Long id;
     private String state;

@@ -10,7 +10,7 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name = "LHLX_STUDENT")
+@Table(name = "SCMS_STUDENT")
 public class Student {
 //    @Id private Long id;
      @Id private String csc_id;
