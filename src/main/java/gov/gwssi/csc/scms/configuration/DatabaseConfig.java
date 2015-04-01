@@ -44,7 +44,7 @@ public class DatabaseConfig {
         boneCPDataSource.setPartitionCount(3);
         boneCPDataSource.setAcquireIncrement(5);
         boneCPDataSource.setStatementsCacheSize(100);
-//        boneCPDataSource.setReleaseHelperThreads(3);
+        // boneCPDataSource.setReleaseHelperThreads(3);
 
         return boneCPDataSource;
 
@@ -71,15 +71,14 @@ public class DatabaseConfig {
         factory.setDataSource(dataSource);
 
         Properties properties = new Properties();
-//        properties.setProperty("hibernate.cache.use_second_level_cache", "true");
-//        properties.setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.EhCacheRegionFactory");
-//        properties.setProperty("hibernate.cache.use_query_cache", "true");
-//        properties.setProperty("hibernate.generate_statistics", "true");
+        // properties.setProperty("hibernate.cache.use_second_level_cache", "true");
+        // properties.setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.EhCacheRegionFactory");
+        // properties.setProperty("hibernate.cache.use_query_cache", "true");
+        // properties.setProperty("hibernate.generate_statistics", "true");
         properties.setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
-//
-        factory.setJpaProperties(properties);
 
-//        factory.afterPropertiesSet();
+        factory.setJpaProperties(properties);
+        // factory.afterPropertiesSet();
 
         return factory;
     }
