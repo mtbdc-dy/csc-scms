@@ -42,7 +42,7 @@ public class StudentService extends BaseService {
 
         return studentList;
     }
-    //Õâ¸ö·½·¨Ã»Ğ´Íê£¬ÂíÀ×¼ÌĞøÑĞ¾¿Ò»ÏÂ
+    //è¿™ä¸ªæ–¹æ³•æ²¡å†™å®Œï¼Œé©¬é›·ç»§ç»­ç ”ç©¶ä¸€ä¸‹
     public List<Student> getStudentList(String body){
         List<Student> studentList = new ArrayList<Student>();
         student.basicinfo.name = body.name;
@@ -52,6 +52,6 @@ public class StudentService extends BaseService {
     }
 
     public void updateStudent(Student student){
-      studentRepository.save(student);//ÑéÖ¤ÊÇ·ñ°üº¬ÁËinsertºÍupdate
+        studentRepository.save(student);//éªŒè¯æ˜¯å¦åŒ…å«äº†insertå’Œupdate
     }
 }
