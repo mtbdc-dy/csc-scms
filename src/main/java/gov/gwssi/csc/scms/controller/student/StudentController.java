@@ -49,7 +49,6 @@ public class StudentController {
     @RequestMapping (method = RequestMethod.POST, headers = "Accept=application/json")
     public String addStudent(@RequestBody String body){
         ObjectMapper mapper = new ObjectMapper();
-
         try {
             Student student = mapper.readValue(body, Student.class);
         } catch (IOException e) {
@@ -57,7 +56,5 @@ public class StudentController {
         }
         return "1";
     }
-
-
 
 }
