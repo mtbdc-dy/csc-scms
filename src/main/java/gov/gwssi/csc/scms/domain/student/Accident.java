@@ -7,7 +7,7 @@ import javax.persistence.*;
  * 突发事件
  */
 @Entity
-@Table(name = "SCMS__ACCIDENT")
+@Table(name = "SCMS_ACCIDENT")
 public class Accident {
     private String summary;
     private String happen_time;

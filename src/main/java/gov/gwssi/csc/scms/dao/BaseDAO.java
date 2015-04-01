@@ -1,13 +1,21 @@
 package gov.gwssi.csc.scms.dao;
 
+import com.fasterxml.jackson.databind.deser.std.MapDeserializer;
+import org.hibernate.SQLQuery;
+import org.hibernate.mapping.*;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
+import javax.sql.DataSource;
 import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Wang Rui on 2015/3/30.
@@ -19,22 +27,28 @@ public class BaseDAO {
     @Autowired
     EntityManagerFactory entityManagerFactory;
 
+    @Autowired
+    DataSource dataSource;
+
     /**
-     * 查询的结果是对象数组的集合
+     * 查询的结果是List<Map>
      */
     public List queryListBySql(String sql) {
+        List<Map> objectArrayList = new ArrayList();
         EntityManager em = entityManagerFactory.createEntityManager();
         //创建原生SQL查询QUERY实例
         Query query =  em.createNativeQuery(sql);
-        //执行查询，返回的是对象数组(Object[])列表,
-        //每一个对象数组存的是相应的实体属性
-        List objecArraytList = query.getResultList();
-        for(int i=0;i<objecArraytList.size();i++) {
-            Object[] obj = (Object[]) objecArraytList.get(i);
-            //使用obj[0],obj[1],obj[2]...取出属性　　　　
-        }
+//        list转为List<Map>
+        query.unwrap(SQLQuery.class).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+        objectArrayList =query.getResultList();
+        System.out.println("objectArrayList="+objectArrayList);
         em.close();
-        return objecArraytList;
+        return objectArrayList;
+    }
+
+    public JdbcTemplate getJdbcTemplate(){
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        return jdbcTemplate;
     }
 
 }

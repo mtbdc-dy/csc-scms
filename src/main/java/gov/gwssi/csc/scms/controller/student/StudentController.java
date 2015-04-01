@@ -41,7 +41,7 @@ public class StudentController {
 
     @RequestMapping (method = RequestMethod.GET, headers = "Accept=application/json")
     public String getStuInfoList(){
-        System.out.println("backlist==="+studentService.getStuInfoList());
+        System.out.println("backlist==="+studentService.getStuInfoList().toString());
         return "1";
     }
 

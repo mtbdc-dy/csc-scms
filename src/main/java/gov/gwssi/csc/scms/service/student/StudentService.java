@@ -24,9 +24,7 @@ public class StudentService extends BaseService {
     @Autowired
     @Qualifier("studentRepository")
     private StudentRepository studentRepository;
-
-    @Autowired
-    private BaseDAO baseDAO;
+//    private Data
 
     public Student save (Student student){
         return studentRepository.save(student);
@@ -34,9 +32,10 @@ public class StudentService extends BaseService {
 
     public List<Student> getStuInfoList(){
         List<Student> studentList = new ArrayList<Student>();
-        String sql="select t.csc_id, t.nature_places, t.project_type_name, t.project_name, t.continent_name," +
-                "t.country_name,t.passport_name from LHLX_BASIC_INFO t ";
-//        studentList = baseDAO.queryListBySql(sql);
+        String sql="select  t.nature_places, t.project_type_name, t.project_name, t.continent_name," +
+                "t.country_name,t.passport_name from SCMS_BASIC_INFO t ";
+        System.out.println("super.baseDAO============"+super.baseDAO);
+        studentList = super.getBaseDao().queryListBySql(sql);
 //        for (Student stu : studentRepository.findAll()){
 //            studentList.add(stu);
 //        }

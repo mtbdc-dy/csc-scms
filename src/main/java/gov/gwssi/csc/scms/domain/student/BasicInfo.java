@@ -9,9 +9,9 @@ import javax.persistence.*;
 @Table(name = "SCMS_BASIC_INFO")
 public class BasicInfo {
     @Id private Long id;
-
+    @Column(columnDefinition = "varchar2(200 char)")
     private String remark;
-    private int year;
+    private Integer year;
     private String continent_name;
     private java.sql.Date update_date;
     private String birthday;
