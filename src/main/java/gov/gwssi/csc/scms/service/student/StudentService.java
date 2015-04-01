@@ -30,7 +30,7 @@ public class StudentService extends BaseService {
         return studentRepository.save(student);
     }
 
-    public List<Student> getStuInfoList(){
+    public List getStuInfoList(){
         List<Student> studentList = new ArrayList<Student>();
         String sql="select  t.nature_places, t.project_type_name, t.project_name, t.continent_name," +
                 "t.country_name,t.passport_name from SCMS_BASIC_INFO t ";
@@ -42,5 +42,16 @@ public class StudentService extends BaseService {
 
         return studentList;
     }
+    //这个方法没写完，马雷继续研究一下
+    public List<Student> getStudentList(String body){
+        List<Student> studentList = new ArrayList<Student>();
+        student.basicinfo.name = body.name;
+        studentList = studentRepository.
+        return studentList;
 
+    }
+
+    public void updateStudent(Student student){
+      studentRepository.save(student);//验证是否包含了insert和update
+    }
 }

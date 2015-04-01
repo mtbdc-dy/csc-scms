@@ -42,6 +42,7 @@ public class StudentController {
     @RequestMapping (method = RequestMethod.GET, headers = "Accept=application/json")
     public String getStuInfoList(){
         System.out.println("backlist==="+studentService.getStuInfoList().toString());
+        //list<>
         return "1";
     }
 
@@ -51,7 +52,6 @@ public class StudentController {
 
         try {
             Student student = mapper.readValue(body, Student.class);
-
         } catch (IOException e) {
             e.printStackTrace();
         }

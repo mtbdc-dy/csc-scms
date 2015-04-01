@@ -10,38 +10,31 @@ import javax.persistence.*;
 public class BasicInfo {
     @Id private Long id;
     @Column(columnDefinition = "varchar2(200 char)")
-    private String remark;
-    private Integer year;
-    private String continent_name;
-    private java.sql.Date update_date;
-    private String birthday;
-    private String travel_name;
-    private String nature_places;
-    private String gender;
-    private String country_name;
-    private String update_by;
-    private String dispatch_name;
-    private String project_name;
-    private String project_type_name;
-    private String passport_name;
-    private String chinese_name;
+    private Integer annual; //年度
+    private String passport_name;//护照姓名
+    /**
+     * 中文姓名
+     */
+    private String chinese_name;//中文姓名
+    private String gender;//性别
+    private String birthday;//出生日期
+    private String continent_name;//洲别
+    private String country_name;//国籍
+    private String photo_uri;//照片uri
+    private Boolean planned;//计划内外 1计划内 0计划外
+    private String project_type;//项目类别
+    private String project_name;//项目名称
+    private String dispatch;//派遣途径
+    private String travel_type;//国际旅费
 
     @OneToOne private Student student;
 
-    public String getRemark() {
-        return remark;
+    public int getAnnual() {
+        return annual;
     }
 
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
+    public void setAnnual(int year) {
+        this.annual = year;
     }
 
     public String getContinent_name() {
@@ -52,14 +45,6 @@ public class BasicInfo {
         this.continent_name = continent_name;
     }
 
-    public java.sql.Date getUpdate_date() {
-        return update_date;
-    }
-
-    public void setUpdate_date(java.sql.Date update_date) {
-        this.update_date = update_date;
-    }
-
     public String getBirthday() {
         return birthday;
     }
@@ -68,20 +53,32 @@ public class BasicInfo {
         this.birthday = birthday;
     }
 
-    public String getTravel_name() {
-        return travel_name;
+    public String getTravel_type() {
+        return travel_type;
     }
 
-    public void setTravel_name(String travel_name) {
-        this.travel_name = travel_name;
+    public void setTravel_type(String travel_type) {
+        this.travel_type = travel_type;
     }
 
-    public String getNature_places() {
-        return nature_places;
+    public Boolean isPlanned() {
+        return planned;
     }
 
-    public void setNature_places(String nature_places) {
-        this.nature_places = nature_places;
+    public void setPlanned(Boolean planned) {
+        this.planned = planned;
+    }
+
+    public void setAnnual(Integer annual) {
+        this.annual = annual;
+    }
+
+    public String getPhoto_uri() {
+        return photo_uri;
+    }
+
+    public void setPhoto_uri(String photo_uri) {
+        this.photo_uri = photo_uri;
     }
 
     public String getGender() {
@@ -100,20 +97,12 @@ public class BasicInfo {
         this.country_name = country_name;
     }
 
-    public String getUpdate_by() {
-        return update_by;
+    public String getDispatch() {
+        return dispatch;
     }
 
-    public void setUpdate_by(String update_by) {
-        this.update_by = update_by;
-    }
-
-    public String getDispatch_name() {
-        return dispatch_name;
-    }
-
-    public void setDispatch_name(String dispatch_name) {
-        this.dispatch_name = dispatch_name;
+    public void setDispatch(String dispatch_name) {
+        this.dispatch = dispatch_name;
     }
 
     public String getProject_name() {
@@ -124,12 +113,12 @@ public class BasicInfo {
         this.project_name = project_name;
     }
 
-    public String getProject_type_name() {
-        return project_type_name;
+    public String getProject_type() {
+        return project_type;
     }
 
-    public void setProject_type_name(String project_type_name) {
-        this.project_type_name = project_type_name;
+    public void setProject_type(String project_type_name) {
+        this.project_type = project_type_name;
     }
 
     public String getPassport_name() {

@@ -9,105 +9,24 @@ import javax.persistence.*;
 @Table(name = "SCMS_RELATED_ADDRESS")
 public class RelatedAddress {
     @Id private Long id;
-    private java.sql.Date update_date;
-    private String type;
-    private String fax;
-    private String name;
-    private String nature;
-    private String update_by;
-    private String address;
-    private String email;
-    private String remark;
-    private String phone;
-
-    @OneToOne
+    @ManyToOne
     private Student student;
+    private String type;//类别
+    private String nature;//性质
+    private String address_or_name;//详细地址/紧急联系人姓名
+    private String phone;//电话
+    private String fax;//传真
+    private String email;//邮箱
+    private String remark;//备注
 
-    public java.sql.Date getUpdate_date() {
-        return update_date;
+    @ManyToOne(optional = false)
+    private Student students;
+
+    public Student getStudents() {
+        return students;
     }
 
-    public void setUpdate_date(java.sql.Date update_date) {
-        this.update_date = update_date;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getFax() {
-        return fax;
-    }
-
-    public void setFax(String fax) {
-        this.fax = fax;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getNature() {
-        return nature;
-    }
-
-    public void setNature(String nature) {
-        this.nature = nature;
-    }
-
-    public String getUpdate_by() {
-        return update_by;
-    }
-
-    public void setUpdate_by(String update_by) {
-        this.update_by = update_by;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
+    public void setStudents(Student students) {
+        this.students = students;
     }
 }

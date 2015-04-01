@@ -1,9 +1,6 @@
 package gov.gwssi.csc.scms.domain.student;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by Wang Rui on 2015/3/30.
@@ -18,8 +15,10 @@ public class Student {
     @OneToOne private RegistrationInfo registrationInfo;
     @OneToOne private Discuss discuss;
     @OneToOne private SchoolRoll schoolRoll;
-    @OneToOne private RelatedAddress relatedAddress;
-    @OneToOne private Accident accident;
+    @OneToMany(mappedBy = "students")
+    private RelatedAddress relatedAddress;
+    @OneToMany
+    protected Accident accident;
 
     public String getCsc_id() {
         return csc_id;

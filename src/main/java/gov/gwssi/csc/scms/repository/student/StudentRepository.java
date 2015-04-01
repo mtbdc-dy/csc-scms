@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import java.util.List;
 
 /**
  *
@@ -22,6 +23,5 @@ import javax.persistence.NamedQuery;
 )
 public interface StudentRepository extends CrudRepository<Student, String> {
 
-//    @Query(nativeQuery = "")
-//    public Student lalala(String cscN);
+        public List<Student> findBycscIdwehereOrderByAccident_Handle_statusDesc();
 }

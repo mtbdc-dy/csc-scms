@@ -10,223 +10,24 @@ import java.util.Date;
 @Table(name = "SCMS_DISCUSS")
 public class Discuss {
     @Id private Long id;
-    private String specialty;
-    private String remark;
-    private String is_chn_frm_needed;
-    private String chn_frm_start_time;
-    private String stu_type;
-    private String chn_frm_end_time;
-    private String specialty_end_time;
-    private String a_provinces;
-    private String fund;
-    private String handle_situation;
-    private Date update_date;
-    private String study_type;
-    private String matriculate;
-    private String c_provinces;
-    private String disciplines;
-    private String b_provinces;
-    private String b_university;
-    private String f_specialty;
-    private String c_university;
-    private String teach_language;
-    private String a_university;
-    private String update_by;
-    private String specialty_start_time;
+    @OneToOne private Student student;
+    private String appropriations;//经费办法
+    private String stu_type;//学生类别
+    private String teach_language;//授课语言
+    private String disciplines;//学科门类
+    private String subject;//一级学科
+    private String major;//专业
+    private Boolean chn_frm_needed;//是否汉补
+    private Date chn_frm_start_time;//汉补开始时间
+    private Date chn_frm_end_time;//汉补结束时间
+    private String province_1;//省市1
+    private String province_2;//省市2
+    private String province_3;//省市3
+    private String university_1;//院校1
+    private String university_2;//院校2
+    private String university_3;//院校3
+    private String matriculate;//商议状态 1表 2录 3否 4待 5发 6备 7单报
+    private String handle_status;//经办情况
+    private String remark;//备注
 
-    @OneToOne//(mappedBy = "student")
-//    @JoinColumn(name="csc_id",insertable=true,unique=true)
-    private Student student;
-
-    public String getSpecialty() {
-        return specialty;
     }
-
-    public void setSpecialty(String specialty) {
-        this.specialty = specialty;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    public String getIs_chn_frm_needed() {
-        return is_chn_frm_needed;
-    }
-
-    public void setIs_chn_frm_needed(String is_chn_frm_needed) {
-        this.is_chn_frm_needed = is_chn_frm_needed;
-    }
-
-    public String getChn_frm_start_time() {
-        return chn_frm_start_time;
-    }
-
-    public void setChn_frm_start_time(String chn_frm_start_time) {
-        this.chn_frm_start_time = chn_frm_start_time;
-    }
-
-    public String getStu_type() {
-        return stu_type;
-    }
-
-    public void setStu_type(String stu_type) {
-        this.stu_type = stu_type;
-    }
-
-    public String getChn_frm_end_time() {
-        return chn_frm_end_time;
-    }
-
-    public void setChn_frm_end_time(String chn_frm_end_time) {
-        this.chn_frm_end_time = chn_frm_end_time;
-    }
-
-    public String getSpecialty_end_time() {
-        return specialty_end_time;
-    }
-
-    public void setSpecialty_end_time(String specialty_end_time) {
-        this.specialty_end_time = specialty_end_time;
-    }
-
-    public String getA_provinces() {
-        return a_provinces;
-    }
-
-    public void setA_provinces(String a_provinces) {
-        this.a_provinces = a_provinces;
-    }
-
-    public String getFund() {
-        return fund;
-    }
-
-    public void setFund(String fund) {
-        this.fund = fund;
-    }
-
-    public String getHandle_situation() {
-        return handle_situation;
-    }
-
-    public void setHandle_situation(String handle_situation) {
-        this.handle_situation = handle_situation;
-    }
-
-    public Date getUpdate_date() {
-        return update_date;
-    }
-
-    public void setUpdate_date(Date update_date) {
-        this.update_date = update_date;
-    }
-
-    public String getStudy_type() {
-        return study_type;
-    }
-
-    public void setStudy_type(String study_type) {
-        this.study_type = study_type;
-    }
-
-    public String getMatriculate() {
-        return matriculate;
-    }
-
-    public void setMatriculate(String matriculate) {
-        this.matriculate = matriculate;
-    }
-
-    public String getC_provinces() {
-        return c_provinces;
-    }
-
-    public void setC_provinces(String c_provinces) {
-        this.c_provinces = c_provinces;
-    }
-
-    public String getDisciplines() {
-        return disciplines;
-    }
-
-    public void setDisciplines(String disciplines) {
-        this.disciplines = disciplines;
-    }
-
-    public String getB_provinces() {
-        return b_provinces;
-    }
-
-    public void setB_provinces(String b_provinces) {
-        this.b_provinces = b_provinces;
-    }
-
-    public String getB_university() {
-        return b_university;
-    }
-
-    public void setB_university(String b_university) {
-        this.b_university = b_university;
-    }
-
-    public String getF_specialty() {
-        return f_specialty;
-    }
-
-    public void setF_specialty(String f_specialty) {
-        this.f_specialty = f_specialty;
-    }
-
-    public String getC_university() {
-        return c_university;
-    }
-
-    public void setC_university(String c_university) {
-        this.c_university = c_university;
-    }
-
-    public String getTeach_language() {
-        return teach_language;
-    }
-
-    public void setTeach_language(String teach_language) {
-        this.teach_language = teach_language;
-    }
-
-    public String getA_university() {
-        return a_university;
-    }
-
-    public void setA_university(String a_university) {
-        this.a_university = a_university;
-    }
-
-    public String getUpdate_by() {
-        return update_by;
-    }
-
-    public void setUpdate_by(String update_by) {
-        this.update_by = update_by;
-    }
-
-    public String getSpecialty_start_time() {
-        return specialty_start_time;
-    }
-
-    public void setSpecialty_start_time(String specialty_start_time) {
-        this.specialty_start_time = specialty_start_time;
-    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-}
