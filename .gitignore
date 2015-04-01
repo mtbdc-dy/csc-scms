@@ -1,7 +1,9 @@
+﻿#忽略路径
+out
+build
+.gradle
+.idea
+
 #忽略文件
-out/*
-build/*
-.gradle/*
-.idea/*
 *.iml
 *.class
