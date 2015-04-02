@@ -2,13 +2,15 @@ package gov.gwssi.csc.scms.domain.student;
 
 import javax.persistence.*;
 
-/**基本信息
+/**
+ * 基本信息
  * Created by Wang Rui on 2015/3/30.
  */
 @Entity
 @Table(name = "SCMS_BASIC_INFO")
 public class BasicInfo {
-    @Id private Long id;
+    @Id
+    private Long id;
     @Column(columnDefinition = "varchar2(200 char)")
     private Integer annual; //年度
     private String passport_name;//护照姓名
@@ -27,98 +29,23 @@ public class BasicInfo {
     private String dispatch;//派遣途径
     private String travel_type;//国际旅费
 
-    @OneToOne private Student student;
+    @OneToOne
+    private Student student;
 
-    public int getAnnual() {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Integer getAnnual() {
         return annual;
-    }
-
-    public void setAnnual(int year) {
-        this.annual = year;
-    }
-
-    public String getContinent_name() {
-        return continent_name;
-    }
-
-    public void setContinent_name(String continent_name) {
-        this.continent_name = continent_name;
-    }
-
-    public String getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
-    }
-
-    public String getTravel_type() {
-        return travel_type;
-    }
-
-    public void setTravel_type(String travel_type) {
-        this.travel_type = travel_type;
-    }
-
-    public Boolean isPlanned() {
-        return planned;
-    }
-
-    public void setPlanned(Boolean planned) {
-        this.planned = planned;
     }
 
     public void setAnnual(Integer annual) {
         this.annual = annual;
-    }
-
-    public String getPhoto_uri() {
-        return photo_uri;
-    }
-
-    public void setPhoto_uri(String photo_uri) {
-        this.photo_uri = photo_uri;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public String getCountry_name() {
-        return country_name;
-    }
-
-    public void setCountry_name(String country_name) {
-        this.country_name = country_name;
-    }
-
-    public String getDispatch() {
-        return dispatch;
-    }
-
-    public void setDispatch(String dispatch_name) {
-        this.dispatch = dispatch_name;
-    }
-
-    public String getProject_name() {
-        return project_name;
-    }
-
-    public void setProject_name(String project_name) {
-        this.project_name = project_name;
-    }
-
-    public String getProject_type() {
-        return project_type;
-    }
-
-    public void setProject_type(String project_type_name) {
-        this.project_type = project_type_name;
     }
 
     public String getPassport_name() {
@@ -135,6 +62,86 @@ public class BasicInfo {
 
     public void setChinese_name(String chinese_name) {
         this.chinese_name = chinese_name;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getContinent_name() {
+        return continent_name;
+    }
+
+    public void setContinent_name(String continent_name) {
+        this.continent_name = continent_name;
+    }
+
+    public String getCountry_name() {
+        return country_name;
+    }
+
+    public void setCountry_name(String country_name) {
+        this.country_name = country_name;
+    }
+
+    public String getPhoto_uri() {
+        return photo_uri;
+    }
+
+    public void setPhoto_uri(String photo_uri) {
+        this.photo_uri = photo_uri;
+    }
+
+    public Boolean isPlanned() {
+        return planned;
+    }
+
+    public void setPlanned(Boolean planned) {
+        this.planned = planned;
+    }
+
+    public String getProject_type() {
+        return project_type;
+    }
+
+    public void setProject_type(String project_type) {
+        this.project_type = project_type;
+    }
+
+    public String getProject_name() {
+        return project_name;
+    }
+
+    public void setProject_name(String project_name) {
+        this.project_name = project_name;
+    }
+
+    public String getDispatch() {
+        return dispatch;
+    }
+
+    public void setDispatch(String dispatch) {
+        this.dispatch = dispatch;
+    }
+
+    public String getTravel_type() {
+        return travel_type;
+    }
+
+    public void setTravel_type(String travel_type) {
+        this.travel_type = travel_type;
     }
 
     public Student getStudent() {

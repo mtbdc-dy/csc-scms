@@ -1,24 +1,29 @@
 package gov.gwssi.csc.scms.domain.student;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by Wang Rui on 2015/3/30.
- *
  */
 @Entity
 @Table(name = "SCMS_STUDENT")
 public class Student {
-//    @Id private Long id;
-    @Id private String csc_id;
-    @OneToOne private BasicInfo basicInfo;
-    @OneToOne private RegistrationInfo registrationInfo;
-    @OneToOne private Discuss discuss;
-    @OneToOne private SchoolRoll schoolRoll;
-    @OneToMany(mappedBy = "students")
-    private RelatedAddress relatedAddress;
+    //    @Id private Long id;
+    @Id
+    private String csc_id;
+    @OneToOne
+    private BasicInfo basicInfo;
+    @OneToOne
+    private RegistrationInfo registrationInfo;
+    @OneToOne
+    private Discuss discuss;
+    @OneToOne
+    private SchoolRoll schoolRoll;
     @OneToMany
-    protected Accident accident;
+    private List<RelatedAddress> relatedAddress;
+    @OneToMany
+    protected List<Accident> accident;
 
     public String getCsc_id() {
         return csc_id;
@@ -34,6 +39,7 @@ public class Student {
 
     public void setBasicInfo(BasicInfo basicInfo) {
         this.basicInfo = basicInfo;
+        basicInfo.setStudent(this);
     }
 
     public RegistrationInfo getRegistrationInfo() {
@@ -42,6 +48,7 @@ public class Student {
 
     public void setRegistrationInfo(RegistrationInfo registrationInfo) {
         this.registrationInfo = registrationInfo;
+        registrationInfo.setStudent(this);
     }
 
     public Discuss getDiscuss() {
@@ -50,6 +57,7 @@ public class Student {
 
     public void setDiscuss(Discuss discuss) {
         this.discuss = discuss;
+        discuss.setStudent(this);
     }
 
     public SchoolRoll getSchoolRoll() {
@@ -58,21 +66,22 @@ public class Student {
 
     public void setSchoolRoll(SchoolRoll schoolRoll) {
         this.schoolRoll = schoolRoll;
+        schoolRoll.setStudent(this);
     }
 
-    public RelatedAddress getRelatedAddress() {
+    public List<RelatedAddress> getRelatedAddress() {
         return relatedAddress;
     }
 
-    public void setRelatedAddress(RelatedAddress relatedAddress) {
+    public void setRelatedAddress(List<RelatedAddress> relatedAddress) {
         this.relatedAddress = relatedAddress;
     }
 
-    public Accident getAccident() {
+    public List<Accident> getAccident() {
         return accident;
     }
 
-    public void setAccident(Accident accident) {
+    public void setAccident(List<Accident> accident) {
         this.accident = accident;
     }
 }
