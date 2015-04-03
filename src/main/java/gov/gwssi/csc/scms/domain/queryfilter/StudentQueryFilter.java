@@ -15,13 +15,14 @@ public class StudentQueryFilter implements QueryFilter {
 
     public StudentQueryFilter(StudentFilterObject filterObject) {
         this.filterObject = filterObject;
-        conditions = filterObject.getConditions();
+        if (filterObject != null)
+            conditions = filterObject.getConditions();
     }
 
     @Override
     public String getQueryFilter() {
-        if (conditions == null) {
-            return null;
+        if (conditions == null || conditions.isEmpty()) {
+            return "";
         }
 
         StringBuilder sb = new StringBuilder();
@@ -51,6 +52,8 @@ public class StudentQueryFilter implements QueryFilter {
                 }
             }
         }
+        if (sb.length() == 0)
+            return "";
         return sb.toString();
     }
 }

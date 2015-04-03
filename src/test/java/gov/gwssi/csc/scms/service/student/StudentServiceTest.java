@@ -4,11 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.base.UnitTestBase;
 import gov.gwssi.csc.scms.domain.queryfilter.StudentFilterObject;
-import gov.gwssi.csc.scms.domain.queryfilter.StudentQueryFilter;
 import gov.gwssi.csc.scms.domain.student.*;
+import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -20,8 +22,18 @@ public class StudentServiceTest extends UnitTestBase {
 
     @Test
     public void getStudentsByConditionsTest() throws JsonProcessingException {
-        StudentQueryFilter sqf = new StudentQueryFilter(new StudentFilterObject());
-        System.out.println(sqf.getQueryFilter());
+
+        String body = "{\"csc_id\" : \"222\",\"passport_name\" : \"Jams\"}";
+        StudentFilterObject sfo = null;
+        try {
+            sfo = new ObjectMapper().readValue(body, StudentFilterObject.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("CSC_ID::" + sfo.getCsc_id());
+        Assert.assertEquals("222", sfo.getCsc_id());
+        Assert.assertEquals("Jams", sfo.getPassport_name());
+        Assert.assertNull(sfo.getContinent_name());
     }
 
     private Student getStudentInTest() {
@@ -47,7 +59,7 @@ public class StudentServiceTest extends UnitTestBase {
         discuss.setSubject("科学");
         discuss.setStudent(stu);
 
-        SchoolRoll  schoolroll = new SchoolRoll();
+        SchoolRoll schoolroll = new SchoolRoll();
         schoolroll.setId(100000L);
         schoolroll.setScholarship_review_year(2013L);
         schoolroll.setAcademic_certificate_NO("NO000001");

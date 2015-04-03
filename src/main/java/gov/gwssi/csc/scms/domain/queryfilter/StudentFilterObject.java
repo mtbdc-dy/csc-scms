@@ -12,31 +12,26 @@ public class StudentFilterObject implements FilterObject {
     /**
      * 主要查询条件
      */
-    //student
-    private String csc_id;//SCS登记号
-    //basicinfo
-    private String passport_name;//护照名称
-    private String continent_name;//洲别
-    private String country_name;//国籍
-    private String project_type;//项目类别
-    private String project_name;//项目名称
-    //schoolroll
-    private String register_state;//报到状态 0未处理 1报到 2放弃来华
+    private String csc_id = null;//SCS登记号
+    private String passport_name = null;//护照名称
+    private String continent_name = null;//洲别
+    private String country_name = null;//国籍
+    private String project_type = null;//项目类别
+    private String project_name = null;//项目名称
+    private String register_state = null;//报到状态 0未处理 1报到 2放弃来华
 
     /**
      * 隐藏查询条件
      */
-    //basicinfo
-    private String planned;//名额性质（计划内 计划外）
-    private String dispatch;//派遣途径
-    private String travel_type;//国际旅费
-    private String annual; //年度
-    //schoolroll
+    private String planned = null;//名额性质（计划内 计划外）
+    private String dispatch = null;//派遣途径
+    private String travel_type = null;//国际旅费
+    private String annual = null; //年度
     private String stu_type = null;//学生类别
     private String appropriations = null;//经费办法
     private String teach_language = null;//授课语言
     private String school_roll_state = null;//学籍状态
-    private String arrival_time_begin  = "2015-01-01";//来华时间起始时间
+    private String arrival_time_begin = "2015-01-01";//来华时间起始时间
     private String arrival_time_end = "2015-09-01";//来华时间终止时间
     private String leave_time_begin = "2015-01-01";//离华时间起始时间
     private String leave_time_end = "2015-09-01";//离华时间终止时间
@@ -52,28 +47,28 @@ public class StudentFilterObject implements FilterObject {
     @Override
     public List getConditions() {
         List<FilterCell> conditions = new ArrayList<FilterCell>();
-        conditions.add(new FilterCell("student","csc_id","String",getCsc_id()));
-        conditions.add(new FilterCell("basicinfo","passport_name","String",getPassport_name()));
-        conditions.add(new FilterCell("basicinfo","continent_name","String",getContinent_name()));
-        conditions.add(new FilterCell("basicinfo","country_name","String",getCountry_name()));
-        conditions.add(new FilterCell("basicinfo","project_type","String",getProject_type()));
-        conditions.add(new FilterCell("basicinfo","project_name","String",getProject_name()));
-        conditions.add(new FilterCell("basicinfo","planned","String",getPlanned()));
-        conditions.add(new FilterCell("basicinfo","dispatch","String",getDispatch()));
-        conditions.add(new FilterCell("basicinfo","travel_type","String",getTravel_type()));
-        conditions.add(new FilterCell("basicinfo","annual","String",getAnnual()));
+        conditions.add(new FilterCell("student", "csc_id", "String", getCsc_id()));
+        conditions.add(new FilterCell("basicinfo", "passport_name", "String", getPassport_name()));
+        conditions.add(new FilterCell("basicinfo", "continent_name", "String", getContinent_name()));
+        conditions.add(new FilterCell("basicinfo", "country_name", "String", getCountry_name()));
+        conditions.add(new FilterCell("basicinfo", "project_type", "String", getProject_type()));
+        conditions.add(new FilterCell("basicinfo", "project_name", "String", getProject_name()));
+        conditions.add(new FilterCell("basicinfo", "planned", "String", getPlanned()));
+        conditions.add(new FilterCell("basicinfo", "dispatch", "String", getDispatch()));
+        conditions.add(new FilterCell("basicinfo", "travel_type", "String", getTravel_type()));
+        conditions.add(new FilterCell("basicinfo", "annual", "String", getAnnual()));
 
-        conditions.add(new FilterCell("schoolroll","register_state","String",getRegister_state()));
-        conditions.add(new FilterCell("schoolroll","stu_type","String",getStu_type()));
-        conditions.add(new FilterCell("schoolroll","appropriations","String",getAppropriations()));
-        conditions.add(new FilterCell("schoolroll","teach_language","String",getTeach_language()));
-        conditions.add(new FilterCell("schoolroll","school_roll_state","String",getSchool_roll_state()));
-        conditions.add(new FilterCell("schoolroll","arrival_time","Date",getArrival_time_begin()+"," + getArrival_time_end()));
-        conditions.add(new FilterCell("schoolroll","leave_time","Date",getLeave_time_begin()+"," + getLeave_time_end()));
-        conditions.add(new FilterCell("schoolroll","chn_frm_start_time","Date",getChn_frm_start_time_begin()+"," + getChn_frm_start_time_end()));
-        conditions.add(new FilterCell("schoolroll","chn_frm_end_time","Date",getChn_frm_end_time_begin()+"," + getChn_frm_end_time_end()));
-        conditions.add(new FilterCell("schoolroll","major_start_time","Date",getMajor_start_time_begin()+"," + getMajor_start_time_end()));
-        conditions.add(new FilterCell("schoolroll","plan_leave_time","Date",getPlan_leave_time_begin()+"," + getPlan_leave_time_end()));
+        conditions.add(new FilterCell("schoolroll", "register_state", "String", getRegister_state()));
+        conditions.add(new FilterCell("schoolroll", "stu_type", "String", getStu_type()));
+        conditions.add(new FilterCell("schoolroll", "appropriations", "String", getAppropriations()));
+        conditions.add(new FilterCell("schoolroll", "teach_language", "String", getTeach_language()));
+        conditions.add(new FilterCell("schoolroll", "school_roll_state", "String", getSchool_roll_state()));
+        conditions.add(new FilterCell("schoolroll", "arrival_time", "Date", getArrival_time_begin() + "," + getArrival_time_end()));
+        conditions.add(new FilterCell("schoolroll", "leave_time", "Date", getLeave_time_begin() + "," + getLeave_time_end()));
+        conditions.add(new FilterCell("schoolroll", "chn_frm_start_time", "Date", getChn_frm_start_time_begin() + "," + getChn_frm_start_time_end()));
+        conditions.add(new FilterCell("schoolroll", "chn_frm_end_time", "Date", getChn_frm_end_time_begin() + "," + getChn_frm_end_time_end()));
+        conditions.add(new FilterCell("schoolroll", "major_start_time", "Date", getMajor_start_time_begin() + "," + getMajor_start_time_end()));
+        conditions.add(new FilterCell("schoolroll", "plan_leave_time", "Date", getPlan_leave_time_begin() + "," + getPlan_leave_time_end()));
 
         return conditions;
     }

@@ -1,6 +1,8 @@
 package gov.gwssi.csc.scms.service.student;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.gwssi.csc.scms.domain.queryfilter.StudentFilterObject;
+import gov.gwssi.csc.scms.domain.queryfilter.StudentQueryFilter;
 import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.repository.student.StudentRepository;
 import gov.gwssi.csc.scms.service.BaseService;
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -68,11 +71,15 @@ public class StudentService extends BaseService {
                 "where 1 = 1 ";
         sb.append(tempSql);
 
-        // 获取studentQueryFilter()
-        // sb.append(filter.toString());
-        return null;
+        StudentFilterObject sto = null;
+        try {
+            sto = new ObjectMapper().readValue(body, StudentFilterObject.class);
+            sb.append(new StudentQueryFilter(sto).getQueryFilter());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return sb.toString();
     }
-
 
     public void updateStudent(Student student) {
         studentRepository.save(student);//验证是否包含了insert和update
