@@ -47,7 +47,7 @@ public class StudentService extends BaseService {
 
     public List getStuInfoList() {
         List<Student> studentList = new ArrayList<Student>();
-        String sql = "select  t.nature_places, t.project_type_name, t.project_name, t.continent_name," +
+        String sql = "select t.project_name, t.continent_name," +
                 "t.country_name,t.passport_name from SCMS_BASIC_INFO t ";
         System.out.println("super.baseDAO============" + super.baseDAO);
         studentList = super.getBaseDao().queryListBySql(sql);
