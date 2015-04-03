@@ -83,7 +83,7 @@ public class DatabaseConfig {
         return factory;
     }
 
-    @Bean
+    @Bean(name = "jpaTransactionManager")
     @Autowired
     public JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
         JpaTransactionManager txManager = new JpaTransactionManager();
