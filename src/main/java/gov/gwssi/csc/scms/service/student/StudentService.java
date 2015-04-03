@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.domain.queryfilter.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.queryfilter.StudentQueryFilter;
 import gov.gwssi.csc.scms.domain.student.Student;
-import gov.gwssi.csc.scms.repository.student.StudentRepository;
+import gov.gwssi.csc.scms.repository.student.*;
 import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by WangZishi on 3/25/2015.
@@ -24,6 +23,19 @@ public class StudentService extends BaseService {
     @Autowired
     @Qualifier("studentRepository")
     private StudentRepository studentRepository;
+    @Autowired
+    private BasicInfoRepository basicInfoRepository;
+    @Autowired
+    private DiscussRepository discussRepository;
+    @Autowired
+    private RegistrationInfoRepository registrationInfoReposit;
+    @Autowired
+    private RelatedAddressRepository relatedAddressRepository;
+    @Autowired
+    private SchoolRollRepository schoolRollRepository;
+    @Autowired
+    private AccidentRepository accidentRepository;
+
 
     public Student getStudentByID(String id) {
         return studentRepository.findOne(id);
@@ -46,16 +58,12 @@ public class StudentService extends BaseService {
         return studentList;
     }
 
-    public List<Student> getStudentsByConditions(String body) {
-        List<Student> studentList = new ArrayList<Student>();
-
+    public List<Student> getStudentsByQueryFilter(String body) {
+        List<Student> studentList;
         String sql = getSqlByBody(body);
         if (sql == null) return null;
-        /**
-         *
-         */
+        studentList = super.getBaseDao().queryListBySql(sql);
         return studentList;
-
     }
 
     private String getSqlByBody(String body) {
@@ -83,5 +91,16 @@ public class StudentService extends BaseService {
 
     public void updateStudent(Student student) {
         studentRepository.save(student);//验证是否包含了insert和update
+    }
+
+    private Student constractStudent(Student student) {
+        student.setAccident(accidentRepository.findByStudent(student));
+        student.setRelatedAddress(relatedAddressRepository.findByStudent(student));
+        student.setRegistrationInfo(registrationInfoReposit.findByStudent(student));
+        student.setBasicInfo(basicInfoRepository.findByStudent(student));
+        student.setDiscuss(discussRepository.findByStudent(student));
+        student.setSchoolRoll(schoolRollRepository.findByStudent(student));
+
+        return student;
     }
 }
