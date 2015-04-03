@@ -22,6 +22,6 @@ import java.util.List;
         @NamedQuery(name="", query = ""),
         @NamedQuery(name="", query = "")}
 )
-public interface StudentRepository extends CrudRepository<Student, ID> {
+public interface StudentRepository extends CrudRepository<Student, String> {
         public List<Student> findBycscIdwehereOrderByAccident_Handle_statusDesc();
 }
