@@ -7,9 +7,10 @@ import javax.persistence.*;
  * Created by Wang Rui on 2015/3/30.
  */
 @Entity
-@Table(name="SCMS_REGISTRATION_INFO")
+@Table(name = "SCMS_REGISTRATION_INFO")
 public class RegistrationInfo {
-    @Id private Long id;
+    @Id
+    private Long id;
     @OneToOne
     private Student student;
     private String stu_type;//学生类别

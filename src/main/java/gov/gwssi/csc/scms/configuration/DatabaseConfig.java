@@ -69,7 +69,7 @@ public class DatabaseConfig {
 
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
-        factory.setPackagesToScan("gov.gwssi.csc.scms.domain");
+        factory.setPackagesToScan(env.getProperty("domain.packages"));
         factory.setDataSource(dataSource);
 
         Properties properties = new Properties();

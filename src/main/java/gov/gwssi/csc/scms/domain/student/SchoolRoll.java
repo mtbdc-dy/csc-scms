@@ -3,13 +3,15 @@ package gov.gwssi.csc.scms.domain.student;
 import javax.persistence.*;
 import java.util.Date;
 
-/**学籍信息
+/**
+ * 学籍信息
  * Created by Wang Rui on 2015/3/30.
  */
 @Entity
 @Table(name = "SCMS_SCHOOLROLL")
 public class SchoolRoll {
-    @Id private Long id;
+    @Id
+    private Long id;
     @OneToOne
     private Student student;
     private String certificate_type;//证件种类
@@ -23,7 +25,7 @@ public class SchoolRoll {
     private Date arrival_time;//来华时间
     private String school_roll_state;//学籍状态
     private String current_university;//当前院校
-    private Date plan_leave_time ;//预计离华时间
+    private Date plan_leave_time;//预计离华时间
     private Long scholarship_review_year;//奖学金评审年度
     private String scholarship_review_opinion;//奖学金处理意见
     private String degree_certificate_NO;//学位证书编号

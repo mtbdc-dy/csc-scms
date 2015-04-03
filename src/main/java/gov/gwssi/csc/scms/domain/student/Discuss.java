@@ -3,14 +3,17 @@ package gov.gwssi.csc.scms.domain.student;
 import javax.persistence.*;
 import java.util.Date;
 
-/**商议信息
+/**
+ * 商议信息
  * Created by Wang Rui on 2015/3/30.
  */
 @Entity
 @Table(name = "SCMS_DISCUSS")
 public class Discuss {
-    @Id private Long id;
-    @OneToOne private Student student;
+    @Id
+    private Long id;
+    @OneToOne
+    private Student student;
     private String appropriations;//经费办法
     private String stu_type;//学生类别
     private String teach_language;//授课语言

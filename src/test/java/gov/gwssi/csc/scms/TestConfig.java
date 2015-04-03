@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
  *
  * 配置测试Context
  */
-@EnableWebMvc
+//@EnableWebMvc
 @ComponentScan(
     basePackages = {
         "gov.gwssi.csc.scms.service",
@@ -21,23 +21,4 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @Import(DatabaseConfig.class)
 @Configuration
 public class TestConfig {
-
-    @Value("${jdbc.url}")
-    private String url;
-
-    @Value("${jdbc.username}")
-    private String username;
-
-    @Value("${jdbc.password}")
-    private String password;
-
-    @Value("${jdbc.driver}")
-    private String driver;
-
-    @Bean(name = "scmsDS")
-    public DriverManagerDataSource getMyDriverManager(){
-        DriverManagerDataSource dataSource = new DriverManagerDataSource(url, username, password);
-        dataSource.setDriverClassName(driver);
-        return dataSource;
-    }
 }
