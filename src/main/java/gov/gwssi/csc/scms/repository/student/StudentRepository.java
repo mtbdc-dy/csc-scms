@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.repository.student;
 
 //import gov.gwssi.csc.scms.domain.StudentWzs;
+import com.sun.xml.internal.bind.v2.model.core.ID;
 import gov.gwssi.csc.scms.domain.student.Student;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -21,7 +22,6 @@ import java.util.List;
         @NamedQuery(name="", query = ""),
         @NamedQuery(name="", query = "")}
 )
-public interface StudentRepository extends CrudRepository<Student, String> {
+public interface StudentRepository extends CrudRepository<Student, ID> {
 
-        public List<Student> findBycscIdwehereOrderByAccident_Handle_statusDesc();
 }

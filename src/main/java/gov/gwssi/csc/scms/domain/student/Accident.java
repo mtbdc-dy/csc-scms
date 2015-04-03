@@ -12,8 +12,10 @@ import java.util.Date;
 public class Accident {
     @Id
     private String id;
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
+    @JoinColumn(name="csc_id")//加入一列作为外键
     private Student student;
+    @Column
     private String responsibility_type;//责任类别
     private String type;//类别
     private String reason;//原因
@@ -22,4 +24,84 @@ public class Accident {
     private String handle_status;//处理状态
     private String summary;//情况摘要
     private Date update_date;//记录时间
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+
+    public String getResponsibility_type() {
+        return responsibility_type;
+    }
+
+    public void setResponsibility_type(String responsibility_type) {
+        this.responsibility_type = responsibility_type;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public String getHappen_time() {
+        return happen_time;
+    }
+
+    public void setHappen_time(String happen_time) {
+        this.happen_time = happen_time;
+    }
+
+    public String getHappen_place() {
+        return happen_place;
+    }
+
+    public void setHappen_place(String happen_place) {
+        this.happen_place = happen_place;
+    }
+
+    public String getHandle_status() {
+        return handle_status;
+    }
+
+    public void setHandle_status(String handle_status) {
+        this.handle_status = handle_status;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+    public Date getUpdate_date() {
+        return update_date;
+    }
+
+    public void setUpdate_date(Date update_date) {
+        this.update_date = update_date;
+    }
 }

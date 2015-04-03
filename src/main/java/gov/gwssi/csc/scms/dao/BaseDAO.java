@@ -29,7 +29,6 @@ public class BaseDAO {
 
     @Autowired
     DataSource dataSource;
-
     /**
      * 查询的结果是List<Map>
      */

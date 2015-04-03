@@ -59,6 +59,8 @@ public class DatabaseConfig {
     @Bean(name = "entityManagerFactory")
     @Autowired
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(BoneCPDataSource dataSource) {
+
+        System.out.println("dataSource==="+dataSource);
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setGenerateDdl(true);
         vendorAdapter.setShowSql(true);

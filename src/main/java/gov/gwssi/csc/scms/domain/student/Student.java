@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.domain.student;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by Wang Rui on 2015/3/30.
@@ -15,10 +16,10 @@ public class Student {
     @OneToOne private RegistrationInfo registrationInfo;
     @OneToOne private Discuss discuss;
     @OneToOne private SchoolRoll schoolRoll;
-    @OneToMany(mappedBy = "students")
-    private RelatedAddress relatedAddress;
+    @OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="student")
+    private List<RelatedAddress> relatedAddress;
     @OneToMany
-    protected Accident accident;
+    private List<Accident> accident;
 
     public String getCsc_id() {
         return csc_id;
@@ -60,19 +61,19 @@ public class Student {
         this.schoolRoll = schoolRoll;
     }
 
-    public RelatedAddress getRelatedAddress() {
+    public List<RelatedAddress> getRelatedAddress() {
         return relatedAddress;
     }
 
-    public void setRelatedAddress(RelatedAddress relatedAddress) {
+    public void setRelatedAddress(List<RelatedAddress> relatedAddress) {
         this.relatedAddress = relatedAddress;
     }
 
-    public Accident getAccident() {
+    public List<Accident> getAccident() {
         return accident;
     }
 
-    public void setAccident(Accident accident) {
+    public void setAccident(List<Accident> accident) {
         this.accident = accident;
     }
 }
