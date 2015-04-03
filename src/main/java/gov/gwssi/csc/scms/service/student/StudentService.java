@@ -67,10 +67,9 @@ public class StudentService extends BaseService {
     }
 
     private String getSqlByBody(String body) {
-
         StringBuilder sb = new StringBuilder();
         String tempSql = "select student.* from scms_student student " +
-                "left join scms_basic_info basicinfo on student.basicinfo = basicinfo.student " +
+                "left join scms_basic_info basicinfo on student/.basicinfo = basicinfo.student " +
                 "left join scms_registration_info registrationinfo on student.registrationinfo = registrationinfo.student " +
                 "left join scms_student discuss on student.discuss = discuss.id " +
                 "left join scms_schoolroll schoolroll on student.schoolroll = schoolroll.id " +
@@ -90,7 +89,8 @@ public class StudentService extends BaseService {
     }
 
     public void updateStudent(Student student) {
-        studentRepository.save(student);//验证是否包含了insert和update
+        //验证是否包含了insert和update
+        studentRepository.save(student);
     }
 
     private Student constractStudent(Student student) {
@@ -100,7 +100,6 @@ public class StudentService extends BaseService {
         student.setBasicInfo(basicInfoRepository.findByStudent(student));
         student.setDiscuss(discussRepository.findByStudent(student));
         student.setSchoolRoll(schoolRollRepository.findByStudent(student));
-
         return student;
     }
 }
