@@ -24,17 +24,19 @@ public class StudentService extends BaseService {
     @Qualifier("studentRepository")
     private StudentRepository studentRepository;
     @Autowired
-    private BasicInfoRepository basicInfoRepository;
+    private BasicInfoService basicInfoService;
     @Autowired
-    private DiscussRepository discussRepository;
+    private DiscussService discussService;
     @Autowired
-    private RegistrationInfoRepository registrationInfoReposit;
+    private RegistrationInfoService registrationInfoService;
     @Autowired
-    private RelatedAddressRepository relatedAddressRepository;
+    private RelatedAddressService relatedAddressService;
     @Autowired
-    private SchoolRollRepository schoolRollRepository;
+    private SchoolRollService schoolRollService;
     @Autowired
-    private AccidentRepository accidentRepository;
+    private AccidentService accidentService;
+    @Autowired
+    private ProfilesHistoryService profilesHistoryService;
 
 
     public Student getStudentByID(String id) {
@@ -94,12 +96,13 @@ public class StudentService extends BaseService {
     }
 
     private Student constractStudent(Student student) {
-        student.setAccident(accidentRepository.findByStudent(student));
-        student.setRelatedAddress(relatedAddressRepository.findByStudent(student));
-        student.setRegistrationInfo(registrationInfoReposit.findByStudent(student));
-        student.setBasicInfo(basicInfoRepository.findByStudent(student));
-        student.setDiscuss(discussRepository.findByStudent(student));
-        student.setSchoolRoll(schoolRollRepository.findByStudent(student));
+        student.setAccident(accidentService.getAccidentsByStudent(student));
+        student.setRelatedAddress(relatedAddressService.getRelatedAddressByStudent(student));
+        student.setRegistrationInfo(registrationInfoService.getRegistrationInfoByStudent(student));
+        student.setBasicInfo(basicInfoService.getBasicInfoByStudent(student));
+        student.setDiscuss(discussService.getDiscussByStudent(student));
+        student.setSchoolRoll(schoolRollService.getSchoolRollByStudent(student));
+        student.setProfilesHistory(profilesHistoryService.getProfilesHistoryByStudent(student));
         return student;
     }
 }
