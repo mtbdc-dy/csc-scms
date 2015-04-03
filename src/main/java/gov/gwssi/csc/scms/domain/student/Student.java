@@ -13,6 +13,7 @@ public class Student {
 //    @Id private Long id;
     @Id private String csc_id;
     @OneToOne private BasicInfo basicInfo;
+    @OneToOne private ProfilesHistory profilesHistory;
     @OneToOne private RegistrationInfo registrationInfo;
     @OneToOne private Discuss discuss;
     @OneToOne private SchoolRoll schoolRoll;
@@ -75,5 +76,13 @@ public class Student {
 
     public void setAccident(List<Accident> accident) {
         this.accident = accident;
+    }
+
+    public ProfilesHistory getProfilesHistory() {
+        return profilesHistory;
+    }
+
+    public void setProfilesHistory(ProfilesHistory profilesHistory) {
+        this.profilesHistory = profilesHistory;
     }
 }
