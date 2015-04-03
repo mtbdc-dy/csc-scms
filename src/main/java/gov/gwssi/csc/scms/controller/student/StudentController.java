@@ -41,7 +41,6 @@ public class StudentController {
         //list<>
         return "1";
     }
-//123
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
     @Transactional
     public String addStudent(@RequestBody String body) {
