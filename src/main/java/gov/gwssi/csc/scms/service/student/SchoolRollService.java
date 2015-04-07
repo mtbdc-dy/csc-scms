@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 /**
  * Created by Murray on 4/3/2015.
  */
-@Service("registrationInfoService")
+@Service("schoolRollService")
 public class SchoolRollService extends BaseService {
 
     @Autowired
