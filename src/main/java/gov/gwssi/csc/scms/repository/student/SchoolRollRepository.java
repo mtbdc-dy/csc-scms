@@ -9,6 +9,5 @@ import org.springframework.stereotype.Repository;
  * Created by WangZishi on 3/25/2015.
  */
 @Repository
-public interface SchoolRollRepository extends CrudRepository<SchoolRoll, String> {
-    SchoolRoll findByStudent(Student student);
+public interface SchoolRollRepository extends CrudRepository<SchoolRoll, Long> {
 }

@@ -19,10 +19,10 @@ public class DiscussService extends BaseService {
     private DiscussRepository discussRepository;
 
     public Discuss getDiscussByStudent(Student student) {
-        return discussRepository.findByStudent(student);
+        return discussRepository.findOne(student.getDiscuss().getId());
     }
 
-    public Discuss getDiscussById(String id) {
+    public Discuss getDiscussById(Long id) {
         return discussRepository.findOne(id);
     }
 

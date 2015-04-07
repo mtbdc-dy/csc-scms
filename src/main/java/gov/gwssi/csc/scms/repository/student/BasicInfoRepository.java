@@ -9,6 +9,5 @@ import org.springframework.stereotype.Repository;
  * Created by WangZishi on 3/25/2015.
  */
 @Repository
-public interface BasicInfoRepository extends CrudRepository<BasicInfo, String> {
-    BasicInfo findByStudent(Student student);
+public interface BasicInfoRepository extends CrudRepository<BasicInfo, Long> {
 }

@@ -11,8 +11,6 @@ import javax.persistence.*;
 public class RegistrationInfo {
     @Id
     private Long id;
-    @OneToOne
-    private Student student;
     private String stu_type;//学生类别
     private String teach_language;//授课语言
     private String disciplines;//学科门类
@@ -31,14 +29,6 @@ public class RegistrationInfo {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
     }
 
     public String getStu_type() {

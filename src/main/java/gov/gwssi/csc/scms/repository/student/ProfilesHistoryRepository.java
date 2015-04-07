@@ -7,6 +7,5 @@ import org.springframework.data.repository.CrudRepository;
 /**
  * Created by Murray on 2015/4/3.
  */
-public interface ProfilesHistoryRepository extends CrudRepository<ProfilesHistory, String> {
-    ProfilesHistory findByStudent(Student student);
+public interface ProfilesHistoryRepository extends CrudRepository<ProfilesHistory, Long> {
 }

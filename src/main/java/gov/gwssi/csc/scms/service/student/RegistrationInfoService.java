@@ -17,10 +17,10 @@ public class RegistrationInfoService extends BaseService {
     private RegistrationInfoRepository registrationInfoRepository;
 
     public RegistrationInfo getRegistrationInfoByStudent(Student student) {
-        return registrationInfoRepository.findByStudent(student);
+        return registrationInfoRepository.findOne(student.getRegistrationInfo().getId());
     }
 
-    public RegistrationInfo getRegistrationInfoById(String id) {
+    public RegistrationInfo getRegistrationInfoById(Long id) {
         return registrationInfoRepository.findOne(id);
     }
 

@@ -19,10 +19,10 @@ public class SchoolRollService extends BaseService {
     private SchoolRollRepository schoolRollRepository;
 
     public SchoolRoll getSchoolRollByStudent(Student student) {
-        return schoolRollRepository.findByStudent(student);
+        return schoolRollRepository.findOne(student.getSchoolRoll().getId());
     }
 
-    public SchoolRoll getSchoolRollById(String id) {
+    public SchoolRoll getSchoolRollById(Long id) {
         return schoolRollRepository.findOne(id);
     }
 

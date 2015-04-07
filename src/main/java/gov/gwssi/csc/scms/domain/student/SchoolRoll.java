@@ -12,8 +12,6 @@ import java.util.Date;
 public class SchoolRoll {
     @Id
     private Long id;
-    @OneToOne
-    private Student student;
     private String certificate_type;//证件种类
     private String register_state;//报到状态 0未处理 1报到 2放弃来华
     private String disciplines;//学科门类
@@ -55,15 +53,7 @@ public class SchoolRoll {
     public void setId(Long id) {
         this.id = id;
     }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-
+    
     public String getCertificate_type() {
         return certificate_type;
     }

@@ -17,10 +17,10 @@ public class ProfilesHistoryService extends BaseService {
     private ProfilesHistoryRepository profilesHistoryRepository;
 
     public ProfilesHistory getProfilesHistoryByStudent(Student student) {
-        return profilesHistoryRepository.findByStudent(student);
+        return profilesHistoryRepository.findOne(student.getProfilesHistory().getId());
     }
 
-    public ProfilesHistory getProfilesHistoryById(String id) {
+    public ProfilesHistory getProfilesHistoryById(Long id) {
         return profilesHistoryRepository.findOne(id);
     }
 

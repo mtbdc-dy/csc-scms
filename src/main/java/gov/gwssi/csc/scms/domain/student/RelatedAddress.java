@@ -2,15 +2,17 @@ package gov.gwssi.csc.scms.domain.student;
 
 import javax.persistence.*;
 
-/**相关地址
+/**
+ * 相关地址
  * Created by Wang Rui on 2015/3/30.
  */
 @Entity
 @Table(name = "SCMS_RELATED_ADDRESS")
 public class RelatedAddress {
-    @Id private Long id;
-    @ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
-    @JoinColumn(name="csc_id")//加入一列作为外键
+    @Id
+    private Long id;
+    @ManyToOne(targetEntity = Student.class)
+    @JoinColumn(name = "student")//加入一列作为外键
     private Student student;
     private String type;//类别
     private String nature;//性质

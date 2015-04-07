@@ -9,6 +9,5 @@ import org.springframework.stereotype.Repository;
  * Created by WangZishi on 3/25/2015.
  */
 @Repository
-public interface DiscussRepository extends CrudRepository<Discuss, String> {
-    Discuss findByStudent(Student student);
+public interface DiscussRepository extends CrudRepository<Discuss, Long> {
 }

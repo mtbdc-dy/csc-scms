@@ -1,26 +1,36 @@
 package gov.gwssi.csc.scms.domain.student;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Wang Rui on 2015/3/30.
- *
  */
 @Entity
 @Table(name = "SCMS_STUDENT")
 public class Student {
-//    @Id private Long id;
-    @Id private String csc_id;
-    @OneToOne private BasicInfo basicInfo;
-    @OneToOne private ProfilesHistory profilesHistory;
-    @OneToOne private RegistrationInfo registrationInfo;
-    @OneToOne private Discuss discuss;
-    @OneToOne private SchoolRoll schoolRoll;
-    @OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="student")
-    private List<RelatedAddress> relatedAddress;
-    @OneToMany
-    private List<Accident> accident;
+    @Id
+    private String csc_id;
+    @OneToOne
+    @JoinColumn(name = "basicInfo", unique = true, nullable = false)
+    private BasicInfo basicInfo;
+    @OneToOne
+    @JoinColumn(name = "profilesHistory", unique = true, nullable = false)
+    private ProfilesHistory profilesHistory;
+    @OneToOne
+    @JoinColumn(name = "registrationInfo", unique = true, nullable = false)
+    private RegistrationInfo registrationInfo;
+    @OneToOne
+    @JoinColumn(name = "discuss", unique = true, nullable = false)
+    private Discuss discuss;
+    @OneToOne
+    @JoinColumn(name = "schoolRoll", unique = true, nullable = false)
+    private SchoolRoll schoolRoll;
+    @OneToMany(mappedBy = "student")
+    private List<RelatedAddress> relatedAddress = new ArrayList<RelatedAddress>();
+    @OneToMany(mappedBy = "student")
+    private List<Accident> accidents = new ArrayList<Accident>();
 
     public String getCsc_id() {
         return csc_id;
@@ -71,11 +81,11 @@ public class Student {
     }
 
     public List<Accident> getAccident() {
-        return accident;
+        return accidents;
     }
 
     public void setAccident(List<Accident> accident) {
-        this.accident = accident;
+        this.accidents = accident;
     }
 
     public ProfilesHistory getProfilesHistory() {

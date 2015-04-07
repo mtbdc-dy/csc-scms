@@ -17,10 +17,10 @@ public class BasicInfoService extends BaseService {
     private BasicInfoRepository basicInfoRepository;
 
     public BasicInfo getBasicInfoByStudent(Student student) {
-        return basicInfoRepository.findByStudent(student);
+        return basicInfoRepository.findOne(student.getBasicInfo().getId());
     }
 
-    public BasicInfo getBasicInfoById(String id) {
+    public BasicInfo getBasicInfoById(Long id) {
         return basicInfoRepository.findOne(id);
     }
 

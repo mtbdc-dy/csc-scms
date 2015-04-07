@@ -11,7 +11,7 @@ import javax.persistence.*;
 public class BasicInfo {
     @Id
     private Long id;
-    @Column(columnDefinition = "varchar2(200 char)")
+    @Column(columnDefinition = "varchar2(200)")
     private Integer annual; //年度
     private String passport_name;//护照姓名
     /**
@@ -28,9 +28,6 @@ public class BasicInfo {
     private String project_name;//项目名称
     private String dispatch;//派遣途径
     private String travel_type;//国际旅费
-
-    @OneToOne
-    private Student student;
 
     public Long getId() {
         return id;
@@ -142,13 +139,5 @@ public class BasicInfo {
 
     public void setTravel_type(String travel_type) {
         this.travel_type = travel_type;
-    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
     }
 }

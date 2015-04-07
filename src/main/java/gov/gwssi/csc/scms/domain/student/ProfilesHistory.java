@@ -1,19 +1,18 @@
 package gov.gwssi.csc.scms.domain.student;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * 来华前概况
  * Created by Wang Rui on 2015/3/30.
  */
 @Entity
-@Table(name="SCMS_PROFILES_HISTORY")
+@Table(name = "SCMS_PROFILES_HISTORY")
 public class ProfilesHistory {
-    @Id private Long id;
-    @OneToOne private Student student;
+    @Id
+    @Column(nullable = false, unique = true, length = 19)
+    private Long id;
+    @Column
     private String work;//单位
     private String occupation;//职业
     private String native_language;//母语
@@ -29,14 +28,6 @@ public class ProfilesHistory {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
     }
 
     public String getWork() {

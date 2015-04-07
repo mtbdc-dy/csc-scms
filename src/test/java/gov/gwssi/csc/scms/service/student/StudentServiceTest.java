@@ -57,13 +57,11 @@ public class StudentServiceTest extends UnitTestBase {
         Discuss discuss = new Discuss();
         discuss.setId(122222L);
         discuss.setSubject("科学");
-        discuss.setStudent(stu);
 
         SchoolRoll schoolroll = new SchoolRoll();
         schoolroll.setId(100000L);
         schoolroll.setScholarship_review_year(2013L);
         schoolroll.setAcademic_certificate_NO("NO000001");
-        schoolroll.setStudent(stu);
 
         List<RelatedAddress> relatedAddress = new ArrayList<RelatedAddress>();
         RelatedAddress ra1 = new RelatedAddress();

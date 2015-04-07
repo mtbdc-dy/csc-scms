@@ -12,8 +12,6 @@ import java.util.Date;
 public class Discuss {
     @Id
     private Long id;
-    @OneToOne
-    private Student student;
     private String appropriations;//经费办法
     private String stu_type;//学生类别
     private String teach_language;//授课语言
@@ -39,14 +37,6 @@ public class Discuss {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
     }
 
     public String getAppropriations() {

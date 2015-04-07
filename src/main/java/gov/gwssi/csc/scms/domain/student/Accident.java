@@ -12,8 +12,8 @@ import java.util.Date;
 public class Accident {
     @Id
     private String id;
-    @ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
-    @JoinColumn(name="csc_id")//加入一列作为外键
+    @ManyToOne(targetEntity = Student.class)
+    @JoinColumn(name = "student", referencedColumnName = "csc_id")
     private Student student;
     @Column
     private String responsibility_type;//责任类别
