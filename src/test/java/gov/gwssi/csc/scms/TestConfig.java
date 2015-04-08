@@ -8,15 +8,17 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 /**
  * Created by WangZishi on 4/1/2015.
- *
+ * <p/>
  * 配置测试Context
  */
 //@EnableWebMvc
 @ComponentScan(
-    basePackages = {
-        "gov.gwssi.csc.scms.service",
-        "gov.gwssi.csc.scms.dao"
-    }
+        basePackages = {
+                "gov.gwssi.csc.scms.service.student",
+                "gov.gwssi.csc.scms.dao",
+                "gov.gwssi.csc.scms.domain.student",
+                "gov.gwssi.csc.scms.repository.student"
+        }
 )
 @Import(DatabaseConfig.class)
 @Configuration

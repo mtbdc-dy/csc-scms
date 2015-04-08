@@ -90,9 +90,8 @@ public class StudentService extends BaseService {
         return sb.toString();
     }
 
-    public void updateStudent(Student student) {
-        //验证是否包含了insert和update
-        studentRepository.save(student);
+    public Student updateStudent(Student student) {
+        return studentRepository.save(student);
     }
 
     private Student constractStudent(Student student) {

@@ -16,6 +16,7 @@ public class BasicInfoService extends BaseService {
     @Autowired
     private BasicInfoRepository basicInfoRepository;
 
+
     public BasicInfo getBasicInfoByStudent(Student student) {
         return basicInfoRepository.findOne(student.getBasicInfo().getId());
     }
