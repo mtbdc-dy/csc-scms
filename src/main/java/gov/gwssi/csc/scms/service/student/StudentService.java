@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.Transient;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
 /**
  * Created by WangZishi on 3/25/2015.
  */
-@Service("studentService")
+@Service(value = "studentService")
 public class StudentService extends BaseService {
 
     @Autowired
@@ -41,10 +42,6 @@ public class StudentService extends BaseService {
 
     public Student getStudentByID(String id) {
         return studentRepository.findOne(id);
-    }
-
-    public Student save(Student student) {
-        return studentRepository.save(student);
     }
 
     public List getStuInfoList() {
@@ -104,4 +101,24 @@ public class StudentService extends BaseService {
         student.setProfilesHistory(profilesHistoryService.getProfilesHistoryByStudent(student));
         return student;
     }
+
+    @Transient
+    public Student saveStudent(Student student) {
+        if (student.getBasicInfo() != null)
+            basicInfoService.saveBasicInfo(student.getBasicInfo());
+        if (student.getDiscuss() != null)
+            discussService.saveDiscuss(student.getDiscuss());
+        if (student.getRegistrationInfo() != null)
+            registrationInfoService.saveRegistrationInfo(student.getRegistrationInfo());
+        if (!student.getRelatedAddress().isEmpty())
+            relatedAddressService.saveRelatedAddress(student.getRelatedAddress());
+        if (student.getSchoolRoll() != null)
+            schoolRollService.saveSchoolRoll(student.getSchoolRoll());
+        if (!student.getRelatedAddress().isEmpty())
+            accidentService.saveAccidents(student.getAccident());
+        if (student.getProfilesHistory() != null)
+            profilesHistoryService.saveProfilesHistory(student.getProfilesHistory());
+        return studentRepository.save(student);
+    }
+
 }

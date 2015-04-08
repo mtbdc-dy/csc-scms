@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 /**
  * Created by WangZishi on 3/25/2015.
  */
-@Repository
+@Repository(value = "registrationInfoRepository")
 public interface RegistrationInfoRepository extends CrudRepository<RegistrationInfo, Long> {
 }

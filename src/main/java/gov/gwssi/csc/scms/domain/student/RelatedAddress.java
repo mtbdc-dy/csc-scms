@@ -12,7 +12,7 @@ public class RelatedAddress {
     @Id
     private Long id;
     @ManyToOne(targetEntity = Student.class)
-    @JoinColumn(name = "student")//加入一列作为外键
+    @JoinColumn(name = "student", referencedColumnName = "csc_id", nullable = false)
     private Student student;
     private String type;//类别
     private String nature;//性质

@@ -32,7 +32,7 @@ public class StudentController {
 //        student.setName(id);
 //        student.setGender(id);
 
-        return studentService.save(student);
+        return studentService.saveStudent(student);
     }
 
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json")
@@ -41,6 +41,7 @@ public class StudentController {
         //list<>
         return "1";
     }
+
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
     @Transactional
     public String addStudent(@RequestBody String body) {

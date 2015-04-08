@@ -10,7 +10,6 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -37,7 +36,7 @@ public class StudentServiceTest extends UnitTestBase {
     @Test
     public void saveStudentTest() {
         StudentService studentService = getBean("studentService");
-        Student stu = studentService.save(getStudentInTest());
+        Student stu = studentService.saveStudent(getStudentInTest());
         Assert.assertNotNull(stu);
     }
 
@@ -71,11 +70,13 @@ public class StudentServiceTest extends UnitTestBase {
         Discuss discuss = new Discuss();
         discuss.setId(1000001L);
         discuss.setSubject("科学");
+        stu.setDiscuss(discuss);
 
         SchoolRoll schoolroll = new SchoolRoll();
         schoolroll.setId(1000001L);
         schoolroll.setScholarship_review_year(2013L);
         schoolroll.setAcademic_certificate_NO("NO000001");
+        stu.setSchoolRoll(schoolroll);
 
         List<RelatedAddress> relatedAddress = new ArrayList<RelatedAddress>();
         RelatedAddress ra1 = new RelatedAddress();
@@ -83,13 +84,18 @@ public class StudentServiceTest extends UnitTestBase {
         ra1.setId(1000001L);
         ra1.setType("Address");
         ra1.setAddress_or_name("北京市海淀区");
-        ra2.setId(1000001L);
+        ra2.setId(1000002L);
         ra2.setType("person");
         ra2.setAddress_or_name("张三 18800000000");
         ra2.setNature("personInAccedent");
         relatedAddress.add(ra1);
         relatedAddress.add(ra2);
         stu.setRelatedAddress(relatedAddress);
+
+        ProfilesHistory ph = new ProfilesHistory();
+        ph.setId(1000001L);
+        ph.setNative_language("英语");
+        stu.setProfilesHistory(ph);
 
         stu.setAccident(null);
         return stu;

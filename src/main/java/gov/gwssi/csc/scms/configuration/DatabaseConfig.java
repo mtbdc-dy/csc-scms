@@ -60,7 +60,7 @@ public class DatabaseConfig {
     @Autowired
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(BoneCPDataSource dataSource) {
 
-        System.out.println("dataSource==="+dataSource);
+        System.out.println("dataSource===" + dataSource);
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setGenerateDdl(true);
         vendorAdapter.setShowSql(true);
@@ -85,7 +85,7 @@ public class DatabaseConfig {
         return factory;
     }
 
-    @Bean(name = "jpaTransactionManager")
+    @Bean(name = "transactionManager")
     @Autowired
     public JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
         JpaTransactionManager txManager = new JpaTransactionManager();

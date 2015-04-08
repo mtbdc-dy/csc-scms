@@ -16,13 +16,13 @@ public class Student {
     @JoinColumn(name = "basicInfo", unique = true, nullable = false)
     private BasicInfo basicInfo;
     @OneToOne
-    @JoinColumn(name = "profilesHistory", unique = true, nullable = false)
+    @JoinColumn(name = "profilesHistory")
     private ProfilesHistory profilesHistory;
     @OneToOne
     @JoinColumn(name = "registrationInfo", unique = true, nullable = false)
     private RegistrationInfo registrationInfo;
     @OneToOne
-    @JoinColumn(name = "discuss", unique = true, nullable = false)
+    @JoinColumn(name = "discuss", unique = true)
     private Discuss discuss;
     @OneToOne
     @JoinColumn(name = "schoolRoll", unique = true, nullable = false)

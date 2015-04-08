@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 /**
  * Created by WangZishi on 3/25/2015.
  */
-@Repository
+@Repository(value = "schoolRollRepository")
 public interface SchoolRollRepository extends CrudRepository<SchoolRoll, Long> {
 }
