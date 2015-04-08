@@ -9,5 +9,4 @@ import org.springframework.stereotype.Repository;
  */
 @Repository(value = "studentRepository")
 public interface StudentRepository extends CrudRepository<Student, String> {
-    //public List<Student> findBycscIdwhereOrderByAccident_Handle_statusDesc();
 }

@@ -11,6 +11,8 @@ import java.util.Date;
 @Table(name = "SCMS_SCHOOLROLL")
 public class SchoolRoll {
     @Id
+    @SequenceGenerator(name = "SCMS_SCHOOLROLL_ID", sequenceName = "SCHOOLROLL_SEQUENCE", allocationSize = 1)
+    @GeneratedValue(generator = "SCMS_SCHOOLROLL_ID", strategy = GenerationType.SEQUENCE)
     private Long id;
     private String certificate_type;//证件种类
     private String register_state;//报到状态 0未处理 1报到 2放弃来华
@@ -53,7 +55,7 @@ public class SchoolRoll {
     public void setId(Long id) {
         this.id = id;
     }
-    
+
     public String getCertificate_type() {
         return certificate_type;
     }

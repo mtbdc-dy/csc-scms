@@ -10,6 +10,8 @@ import javax.persistence.*;
 @Table(name = "SCMS_REGISTRATION_INFO")
 public class RegistrationInfo {
     @Id
+    @SequenceGenerator(name = "SCMS_REGISTRATION_INFO_ID", sequenceName = "REGISTRATION_INFO_SEQUENCE",allocationSize = 1)
+    @GeneratedValue(generator = "SCMS_REGISTRATION_INFO_ID", strategy = GenerationType.SEQUENCE)
     private Long id;
     private String stu_type;//学生类别
     private String teach_language;//授课语言

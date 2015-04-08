@@ -10,9 +10,10 @@ import javax.persistence.*;
 @Table(name = "SCMS_PROFILES_HISTORY")
 public class ProfilesHistory {
     @Id
+    @SequenceGenerator(name = "SCMS_PROFILES_HISTORY_ID", sequenceName = "PROFILES_HISTORYSEQUENCE",allocationSize = 1)
+    @GeneratedValue(generator = "SCMS_PROFILES_HISTORY_ID", strategy = GenerationType.SEQUENCE)
     @Column(nullable = false, unique = true, length = 19)
     private Long id;
-    @Column
     private String work;//单位
     private String occupation;//职业
     private String native_language;//母语

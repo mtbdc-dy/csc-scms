@@ -10,8 +10,9 @@ import javax.persistence.*;
 @Table(name = "SCMS_BASIC_INFO")
 public class BasicInfo {
     @Id
+    @SequenceGenerator(name = "SCMS_BASIC_INFO_ID", sequenceName = "BASIC_INFO_SEQUENCE",allocationSize = 1)
+    @GeneratedValue(generator = "SCMS_BASIC_INFO_ID", strategy = GenerationType.SEQUENCE)
     private Long id;
-    @Column(columnDefinition = "varchar2(200)")
     private Integer annual; //年度
     private String passport_name;//护照姓名
     /**

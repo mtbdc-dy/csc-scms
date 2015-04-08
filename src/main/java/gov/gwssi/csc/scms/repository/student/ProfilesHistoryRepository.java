@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository(value = "profilesHistoryRepository")
 public interface ProfilesHistoryRepository extends CrudRepository<ProfilesHistory, Long> {
+
 }

@@ -1,7 +1,6 @@
 package gov.gwssi.csc.scms.repository.student;
 
 import gov.gwssi.csc.scms.domain.student.Discuss;
-import gov.gwssi.csc.scms.domain.student.Student;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

@@ -27,10 +27,10 @@ public class Student {
     @OneToOne
     @JoinColumn(name = "schoolRoll", unique = true, nullable = false)
     private SchoolRoll schoolRoll;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "student")
     private List<RelatedAddress> relatedAddress = new ArrayList<RelatedAddress>();
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "student")
     private List<Accident> accidents = new ArrayList<Accident>();
 

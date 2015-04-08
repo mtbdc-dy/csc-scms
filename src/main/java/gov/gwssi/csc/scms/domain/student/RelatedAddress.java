@@ -10,6 +10,8 @@ import javax.persistence.*;
 @Table(name = "SCMS_RELATED_ADDRESS")
 public class RelatedAddress {
     @Id
+    @SequenceGenerator(name = "SCMS_RELATED_ADDRESS_ID", sequenceName = "RRELATED_ADDRESS_SEQUENCE",allocationSize = 1)
+    @GeneratedValue(generator = "SCMS_RELATED_ADDRESS_ID", strategy = GenerationType.SEQUENCE)
     private Long id;
     private String type;//类别
     private String nature;//性质

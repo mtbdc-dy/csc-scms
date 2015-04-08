@@ -1,7 +1,6 @@
 package gov.gwssi.csc.scms.service.student;
 
 import gov.gwssi.csc.scms.domain.student.RelatedAddress;
-import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.repository.student.RelatedAddressRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +28,6 @@ public class RelatedAddressService extends BaseService {
     public Iterable saveRelatedAddress(List<RelatedAddress> relatedAddresses) {
         Iterable iterable = relatedAddresses;
         return relatedAddressRepository.save(iterable);
-    }
-
-    public List<RelatedAddress> getRelatedAddressByStudent(Student student) {
-        return relatedAddressRepository.findByStudent(student.getCsc_id());
     }
 
 }

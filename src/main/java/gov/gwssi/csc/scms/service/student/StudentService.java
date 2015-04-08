@@ -88,18 +88,7 @@ public class StudentService extends BaseService {
     }
 
     public Student updateStudent(Student student) {
-        return studentRepository.save(student);
-    }
-
-    private Student constractStudent(Student student) {
-        //student.setAccident(accidentService.getAccidentsByStudent(student));
-        //student.setRelatedAddress(relatedAddressService.getRelatedAddressByStudent(student));
-        student.setRegistrationInfo(registrationInfoService.getRegistrationInfoByStudent(student));
-        student.setBasicInfo(basicInfoService.getBasicInfoByStudent(student));
-        student.setDiscuss(discussService.getDiscussByStudent(student));
-        student.setSchoolRoll(schoolRollService.getSchoolRollByStudent(student));
-        student.setProfilesHistory(profilesHistoryService.getProfilesHistoryByStudent(student));
-        return student;
+        return saveStudent(student);
     }
 
     @Transactional
@@ -111,7 +100,6 @@ public class StudentService extends BaseService {
                 discussService.saveDiscuss(student.getDiscuss());
             if (student.getRegistrationInfo() != null)
                 registrationInfoService.saveRegistrationInfo(student.getRegistrationInfo());
-
             if (student.getSchoolRoll() != null)
                 schoolRollService.saveSchoolRoll(student.getSchoolRoll());
             if (student.getProfilesHistory() != null)
@@ -120,12 +108,10 @@ public class StudentService extends BaseService {
                 relatedAddressService.saveRelatedAddress(student.getRelatedAddress());
             if (!student.getAccidents().isEmpty())
                 accidentService.saveAccidents(student.getAccidents());
-            studentRepository.save(student);
-            return student;
+            return studentRepository.save(student);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
-
 }

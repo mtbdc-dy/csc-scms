@@ -5,6 +5,7 @@ import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.repository.student.AccidentRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,9 +17,10 @@ import java.util.List;
 public class AccidentService extends BaseService {
 
     @Autowired
+    @Qualifier("accidentRepository")
     private AccidentRepository accidentRepository;
 
-    public Accident getAccidentById(String id) {
+    public Accident getAccidentById(Long id) {
         return accidentRepository.findOne(id);
     }
 
@@ -32,7 +34,8 @@ public class AccidentService extends BaseService {
     }
 
     public List<Accident> getAccidentsByStudent(Student student) {
-        return accidentRepository.findByStudent(student.getCsc_id());
+        // return accidentRepository.findByStudent(student.getCsc_id());
+        return null;
     }
 
 }

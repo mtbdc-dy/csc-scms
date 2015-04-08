@@ -11,6 +11,8 @@ import java.util.Date;
 @Table(name = "SCMS_ACCIDENT")
 public class Accident {
     @Id
+    @SequenceGenerator(name = "SCMS_ACCIDENT_ID",sequenceName = "ACCIDENT_SEQUENCE",allocationSize = 1)
+    @GeneratedValue(generator = "SCMS_ACCIDENT_ID",strategy = GenerationType.SEQUENCE)
     private String id;
     private String responsibility_type;//责任类别
     private String type;//类别

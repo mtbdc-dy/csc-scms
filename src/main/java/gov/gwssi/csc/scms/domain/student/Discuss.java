@@ -11,6 +11,8 @@ import java.util.Date;
 @Table(name = "SCMS_DISCUSS")
 public class Discuss {
     @Id
+    @SequenceGenerator(name = "SCMS_DISCUSS_ID", sequenceName = "DISCUSS_SEQUENCE",allocationSize = 1)
+    @GeneratedValue(generator = "SCMS_DISCUSS_ID", strategy = GenerationType.SEQUENCE)
     private Long id;
     private String appropriations;//经费办法
     private String stu_type;//学生类别
