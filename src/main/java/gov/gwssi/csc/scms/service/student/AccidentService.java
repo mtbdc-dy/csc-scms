@@ -22,10 +22,6 @@ public class AccidentService extends BaseService {
         return accidentRepository.findOne(id);
     }
 
-    public List<Accident> getAccidentsByStudent(Student student) {
-        return accidentRepository.findByStudent(student);
-    }
-
     public Accident saveAccident(Accident accident) {
         return accidentRepository.save(accident);
     }
@@ -33,6 +29,10 @@ public class AccidentService extends BaseService {
     public Iterable saveAccidents(List<Accident> accidents) {
         Iterable iterable = accidents;
         return accidentRepository.save(iterable);
+    }
+
+    public List<Accident> getAccidentsByStudent(Student student) {
+        return accidentRepository.findByStudent(student.getCsc_id());
     }
 
 }

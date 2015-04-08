@@ -11,9 +11,6 @@ import javax.persistence.*;
 public class RelatedAddress {
     @Id
     private Long id;
-    @ManyToOne(targetEntity = Student.class)
-    @JoinColumn(name = "student", referencedColumnName = "csc_id", nullable = false)
-    private Student student;
     private String type;//类别
     private String nature;//性质
     private String address_or_name;//详细地址/紧急联系人姓名
@@ -21,14 +18,6 @@ public class RelatedAddress {
     private String fax;//传真
     private String email;//邮箱
     private String remark;//备注
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
-    }
 
     public Long getId() {
         return id;

@@ -27,9 +27,11 @@ public class Student {
     @OneToOne
     @JoinColumn(name = "schoolRoll", unique = true, nullable = false)
     private SchoolRoll schoolRoll;
-    @OneToMany(mappedBy = "student")
+    @OneToMany
+    @JoinColumn(name = "student")
     private List<RelatedAddress> relatedAddress = new ArrayList<RelatedAddress>();
-    @OneToMany(mappedBy = "student")
+    @OneToMany
+    @JoinColumn(name = "student")
     private List<Accident> accidents = new ArrayList<Accident>();
 
     public String getCsc_id() {
@@ -80,12 +82,12 @@ public class Student {
         this.relatedAddress = relatedAddress;
     }
 
-    public List<Accident> getAccident() {
+    public List<Accident> getAccidents() {
         return accidents;
     }
 
-    public void setAccident(List<Accident> accident) {
-        this.accidents = accident;
+    public void setAccidents(List<Accident> accidents) {
+        this.accidents = accidents;
     }
 
     public ProfilesHistory getProfilesHistory() {

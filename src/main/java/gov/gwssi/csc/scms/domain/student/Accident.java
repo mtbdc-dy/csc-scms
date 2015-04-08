@@ -12,10 +12,6 @@ import java.util.Date;
 public class Accident {
     @Id
     private String id;
-    @ManyToOne(targetEntity = Student.class)
-    @JoinColumn(name = "student", referencedColumnName = "csc_id")
-    private Student student;
-    @Column
     private String responsibility_type;//责任类别
     private String type;//类别
     private String reason;//原因
@@ -31,14 +27,6 @@ public class Accident {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
     }
 
     public String getResponsibility_type() {

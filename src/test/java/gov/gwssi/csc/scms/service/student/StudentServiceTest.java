@@ -84,10 +84,12 @@ public class StudentServiceTest extends UnitTestBase {
         ra1.setId(1000001L);
         ra1.setType("Address");
         ra1.setAddress_or_name("北京市海淀区");
+        //ra1.setStudent(stu);
         ra2.setId(1000002L);
         ra2.setType("person");
         ra2.setAddress_or_name("张三 18800000000");
         ra2.setNature("personInAccedent");
+        //ra2.setStudent(stu);
         relatedAddress.add(ra1);
         relatedAddress.add(ra2);
         stu.setRelatedAddress(relatedAddress);
@@ -97,7 +99,6 @@ public class StudentServiceTest extends UnitTestBase {
         ph.setNative_language("英语");
         stu.setProfilesHistory(ph);
 
-        stu.setAccident(null);
         return stu;
     }
 }

@@ -9,8 +9,8 @@ import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Transient;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -92,8 +92,8 @@ public class StudentService extends BaseService {
     }
 
     private Student constractStudent(Student student) {
-        student.setAccident(accidentService.getAccidentsByStudent(student));
-        student.setRelatedAddress(relatedAddressService.getRelatedAddressByStudent(student));
+        //student.setAccident(accidentService.getAccidentsByStudent(student));
+        //student.setRelatedAddress(relatedAddressService.getRelatedAddressByStudent(student));
         student.setRegistrationInfo(registrationInfoService.getRegistrationInfoByStudent(student));
         student.setBasicInfo(basicInfoService.getBasicInfoByStudent(student));
         student.setDiscuss(discussService.getDiscussByStudent(student));
@@ -102,23 +102,30 @@ public class StudentService extends BaseService {
         return student;
     }
 
-    @Transient
+    @Transactional
     public Student saveStudent(Student student) {
-        if (student.getBasicInfo() != null)
-            basicInfoService.saveBasicInfo(student.getBasicInfo());
-        if (student.getDiscuss() != null)
-            discussService.saveDiscuss(student.getDiscuss());
-        if (student.getRegistrationInfo() != null)
-            registrationInfoService.saveRegistrationInfo(student.getRegistrationInfo());
-        if (!student.getRelatedAddress().isEmpty())
-            relatedAddressService.saveRelatedAddress(student.getRelatedAddress());
-        if (student.getSchoolRoll() != null)
-            schoolRollService.saveSchoolRoll(student.getSchoolRoll());
-        if (!student.getRelatedAddress().isEmpty())
-            accidentService.saveAccidents(student.getAccident());
-        if (student.getProfilesHistory() != null)
-            profilesHistoryService.saveProfilesHistory(student.getProfilesHistory());
-        return studentRepository.save(student);
+        try {
+            if (student.getBasicInfo() != null)
+                basicInfoService.saveBasicInfo(student.getBasicInfo());
+            if (student.getDiscuss() != null)
+                discussService.saveDiscuss(student.getDiscuss());
+            if (student.getRegistrationInfo() != null)
+                registrationInfoService.saveRegistrationInfo(student.getRegistrationInfo());
+
+            if (student.getSchoolRoll() != null)
+                schoolRollService.saveSchoolRoll(student.getSchoolRoll());
+            if (student.getProfilesHistory() != null)
+                profilesHistoryService.saveProfilesHistory(student.getProfilesHistory());
+            if (!student.getRelatedAddress().isEmpty())
+                relatedAddressService.saveRelatedAddress(student.getRelatedAddress());
+            if (!student.getAccidents().isEmpty())
+                accidentService.saveAccidents(student.getAccidents());
+            studentRepository.save(student);
+            return student;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }

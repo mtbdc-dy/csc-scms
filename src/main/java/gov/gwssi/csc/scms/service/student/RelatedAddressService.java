@@ -22,10 +22,6 @@ public class RelatedAddressService extends BaseService {
         return relatedAddressRepository.findOne(id);
     }
 
-    public List<RelatedAddress> getRelatedAddressByStudent(Student student) {
-        return relatedAddressRepository.findByStudent(student);
-    }
-
     public RelatedAddress saveRelatedAddress(RelatedAddress relatedAddress) {
         return relatedAddressRepository.save(relatedAddress);
     }
@@ -33,6 +29,10 @@ public class RelatedAddressService extends BaseService {
     public Iterable saveRelatedAddress(List<RelatedAddress> relatedAddresses) {
         Iterable iterable = relatedAddresses;
         return relatedAddressRepository.save(iterable);
+    }
+
+    public List<RelatedAddress> getRelatedAddressByStudent(Student student) {
+        return relatedAddressRepository.findByStudent(student.getCsc_id());
     }
 
 }
