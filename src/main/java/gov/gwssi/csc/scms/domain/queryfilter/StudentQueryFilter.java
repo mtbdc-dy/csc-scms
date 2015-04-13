@@ -28,7 +28,7 @@ public class StudentQueryFilter implements QueryFilter {
         StringBuilder sb = new StringBuilder();
 
         for (FilterCell fc : conditions) {
-            if (StringUtils.isEmpty(fc.getValue()))
+            if (isNull(fc.getValue()))
                 continue;
             String str[] = fc.getValue().split(",");
 
@@ -55,5 +55,9 @@ public class StudentQueryFilter implements QueryFilter {
         if (sb.length() == 0)
             return "";
         return sb.toString();
+    }
+
+    private boolean isNull(String str) {
+        return ("null".equalsIgnoreCase(str) || StringUtils.isEmpty(str));
     }
 }

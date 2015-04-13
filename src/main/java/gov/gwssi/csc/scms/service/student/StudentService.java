@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.service.student;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.gwssi.csc.scms.domain.queryfilter.FilterObject;
 import gov.gwssi.csc.scms.domain.queryfilter.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.queryfilter.StudentQueryFilter;
 import gov.gwssi.csc.scms.domain.student.Student;
@@ -57,15 +58,18 @@ public class StudentService extends BaseService {
         return studentList;
     }
 
-    public List<Student> getStudentsByQueryFilter(String body) {
+    public List<Student> getStudentsByQueryFilter(FilterObject filterObject) {
         List<Student> studentList;
-        String sql = getSqlByBody(body);
+        String sql = getSqlByBody(filterObject);
         if (sql == null) return null;
         studentList = super.getBaseDao().queryListBySql(sql);
         return studentList;
     }
 
-    private String getSqlByBody(String body) {
+    private String getSqlByBody(FilterObject filterObject) {
+        if (filterObject == null)
+            return null;
+
         StringBuilder sb = new StringBuilder();
         String tempSql = "select student.* from scms_student student " +
                 "left join scms_basic_info basicinfo on student/.basicinfo = basicinfo.student " +
@@ -77,13 +81,8 @@ public class StudentService extends BaseService {
                 "where 1 = 1 ";
         sb.append(tempSql);
 
-        StudentFilterObject sto = null;
-        try {
-            sto = new ObjectMapper().readValue(body, StudentFilterObject.class);
-            sb.append(new StudentQueryFilter(sto).getQueryFilter());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        sb.append(new StudentQueryFilter((StudentFilterObject) filterObject).getQueryFilter());
+
         return sb.toString();
     }
 
