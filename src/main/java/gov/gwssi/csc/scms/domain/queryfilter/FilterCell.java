@@ -2,6 +2,7 @@ package gov.gwssi.csc.scms.domain.queryfilter;
 
 /**
  * Created by Murray on 2015/4/2.
+ * 查询条件的最小单元，包含该查询条件的基本信息
  */
 public class FilterCell {
 
@@ -13,7 +14,7 @@ public class FilterCell {
     public FilterCell(String tableName, String columnName, String type, String value) {
         this.tableName = tableName;
         this.columnName = columnName;
-        Type = type;
+        this.Type = type;
         this.value = value;
     }
 
