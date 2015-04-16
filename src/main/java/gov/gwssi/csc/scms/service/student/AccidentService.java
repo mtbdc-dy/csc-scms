@@ -29,8 +29,7 @@ public class AccidentService extends BaseService {
     }
 
     public Iterable saveAccidents(List<Accident> accidents) {
-        Iterable iterable = accidents;
-        return accidentRepository.save(iterable);
+        return accidentRepository.save(accidents);
     }
 
     public List<Accident> getAccidentsByStudent(Student student) {

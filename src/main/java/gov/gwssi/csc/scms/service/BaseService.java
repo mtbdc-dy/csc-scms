@@ -16,6 +16,7 @@ public class BaseService {
 
     @Autowired
     private ApplicationContext context;
+
     @Autowired
     protected BaseDAO baseDAO;
 
@@ -23,10 +24,9 @@ public class BaseService {
         return baseDAO;
     }
 
-    @SuppressWarnings("unchecked")
-    protected <T extends Object> T getBean(String beanId) {
+    protected <T extends Object> T getBean(String beanId, Class<T> clazz) {
         try {
-            return (T) context.getBean(beanId);
+            return context.getBean(beanId, clazz);
         } catch (BeansException e) {
             e.printStackTrace();
             return null;

@@ -39,10 +39,20 @@ public class StudentService extends BaseService {
     private AccidentService accidentService;
     @Autowired
     private ProfilesHistoryService profilesHistoryService;
+    @Autowired
+    private SchoolFellowService schoolFellowService;
+    @Autowired
+    private GradeService gradeService;
+    @Autowired
+    private GradeAttachmentService gradeAttachmentService;
 
 
-    public Student getStudentByID(String id) {
+    public Student getStudentById(Long id) {
         return studentRepository.findOne(id);
+    }
+
+    public Student getStudentByCscId(String scsId) {
+        return studentRepository.findByCscId(scsId);
     }
 
     public List getStuInfoList() {
@@ -107,6 +117,12 @@ public class StudentService extends BaseService {
                 relatedAddressService.saveRelatedAddress(student.getRelatedAddress());
             if (!student.getAccidents().isEmpty())
                 accidentService.saveAccidents(student.getAccidents());
+            if (!student.getGrades().isEmpty())
+                gradeService.saveGrade(student.getGrades());
+            if (!student.getGradeAttachment().isEmpty())
+                gradeAttachmentService.saveGradeAttachment(student.getGradeAttachment());
+            if (student.getSchoolFellow() != null)
+                schoolFellowService.saveSchoolFellow(student.getSchoolFellow());
             return studentRepository.save(student);
         } catch (Exception e) {
             e.printStackTrace();

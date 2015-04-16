@@ -4,22 +4,48 @@ import javax.persistence.*;
 
 /**
  * 相关地址
- * Created by Wang Rui on 2015/3/30.
  */
 @Entity
 @Table(name = "SCMS_RELATED_ADDRESS")
 public class RelatedAddress {
     @Id
-    @SequenceGenerator(name = "SCMS_RELATED_ADDRESS_ID", sequenceName = "RRELATED_ADDRESS_SEQUENCE",allocationSize = 1)
-    @GeneratedValue(generator = "SCMS_RELATED_ADDRESS_ID", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "RELATED_ADDRESS_ID", sequenceName = "SCMS_RRELATED_ADDRESS_SEQ", allocationSize = 1)
+    @GeneratedValue(generator = "RELATED_ADDRESS_ID", strategy = GenerationType.SEQUENCE)
     private Long id;
-    private String type;//类别
-    private String nature;//性质
-    private String address_or_name;//详细地址/紧急联系人姓名
-    private String phone;//电话
-    private String fax;//传真
-    private String email;//邮箱
-    private String remark;//备注
+    /**
+     * 类别
+     */
+    private String type;
+    /**
+     * 性质
+     */
+    private String nature;
+    /**
+     * 详细地址或紧急联系人
+     */
+    private String addressOrName;
+    /**
+     * 电话
+     */
+    private String phone;
+    /**
+     * 传真
+     */
+    private String fax;
+    /**
+     * 邮箱
+     */
+    private String email;
+    /**
+     * 备注
+     */
+    private String remark;
+    /**
+     * 学生id
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "STUDENTID")
+    private Student student;
 
     public Long getId() {
         return id;
@@ -45,12 +71,12 @@ public class RelatedAddress {
         this.nature = nature;
     }
 
-    public String getAddress_or_name() {
-        return address_or_name;
+    public String getAddressOrName() {
+        return addressOrName;
     }
 
-    public void setAddress_or_name(String address_or_name) {
-        this.address_or_name = address_or_name;
+    public void setAddressOrName(String addressOrName) {
+        this.addressOrName = addressOrName;
     }
 
     public String getPhone() {
@@ -83,5 +109,13 @@ public class RelatedAddress {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
     }
 }

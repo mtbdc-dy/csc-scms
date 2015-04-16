@@ -4,39 +4,67 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
- * Created by Wang Rui on 2015/3/30.
  * 突发事件
  */
 @Entity
 @Table(name = "SCMS_ACCIDENT")
 public class Accident {
     @Id
-    @SequenceGenerator(name = "SCMS_ACCIDENT_ID",sequenceName = "ACCIDENT_SEQUENCE",allocationSize = 1)
-    @GeneratedValue(generator = "SCMS_ACCIDENT_ID",strategy = GenerationType.SEQUENCE)
-    private String id;
-    private String responsibility_type;//责任类别
-    private String type;//类别
-    private String reason;//原因
-    private String happen_time;//发生时间
-    private String happen_place;//发生地点
-    private String handle_status;//处理状态
-    private String summary;//情况摘要
-    private Date update_date;//记录时间
-
-    public String getId() {
+    @SequenceGenerator(name = "ACCIDENT_ID", sequenceName = "SCMS_ACCIDENT_SEQ", allocationSize = 1)
+    @GeneratedValue(generator = "ACCIDENT_ID", strategy = GenerationType.SEQUENCE)
+    private Long id;
+    /**
+     * 责任类别
+     */
+    private String responsibilityType;
+    /**
+     * 类别
+     */
+    private String type;
+    /**
+     * 原因
+     */
+    private String reason;
+    /**
+     * 发生时间
+     */
+    private Date happenTime;
+    /**
+     * 发生地点
+     */
+    private String happenAddress;
+    /**
+     * 处理状态
+     */
+    private String state;
+    /**
+     * 情况摘要
+     */
+    private String summary;
+    /**
+     * 记录时间
+     */
+    private Date updateTime;
+    /**
+     * 学生id
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "STUDENTID")
+    private Student student;
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getResponsibility_type() {
-        return responsibility_type;
+    public String getResponsibilityType() {
+        return responsibilityType;
     }
 
-    public void setResponsibility_type(String responsibility_type) {
-        this.responsibility_type = responsibility_type;
+    public void setResponsibilityType(String responsibilityType) {
+        this.responsibilityType = responsibilityType;
     }
 
     public String getType() {
@@ -55,28 +83,28 @@ public class Accident {
         this.reason = reason;
     }
 
-    public String getHappen_time() {
-        return happen_time;
+    public Date getHappenTime() {
+        return happenTime;
     }
 
-    public void setHappen_time(String happen_time) {
-        this.happen_time = happen_time;
+    public void setHappenTime(Date happenTime) {
+        this.happenTime = happenTime;
     }
 
-    public String getHappen_place() {
-        return happen_place;
+    public String getHappenAddress() {
+        return happenAddress;
     }
 
-    public void setHappen_place(String happen_place) {
-        this.happen_place = happen_place;
+    public void setHappenAddress(String happenAddress) {
+        this.happenAddress = happenAddress;
     }
 
-    public String getHandle_status() {
-        return handle_status;
+    public String getState() {
+        return state;
     }
 
-    public void setHandle_status(String handle_status) {
-        this.handle_status = handle_status;
+    public void setState(String state) {
+        this.state = state;
     }
 
     public String getSummary() {
@@ -87,11 +115,19 @@ public class Accident {
         this.summary = summary;
     }
 
-    public Date getUpdate_date() {
-        return update_date;
+    public Date getUpdateTime() {
+        return updateTime;
     }
 
-    public void setUpdate_date(Date update_date) {
-        this.update_date = update_date;
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
     }
 }

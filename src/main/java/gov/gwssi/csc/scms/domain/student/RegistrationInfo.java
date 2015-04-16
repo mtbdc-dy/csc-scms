@@ -3,27 +3,66 @@ package gov.gwssi.csc.scms.domain.student;
 import javax.persistence.*;
 
 /**
- * 来华前概况、申请信息
- * Created by Wang Rui on 2015/3/30.
+ * 相关地址
  */
+
 @Entity
 @Table(name = "SCMS_REGISTRATION_INFO")
 public class RegistrationInfo {
     @Id
-    @SequenceGenerator(name = "SCMS_REGISTRATION_INFO_ID", sequenceName = "REGISTRATION_INFO_SEQUENCE",allocationSize = 1)
-    @GeneratedValue(generator = "SCMS_REGISTRATION_INFO_ID", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "SCMS_REGISTRATION_ID", sequenceName = "SCMS_REGISTRATION_SEQ", allocationSize = 1)
+    @GeneratedValue(generator = "SCMS_REGISTRATION_ID", strategy = GenerationType.SEQUENCE)
     private Long id;
-    private String stu_type;//学生类别
-    private String teach_language;//授课语言
-    private String disciplines;//学科门类
-    private String subject;//一级学科
-    private String major;//专业
-    private String province_1;//省市1
-    private String province_2;//省市2
-    private String province_3;//省市3
-    private String university_1;//院校1
-    private String university_2;//院校2
-    private String university_3;//院校3
+    /**
+     * 学生类别
+     */
+    private String studentType;
+    /**
+     * 授课语言
+     */
+    private String teachLanguage;
+    /**
+     * 学科门类
+     */
+    private String disciplines;
+    /**
+     * 一级学科
+     */
+    private String subject;
+    /**
+     * 专业
+     */
+    private String major;
+    /**
+     * 省市1
+     */
+    private String province1;
+    /**
+     * 省市2
+     */
+    private String province2;
+    /**
+     * 省市3
+     */
+    private String province3;
+    /**
+     * 院校1
+     */
+    private String university1;
+    /**
+     * 院校2
+     */
+    private String university2;
+    /**
+     * 院校3
+     */
+    private String university3;
+    /**
+     * 学生
+     */
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "STUDENTID")
+    private Student student;
 
     public Long getId() {
         return id;
@@ -33,20 +72,20 @@ public class RegistrationInfo {
         this.id = id;
     }
 
-    public String getStu_type() {
-        return stu_type;
+    public String getStudentType() {
+        return studentType;
     }
 
-    public void setStu_type(String stu_type) {
-        this.stu_type = stu_type;
+    public void setStudentType(String studentType) {
+        this.studentType = studentType;
     }
 
-    public String getTeach_language() {
-        return teach_language;
+    public String getTeachLanguage() {
+        return teachLanguage;
     }
 
-    public void setTeach_language(String teach_language) {
-        this.teach_language = teach_language;
+    public void setTeachLanguage(String teachLanguage) {
+        this.teachLanguage = teachLanguage;
     }
 
     public String getDisciplines() {
@@ -73,51 +112,59 @@ public class RegistrationInfo {
         this.major = major;
     }
 
-    public String getProvince_1() {
-        return province_1;
+    public String getProvince1() {
+        return province1;
     }
 
-    public void setProvince_1(String province_1) {
-        this.province_1 = province_1;
+    public void setProvince1(String province1) {
+        this.province1 = province1;
     }
 
-    public String getProvince_2() {
-        return province_2;
+    public String getProvince2() {
+        return province2;
     }
 
-    public void setProvince_2(String province_2) {
-        this.province_2 = province_2;
+    public void setProvince2(String province2) {
+        this.province2 = province2;
     }
 
-    public String getProvince_3() {
-        return province_3;
+    public String getProvince3() {
+        return province3;
     }
 
-    public void setProvince_3(String province_3) {
-        this.province_3 = province_3;
+    public void setProvince3(String province3) {
+        this.province3 = province3;
     }
 
-    public String getUniversity_1() {
-        return university_1;
+    public String getUniversity1() {
+        return university1;
     }
 
-    public void setUniversity_1(String university_1) {
-        this.university_1 = university_1;
+    public void setUniversity1(String university1) {
+        this.university1 = university1;
     }
 
-    public String getUniversity_2() {
-        return university_2;
+    public String getUniversity2() {
+        return university2;
     }
 
-    public void setUniversity_2(String university_2) {
-        this.university_2 = university_2;
+    public void setUniversity2(String university2) {
+        this.university2 = university2;
     }
 
-    public String getUniversity_3() {
-        return university_3;
+    public String getUniversity3() {
+        return university3;
     }
 
-    public void setUniversity_3(String university_3) {
-        this.university_3 = university_3;
+    public void setUniversity3(String university3) {
+        this.university3 = university3;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
     }
 }

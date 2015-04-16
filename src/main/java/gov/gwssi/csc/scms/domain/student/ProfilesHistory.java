@@ -4,24 +4,53 @@ import javax.persistence.*;
 
 /**
  * 来华前概况
- * Created by Wang Rui on 2015/3/30.
  */
 @Entity
 @Table(name = "SCMS_PROFILES_HISTORY")
 public class ProfilesHistory {
     @Id
-    @SequenceGenerator(name = "SCMS_PROFILES_HISTORY_ID", sequenceName = "PROFILES_HISTORYSEQUENCE",allocationSize = 1)
+    @SequenceGenerator(name = "SCMS_PROFILES_HISTORY_ID", sequenceName = "SCMS_PROFILES_HISTORY_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "SCMS_PROFILES_HISTORY_ID", strategy = GenerationType.SEQUENCE)
     @Column(nullable = false, unique = true, length = 19)
     private Long id;
-    private String work;//单位
-    private String occupation;//职业
-    private String native_language;//母语
-    private Boolean physical_examination;//体检
-    private String chinese_level;//汉语水平
-    private String english_level;//英语水平
-    private String educated;//学历
-    private Boolean english_teach;//可否英语授课
+    /**
+     * 工作单位
+     */
+    private String workUnit;
+    /**
+     * 职业
+     */
+    private String occupation;
+    /**
+     * 母语
+     */
+    private String nativeLanguage;
+    /**
+     * 体检
+     */
+    private Boolean phyExam;
+    /**
+     * 汉语水平
+     */
+    private String chnLevel;
+    /**
+     * 英语水平
+     */
+    private String engLevel;
+    /**
+     * 学历
+     */
+    private String educated;
+    /**
+     * 可否英语授课
+     */
+    private Boolean engTeach;
+    /**
+     * 学生
+     */
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "STUDENTID")
+    private Student student;
 
     public Long getId() {
         return id;
@@ -31,12 +60,12 @@ public class ProfilesHistory {
         this.id = id;
     }
 
-    public String getWork() {
-        return work;
+    public String getWorkUnit() {
+        return workUnit;
     }
 
-    public void setWork(String work) {
-        this.work = work;
+    public void setWorkUnit(String workUnit) {
+        this.workUnit = workUnit;
     }
 
     public String getOccupation() {
@@ -47,36 +76,36 @@ public class ProfilesHistory {
         this.occupation = occupation;
     }
 
-    public String getNative_language() {
-        return native_language;
+    public String getNativeLanguage() {
+        return nativeLanguage;
     }
 
-    public void setNative_language(String native_language) {
-        this.native_language = native_language;
+    public void setNativeLanguage(String nativeLanguage) {
+        this.nativeLanguage = nativeLanguage;
     }
 
-    public Boolean isPhysical_examination() {
-        return physical_examination;
+    public Boolean isPhyExam() {
+        return phyExam;
     }
 
-    public void setPhysical_examination(Boolean physical_examination) {
-        this.physical_examination = physical_examination;
+    public void setPhyExam(Boolean phyExam) {
+        this.phyExam = phyExam;
     }
 
-    public String getChinese_level() {
-        return chinese_level;
+    public String getChnLevel() {
+        return chnLevel;
     }
 
-    public void setChinese_level(String chinese_level) {
-        this.chinese_level = chinese_level;
+    public void setChnLevel(String chnLevel) {
+        this.chnLevel = chnLevel;
     }
 
-    public String getEnglish_level() {
-        return english_level;
+    public String getEngLevel() {
+        return engLevel;
     }
 
-    public void setEnglish_level(String english_level) {
-        this.english_level = english_level;
+    public void setEngLevel(String engLevel) {
+        this.engLevel = engLevel;
     }
 
     public String getEducated() {
@@ -87,11 +116,19 @@ public class ProfilesHistory {
         this.educated = educated;
     }
 
-    public Boolean isEnglish_teach() {
-        return english_teach;
+    public Boolean isEngTeach() {
+        return engTeach;
     }
 
-    public void setEnglish_teach(Boolean english_teach) {
-        this.english_teach = english_teach;
+    public void setEngTeach(Boolean engTeach) {
+        this.engTeach = engTeach;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
     }
 }

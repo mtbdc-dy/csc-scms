@@ -4,42 +4,92 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Wang Rui on 2015/3/30.
- */
 @Entity
 @Table(name = "SCMS_STUDENT")
 public class Student {
+    /**
+     * STUDENT主键ID
+     */
     @Id
-    private String csc_id;
+    @SequenceGenerator(name = "SCMS_STUDENT_ID", sequenceName = "SCMS_STUDENT_SEQ", allocationSize = 1)
+    @GeneratedValue(generator = "SCMS_STUDENT_ID", strategy = GenerationType.SEQUENCE)
+    private Long id;
+    /**
+     * CSCID
+     */
+    @Column(name = "CSCID", length = 12)
+    private String cscId;
+    /**
+     * 基本信息
+     */
     @OneToOne
-    @JoinColumn(name = "basicInfo", unique = true, nullable = false)
+    @JoinColumn(name = "BASICINFO", unique = true, nullable = false)
     private BasicInfo basicInfo;
+    /**
+     * 来华前概况
+     */
     @OneToOne
-    @JoinColumn(name = "profilesHistory")
+    @JoinColumn(name = "PROFILESHISTORY")
     private ProfilesHistory profilesHistory;
+    /**
+     * 注册信息
+     */
     @OneToOne
-    @JoinColumn(name = "registrationInfo", unique = true, nullable = false)
+    @JoinColumn(name = "REGISTRATIONINFO", unique = true)
     private RegistrationInfo registrationInfo;
+    /**
+     * 商议信息
+     */
     @OneToOne
-    @JoinColumn(name = "discuss", unique = true)
+    @JoinColumn(name = "DISCUSS", unique = true)
     private Discuss discuss;
+    /**
+     * 学籍信息
+     */
     @OneToOne
-    @JoinColumn(name = "schoolRoll", unique = true, nullable = false)
+    @JoinColumn(name = "SCHOOLROLL", unique = true)
     private SchoolRoll schoolRoll;
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "student")
-    private List<RelatedAddress> relatedAddress = new ArrayList<RelatedAddress>();
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "student")
-    private List<Accident> accidents = new ArrayList<Accident>();
+    /**
+     * 相关地址
+     */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
+    private List<RelatedAddress> relatedAddress = new ArrayList<>();
+    /**
+     * 突发事件
+     */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
+    private List<Accident> accidents = new ArrayList<>();
+    /**
+     * 校友信息
+     */
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SCHOOLFELLOW")
+    private SchoolFellow schoolFellow;
+    /**
+     * 成绩信息
+     */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
+    private List<Grade> Grades = new ArrayList<>();
+    /**
+     * 成绩附件
+     */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
+    private List<GradeAttachment> gradeAttachment;
 
-    public String getCsc_id() {
-        return csc_id;
+    public Long getId() {
+        return id;
     }
 
-    public void setCsc_id(String csc_id) {
-        this.csc_id = csc_id;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCscId() {
+        return cscId;
+    }
+
+    public void setCscId(String cscId) {
+        this.cscId = cscId;
     }
 
     public BasicInfo getBasicInfo() {
@@ -48,6 +98,16 @@ public class Student {
 
     public void setBasicInfo(BasicInfo basicInfo) {
         this.basicInfo = basicInfo;
+        basicInfo.setStudent(this);
+    }
+
+    public ProfilesHistory getProfilesHistory() {
+        return profilesHistory;
+    }
+
+    public void setProfilesHistory(ProfilesHistory profilesHistory) {
+        this.profilesHistory = profilesHistory;
+        profilesHistory.setStudent(this);
     }
 
     public RegistrationInfo getRegistrationInfo() {
@@ -64,6 +124,7 @@ public class Student {
 
     public void setDiscuss(Discuss discuss) {
         this.discuss = discuss;
+        discuss.setStudent(this);
     }
 
     public SchoolRoll getSchoolRoll() {
@@ -72,6 +133,7 @@ public class Student {
 
     public void setSchoolRoll(SchoolRoll schoolRoll) {
         this.schoolRoll = schoolRoll;
+        schoolRoll.setStudent(this);
     }
 
     public List<RelatedAddress> getRelatedAddress() {
@@ -90,11 +152,28 @@ public class Student {
         this.accidents = accidents;
     }
 
-    public ProfilesHistory getProfilesHistory() {
-        return profilesHistory;
+    public SchoolFellow getSchoolFellow() {
+        return schoolFellow;
     }
 
-    public void setProfilesHistory(ProfilesHistory profilesHistory) {
-        this.profilesHistory = profilesHistory;
+    public void setSchoolFellow(SchoolFellow schoolFellow) {
+        this.schoolFellow = schoolFellow;
+        schoolFellow.setStudent(this);
+    }
+
+    public List<Grade> getGrades() {
+        return Grades;
+    }
+
+    public void setGrades(List<Grade> grades) {
+        Grades = grades;
+    }
+
+    public List<GradeAttachment> getGradeAttachment() {
+        return gradeAttachment;
+    }
+
+    public void setGradeAttachment(List<GradeAttachment> gradeAttachment) {
+        this.gradeAttachment = gradeAttachment;
     }
 }

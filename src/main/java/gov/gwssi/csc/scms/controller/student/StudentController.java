@@ -29,7 +29,7 @@ public class StudentController {
     @Transactional
     public Student saveStudent(@PathVariable String id) {
         Student student = new Student();
-        student.setCsc_id(id);
+        student.setCscId(id);
 //        student.setCertificateNumber(id);
 //        student.setName(id);
 //        student.setGender(id);

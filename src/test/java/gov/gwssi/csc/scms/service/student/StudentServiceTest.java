@@ -41,43 +41,38 @@ public class StudentServiceTest extends UnitTestBase {
     }
 
     @Test
-    public void getStudentByIDTest() {
+    public void getStudentByScsIdTest() {
         StudentService studentService = getBean("studentService");
-        Student student = studentService.getStudentByID("csc11000022");
+        Student student = studentService.getStudentByCscId("csc11000001");
         student.getRelatedAddress();
         Assert.assertNotNull(student);
         System.out.println("BasicInfo ID ::" + student.getBasicInfo().getId());
-        System.out.println("BasicInfo ChineseName ::" + student.getBasicInfo().getChinese_name());
-
-        System.out.println("==================");
-        List<RelatedAddress> relatedAddress = student.getRelatedAddress();
-        for (RelatedAddress ra : relatedAddress)
-            System.out.println(ra.getId() + "::" + ra.getAddress_or_name());
+        System.out.println("BasicInfo ChineseName ::" + student.getBasicInfo().getChineseName());
     }
 
     @Test
     public void updateStudentTest() {
         StudentService studentService = getBean("studentService");
-        Student stu = studentService.getStudentByID("csc11000023");
-        stu.getBasicInfo().setChinese_name("小红");
+        Student stu = studentService.getStudentByCscId("csc11000023");
+        stu.getBasicInfo().setChineseName("小红");
         Student stu1 = studentService.updateStudent(stu);
         Assert.assertNotNull(stu1);
     }
 
     private Student getStudentInTest() {
         Student stu = new Student();
-        stu.setCsc_id("csc11000023");
+        stu.setCscId("csc11000001");
 
         BasicInfo bf = new BasicInfo();
-        bf.setChinese_name("小明");
+        bf.setChineseName("小明");
         bf.setAnnual(2014);
-        bf.setContinent_name("亚洲");
-        bf.setCountry_name("棒子国");
+        bf.setContinent("亚洲");
+        bf.setCountry("棒子国");
         stu.setBasicInfo(bf);
 
         RegistrationInfo ri = new RegistrationInfo();
         ri.setSubject("古汉语");
-        ri.setTeach_language("阿拉伯语");
+        ri.setTeachLanguage("阿拉伯语");
         stu.setRegistrationInfo(ri);
 
         Discuss discuss = new Discuss();
@@ -85,27 +80,26 @@ public class StudentServiceTest extends UnitTestBase {
         stu.setDiscuss(discuss);
 
         SchoolRoll schoolroll = new SchoolRoll();
-        schoolroll.setScholarship_review_year(2013L);
-        schoolroll.setAcademic_certificate_NO("NO000001");
+        schoolroll.setScholarshipYear(2013L);
         stu.setSchoolRoll(schoolroll);
+
+        ProfilesHistory ph = new ProfilesHistory();
+        ph.setNativeLanguage("英语");
+        stu.setProfilesHistory(ph);
 
         List<RelatedAddress> relatedAddress = new ArrayList<RelatedAddress>();
         RelatedAddress ra1 = new RelatedAddress();
         RelatedAddress ra2 = new RelatedAddress();
         ra1.setType("Address");
-        ra1.setAddress_or_name("北京市海淀区");
-        //ra1.setStudent(stu);
+        ra1.setAddressOrName("北京市海淀区");
+        ra1.setStudent(stu);
         ra2.setType("person");
-        ra2.setAddress_or_name("张三 18800000000");
+        ra2.setAddressOrName("张三 18800000000");
         ra2.setNature("personInAccedent");
-        //ra2.setStudent(stu);
+        ra2.setStudent(stu);
         relatedAddress.add(ra1);
         relatedAddress.add(ra2);
         stu.setRelatedAddress(relatedAddress);
-
-        ProfilesHistory ph = new ProfilesHistory();
-        ph.setNative_language("英语");
-        stu.setProfilesHistory(ph);
 
         return stu;
     }

@@ -4,31 +4,72 @@ import javax.persistence.*;
 
 /**
  * 基本信息
- * Created by Wang Rui on 2015/3/30.
  */
 @Entity
 @Table(name = "SCMS_BASIC_INFO")
 public class BasicInfo {
     @Id
-    @SequenceGenerator(name = "SCMS_BASIC_INFO_ID", sequenceName = "BASIC_INFO_SEQUENCE",allocationSize = 1)
+    @SequenceGenerator(name = "SCMS_BASIC_INFO_ID", sequenceName = "SCMS_BASIC_INFO_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "SCMS_BASIC_INFO_ID", strategy = GenerationType.SEQUENCE)
     private Long id;
-    private Integer annual; //年度
-    private String passport_name;//护照姓名
+    /**
+     * 年度
+     */
+    private Integer annual;
+    /**
+     * 护照姓名
+     */
+    private String passportName;
     /**
      * 中文姓名
      */
-    private String chinese_name;//中文姓名
-    private String gender;//性别
-    private String birthday;//出生日期
-    private String continent_name;//洲别
-    private String country_name;//国籍
-    private String photo_uri;//照片uri
-    private Boolean planned;//计划内外 1计划内 0计划外
-    private String project_type;//项目类别
-    private String project_name;//项目名称
-    private String dispatch;//派遣途径
-    private String travel_type;//国际旅费
+    private String chineseName;
+    /**
+     * 性别
+     */
+    private String sex;
+    /**
+     * 出生日期
+     */
+    private String birthday;
+    /**
+     * 大洲
+     */
+    private String continent;
+    /**
+     * 国籍
+     */
+    private String country;
+    /**
+     * 图片地址
+     */
+    private String photo;
+    /**
+     * 是否计划内 0否；1是
+     */
+    private Boolean planned;
+    /**
+     * 留学项目类别
+     */
+    private String projectType;
+    /**
+     * 留学项目名称
+     */
+    private String projectName;
+    /**
+     * 派遣途径
+     */
+    private String dispatch;
+    /**
+     * 国际旅费
+     */
+    private String travelType;
+    /**
+     * 学生
+     */
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "STUDENTID")
+    private Student student;
 
     public Long getId() {
         return id;
@@ -46,28 +87,28 @@ public class BasicInfo {
         this.annual = annual;
     }
 
-    public String getPassport_name() {
-        return passport_name;
+    public String getPassportName() {
+        return passportName;
     }
 
-    public void setPassport_name(String passport_name) {
-        this.passport_name = passport_name;
+    public void setPassportName(String passportName) {
+        this.passportName = passportName;
     }
 
-    public String getChinese_name() {
-        return chinese_name;
+    public String getChineseName() {
+        return chineseName;
     }
 
-    public void setChinese_name(String chinese_name) {
-        this.chinese_name = chinese_name;
+    public void setChineseName(String chineseName) {
+        this.chineseName = chineseName;
     }
 
-    public String getGender() {
-        return gender;
+    public String getSex() {
+        return sex;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setSex(String sex) {
+        this.sex = sex;
     }
 
     public String getBirthday() {
@@ -78,28 +119,28 @@ public class BasicInfo {
         this.birthday = birthday;
     }
 
-    public String getContinent_name() {
-        return continent_name;
+    public String getContinent() {
+        return continent;
     }
 
-    public void setContinent_name(String continent_name) {
-        this.continent_name = continent_name;
+    public void setContinent(String continent) {
+        this.continent = continent;
     }
 
-    public String getCountry_name() {
-        return country_name;
+    public String getCountry() {
+        return country;
     }
 
-    public void setCountry_name(String country_name) {
-        this.country_name = country_name;
+    public void setCountry(String country) {
+        this.country = country;
     }
 
-    public String getPhoto_uri() {
-        return photo_uri;
+    public String getPhoto() {
+        return photo;
     }
 
-    public void setPhoto_uri(String photo_uri) {
-        this.photo_uri = photo_uri;
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 
     public Boolean isPlanned() {
@@ -110,20 +151,20 @@ public class BasicInfo {
         this.planned = planned;
     }
 
-    public String getProject_type() {
-        return project_type;
+    public String getProjectType() {
+        return projectType;
     }
 
-    public void setProject_type(String project_type) {
-        this.project_type = project_type;
+    public void setProjectType(String projectType) {
+        this.projectType = projectType;
     }
 
-    public String getProject_name() {
-        return project_name;
+    public String getProjectName() {
+        return projectName;
     }
 
-    public void setProject_name(String project_name) {
-        this.project_name = project_name;
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 
     public String getDispatch() {
@@ -134,11 +175,19 @@ public class BasicInfo {
         this.dispatch = dispatch;
     }
 
-    public String getTravel_type() {
-        return travel_type;
+    public String getTravelType() {
+        return travelType;
     }
 
-    public void setTravel_type(String travel_type) {
-        this.travel_type = travel_type;
+    public void setTravelType(String travelType) {
+        this.travelType = travelType;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
     }
 }
