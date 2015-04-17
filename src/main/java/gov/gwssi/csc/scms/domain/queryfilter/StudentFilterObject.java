@@ -1,5 +1,7 @@
 package gov.gwssi.csc.scms.domain.queryfilter;
 
+import org.springframework.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,121 +14,140 @@ public class StudentFilterObject implements FilterObject {
     /**
      * 主要查询条件
      */
-    private String csc_id = null;//SCS登记号
-    private String passport_name = null;//护照名称
-    private String continent_name = null;//洲别
-    private String country_name = null;//国籍
-    private String project_type = null;//项目类别
-    private String project_name = null;//项目名称
-    private String register_state = null;//报到状态 0未处理 1报到 2放弃来华
+    private String cscId = null;//SCS登记号
+    private String passportName = null;//护照名称
+    private String continent = null;//洲别
+    private String country = null;//国籍
+    private String projectType = null;//项目类别
+    private String projectName = null;//项目名称
+    private String registerState = null;//报到状态 0未处理 1报到 2放弃来华
 
     /**
      * 隐藏查询条件
      */
     private String planned = null;//名额性质（计划内 计划外）
     private String dispatch = null;//派遣途径
-    private String travel_type = null;//国际旅费
+    private String travelType = null;//国际旅费
     private String annual = null; //年度
-    private String stu_type = null;//学生类别
+    private String studentType = null;//学生类别
     private String appropriations = null;//经费办法
-    private String teach_language = null;//授课语言
-    private String school_roll_state = null;//学籍状态
-    private String arrival_time_begin = "2015-01-01";//来华时间起始时间
-    private String arrival_time_end = "2015-09-01";//来华时间终止时间
-    private String leave_time_begin = "2015-01-01";//离华时间起始时间
-    private String leave_time_end = "2015-09-01";//离华时间终止时间
-    private String chn_frm_start_time_begin = "2015-01-01";//汉补开始时间起始时间
-    private String chn_frm_start_time_end = "2015-09-01";//汉补开始时间终止时间
-    private String chn_frm_end_time_begin = "2015-01-01";//汉补结束时间起始时间
-    private String chn_frm_end_time_end = "2015-09-01";//汉补结束时间终止时间
-    private String major_start_time_begin = "2015-01-01";//入专业院校时间起始时间
-    private String major_start_time_end = "2015-09-01";//入专业院校时间终止时间
-    private String plan_leave_time_begin = "2015-01-01";//预计离华时间起始时间
-    private String plan_leave_time_end = "2015-09-01";//预计离华时间终止时间
+    private String teachLanguage = null;//授课语言
+    private String schoolRollState = null;//学籍状态
+    private String arrivalDateBegin = "2015-01-01";//来华时间起始时间
+    private String arrivalDateEnd = "2015-09-01";//来华时间终止时间
+    private String leaveDateBegin = "2015-01-01";//离华时间起始时间
+    private String leaveDateEnd = "2015-09-01";//离华时间终止时间
+    private String cramDateBeginBegin = "2015-01-01";//汉补开始时间起始时间
+    private String cramDateBeginEnd = "2015-09-01";//汉补开始时间终止时间
+    private String cramDateEndBegin = "2015-01-01";//汉补结束时间起始时间
+    private String cramDateEndEnd = "2015-09-01";//汉补结束时间终止时间
+    private String majorStartDateBegin = "2015-01-01";//入专业院校时间起始时间
+    private String majorStartDateEnd = "2015-09-01";//入专业院校时间终止时间
+    private String planLeaveDateBegin = "2015-01-01";//预计离华时间起始时间
+    private String planLeaveDateEnd = "2015-09-01";//预计离华时间终止时间
 
     @Override
-    public List getConditions() {
-        List<FilterCell> conditions = new ArrayList<FilterCell>();
-        conditions.add(new FilterCell("student", "csc_id", "String", getCsc_id()));
-        conditions.add(new FilterCell("basicinfo", "passport_name", "String", getPassport_name()));
-        conditions.add(new FilterCell("basicinfo", "continent_name", "String", getContinent_name()));
-        conditions.add(new FilterCell("basicinfo", "country_name", "String", getCountry_name()));
-        conditions.add(new FilterCell("basicinfo", "project_type", "String", getProject_type()));
-        conditions.add(new FilterCell("basicinfo", "project_name", "String", getProject_name()));
-        conditions.add(new FilterCell("basicinfo", "planned", "String", getPlanned()));
-        conditions.add(new FilterCell("basicinfo", "dispatch", "String", getDispatch()));
-        conditions.add(new FilterCell("basicinfo", "travel_type", "String", getTravel_type()));
-        conditions.add(new FilterCell("basicinfo", "annual", "String", getAnnual()));
+    public List<FilterCell> getConditions() {
+        List<FilterCell> conditions = new ArrayList<>();
+        conditions = addCondition(conditions, "student", "cscid", "String", getCscId());
 
-        conditions.add(new FilterCell("schoolroll", "register_state", "String", getRegister_state()));
-        conditions.add(new FilterCell("schoolroll", "stu_type", "String", getStu_type()));
-        conditions.add(new FilterCell("schoolroll", "appropriations", "String", getAppropriations()));
-        conditions.add(new FilterCell("schoolroll", "teach_language", "String", getTeach_language()));
-        conditions.add(new FilterCell("schoolroll", "school_roll_state", "String", getSchool_roll_state()));
-        conditions.add(new FilterCell("schoolroll", "arrival_time", "Date", getArrival_time_begin() + "," + getArrival_time_end()));
-        conditions.add(new FilterCell("schoolroll", "leave_time", "Date", getLeave_time_begin() + "," + getLeave_time_end()));
-        conditions.add(new FilterCell("schoolroll", "chn_frm_start_time", "Date", getChn_frm_start_time_begin() + "," + getChn_frm_start_time_end()));
-        conditions.add(new FilterCell("schoolroll", "chn_frm_end_time", "Date", getChn_frm_end_time_begin() + "," + getChn_frm_end_time_end()));
-        conditions.add(new FilterCell("schoolroll", "major_start_time", "Date", getMajor_start_time_begin() + "," + getMajor_start_time_end()));
-        conditions.add(new FilterCell("schoolroll", "plan_leave_time", "Date", getPlan_leave_time_begin() + "," + getPlan_leave_time_end()));
+        conditions = addCondition(conditions, "basicinfo", "passportName", "String", getPassportName());
+        conditions = addCondition(conditions, "basicinfo", "continent", "String", getContinent());
+        conditions = addCondition(conditions, "basicinfo", "country", "String", getCountry());
+        conditions = addCondition(conditions, "basicinfo", "projectType", "String", getProjectType());
+        conditions = addCondition(conditions, "basicinfo", "projectName", "String", getProjectName());
+        conditions = addCondition(conditions, "basicinfo", "planted", "String", getPlanned());
+        conditions = addCondition(conditions, "basicinfo", "dispatch", "String", getDispatch());
+        conditions = addCondition(conditions, "basicinfo", "travleType", "String", getTravelType());
+        conditions = addCondition(conditions, "basicinfo", "annual", "String", getAnnual());
+
+        conditions = addCondition(conditions, "schoolroll", "registerState", "String", getRegisterState());
+        conditions = addCondition(conditions, "schoolroll", "studentType", "String", getStudentType());
+        conditions = addCondition(conditions, "schoolroll", "appropriations", "String", getAppropriations());
+        conditions = addCondition(conditions, "schoolroll", "teachlanguage", "String", getTeachLanguage());
+        conditions = addCondition(conditions, "schoolroll", "schoolrollstate", "String", getSchoolRollState());
+        conditions = addCondition(conditions, "schoolroll", "arrivalDate", "date", getArrivalDateBegin(), getArrivalDateEnd());
+        conditions = addCondition(conditions, "schoolroll", "leaveDate", "date", getLeaveDateBegin(), getLeaveDateEnd());
+        conditions = addCondition(conditions, "schoolroll", "cramDateBegin", "date", getCramDateBeginBegin(), getCramDateBeginEnd());
+        conditions = addCondition(conditions, "schoolroll", "cramDateEnd", "date", getCramDateEndBegin(), getCramDateEndEnd());
+        conditions = addCondition(conditions, "schoolroll", "majorDate", "date", getMajorStartDateBegin(), getMajorStartDateEnd());
+        conditions = addCondition(conditions, "schoolroll", "plan_leave_time", "date", getPlanLeaveDateBegin(), getPlanLeaveDateEnd());
 
         return conditions;
     }
 
-    public String getCsc_id() {
-        return csc_id;
+    private List<FilterCell> addCondition(List<FilterCell> conditions, String tableName, String filedName, String type, String value) {
+        if (isNull(value))
+            return conditions;
+        conditions.add(new FilterCell(tableName, filedName, type, value));
+        return conditions;
     }
 
-    public void setCsc_id(String csc_id) {
-        this.csc_id = csc_id;
+    private List<FilterCell> addCondition(List<FilterCell> conditions, String tableName, String filedName, String type, String value1, String value2) {
+        if (isNull(value1) || isNull(value2))
+            return conditions;
+        conditions.add(new FilterCell(tableName, filedName, type, value1 + "," + value2));
+        return conditions;
     }
 
-    public String getPassport_name() {
-        return passport_name;
+    private boolean isNull(String value) {
+        return ("null".equalsIgnoreCase(value) || StringUtils.isEmpty(value));
     }
 
-    public void setPassport_name(String passport_name) {
-        this.passport_name = passport_name;
+    public String getCscId() {
+        return cscId;
     }
 
-    public String getContinent_name() {
-        return continent_name;
+    public void setCscId(String cscId) {
+        this.cscId = cscId;
     }
 
-    public void setContinent_name(String continent_name) {
-        this.continent_name = continent_name;
+    public String getPassportName() {
+        return passportName;
     }
 
-    public String getCountry_name() {
-        return country_name;
+    public void setPassportName(String passportName) {
+        this.passportName = passportName;
     }
 
-    public void setCountry_name(String country_name) {
-        this.country_name = country_name;
+    public String getContinent() {
+        return continent;
     }
 
-    public String getProject_type() {
-        return project_type;
+    public void setContinent(String continent) {
+        this.continent = continent;
     }
 
-    public void setProject_type(String project_type) {
-        this.project_type = project_type;
+    public String getCountry() {
+        return country;
     }
 
-    public String getProject_name() {
-        return project_name;
+    public void setCountry(String country) {
+        this.country = country;
     }
 
-    public void setProject_name(String project_name) {
-        this.project_name = project_name;
+    public String getProjectType() {
+        return projectType;
     }
 
-    public String getRegister_state() {
-        return register_state;
+    public void setProjectType(String projectType) {
+        this.projectType = projectType;
     }
 
-    public void setRegister_state(String register_state) {
-        this.register_state = register_state;
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    public String getRegisterState() {
+        return registerState;
+    }
+
+    public void setRegisterState(String registerState) {
+        this.registerState = registerState;
     }
 
     public String getPlanned() {
@@ -145,12 +166,12 @@ public class StudentFilterObject implements FilterObject {
         this.dispatch = dispatch;
     }
 
-    public String getTravel_type() {
-        return travel_type;
+    public String getTravelType() {
+        return travelType;
     }
 
-    public void setTravel_type(String travel_type) {
-        this.travel_type = travel_type;
+    public void setTravelType(String travelType) {
+        this.travelType = travelType;
     }
 
     public String getAnnual() {
@@ -161,12 +182,12 @@ public class StudentFilterObject implements FilterObject {
         this.annual = annual;
     }
 
-    public String getStu_type() {
-        return stu_type;
+    public String getStudentType() {
+        return studentType;
     }
 
-    public void setStu_type(String stu_type) {
-        this.stu_type = stu_type;
+    public void setStudentType(String studentType) {
+        this.studentType = studentType;
     }
 
     public String getAppropriations() {
@@ -177,115 +198,115 @@ public class StudentFilterObject implements FilterObject {
         this.appropriations = appropriations;
     }
 
-    public String getTeach_language() {
-        return teach_language;
+    public String getTeachLanguage() {
+        return teachLanguage;
     }
 
-    public void setTeach_language(String teach_language) {
-        this.teach_language = teach_language;
+    public void setTeachLanguage(String teachLanguage) {
+        this.teachLanguage = teachLanguage;
     }
 
-    public String getSchool_roll_state() {
-        return school_roll_state;
+    public String getSchoolRollState() {
+        return schoolRollState;
     }
 
-    public void setSchool_roll_state(String school_roll_state) {
-        this.school_roll_state = school_roll_state;
+    public void setSchoolRollState(String schoolRollState) {
+        this.schoolRollState = schoolRollState;
     }
 
-    public String getArrival_time_begin() {
-        return arrival_time_begin;
+    public String getArrivalDateBegin() {
+        return arrivalDateBegin;
     }
 
-    public void setArrival_time_begin(String arrival_time_begin) {
-        this.arrival_time_begin = arrival_time_begin;
+    public void setArrivalDateBegin(String arrivalDateBegin) {
+        this.arrivalDateBegin = arrivalDateBegin;
     }
 
-    public String getArrival_time_end() {
-        return arrival_time_end;
+    public String getArrivalDateEnd() {
+        return arrivalDateEnd;
     }
 
-    public void setArrival_time_end(String arrival_time_end) {
-        this.arrival_time_end = arrival_time_end;
+    public void setArrivalDateEnd(String arrivalDateEnd) {
+        this.arrivalDateEnd = arrivalDateEnd;
     }
 
-    public String getLeave_time_begin() {
-        return leave_time_begin;
+    public String getLeaveDateBegin() {
+        return leaveDateBegin;
     }
 
-    public void setLeave_time_begin(String leave_time_begin) {
-        this.leave_time_begin = leave_time_begin;
+    public void setLeaveDateBegin(String leaveDateBegin) {
+        this.leaveDateBegin = leaveDateBegin;
     }
 
-    public String getLeave_time_end() {
-        return leave_time_end;
+    public String getLeaveDateEnd() {
+        return leaveDateEnd;
     }
 
-    public void setLeave_time_end(String leave_time_end) {
-        this.leave_time_end = leave_time_end;
+    public void setLeaveDateEnd(String leaveDateEnd) {
+        this.leaveDateEnd = leaveDateEnd;
     }
 
-    public String getChn_frm_start_time_begin() {
-        return chn_frm_start_time_begin;
+    public String getCramDateBeginBegin() {
+        return cramDateBeginBegin;
     }
 
-    public void setChn_frm_start_time_begin(String chn_frm_start_time_begin) {
-        this.chn_frm_start_time_begin = chn_frm_start_time_begin;
+    public void setCramDateBeginBegin(String cramDateBeginBegin) {
+        this.cramDateBeginBegin = cramDateBeginBegin;
     }
 
-    public String getChn_frm_start_time_end() {
-        return chn_frm_start_time_end;
+    public String getCramDateBeginEnd() {
+        return cramDateBeginEnd;
     }
 
-    public void setChn_frm_start_time_end(String chn_frm_start_time_end) {
-        this.chn_frm_start_time_end = chn_frm_start_time_end;
+    public void setCramDateBeginEnd(String cramDateBeginEnd) {
+        this.cramDateBeginEnd = cramDateBeginEnd;
     }
 
-    public String getChn_frm_end_time_begin() {
-        return chn_frm_end_time_begin;
+    public String getCramDateEndBegin() {
+        return cramDateEndBegin;
     }
 
-    public void setChn_frm_end_time_begin(String chn_frm_end_time_begin) {
-        this.chn_frm_end_time_begin = chn_frm_end_time_begin;
+    public void setCramDateEndBegin(String cramDateEndBegin) {
+        this.cramDateEndBegin = cramDateEndBegin;
     }
 
-    public String getChn_frm_end_time_end() {
-        return chn_frm_end_time_end;
+    public String getCramDateEndEnd() {
+        return cramDateEndEnd;
     }
 
-    public void setChn_frm_end_time_end(String chn_frm_end_time_end) {
-        this.chn_frm_end_time_end = chn_frm_end_time_end;
+    public void setCramDateEndEnd(String cramDateEndEnd) {
+        this.cramDateEndEnd = cramDateEndEnd;
     }
 
-    public String getMajor_start_time_begin() {
-        return major_start_time_begin;
+    public String getMajorStartDateBegin() {
+        return majorStartDateBegin;
     }
 
-    public void setMajor_start_time_begin(String major_start_time_begin) {
-        this.major_start_time_begin = major_start_time_begin;
+    public void setMajorStartDateBegin(String majorStartDateBegin) {
+        this.majorStartDateBegin = majorStartDateBegin;
     }
 
-    public String getMajor_start_time_end() {
-        return major_start_time_end;
+    public String getMajorStartDateEnd() {
+        return majorStartDateEnd;
     }
 
-    public void setMajor_start_time_end(String major_start_time_end) {
-        this.major_start_time_end = major_start_time_end;
+    public void setMajorStartDateEnd(String majorStartDateEnd) {
+        this.majorStartDateEnd = majorStartDateEnd;
     }
 
-    public String getPlan_leave_time_begin() {
-        return plan_leave_time_begin;
+    public String getPlanLeaveDateBegin() {
+        return planLeaveDateBegin;
     }
 
-    public void setPlan_leave_time_begin(String plan_leave_time_begin) {
-        this.plan_leave_time_begin = plan_leave_time_begin;
+    public void setPlanLeaveDateBegin(String planLeaveDateBegin) {
+        this.planLeaveDateBegin = planLeaveDateBegin;
     }
 
-    public String getPlan_leave_time_end() {
-        return plan_leave_time_end;
+    public String getPlanLeaveDateEnd() {
+        return planLeaveDateEnd;
     }
 
-    public void setPlan_leave_time_end(String plan_leave_time_end) {
-        this.plan_leave_time_end = plan_leave_time_end;
+    public void setPlanLeaveDateEnd(String planLeaveDateEnd) {
+        this.planLeaveDateEnd = planLeaveDateEnd;
     }
 }

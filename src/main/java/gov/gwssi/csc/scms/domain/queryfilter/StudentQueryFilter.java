@@ -1,7 +1,5 @@
 package gov.gwssi.csc.scms.domain.queryfilter;
 
-import org.springframework.util.StringUtils;
-
 import java.util.List;
 
 /**
@@ -28,8 +26,6 @@ public class StudentQueryFilter implements QueryFilter {
         StringBuilder sb = new StringBuilder();
 
         for (FilterCell fc : conditions) {
-            if (isNull(fc.getValue()))
-                continue;
             String str[] = fc.getValue().split(",");
 
             if ("String".equalsIgnoreCase(fc.getType())) {
@@ -52,12 +48,6 @@ public class StudentQueryFilter implements QueryFilter {
                 }
             }
         }
-        if (sb.length() == 0)
-            return "";
         return sb.toString();
-    }
-
-    private boolean isNull(String str) {
-        return ("null".equalsIgnoreCase(str) || StringUtils.isEmpty(str));
     }
 }
