@@ -27,4 +27,12 @@ public class GradeAttachmentService {
     public GradeAttachment updateGradeAttachment(GradeAttachment gradeAttachment) {
         return gradeAttachmentRepository.save(gradeAttachment);
     }
+
+    public Iterable updateGradeAttachment(List<GradeAttachment> gradeAttachment) {
+        return gradeAttachmentRepository.save(gradeAttachment);
+    }
+
+    public List<GradeAttachment> getGradeAttachmentByStudentId(Long studentId){
+        return gradeAttachmentRepository.findByStudentId(studentId);
+    }
 }

@@ -20,8 +20,8 @@ public class BasicInfoService extends BaseService {
         return basicInfoRepository.findOne(id);
     }
 
-    public BasicInfo getBasicInfoByStudent(Student student) {
-        return basicInfoRepository.findByStudentId(student.getId());
+    public BasicInfo getBasicInfoByStudentId(Long studentId){
+        return basicInfoRepository.findByStudentId(studentId);
     }
 
     public BasicInfo updateBasicInfo(BasicInfo basicInfo) {

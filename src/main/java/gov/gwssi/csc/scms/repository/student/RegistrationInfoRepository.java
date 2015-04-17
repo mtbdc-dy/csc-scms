@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository(value = "registrationInfoRepository")
 public interface RegistrationInfoRepository extends CrudRepository<RegistrationInfo, Long> {
+    public RegistrationInfo findByStudentId(Long studentId);
 }

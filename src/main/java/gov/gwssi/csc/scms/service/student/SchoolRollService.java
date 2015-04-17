@@ -22,4 +22,8 @@ public class SchoolRollService extends BaseService {
     public SchoolRoll saveSchoolRoll(SchoolRoll schoolRoll) {
         return schoolRollRepository.save(schoolRoll);
     }
+
+    public SchoolRoll getSchoolRollByStudentId(Long studentId) {
+        return schoolRollRepository.findByStudentId(studentId);
+    }
 }

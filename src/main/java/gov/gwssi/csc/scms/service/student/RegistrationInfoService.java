@@ -22,4 +22,8 @@ public class RegistrationInfoService extends BaseService {
     public RegistrationInfo saveRegistrationInfo(RegistrationInfo registrationInfo) {
         return registrationInfoRepository.save(registrationInfo);
     }
+
+    public RegistrationInfo getRegistrationInfoByStudentId(Long studentId){
+        return registrationInfoRepository.findByStudentId(studentId);
+    }
 }

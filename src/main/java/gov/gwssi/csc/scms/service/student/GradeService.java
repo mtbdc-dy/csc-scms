@@ -27,4 +27,12 @@ public class GradeService {
     public Grade updateGrade(Grade grade) {
         return gradeRepository.save(grade);
     }
+
+    public Iterable updateGrade(List<Grade> grade) {
+        return gradeRepository.save(grade);
+    }
+
+    public List<Grade> getGradeByStudentId(Long studentId) {
+        return gradeRepository.findByStudentId(studentId);
+    }
 }

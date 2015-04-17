@@ -22,4 +22,8 @@ public class ProfilesHistoryService extends BaseService {
     public ProfilesHistory saveProfilesHistory(ProfilesHistory profilesHistory) {
         return profilesHistoryRepository.save(profilesHistory);
     }
+
+    public ProfilesHistory getProfilesHistoryByStudentId(Long studentId){
+        return profilesHistoryRepository.findByStudentId(studentId);
+    }
 }

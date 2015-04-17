@@ -32,9 +32,8 @@ public class AccidentService extends BaseService {
         return accidentRepository.save(accidents);
     }
 
-    public List<Accident> getAccidentsByStudent(Student student) {
-        // return accidentRepository.findByStudent(student.getCsc_id());
-        return null;
+    public List<Accident> getAccidentByStudentId(Long studentId){
+        return accidentRepository.findByStudentId(studentId);
     }
 
 }

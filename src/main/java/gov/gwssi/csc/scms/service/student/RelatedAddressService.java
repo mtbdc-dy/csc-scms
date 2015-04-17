@@ -26,8 +26,19 @@ public class RelatedAddressService extends BaseService {
     }
 
     public Iterable saveRelatedAddress(List<RelatedAddress> relatedAddresses) {
-        Iterable iterable = relatedAddresses;
-        return relatedAddressRepository.save(iterable);
+        return relatedAddressRepository.save(relatedAddresses);
+    }
+
+    public RelatedAddress updateRelatedAddress(RelatedAddress relatedAddress) {
+        return relatedAddressRepository.save(relatedAddress);
+    }
+
+    public Iterable updateRelatedAddress(List<RelatedAddress> relatedAddresses) {
+        return relatedAddressRepository.save(relatedAddresses);
+    }
+
+    public List<RelatedAddress> getRelatedAddressByStudentId(Long studentId){
+        return relatedAddressRepository.findByStudentId(studentId);
     }
 
 }

@@ -5,6 +5,9 @@ import gov.gwssi.csc.scms.domain.student.*;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Murray on 2015/4/2.
  */
@@ -13,19 +16,19 @@ public class RelatedAddressTest extends UnitTestBase {
     Student student;
 
     @Test
-    public void saveBasicInfoTest() {
+    public void saveRelatedAddressTest() {
         StudentService studentService = getBean("studentService");
         student = studentService.saveStudent(getStudentInTest());
         Assert.assertNotNull(student);
     }
 
     @Test
-    public void getBasicInfoByStudentTest() {
+    public void getRelatedAddressByStudentTest() {
         StudentService studentService = getBean("studentService");
         BasicInfoService basicInfoService = getBean("basicInfoService");
 
-        Student stu = studentService.getStudentByCscId("CSCBasicInfo");
-        BasicInfo basicInfo = basicInfoService.getBasicInfoByStudent(stu);
+        Student stu = studentService.getStudentByCscId("CSCRealted01");
+        BasicInfo basicInfo = basicInfoService.getBasicInfoByStudentId(stu.getId());
 
         Assert.assertEquals("小白兔", basicInfo.getChineseName());
     }
@@ -42,10 +45,10 @@ public class RelatedAddressTest extends UnitTestBase {
 
     private Student getStudentInTest() {
         Student stu = new Student();
-        stu.setCscId("CSCBasicInfo");
+        stu.setCscId("CSCRealted01");
 
         BasicInfo bf = new BasicInfo();
-        bf.setChineseName("小白兔");
+        bf.setChineseName("灰姑娘");
         bf.setAnnual(2014);
         bf.setContinent("亚洲");
         bf.setCountry("棒子国");
@@ -69,7 +72,17 @@ public class RelatedAddressTest extends UnitTestBase {
         ph.setChnLevel("专业八级");
         stu.setProfilesHistory(ph);
 
+        RelatedAddress ra1 = new RelatedAddress();
+        ra1.setAddressOrName("this for address");
+        ra1.setStudent(stu);
+        RelatedAddress ra2 = new RelatedAddress();
+        ra2.setAddressOrName("this for address");
+        ra2.setStudent(stu);
 
+        List<RelatedAddress> relatedAddress = new ArrayList<>();
+        relatedAddress.add(ra1);
+        relatedAddress.add(ra2);
+        stu.setRelatedAddress(relatedAddress);
 
         return stu;
     }

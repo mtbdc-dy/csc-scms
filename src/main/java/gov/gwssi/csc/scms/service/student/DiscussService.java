@@ -19,6 +19,10 @@ public class DiscussService extends BaseService {
         return discussRepository.findOne(id);
     }
 
+    public Discuss getDiscussByStudentId(Long studentID){
+        return discussRepository.findByStudentId(studentID);
+    }
+
     public Discuss saveDiscuss(Discuss discuss) {
         return discussRepository.save(discuss);
     }

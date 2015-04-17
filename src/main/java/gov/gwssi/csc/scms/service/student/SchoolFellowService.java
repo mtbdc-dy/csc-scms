@@ -20,11 +20,11 @@ public class SchoolFellowService {
         return schoolFellowRepository.save(schoolFellow);
     }
 
-    public Iterable saveSchoolFellow(List<SchoolFellow> schoolFellowList) {
-        return schoolFellowRepository.save(schoolFellowList);
-    }
-
     public SchoolFellow updateSchoolFellow(SchoolFellow schoolFellow) {
         return schoolFellowRepository.save(schoolFellow);
+    }
+
+    public SchoolFellow getSchoolFellowByStudentId(Long studentId){
+        return schoolFellowRepository.findByStudentId(studentId);
     }
 }

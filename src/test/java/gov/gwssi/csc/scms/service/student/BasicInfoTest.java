@@ -25,9 +25,21 @@ public class BasicInfoTest extends UnitTestBase {
         BasicInfoService basicInfoService = getBean("basicInfoService");
 
         Student stu = studentService.getStudentByCscId("CSCBasicInfo");
-        BasicInfo basicInfo = basicInfoService.getBasicInfoByStudent(stu);
+        BasicInfo basicInfo = basicInfoService.getBasicInfoByStudentId(stu.getId());
 
         Assert.assertEquals("小白兔", basicInfo.getChineseName());
+    }
+
+    @Test
+    public void getStudentByBasicInfo() {
+        BasicInfoService basicInfoService = getBean("basicInfoService");
+
+        BasicInfo basicInfo = basicInfoService.getBasicInfoById(1L);
+        Assert.assertNotNull(basicInfo);
+
+
+        Student stu = basicInfo.getStudent();
+        Assert.assertNotNull(stu);
     }
 
     @Test

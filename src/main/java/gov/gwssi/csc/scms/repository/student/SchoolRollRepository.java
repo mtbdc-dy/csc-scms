@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository(value = "schoolRollRepository")
 public interface SchoolRollRepository extends CrudRepository<SchoolRoll, Long> {
+    public SchoolRoll findByStudentId(Long studentId);
 }
