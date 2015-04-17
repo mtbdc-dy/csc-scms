@@ -102,31 +102,27 @@ public class StudentService extends BaseService {
 
     @Transactional
     public Student saveStudent(Student student) {
-        try {
-            if (student.getBasicInfo() != null)
-                basicInfoService.saveBasicInfo(student.getBasicInfo());
-            if (student.getDiscuss() != null)
-                discussService.saveDiscuss(student.getDiscuss());
-            if (student.getRegistrationInfo() != null)
-                registrationInfoService.saveRegistrationInfo(student.getRegistrationInfo());
-            if (student.getSchoolRoll() != null)
-                schoolRollService.saveSchoolRoll(student.getSchoolRoll());
-            if (student.getProfilesHistory() != null)
-                profilesHistoryService.saveProfilesHistory(student.getProfilesHistory());
-            if (!student.getRelatedAddress().isEmpty())
-                relatedAddressService.saveRelatedAddress(student.getRelatedAddress());
-            if (!student.getAccidents().isEmpty())
-                accidentService.saveAccidents(student.getAccidents());
-            if (!student.getGrades().isEmpty())
-                gradeService.saveGrade(student.getGrades());
-            if (!student.getGradeAttachment().isEmpty())
-                gradeAttachmentService.saveGradeAttachment(student.getGradeAttachment());
-            if (student.getSchoolFellow() != null)
-                schoolFellowService.saveSchoolFellow(student.getSchoolFellow());
-            return studentRepository.save(student);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        if (student.getBasicInfo() != null)
+            basicInfoService.saveBasicInfo(student.getBasicInfo());
+        if (student.getDiscuss() != null)
+            discussService.saveDiscuss(student.getDiscuss());
+        if (student.getRegistrationInfo() != null)
+            registrationInfoService.saveRegistrationInfo(student.getRegistrationInfo());
+        if (student.getSchoolRoll() != null)
+            schoolRollService.saveSchoolRoll(student.getSchoolRoll());
+        if (student.getProfilesHistory() != null)
+            profilesHistoryService.saveProfilesHistory(student.getProfilesHistory());
+        if (student.getRelatedAddress() != null && !student.getRelatedAddress().isEmpty())
+            relatedAddressService.saveRelatedAddress(student.getRelatedAddress());
+        if (!(student.getAccidents() == null || student.getAccidents().isEmpty()))
+            accidentService.saveAccidents(student.getAccidents());
+        if (!(student.getGrades() == null || student.getGrades().isEmpty()))
+            gradeService.saveGrade(student.getGrades());
+        if (!(student.getGradeAttachment() == null || student.getGradeAttachment().isEmpty()))
+            gradeAttachmentService.saveGradeAttachment(student.getGradeAttachment());
+        if (student.getSchoolFellow() != null)
+            schoolFellowService.saveSchoolFellow(student.getSchoolFellow());
+        return studentRepository.save(student);
+
     }
 }

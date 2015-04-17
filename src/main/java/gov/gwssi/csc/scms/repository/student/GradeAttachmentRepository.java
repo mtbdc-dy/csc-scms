@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by Murray on 2015/4/16.
  */
-@Repository(value = "basicInfoRepository")
+@Repository(value = "gradeAttachmentRepository")
 public interface GradeAttachmentRepository extends CrudRepository<GradeAttachment, Long> {
     public List<GradeAttachment> findByStudentId(Long studentId);
 }

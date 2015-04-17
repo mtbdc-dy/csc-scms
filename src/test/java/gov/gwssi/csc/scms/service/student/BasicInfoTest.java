@@ -37,16 +37,15 @@ public class BasicInfoTest extends UnitTestBase {
         BasicInfo basicInfo = basicInfoService.getBasicInfoById(1L);
         Assert.assertNotNull(basicInfo);
 
-
-        Student stu = basicInfo.getStudent();
-        Assert.assertNotNull(stu);
+        student = basicInfo.getStudent();
+        Assert.assertNotNull(student);
     }
 
     @Test
     public void updateBasicInfoTest() {
         BasicInfoService basicInfoService = getBean("basicInfoService");
 
-        BasicInfo basicInfo = basicInfoService.getBasicInfoById(3L);
+        BasicInfo basicInfo = basicInfoService.getBasicInfoById(1L);
         basicInfo.setChineseName("大灰狼");
         basicInfoService.updateBasicInfo(basicInfo);
         Assert.assertNotNull(basicInfo);

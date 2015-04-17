@@ -24,23 +24,14 @@ public class RelatedAddressTest extends UnitTestBase {
 
     @Test
     public void getRelatedAddressByStudentTest() {
-        StudentService studentService = getBean("studentService");
-        BasicInfoService basicInfoService = getBean("basicInfoService");
+        RelatedAddressService relatedAddressService = getBean("relatedAddressService");
 
-        Student stu = studentService.getStudentByCscId("CSCRealted01");
-        BasicInfo basicInfo = basicInfoService.getBasicInfoByStudentId(stu.getId());
+        List<RelatedAddress> relatedAddress = relatedAddressService.getRelatedAddressByStudentId(1L);
+        Assert.assertNotNull(relatedAddress);
 
-        Assert.assertEquals("小白兔", basicInfo.getChineseName());
-    }
-
-    @Test
-    public void updateBasicInfoTest() {
-        BasicInfoService basicInfoService = getBean("basicInfoService");
-
-        BasicInfo basicInfo = basicInfoService.getBasicInfoById(3L);
-        basicInfo.setChineseName("大灰狼");
-        basicInfoService.updateBasicInfo(basicInfo);
-        Assert.assertNotNull(basicInfo);
+        for(RelatedAddress ra : relatedAddress){
+            System.out.println(ra.getAddressOrName());
+        }
     }
 
     private Student getStudentInTest() {
@@ -76,7 +67,7 @@ public class RelatedAddressTest extends UnitTestBase {
         ra1.setAddressOrName("this for address");
         ra1.setStudent(stu);
         RelatedAddress ra2 = new RelatedAddress();
-        ra2.setAddressOrName("this for address");
+        ra2.setAddressOrName("this for name");
         ra2.setStudent(stu);
 
         List<RelatedAddress> relatedAddress = new ArrayList<>();

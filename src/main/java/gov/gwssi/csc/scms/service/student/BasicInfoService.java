@@ -5,6 +5,7 @@ import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.repository.student.BasicInfoRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 public class BasicInfoService extends BaseService {
 
     @Autowired
+    @Qualifier("basicInfoRepository")
     private BasicInfoRepository basicInfoRepository;
 
     public BasicInfo getBasicInfoById(Long id) {

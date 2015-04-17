@@ -48,7 +48,7 @@ public class Accident {
     /**
      * 学生id
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,targetEntity = Student.class)
     @JoinColumn(name = "STUDENTID")
     private Student student;
     public Long getId() {
