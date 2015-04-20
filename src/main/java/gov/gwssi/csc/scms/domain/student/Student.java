@@ -1,7 +1,5 @@
 package gov.gwssi.csc.scms.domain.student;
 
-import org.hibernate.annotations.*;
-
 import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
