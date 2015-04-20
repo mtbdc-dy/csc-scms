@@ -3,7 +3,7 @@ package gov.gwssi.csc.scms.service.student;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.base.UnitTestBase;
-import gov.gwssi.csc.scms.domain.queryfilter.StudentFilterObject;
+import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.student.*;
 import org.junit.Assert;
 import org.junit.Test;

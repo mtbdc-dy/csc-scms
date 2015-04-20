@@ -1,4 +1,4 @@
-package gov.gwssi.csc.scms.domain.queryfilter;
+package gov.gwssi.csc.scms.domain.query;
 
 import org.springframework.util.StringUtils;
 
@@ -46,9 +46,13 @@ public class StudentFilterObject implements FilterObject {
     private String planLeaveDateBegin = "2015-01-01";//预计离华时间起始时间
     private String planLeaveDateEnd = "2015-09-01";//预计离华时间终止时间
 
+    private String offSet = "0";
+    private String pageCount = "200";
+
     public List<FilterCell> getConditions() {
         List<FilterCell> conditions = new ArrayList<FilterCell>();
-        conditions = addCondition(conditions, "student", "cscid", "String", getCscId());
+
+        conditions = addCondition(conditions, "", "pageCut", "page", getOffSet()+""+getPageCount());
 
         conditions = addCondition(conditions, "basicinfo", "passportName", "String", getPassportName());
         conditions = addCondition(conditions, "basicinfo", "continent", "String", getContinent());
@@ -71,6 +75,8 @@ public class StudentFilterObject implements FilterObject {
         conditions = addCondition(conditions, "schoolroll", "cramDateEnd", "date", getCramDateEndBegin(), getCramDateEndEnd());
         conditions = addCondition(conditions, "schoolroll", "majorDate", "date", getMajorStartDateBegin(), getMajorStartDateEnd());
         conditions = addCondition(conditions, "schoolroll", "plan_leave_time", "date", getPlanLeaveDateBegin(), getPlanLeaveDateEnd());
+
+        conditions = addCondition(conditions, "student", "cscid", "String", getCscId());
 
         return conditions;
     }
@@ -307,5 +313,21 @@ public class StudentFilterObject implements FilterObject {
 
     public void setPlanLeaveDateEnd(String planLeaveDateEnd) {
         this.planLeaveDateEnd = planLeaveDateEnd;
+    }
+
+    public String getOffSet() {
+        return offSet;
+    }
+
+    public void setOffSet(String offSet) {
+        this.offSet = offSet;
+    }
+
+    public String getPageCount() {
+        return pageCount;
+    }
+
+    public void setPageCount(String pageCount) {
+        this.pageCount = pageCount;
     }
 }

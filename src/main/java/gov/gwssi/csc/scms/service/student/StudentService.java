@@ -1,8 +1,9 @@
 package gov.gwssi.csc.scms.service.student;
 
-import gov.gwssi.csc.scms.domain.queryfilter.FilterObject;
-import gov.gwssi.csc.scms.domain.queryfilter.StudentFilterObject;
-import gov.gwssi.csc.scms.domain.queryfilter.StudentQueryFilter;
+import gov.gwssi.csc.scms.domain.query.FilterObject;
+import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
+import gov.gwssi.csc.scms.domain.query.StudentFilter;
+import gov.gwssi.csc.scms.domain.query.StudentResultObject;
 import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.repository.student.*;
 import gov.gwssi.csc.scms.service.BaseService;
@@ -65,8 +66,8 @@ public class StudentService extends BaseService {
         return studentList;
     }
 
-    public List<Student> getStudentsByQueryFilter(FilterObject filterObject) {
-        List<Student> studentList;
+    public List<StudentResultObject> getStudentsByFilter(FilterObject filterObject) {
+        List<StudentResultObject> studentList;
 
         String sql = getSqlByBody(filterObject);
         if (sql == null) {
@@ -102,7 +103,7 @@ public class StudentService extends BaseService {
                 "where 1 = 1 ";
         sb.append(tempSql);
 
-        sb.append(new StudentQueryFilter((StudentFilterObject) filterObject).getQueryFilter());
+        sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter());
         return sb.toString();
     }
 
@@ -111,17 +112,20 @@ public class StudentService extends BaseService {
             return null;
 
         StringBuilder sb = new StringBuilder();
-        String tempSql = "select student.* " +
-                "from scms_student student " +
+
+        sb.append(StudentResultObject.getResultObject());
+
+        String tempSql = " from scms_student student " +
                 "left join scms_basic_info basicinfo on student.basicinfo = basicinfo.studentid " +
                 "left join scms_registration_info registrationinfo on student.registrationinfo = registrationinfo.studentid " +
                 "where 1 = 1 ";
         sb.append(tempSql);
 
-        sb.append(new StudentQueryFilter((StudentFilterObject) filterObject).getQueryFilter());
+        sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter());
         return sb.toString();
     }
 
+    @Transactional
     public Student updateStudent(Student student) {
         return saveStudent(student);
     }

@@ -1,7 +1,8 @@
 package gov.gwssi.csc.scms.controller.student;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.gwssi.csc.scms.domain.queryfilter.StudentFilterObject;
+import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
+import gov.gwssi.csc.scms.domain.query.StudentResultObject;
 import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.service.student.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +59,7 @@ public class StudentController {
     }
 
     @RequestMapping(method = RequestMethod.OPTIONS,headers = "Accept=application/json")
-    public List<Student> getStudentsByConditions(@RequestBody String body){
+    public List<StudentResultObject> getStudentsByConditions(@RequestBody String body){
         ObjectMapper mapper = new ObjectMapper();
         StudentFilterObject sfo = null;
         try {
@@ -68,7 +69,9 @@ public class StudentController {
             return null;
         }
 
-        return studentService.getStudentsByQueryFilter(sfo);
+        List<StudentResultObject> studentResultObjects = studentService.getStudentsByFilter(sfo);
+
+        return studentResultObjects;
     }
 
 }
