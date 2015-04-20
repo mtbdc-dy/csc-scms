@@ -11,5 +11,5 @@ import java.util.List;
  */
 @Repository(value = "relatedAddressRepository")
 public interface RelatedAddressRepository extends CrudRepository<RelatedAddress, String> {
-    public List<RelatedAddress> findByStudentId(Long studentId);
+    List<RelatedAddress> findByStudentId(Long studentId);
 }

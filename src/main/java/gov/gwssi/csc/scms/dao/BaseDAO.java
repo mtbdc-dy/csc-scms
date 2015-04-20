@@ -21,30 +21,46 @@ public class BaseDAO {
 
     @Autowired
     EntityManagerFactory entityManagerFactory;
+
     @Autowired
     DataSource dataSource;
+
     /**
      * 查询的结果是List<Map>
      */
     public List queryListBySql(String sql) {
-        List<Map> objectArrayList = null;
-        EntityManager em = entityManagerFactory.createEntityManager();
-        //创建原生SQL查询QUERY实例
-        Query query = em.createNativeQuery(sql);
-        //list转为List<Map>
-        query.unwrap(SQLQuery.class).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
-        objectArrayList = query.getResultList();
-        em.close();
-        return objectArrayList;
+        List<Map> objectList = null;
+        EntityManager em = null;
+
+        try {
+            em = entityManagerFactory.createEntityManager();
+            //创建原生SQL查询QUERY实例
+            Query query = em.createNativeQuery(sql);
+            //list转为List<Map>
+            query.unwrap(SQLQuery.class).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+            objectList = query.getResultList();
+            return objectList;
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
     }
 
     public <T> List getObjectListByType(String sql, Class<T> clazz) {
-        List<T> objectList = null;
-        EntityManager em = entityManagerFactory.createEntityManager();
-        Query query = em.createNativeQuery(sql, clazz);
-        objectList = query.getResultList();
-        em.close();
-        return objectList;
+        List<Map> objectList = null;
+        EntityManager em = null;
+
+        try {
+            em = entityManagerFactory.createEntityManager();
+            Query query = em.createNativeQuery(sql, clazz);
+            objectList = query.getResultList();
+            return objectList;
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
     }
 
     public JdbcTemplate getJdbcTemplate() {
