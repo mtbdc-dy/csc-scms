@@ -4,6 +4,7 @@ import gov.gwssi.csc.scms.domain.student.SchoolRoll;
 import gov.gwssi.csc.scms.repository.student.SchoolRollRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 public class SchoolRollService extends BaseService {
 
     @Autowired
+    @Qualifier("schoolRollRepository")
     private SchoolRollRepository schoolRollRepository;
 
     public SchoolRoll getSchoolRollById(Long id) {

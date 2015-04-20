@@ -3,6 +3,7 @@ package gov.gwssi.csc.scms.service.student;
 import gov.gwssi.csc.scms.domain.student.GradeAttachment;
 import gov.gwssi.csc.scms.repository.student.GradeAttachmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 public class GradeAttachmentService {
 
     @Autowired
+    @Qualifier("gradeAttachmentRepository")
     private GradeAttachmentRepository gradeAttachmentRepository;
 
     public GradeAttachment saveGradeAttachment(GradeAttachment gradeAttachment) {

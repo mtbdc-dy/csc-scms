@@ -4,6 +4,7 @@ import gov.gwssi.csc.scms.domain.student.Discuss;
 import gov.gwssi.csc.scms.repository.student.DiscussRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 public class DiscussService extends BaseService {
 
     @Autowired
+    @Qualifier("discussRepository")
     private DiscussRepository discussRepository;
 
     public Discuss getDiscussById(Long id) {

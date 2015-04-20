@@ -3,6 +3,7 @@ package gov.gwssi.csc.scms.service.student;
 import gov.gwssi.csc.scms.domain.student.Schoolfellow;
 import gov.gwssi.csc.scms.repository.student.SchoolfellowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 public class SchoolfellowService {
 
     @Autowired
+    @Qualifier("schoolfellowRepository")
     private SchoolfellowRepository schoolfellowRepository;
 
     public Schoolfellow saveSchoolfellow(Schoolfellow schoolFellow) {
