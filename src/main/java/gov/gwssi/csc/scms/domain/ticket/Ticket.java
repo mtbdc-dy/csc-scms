@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * Created by Wang Rui on 2015/4/16.
- * »úÆ±¹ÜÀí
+ * æœºç¥¨ç®¡ç†
  */
 @Entity
 @Table(name = "SCMS_AIRTICKET")
@@ -20,55 +20,55 @@ public class Ticket {
     private Long id;
 
     /**
-     *ÔºĞ£ ¿ÉÒÔ²»ĞèÒª ´ı¶¨
+     *é™¢æ ¡ å¯ä»¥ä¸éœ€è¦ å¾…å®š
      */
     @Column(name = "school",length=4)
     private String school;
 
     /**
-     *×ÜÈËÊı
+     *æ€»äººæ•°
      */
     @Column(name = "totalNum",length=8)
     private Long totalNum;
 
     /**
-     *µ¼³öÈËÊı
+     *å¯¼å‡ºäººæ•°
      */
     @Column(name = "expNum",length=8)
     private Long expNum;
 
     /**
-     *Î´µ¼³öÈËÊı
+     *æœªå¯¼å‡ºäººæ•°
      */
     @Column(name = "unExpNum",length=8)
     private Long unExpNum;
 
     /**
-     *·´À¡ÈËÊı
+     *åé¦ˆäººæ•°
      */
     @Column(name = "backNum",length=8)
     private Long backNum;
 
     /**
-     *ÓÃ»§ID
+     *ç”¨æˆ·ID
      */
     @Column(name = "userId",length=20)
     private String userId;
 
     /**
-     *ÓÃ»§Ãû
+     *ç”¨æˆ·å
      */
     @Column(name = "userName",length=50)
     private String userName;
 
     /**
-     *´´½¨Ê±¼ä
+     *åˆ›å»ºæ—¶é—´
      */
     @Column(name = "time")
     private Date time;
 
     /**
-     * »úÆ±Ã÷Ï¸
+     * æœºç¥¨æ˜ç»†
      */
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "ticketid")

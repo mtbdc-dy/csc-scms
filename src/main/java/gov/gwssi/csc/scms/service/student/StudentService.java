@@ -1,6 +1,5 @@
 package gov.gwssi.csc.scms.service.student;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.domain.queryfilter.FilterObject;
 import gov.gwssi.csc.scms.domain.queryfilter.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.queryfilter.StudentQueryFilter;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +38,7 @@ public class StudentService extends BaseService {
     @Autowired
     private ProfilesHistoryService profilesHistoryService;
     @Autowired
-    private SchoolFellowService schoolFellowService;
+    private SchoolfellowService schoolfellowService;
     @Autowired
     private GradeService gradeService;
     @Autowired
@@ -120,8 +118,8 @@ public class StudentService extends BaseService {
             gradeService.saveGrade(student.getGrades());
         if (!(student.getGradeAttachment() == null || student.getGradeAttachment().isEmpty()))
             gradeAttachmentService.saveGradeAttachment(student.getGradeAttachment());
-        if (student.getSchoolFellow() != null)
-            schoolFellowService.saveSchoolFellow(student.getSchoolFellow());
+        if (student.getSchoolfellow() != null)
+            schoolfellowService.saveSchoolfellow(student.getSchoolfellow());
         return studentRepository.save(student);
 
     }

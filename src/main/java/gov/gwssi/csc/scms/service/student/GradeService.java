@@ -3,6 +3,7 @@ package gov.gwssi.csc.scms.service.student;
 import gov.gwssi.csc.scms.domain.student.Grade;
 import gov.gwssi.csc.scms.repository.student.GradeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 public class GradeService {
 
     @Autowired
+    @Qualifier("grateRepository")
     private GradeRepository gradeRepository;
 
     public Grade saveGrade(Grade grade) {

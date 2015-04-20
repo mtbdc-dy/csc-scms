@@ -9,7 +9,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "SCMS_SCHOOL_FELLOW")
-public class SchoolFellow {
+public class Schoolfellow {
     @Id
     @SequenceGenerator(name = "SCHOOL_FELLOW_ID", sequenceName = "SCMS_SCHOOL_FELLOW_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "SCHOOL_FELLOW_ID", strategy = GenerationType.SEQUENCE)
