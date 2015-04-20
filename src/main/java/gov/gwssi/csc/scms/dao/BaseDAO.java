@@ -29,7 +29,7 @@ public class BaseDAO {
      * 查询的结果是List<Map>
      */
     public List queryListBySql(String sql) {
-        List<Map> objectList = null;
+        List<Map> objectList;
         EntityManager em = null;
 
         try {
@@ -47,8 +47,8 @@ public class BaseDAO {
         }
     }
 
-    public <T> List getObjectListByType(String sql, Class<T> clazz) {
-        List<Map> objectList = null;
+    public <T> List<T> getObjectListByType(String sql, Class<T> clazz) {
+        List<T> objectList;
         EntityManager em = null;
 
         try {
@@ -56,6 +56,22 @@ public class BaseDAO {
             Query query = em.createNativeQuery(sql, clazz);
             objectList = query.getResultList();
             return objectList;
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
+    public Long getCountBySql(String sql) {
+        Long count = 0L;
+        EntityManager em = null;
+
+        try {
+            em = entityManagerFactory.createEntityManager();
+            Query query = em.createNativeQuery(sql);
+            count = (Long) query.getSingleResult();
+            return count;
         } finally {
             if (em != null) {
                 em.close();

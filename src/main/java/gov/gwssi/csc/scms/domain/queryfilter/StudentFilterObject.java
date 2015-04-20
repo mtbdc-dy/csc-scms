@@ -46,7 +46,6 @@ public class StudentFilterObject implements FilterObject {
     private String planLeaveDateBegin = "2015-01-01";//预计离华时间起始时间
     private String planLeaveDateEnd = "2015-09-01";//预计离华时间终止时间
 
-    @Override
     public List<FilterCell> getConditions() {
         List<FilterCell> conditions = new ArrayList<FilterCell>();
         conditions = addCondition(conditions, "student", "cscid", "String", getCscId());

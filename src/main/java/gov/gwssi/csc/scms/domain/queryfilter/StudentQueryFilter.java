@@ -17,7 +17,6 @@ public class StudentQueryFilter implements QueryFilter {
             conditions = filterObject.getConditions();
     }
 
-    @Override
     public String getQueryFilter() {
         if (conditions == null || conditions.isEmpty()) {
             return "";
