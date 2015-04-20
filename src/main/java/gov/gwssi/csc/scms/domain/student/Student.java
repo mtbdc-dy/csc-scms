@@ -68,7 +68,7 @@ public class Student {
      */
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SCHOOLFELLOW")
-    private SchoolFellow schoolFellow;
+    private Schoolfellow schoolfellow;
     /**
      * 成绩信息
      */
@@ -156,13 +156,12 @@ public class Student {
         this.accidents = accidents;
     }
 
-    public SchoolFellow getSchoolFellow() {
-        return schoolFellow;
+    public Schoolfellow getSchoolfellow() {
+        return schoolfellow;
     }
 
-    public void setSchoolFellow(SchoolFellow schoolFellow) {
-        this.schoolFellow = schoolFellow;
-        schoolFellow.setStudent(this);
+    public void setSchoolfellow(Schoolfellow schoolfellow) {
+        this.schoolfellow = schoolfellow;
     }
 
     public List<Grade> getGrades() {
