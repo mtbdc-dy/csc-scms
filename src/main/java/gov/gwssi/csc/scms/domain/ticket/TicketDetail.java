@@ -7,7 +7,7 @@ import java.util.Date;
 
 /**
  * Created by Wang Rui on 2015/4/16.
- * »úÆ±¹ÜÀíÃ÷Ï¸
+ * æœºç¥¨ç®¡ç†æ˜ç»†
  */
 @Entity
 @Table(name = "SCMS_AIRTICKET_DETAIL")
@@ -18,67 +18,67 @@ public class TicketDetail {
     private Long id;
 
     /**
-     *CSCµÇ¼ÇºÅ
+     *CSCç™»è®°å·
      */
     @Column(name = "cscId",length=12)
     private String cscId;
     /**
-     *ÉêÇë³Ë»úÈÕÆÚ
+     *ç”³è¯·ä¹˜æœºæ—¥æœŸ
      */
     @Column(name = "applyDate")
     private Date applyDate;
 
     /**
-     *Àë¾³³ÇÊĞ
+     *ç¦»å¢ƒåŸå¸‚
      */
     @Column(name = "leaveCity",length=100)
     private String leaveCity;
 
     /**
-     *»úÆ±ÀàĞÍ 0À´»ª 1»Ø¹ú
+     *æœºç¥¨ç±»å‹ 0æ¥å 1å›å›½
      */
     @Column(name = "type",length=1)
     private String type;
 
     /**
-     *¶©Æ±×´Ì¬ 0Î´µ¼³ö 1ÒÑµ¼³ö 2ÒÑ·´À¡
+     *è®¢ç¥¨çŠ¶æ€ 0æœªå¯¼å‡º 1å·²å¯¼å‡º 2å·²åé¦ˆ
      */
     @Column(name = "state",length=1)
     private String state;
 
     /**
-     *³Ë»úÈÕÆÚ
+     *ä¹˜æœºæ—¥æœŸ
      */
     @Column(name = "flightDate")
     private Date flightDate;
 
     /**
-     *º½Ïß
+     *èˆªçº¿
      */
     @Column(name = "airLine",length=100)
     private String airLine;
 
     /**
-     *»úÆ±¼Û¸ñ£¨Ôª£©
+     *æœºç¥¨ä»·æ ¼ï¼ˆå…ƒï¼‰
      */
     @Column(name = "price",length=16)
     private Double price;
 
     /**
-     *»úÆ±ºÅÂë
+     *æœºç¥¨å·ç 
      */
     @Column(name = "ticketNo",length=100)
     private String ticketNo;
 
     /**
-     *±¸×¢
+     *å¤‡æ³¨
      */
     @Column(name = "remark",length=200)
     private String remark;
 
     /**
      *
-     * Ö÷±íid
+     * ä¸»è¡¨id
      */
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "TICKETID")

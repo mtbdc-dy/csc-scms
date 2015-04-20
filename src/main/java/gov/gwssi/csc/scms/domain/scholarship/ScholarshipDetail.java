@@ -7,7 +7,7 @@ import java.util.Date;
 
 /**
  * Created by Wang Rui on 2015/4/14.
- * ½±Ñ§½ğÆÀÉóÃ÷Ï¸±í
+ * å¥–å­¦é‡‘è¯„å®¡æ˜ç»†è¡¨
  */
 @Entity
 @Table(name = "SCMS_SCHOLARSHIP_DETAIL")
@@ -19,55 +19,55 @@ public class ScholarshipDetail {
     private Long id;
 
     /**
-     *cscµÇ¼ÇºÅ
+     *cscç™»è®°å·
      */
     @Column(name = "cscId", length = 12)
-    private String cscId;//cscµÇ¼ÇºÅ
+    private String cscId;//cscç™»è®°å·
 
     /**
-     *ÆÀÉó½á¹û(ÔºĞ£) 0²»ºÏ¸ñ 1ºÏ¸ñ
+     *è¯„å®¡ç»“æœ(é™¢æ ¡) 0ä¸åˆæ ¼ 1åˆæ ¼
      */
     @Column(name = "schReview", length = 1)
-    private String schReview;//ÆÀÉó½á¹û(ÔºĞ£)
+    private String schReview;//è¯„å®¡ç»“æœ(é™¢æ ¡)
 
     /**
-     *´¦Àí½á¹û£¨ÔºĞ££© 0ÖĞÖ¹ 1È¡Ïû
+     *å¤„ç†ç»“æœï¼ˆé™¢æ ¡ï¼‰ 0ä¸­æ­¢ 1å–æ¶ˆ
      */
     @Column(name = "schResult", length = 1)
-    private String schResult;//´¦Àí½á¹û£¨ÔºĞ££©
+    private String schResult;//å¤„ç†ç»“æœï¼ˆé™¢æ ¡ï¼‰
 
     /**
-     *ÆÀÉó½á¹û£¨»ù½ğÎ¯£© 0²»ºÏ¸ñ 1ºÏ¸ñ
+     *è¯„å®¡ç»“æœï¼ˆåŸºé‡‘å§”ï¼‰ 0ä¸åˆæ ¼ 1åˆæ ¼
      */
     @Column(name = "cscReview", length = 1)
-    private String cscReview;//ÆÀÉó½á¹û£¨»ù½ğÎ¯£©
+    private String cscReview;//è¯„å®¡ç»“æœï¼ˆåŸºé‡‘å§”ï¼‰
 
     /**
-     *´¦Àí½á¹û£¨»ù½ğÎ¯£© 0ÖĞÖ¹ 1È¡Ïû
+     *å¤„ç†ç»“æœï¼ˆåŸºé‡‘å§”ï¼‰ 0ä¸­æ­¢ 1å–æ¶ˆ
      */
     @Column(name = "cscRresult", length = 1)
-    private String cscRresult;//´¦Àí½á¹û£¨»ù½ğÎ¯£©
+    private String cscRresult;//å¤„ç†ç»“æœï¼ˆåŸºé‡‘å§”ï¼‰
 
     /**
-     *´¦ÀíÔ­Òò
+     *å¤„ç†åŸå› 
      */
     @Column(name = "reason", length = 300)
-    private String reason;//´¦ÀíÔ­Òò
+    private String reason;//å¤„ç†åŸå› 
 
     /**
-     *²»ºÏ¸ñÊ±¼äÆğ
+     *ä¸åˆæ ¼æ—¶é—´èµ·
      */
     @Column(name = "startTime")
-    private Date startTime;//²»ºÏ¸ñÊ±¼äÆğ
+    private Date startTime;//ä¸åˆæ ¼æ—¶é—´èµ·
 
     /**
-     *²»ºÏ¸ñÊ±¼äÖ¹
+     *ä¸åˆæ ¼æ—¶é—´æ­¢
      */
     @Column(name = "endTime")
-    private Date endTime;//²»ºÏ¸ñÊ±¼äÖ¹
+    private Date endTime;//ä¸åˆæ ¼æ—¶é—´æ­¢
 
     /**
-     * Ö÷±íid
+     * ä¸»è¡¨id
      */
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "SCHOLARSHIPID")

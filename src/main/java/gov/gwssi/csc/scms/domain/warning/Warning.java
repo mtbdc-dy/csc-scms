@@ -14,55 +14,55 @@ public class Warning {
     @GeneratedValue(generator = "SCMS_WARNING_ID",strategy = GenerationType.SEQUENCE)
 
     /**
-     *CSCµÇ¼ÇºÅ
+     *CSCç™»è®°å·
      */
     @Column(name = "cscId",length=12)
     private String cscId;
 
     /**
-     *¼ÓÈëÔ¤¾¯Ãûµ¥Ô­Òò
+     *åŠ å…¥é¢„è­¦åå•åŸå› 
      */
     @Column(name = "addReason",length=300)
     private String addReason;
 
     /**
-     *¼ÓÈëÓÃ»§ID
+     *åŠ å…¥ç”¨æˆ·ID
      */
     @Column(name = "addUserId",length=20)
     private String addUserId;
 
     /**
-     *¼ÓÈëÓÃ»§Ãû
+     *åŠ å…¥ç”¨æˆ·å
      */
     @Column(name = "addUserName",length=50)
     private String addUserName;
 
     /**
-     *¼ÓÈëÊ±¼ä
+     *åŠ å…¥æ—¶é—´
      */
     @Column(name = "addTime")
     private Date addTime;
 
     /**
-     *ÒÆ³ıÔ¤¾¯Ãûµ¥Ô­Òò
+     *ç§»é™¤é¢„è­¦åå•åŸå› 
      */
     @Column(name = "rmReason",length=300)
     private String rmReason;
 
     /**
-     *ÒÆ³ıÓÃ»§ID
+     *ç§»é™¤ç”¨æˆ·ID
      */
     @Column(name = "rmUserId",length=20)
     private String rmUserId;
 
     /**
-     *ÒÆ³ıÓÃ»§Ãû
+     *ç§»é™¤ç”¨æˆ·å
      */
     @Column(name = "rmUserName",length=50)
     private String rmUserName;
 
     /**
-     *ÒÆ³ıÊ±¼ä
+     *ç§»é™¤æ—¶é—´
      */
     @Column(name = "rmTime")
     private Date rmTime;
