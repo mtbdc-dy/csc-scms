@@ -48,7 +48,7 @@ public class StudentFilterObject implements FilterObject {
 
     @Override
     public List<FilterCell> getConditions() {
-        List<FilterCell> conditions = new ArrayList<>();
+        List<FilterCell> conditions = new ArrayList<FilterCell>();
         conditions = addCondition(conditions, "student", "cscid", "String", getCscId());
 
         conditions = addCondition(conditions, "basicinfo", "passportName", "String", getPassportName());

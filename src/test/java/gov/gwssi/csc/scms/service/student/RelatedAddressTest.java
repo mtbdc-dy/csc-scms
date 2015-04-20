@@ -70,7 +70,7 @@ public class RelatedAddressTest extends UnitTestBase {
         ra2.setAddressOrName("this for name");
         ra2.setStudent(stu);
 
-        List<RelatedAddress> relatedAddress = new ArrayList<>();
+        List<RelatedAddress> relatedAddress = new ArrayList<RelatedAddress>();
         relatedAddress.add(ra1);
         relatedAddress.add(ra2);
         stu.setRelatedAddress(relatedAddress);

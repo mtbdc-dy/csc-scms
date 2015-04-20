@@ -17,7 +17,7 @@ public class SchoolRoll {
     /**
      * 是否报道
      */
-    private Boolean registed;
+    private Boolean registered;
     /**
      * 学科门类
      */
@@ -147,7 +147,7 @@ public class SchoolRoll {
      */
     private String registerState;
     /**
-     * 报道年度
+     * 报到年度
      */
     private String registerYear;
     /**
@@ -173,12 +173,12 @@ public class SchoolRoll {
         this.certificateType = certificateType;
     }
 
-    public Boolean isRegisted() {
-        return registed;
+    public Boolean isRegistered() {
+        return registered;
     }
 
-    public void setRegisted(Boolean registed) {
-        this.registed = registed;
+    public void setRegistered(Boolean registered) {
+        this.registered = registered;
     }
 
     public String getDisciplines() {

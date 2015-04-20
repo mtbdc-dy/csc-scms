@@ -57,12 +57,12 @@ public class Student {
      * 相关地址
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
-    private List<RelatedAddress> relatedAddress = new ArrayList<>();
+    private List<RelatedAddress> relatedAddress = new ArrayList<RelatedAddress>();
     /**
      * 突发事件
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
-    private List<Accident> accidents = new ArrayList<>();
+    private List<Accident> accidents = new ArrayList<Accident>();
     /**
      * 校友信息
      */
@@ -73,7 +73,7 @@ public class Student {
      * 成绩信息
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
-    private List<Grade> Grades = new ArrayList<>();
+    private List<Grade> Grades = new ArrayList<Grade>();
     /**
      * 成绩附件
      */

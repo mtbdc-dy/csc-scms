@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.domain.student;
 
+
 import javax.persistence.*;
 
 /**

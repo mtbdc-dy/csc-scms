@@ -5,8 +5,6 @@ import gov.gwssi.csc.scms.repository.student.SchoolFellowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 /**
  * Created by Murray on 2015/4/16.
  */
