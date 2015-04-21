@@ -53,6 +53,6 @@ public class Insurance {
      * 保险明细
      */
     //@OneToMany(fetch = FetchType.LAZY, mappedBy = "insuranceid")
-    private List<InsuranceDetail> Grades = new ArrayList<InsuranceDetail>();
+  //  private List<InsuranceDetail> Grades = new ArrayList<InsuranceDetail>();
 
 }

@@ -1,4 +1,4 @@
-package gov.gwssi.csc.scms.domain.queryfilter;
+package gov.gwssi.csc.scms.domain.query;
 
 import org.springframework.util.StringUtils;
 
@@ -33,45 +33,52 @@ public class StudentFilterObject implements FilterObject {
     private String appropriations = null;//经费办法
     private String teachLanguage = null;//授课语言
     private String schoolRollState = null;//学籍状态
-    private String arrivalDateBegin = "2015-01-01";//来华时间起始时间
-    private String arrivalDateEnd = "2015-09-01";//来华时间终止时间
-    private String leaveDateBegin = "2015-01-01";//离华时间起始时间
-    private String leaveDateEnd = "2015-09-01";//离华时间终止时间
-    private String cramDateBeginBegin = "2015-01-01";//汉补开始时间起始时间
-    private String cramDateBeginEnd = "2015-09-01";//汉补开始时间终止时间
-    private String cramDateEndBegin = "2015-01-01";//汉补结束时间起始时间
-    private String cramDateEndEnd = "2015-09-01";//汉补结束时间终止时间
-    private String majorStartDateBegin = "2015-01-01";//入专业院校时间起始时间
-    private String majorStartDateEnd = "2015-09-01";//入专业院校时间终止时间
-    private String planLeaveDateBegin = "2015-01-01";//预计离华时间起始时间
-    private String planLeaveDateEnd = "2015-09-01";//预计离华时间终止时间
+    private String arrivalDateBegin = null;//来华时间起始时间
+    private String arrivalDateEnd = null;//来华时间终止时间
+    private String leaveDateBegin = null;//离华时间起始时间
+    private String leaveDateEnd = null;//离华时间终止时间
+    private String cramDateBeginBegin = null;//汉补开始时间起始时间
+    private String cramDateBeginEnd = null;//汉补开始时间终止时间
+    private String cramDateEndBegin = null;//汉补结束时间起始时间
+    private String cramDateEndEnd = null;//汉补结束时间终止时间
+    private String majorStartDateBegin = null;//入专业院校时间起始时间
+    private String majorStartDateEnd = null;//入专业院校时间终止时间
+    private String planLeaveDateBegin = null;//预计离华时间起始时间
+    private String planLeaveDateEnd = null;//预计离华时间终止时间
 
-    @Override
+    private boolean isCutPage = true;
+    private String offSet = "0";
+    private String pageCount = "200";
+
     public List<FilterCell> getConditions() {
         List<FilterCell> conditions = new ArrayList<FilterCell>();
-        conditions = addCondition(conditions, "student", "cscid", "String", getCscId());
 
-        conditions = addCondition(conditions, "basicinfo", "passportName", "String", getPassportName());
-        conditions = addCondition(conditions, "basicinfo", "continent", "String", getContinent());
-        conditions = addCondition(conditions, "basicinfo", "country", "String", getCountry());
-        conditions = addCondition(conditions, "basicinfo", "projectType", "String", getProjectType());
-        conditions = addCondition(conditions, "basicinfo", "projectName", "String", getProjectName());
-        conditions = addCondition(conditions, "basicinfo", "planted", "String", getPlanned());
-        conditions = addCondition(conditions, "basicinfo", "dispatch", "String", getDispatch());
-        conditions = addCondition(conditions, "basicinfo", "travleType", "String", getTravelType());
-        conditions = addCondition(conditions, "basicinfo", "annual", "String", getAnnual());
+        if (isCutPage)
+            conditions = addCondition(conditions, "", "rownum", "page", getOffSet() + "," + getPageCount());
 
-        conditions = addCondition(conditions, "schoolroll", "registerState", "String", getRegisterState());
-        conditions = addCondition(conditions, "schoolroll", "studentType", "String", getStudentType());
-        conditions = addCondition(conditions, "schoolroll", "appropriations", "String", getAppropriations());
-        conditions = addCondition(conditions, "schoolroll", "teachlanguage", "String", getTeachLanguage());
-        conditions = addCondition(conditions, "schoolroll", "schoolrollstate", "String", getSchoolRollState());
-        conditions = addCondition(conditions, "schoolroll", "arrivalDate", "date", getArrivalDateBegin(), getArrivalDateEnd());
-        conditions = addCondition(conditions, "schoolroll", "leaveDate", "date", getLeaveDateBegin(), getLeaveDateEnd());
-        conditions = addCondition(conditions, "schoolroll", "cramDateBegin", "date", getCramDateBeginBegin(), getCramDateBeginEnd());
-        conditions = addCondition(conditions, "schoolroll", "cramDateEnd", "date", getCramDateEndBegin(), getCramDateEndEnd());
-        conditions = addCondition(conditions, "schoolroll", "majorDate", "date", getMajorStartDateBegin(), getMajorStartDateEnd());
-        conditions = addCondition(conditions, "schoolroll", "plan_leave_time", "date", getPlanLeaveDateBegin(), getPlanLeaveDateEnd());
+        conditions = addCondition(conditions, "basicInfo", "passportName", "String", getPassportName());
+        conditions = addCondition(conditions, "basicInfo", "continent", "String", getContinent());
+        conditions = addCondition(conditions, "basicInfo", "country", "String", getCountry());
+        conditions = addCondition(conditions, "basicInfo", "projectType", "String", getProjectType());
+        conditions = addCondition(conditions, "basicInfo", "projectName", "String", getProjectName());
+        conditions = addCondition(conditions, "basicInfo", "planted", "String", getPlanned());
+        conditions = addCondition(conditions, "basicInfo", "dispatch", "String", getDispatch());
+        conditions = addCondition(conditions, "basicInfo", "travleType", "String", getTravelType());
+        conditions = addCondition(conditions, "basicInfo", "annual", "String", getAnnual());
+
+        conditions = addCondition(conditions, "schoolRoll", "registerState", "String", getRegisterState());
+        conditions = addCondition(conditions, "schoolRoll", "studentType", "String", getStudentType());
+        conditions = addCondition(conditions, "schoolRoll", "appropriations", "String", getAppropriations());
+        conditions = addCondition(conditions, "schoolRoll", "teachLanguage", "String", getTeachLanguage());
+        conditions = addCondition(conditions, "schoolRoll", "schoolrollstate", "String", getSchoolRollState());
+        conditions = addCondition(conditions, "schoolRoll", "arrivalDate", "date", getArrivalDateBegin(), getArrivalDateEnd());
+        conditions = addCondition(conditions, "schoolRoll", "leaveDate", "date", getLeaveDateBegin(), getLeaveDateEnd());
+        conditions = addCondition(conditions, "schoolRoll", "cramDateBegin", "date", getCramDateBeginBegin(), getCramDateBeginEnd());
+        conditions = addCondition(conditions, "schoolRoll", "cramDateEnd", "date", getCramDateEndBegin(), getCramDateEndEnd());
+        conditions = addCondition(conditions, "schoolRoll", "majorStartDate", "date", getMajorStartDateBegin(), getMajorStartDateEnd());
+        conditions = addCondition(conditions, "schoolRoll", "planLeaveDate", "date", getPlanLeaveDateBegin(), getPlanLeaveDateEnd());
+
+        conditions = addCondition(conditions, "student", "cscId", "String", getCscId());
 
         return conditions;
     }
@@ -308,5 +315,29 @@ public class StudentFilterObject implements FilterObject {
 
     public void setPlanLeaveDateEnd(String planLeaveDateEnd) {
         this.planLeaveDateEnd = planLeaveDateEnd;
+    }
+
+    public boolean isCutPage() {
+        return isCutPage;
+    }
+
+    public void setIsCutPage(boolean isCutPage) {
+        this.isCutPage = isCutPage;
+    }
+
+    public String getOffSet() {
+        return offSet;
+    }
+
+    public void setOffSet(String offSet) {
+        this.offSet = offSet;
+    }
+
+    public String getPageCount() {
+        return pageCount;
+    }
+
+    public void setPageCount(String pageCount) {
+        this.pageCount = pageCount;
     }
 }

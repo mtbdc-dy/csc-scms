@@ -3,13 +3,17 @@ package gov.gwssi.csc.scms.service.student;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.base.UnitTestBase;
-import gov.gwssi.csc.scms.domain.queryfilter.StudentFilterObject;
+import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
+import gov.gwssi.csc.scms.domain.query.StudentResultObject;
 import gov.gwssi.csc.scms.domain.student.*;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,19 +22,45 @@ import java.util.List;
 public class StudentServiceTest extends UnitTestBase {
 
     @Test
-    public void getStudentsByConditionsTest() throws JsonProcessingException {
+    public void getStudentsByFilterTest() throws JsonProcessingException {
 
-        String body = "{\"csc_id\" : \"222\",\"passport_name\" : \"Jams\"}";
-        StudentFilterObject sfo = null;
+        StudentService studentService = getBean("studentService");
+        String body = "{\"cscId\" : \"csc11000001\",\"passportName\" : \"null\"," +
+                "\"planLeaveDateBegin\" : \"2015-09-09\" , \"planLeaveDateEnd\" : \"2016-09-09 \"}";
+        StudentFilterObject sfo;
+        List<StudentResultObject> stus = null;
         try {
             sfo = new ObjectMapper().readValue(body, StudentFilterObject.class);
+            stus = studentService.getStudentsByFilter(sfo);
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        System.out.println("CSC_ID::" + sfo.getCsc_id());
-//        Assert.assertEquals("222", sfo.getCsc_id());
-//        Assert.assertEquals("Jams", sfo.getPassport_name());
-//        Assert.assertNull(sfo.getContinent_name());
+
+        Assert.assertNotNull(stus);
+        System.out.println("list size::" + stus.size());
+        for (StudentResultObject sro : stus) {
+            System.out.println("studentId::" + sro.getStudentId());
+            System.out.println("CscId::" + sro.getCscId());
+            System.out.println("planLeaveDate::" + sro.getPlanLeaveDate());
+        }
+    }
+
+    @Test
+    public void getCountByFilterTest() throws JsonProcessingException {
+        StudentService studentService = getBean("studentService");
+        String body = "{\"cscId\" : \"csc11000001\",\"passportName\" : \"null\"," +
+                "\"planLeaveDateBegin\" : \"2015-09-09\" , \"planLeaveDateEnd\" : \"2016-09-09 \"}";
+        StudentFilterObject sfo;
+        int count = 0;
+        try {
+            sfo = new ObjectMapper().readValue(body, StudentFilterObject.class);
+            sfo.setIsCutPage(false);
+            count = studentService.getCountByQueryFilter(sfo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("count::" + count);
     }
 
     @Test
@@ -60,11 +90,20 @@ public class StudentServiceTest extends UnitTestBase {
     }
 
     private Student getStudentInTest() {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = null;
+        try {
+            date = sdf.parse("2016-02-02 00:00:00");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         Student stu = new Student();
         stu.setCscId("csc11000001");
 
         BasicInfo bf = new BasicInfo();
-        bf.setChineseName("小明");
+        bf.setChineseName("阿拉丁");
         bf.setAnnual(2014);
         bf.setContinent("亚洲");
         bf.setCountry("棒子国");
@@ -80,7 +119,8 @@ public class StudentServiceTest extends UnitTestBase {
         stu.setDiscuss(discuss);
 
         SchoolRoll schoolroll = new SchoolRoll();
-        schoolroll.setScholarshipYear(2013L);
+        schoolroll.setRegisterYear("2013");
+        schoolroll.setPlanLeaveDate(date);
         stu.setSchoolRoll(schoolroll);
 
         ProfilesHistory ph = new ProfilesHistory();

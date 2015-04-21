@@ -11,6 +11,6 @@ import java.util.List;
  */
 @Repository(value = "gradeAttachmentRepository")
 public interface GradeAttachmentRepository extends CrudRepository<GradeAttachment, Long> {
-    public List<GradeAttachment> findByStudentId(Long studentId);
+    List<GradeAttachment> findByStudentId(Long studentId);
 }
 

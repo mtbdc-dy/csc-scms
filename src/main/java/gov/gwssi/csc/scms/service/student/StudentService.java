@@ -1,8 +1,9 @@
 package gov.gwssi.csc.scms.service.student;
 
-import gov.gwssi.csc.scms.domain.queryfilter.FilterObject;
-import gov.gwssi.csc.scms.domain.queryfilter.StudentFilterObject;
-import gov.gwssi.csc.scms.domain.queryfilter.StudentQueryFilter;
+import gov.gwssi.csc.scms.domain.query.FilterObject;
+import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
+import gov.gwssi.csc.scms.domain.query.StudentFilter;
+import gov.gwssi.csc.scms.domain.query.StudentResultObject;
 import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.repository.student.*;
 import gov.gwssi.csc.scms.service.BaseService;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -53,25 +53,42 @@ public class StudentService extends BaseService {
         return studentRepository.findByCscId(scsId);
     }
 
-    public List getStuInfoList() {
-        List<Student> studentList = new ArrayList<Student>();
-        String sql = "select t.project_name, t.continent_name," +
-                "t.country_name,t.passport_name from SCMS_BASIC_INFO t ";
-        System.out.println("super.baseDAO============" + super.baseDAO);
-        studentList = super.getBaseDao().queryListBySql(sql);
-//        for (Student stu : studentRepository.findAll()){
-//            studentList.add(stu);
-//        }
+    public List<StudentResultObject> getStudentsByFilter(FilterObject filterObject) {
+        List<StudentResultObject> studentList;
 
+        String sql = getSqlByBody(filterObject);
+        if (sql == null) {
+            return null;
+        }
+
+        studentList = super.getBaseDao().getObjectListByNativeSQLAndType(sql, StudentResultObject.class);
         return studentList;
     }
 
-    public List<Student> getStudentsByQueryFilter(FilterObject filterObject) {
-        List<Student> studentList;
-        String sql = getSqlByBody(filterObject);
-        if (sql == null) return null;
-        studentList = super.getBaseDao().queryListBySql(sql);
-        return studentList;
+    public int getCountByQueryFilter(FilterObject filterObject) {
+        String sql = getCountSqlByBody(filterObject);
+        if (sql == null) {
+            return 0;
+        }
+
+        int count = super.getBaseDao().getCountByNativeSQL(sql);
+        return count;
+    }
+
+    private String getCountSqlByBody(FilterObject filterObject) {
+        if (filterObject == null) {
+            return null;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        String tempSql = "select count(*) " +
+                "from SCMS_Student student,SCMS_Basic_Info basicInfo, SCMS_SchoolRoll schoolRoll " +
+                "where student.basicInfo = basicInfo.studentId " +
+                "and student.schoolRoll = schoolRoll.studentId ";
+        sb.append(tempSql);
+
+        sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter());
+        return sb.toString();
     }
 
     private String getSqlByBody(FilterObject filterObject) {
@@ -79,21 +96,19 @@ public class StudentService extends BaseService {
             return null;
 
         StringBuilder sb = new StringBuilder();
-        String tempSql = "select student.* from scms_student student " +
-                "left join scms_basic_info basicinfo on student/.basicinfo = basicinfo.student " +
-                "left join scms_registration_info registrationinfo on student.registrationinfo = registrationinfo.student " +
-                "left join scms_student discuss on student.discuss = discuss.id " +
-                "left join scms_schoolroll schoolroll on student.schoolroll = schoolroll.id " +
-                "left join scms_related_address relatedaddress on student.relatedaddress = relatedaddress.student " +
-                "left join scms_accident accident on student.accident = accident.student " +
-                "where 1 = 1 ";
+
+        sb.append(StudentResultObject.getResultObject());
+
+        String tempSql = " from SCMS_Student student,SCMS_Basic_Info basicInfo, SCMS_SchoolRoll schoolRoll " +
+                "where student.basicInfo = basicInfo.studentId " +
+                "and student.schoolRoll = schoolRoll.studentId ";
         sb.append(tempSql);
 
-        sb.append(new StudentQueryFilter((StudentFilterObject) filterObject).getQueryFilter());
-
+        sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter());
         return sb.toString();
     }
 
+    @Transactional
     public Student updateStudent(Student student) {
         return saveStudent(student);
     }
@@ -120,7 +135,7 @@ public class StudentService extends BaseService {
             gradeAttachmentService.saveGradeAttachment(student.getGradeAttachment());
         if (student.getSchoolfellow() != null)
             schoolfellowService.saveSchoolfellow(student.getSchoolfellow());
-        return studentRepository.save(student);
 
+        return studentRepository.save(student);
     }
 }

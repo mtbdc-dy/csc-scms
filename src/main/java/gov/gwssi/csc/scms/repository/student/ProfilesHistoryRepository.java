@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository(value = "profilesHistoryRepository")
 public interface ProfilesHistoryRepository extends CrudRepository<ProfilesHistory, Long> {
-    public ProfilesHistory findByStudentId(Long studentId);
+    ProfilesHistory findByStudentId(Long studentId);
 }

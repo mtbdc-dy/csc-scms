@@ -1,7 +1,8 @@
 package gov.gwssi.csc.scms.controller.student;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.gwssi.csc.scms.domain.queryfilter.StudentFilterObject;
+import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
+import gov.gwssi.csc.scms.domain.query.StudentResultObject;
 import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.service.student.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,37 +29,38 @@ public class StudentController {
 
     @Transactional
     public Student saveStudent(@PathVariable String id) {
-        Student student = new Student();
-        student.setCscId(id);
-//        student.setCertificateNumber(id);
-//        student.setName(id);
-//        student.setGender(id);
-
-        return studentService.saveStudent(student);
+        //尚未开通支持
+        return null;
     }
 
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json")
     public String getStuInfoList() {
-        System.out.println("backlist===" + studentService.getStuInfoList().toString());
-        //list<>
-        return "1";
+        //尚未开通支持
+        return null;
     }
 
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
-    @Transactional
     public String addStudent(@RequestBody String body) {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            Student student = mapper.readValue(body, Student.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "-1";
-        }
-        return "1";
+//        ObjectMapper mapper = new ObjectMapper();
+//        try {
+//            Student student = mapper.readValue(body, Student.class);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return "-1";
+//        }
+        //尚未开通支持
+        return null;
     }
 
-    @RequestMapping(method = RequestMethod.OPTIONS,headers = "Accept=application/json")
-    public List<Student> getStudentsByConditions(@RequestBody String body){
+    /**
+     * 学籍信息管理相关操作，获取学生列表
+     * 请求信息为Json格式对应的StudentFilterObject类
+     *
+     * @param body
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.OPTIONS, headers = "Accept=application/json")
+    public List<StudentResultObject> getStudentsByConditions(@RequestBody String body) {
         ObjectMapper mapper = new ObjectMapper();
         StudentFilterObject sfo = null;
         try {
@@ -68,7 +70,14 @@ public class StudentController {
             return null;
         }
 
-        return studentService.getStudentsByQueryFilter(sfo);
+        //按照分页（默认）要求，返回列表内容
+        sfo.setIsCutPage(true);
+        List<StudentResultObject> studentResultObjects = studentService.getStudentsByFilter(sfo);
+        //获取列表最大量
+        sfo.setIsCutPage(false);
+        int count = studentService.getCountByQueryFilter(sfo);
+
+        return studentResultObjects;
     }
 
 }

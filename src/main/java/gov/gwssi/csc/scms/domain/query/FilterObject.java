@@ -1,4 +1,4 @@
-package gov.gwssi.csc.scms.domain.queryfilter;
+package gov.gwssi.csc.scms.domain.query;
 
 import java.util.List;
 

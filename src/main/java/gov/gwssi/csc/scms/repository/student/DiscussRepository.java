@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository(value = "discussRepository")
 public interface DiscussRepository extends CrudRepository<Discuss, Long> {
-    public Discuss findByStudentId(Long studentId);
+    Discuss findByStudentId(Long studentId);
 }

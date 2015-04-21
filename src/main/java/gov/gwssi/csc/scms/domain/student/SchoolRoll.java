@@ -59,14 +59,6 @@ public class SchoolRoll {
      */
     private Date planLeaveDate;
     /**
-     * 奖学金评审年度
-     */
-    private Long scholarshipYear;
-    /**
-     * 奖学金处理意见
-     */
-    private String scholarshipOpinion;
-    /**
      * 学位证编号
      */
     private String degreeNO;
@@ -117,13 +109,9 @@ public class SchoolRoll {
     /**
      * 离华时间
      */
-    private Date leave_Date;
+    private Date leaveDate;
     /**
      * 离华原因
-     */
-    private String leaveReason;
-    /**
-     * 奖学金评审结果
      */
     private String scholarshipReviewResult;
     /**
@@ -131,7 +119,7 @@ public class SchoolRoll {
      */
     private String academicCertificateNO;
     /**
-     *异动发文编号
+     * 异动发文编号
      */
     private String abnormalDocumentNO;
     /**
@@ -261,22 +249,6 @@ public class SchoolRoll {
         this.planLeaveDate = planLeaveDate;
     }
 
-    public Long getScholarshipYear() {
-        return scholarshipYear;
-    }
-
-    public void setScholarshipYear(Long scholarshipYear) {
-        this.scholarshipYear = scholarshipYear;
-    }
-
-    public String getScholarshipOpinion() {
-        return scholarshipOpinion;
-    }
-
-    public void setScholarshipOpinion(String scholarshipOpinion) {
-        this.scholarshipOpinion = scholarshipOpinion;
-    }
-
     public String getDegreeNO() {
         return degreeNO;
     }
@@ -373,20 +345,12 @@ public class SchoolRoll {
         this.leaveChina = leaveChina;
     }
 
-    public Date getLeave_Date() {
-        return leave_Date;
+    public Date getLeaveDate() {
+        return leaveDate;
     }
 
-    public void setLeave_Date(Date leave_Date) {
-        this.leave_Date = leave_Date;
-    }
-
-    public String getLeaveReason() {
-        return leaveReason;
-    }
-
-    public void setLeaveReason(String leaveReason) {
-        this.leaveReason = leaveReason;
+    public void setLeaveDate(Date leave_Date) {
+        this.leaveDate = leave_Date;
     }
 
     public String getScholarshipReviewResult() {

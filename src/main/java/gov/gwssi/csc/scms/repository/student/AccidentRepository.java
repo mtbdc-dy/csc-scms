@@ -12,5 +12,5 @@ import java.util.List;
 @Repository("accidentRepository")
 public interface AccidentRepository extends CrudRepository<Accident, Long> {
 
-    public List<Accident> findByStudentId(Long studentId);
+    List<Accident> findByStudentId(Long studentId);
 }
