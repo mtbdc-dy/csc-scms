@@ -2,10 +2,7 @@ package gov.gwssi.csc.scms.domain.query;
 
 import org.springframework.util.StringUtils;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,23 +36,25 @@ public class StudentFilterObject implements FilterObject {
     private String arrivalDateBegin = null;//来华时间起始时间
     private String arrivalDateEnd = null;//来华时间终止时间
     private String leaveDateBegin = null;//离华时间起始时间
-    private String leaveDateEnd = "null";//离华时间终止时间
-    private String cramDateBeginBegin = "null";//汉补开始时间起始时间
-    private String cramDateBeginEnd = "null";//汉补开始时间终止时间
-    private String cramDateEndBegin = "null";//汉补结束时间起始时间
-    private String cramDateEndEnd = "null";//汉补结束时间终止时间
-    private String majorStartDateBegin = "null";//入专业院校时间起始时间
-    private String majorStartDateEnd = "null";//入专业院校时间终止时间
-    private String planLeaveDateBegin = "null";//预计离华时间起始时间
-    private String planLeaveDateEnd = "null";//预计离华时间终止时间
+    private String leaveDateEnd = null;//离华时间终止时间
+    private String cramDateBeginBegin = null;//汉补开始时间起始时间
+    private String cramDateBeginEnd = null;//汉补开始时间终止时间
+    private String cramDateEndBegin = null;//汉补结束时间起始时间
+    private String cramDateEndEnd = null;//汉补结束时间终止时间
+    private String majorStartDateBegin = null;//入专业院校时间起始时间
+    private String majorStartDateEnd = null;//入专业院校时间终止时间
+    private String planLeaveDateBegin = null;//预计离华时间起始时间
+    private String planLeaveDateEnd = null;//预计离华时间终止时间
 
+    private boolean isCutPage = true;
     private String offSet = "0";
     private String pageCount = "200";
 
     public List<FilterCell> getConditions() {
         List<FilterCell> conditions = new ArrayList<FilterCell>();
 
-        conditions = addCondition(conditions, "", "rownum", "page", getOffSet() + "," + getPageCount());
+        if (isCutPage)
+            conditions = addCondition(conditions, "", "rownum", "page", getOffSet() + "," + getPageCount());
 
         conditions = addCondition(conditions, "basicInfo", "passportName", "String", getPassportName());
         conditions = addCondition(conditions, "basicInfo", "continent", "String", getContinent());
@@ -316,6 +315,14 @@ public class StudentFilterObject implements FilterObject {
 
     public void setPlanLeaveDateEnd(String planLeaveDateEnd) {
         this.planLeaveDateEnd = planLeaveDateEnd;
+    }
+
+    public boolean isCutPage() {
+        return isCutPage;
+    }
+
+    public void setIsCutPage(boolean isCutPage) {
+        this.isCutPage = isCutPage;
     }
 
     public String getOffSet() {

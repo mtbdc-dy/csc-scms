@@ -8,12 +8,10 @@ import java.util.Date;
  * 学籍信息管理查询学生信息列表结果类
  * Created by Murray on 2015/4/20.
  */
-@Entity(name = "studentResultObject")
 public class StudentResultObject extends ResultObject {
     /**
      * 学生ID
      */
-    @Id
     private Long studentId;
     /**
      * CSCID

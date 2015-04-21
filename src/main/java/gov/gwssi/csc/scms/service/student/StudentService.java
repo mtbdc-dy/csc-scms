@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,18 +53,6 @@ public class StudentService extends BaseService {
         return studentRepository.findByCscId(scsId);
     }
 
-    public List getStuInfoList() {
-        List<Student> studentList = new ArrayList<Student>();
-        String sql = "select t.projectname, t.continent," +
-                "t.country,t.passportname from SCMS_BASIC_INFO t ";
-        System.out.println("super.baseDAO============" + super.baseDAO);
-        studentList = super.getBaseDao().queryListBySql(sql);
-//        for (Student stu : studentRepository.findAll()){
-//            studentList.add(stu);
-//        }
-        return studentList;
-    }
-
     public List<StudentResultObject> getStudentsByFilter(FilterObject filterObject) {
         List<StudentResultObject> studentList;
 
@@ -78,15 +65,13 @@ public class StudentService extends BaseService {
         return studentList;
     }
 
-    public Long getCountByQueryFilter(FilterObject filterObject) {
-        Long count = 0L;
-
+    public int getCountByQueryFilter(FilterObject filterObject) {
         String sql = getCountSqlByBody(filterObject);
         if (sql == null) {
-            return count;
+            return 0;
         }
 
-        count = super.getBaseDao().getCountBySql(sql);
+        int count = super.getBaseDao().getCountByNativeSQL(sql);
         return count;
     }
 
@@ -97,10 +82,9 @@ public class StudentService extends BaseService {
 
         StringBuilder sb = new StringBuilder();
         String tempSql = "select count(*) " +
-                "from Student student " +
-                "left join BasicInfo basicInfo on student.basicInfo = basicInfo.studentId " +
-                "left join SchoolRoll schoolRoll on student.schoolRoll = schoolRoll.studentId " +
-                "where 1 = 1 ";
+                "from SCMS_Student student,SCMS_Basic_Info basicInfo, SCMS_SchoolRoll schoolRoll " +
+                "where student.basicInfo = basicInfo.studentId " +
+                "and student.schoolRoll = schoolRoll.studentId ";
         sb.append(tempSql);
 
         sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter());

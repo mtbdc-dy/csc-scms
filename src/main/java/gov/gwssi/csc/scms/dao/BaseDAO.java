@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityResult;
 import javax.persistence.Query;
 import javax.sql.DataSource;
 import java.util.List;
@@ -65,15 +64,14 @@ public class BaseDAO {
         }
     }
 
-    public Long getCountBySql(String sql) {
-        Long count = 0L;
+    public int getCountByNativeSQL(String sql) {
         EntityManager em = null;
-
+        System.out.println("SQL::" + sql);
         try {
             em = entityManagerFactory.createEntityManager();
             Query query = em.createNativeQuery(sql);
-            count = (Long) query.getSingleResult();
-            return count;
+            Object o = query.getSingleResult();
+            return Integer.parseInt(o.toString());
         } finally {
             if (em != null) {
                 em.close();

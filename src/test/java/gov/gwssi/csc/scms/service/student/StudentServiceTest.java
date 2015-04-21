@@ -46,6 +46,24 @@ public class StudentServiceTest extends UnitTestBase {
     }
 
     @Test
+    public void getCountByFilterTest() throws JsonProcessingException {
+        StudentService studentService = getBean("studentService");
+        String body = "{\"cscId\" : \"csc11000001\",\"passportName\" : \"null\"," +
+                "\"planLeaveDateBegin\" : \"2015-09-09\" , \"planLeaveDateEnd\" : \"2016-09-09 \"}";
+        StudentFilterObject sfo;
+        int count = 0;
+        try {
+            sfo = new ObjectMapper().readValue(body, StudentFilterObject.class);
+            sfo.setIsCutPage(false);
+            count = studentService.getCountByQueryFilter(sfo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("count::" + count);
+    }
+
+    @Test
     public void saveStudentTest() {
         StudentService studentService = getBean("studentService");
         Student stu = studentService.saveStudent(getStudentInTest());
