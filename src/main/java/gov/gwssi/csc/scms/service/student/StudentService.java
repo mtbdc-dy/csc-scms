@@ -74,7 +74,7 @@ public class StudentService extends BaseService {
             return null;
         }
 
-        studentList = super.getBaseDao().queryListBySql(sql);
+        studentList = super.getBaseDao().getObjectListByNativeSQLAndType(sql, StudentResultObject.class);
         return studentList;
     }
 
@@ -97,9 +97,9 @@ public class StudentService extends BaseService {
 
         StringBuilder sb = new StringBuilder();
         String tempSql = "select count(*) " +
-                "from scms_student student " +
-                "left join scms_basic_info basicinfo on student.basicinfo = basicinfo.studentid " +
-                "left join scms_registration_info registrationinfo on student.registrationinfo = registrationinfo.studentid " +
+                "from Student student " +
+                "left join BasicInfo basicInfo on student.basicInfo = basicInfo.studentId " +
+                "left join SchoolRoll schoolRoll on student.schoolRoll = schoolRoll.studentId " +
                 "where 1 = 1 ";
         sb.append(tempSql);
 
@@ -115,10 +115,9 @@ public class StudentService extends BaseService {
 
         sb.append(StudentResultObject.getResultObject());
 
-        String tempSql = " from scms_student student " +
-                "left join scms_basic_info basicinfo on student.basicinfo = basicinfo.studentid " +
-                "left join scms_registration_info registrationinfo on student.registrationinfo = registrationinfo.studentid " +
-                "where 1 = 1 ";
+        String tempSql = " from SCMS_Student student,SCMS_Basic_Info basicInfo, SCMS_SchoolRoll schoolRoll " +
+                "where student.basicInfo = basicInfo.studentId " +
+                "and student.schoolRoll = schoolRoll.studentId ";
         sb.append(tempSql);
 
         sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter());

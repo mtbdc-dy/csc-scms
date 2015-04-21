@@ -1,15 +1,19 @@
 package gov.gwssi.csc.scms.domain.query;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.Date;
 
 /**
  * 学籍信息管理查询学生信息列表结果类
  * Created by Murray on 2015/4/20.
  */
+@Entity(name = "studentResultObject")
 public class StudentResultObject extends ResultObject {
     /**
      * 学生ID
      */
+    @Id
     private Long studentId;
     /**
      * CSCID
@@ -51,19 +55,6 @@ public class StudentResultObject extends ResultObject {
      */
     private String registerState;
 
-    public StudentResultObject(Long studentId, String cscId, String sex, String birthday, String passportName, String certificateNO, String studentType, String country, Date planLeaveDate, String registerState) {
-        this.studentId = studentId;
-        this.cscId = cscId;
-        this.sex = sex;
-        this.birthday = birthday;
-        this.passportName = passportName;
-        this.certificateNO = certificateNO;
-        this.studentType = studentType;
-        this.country = country;
-        this.planLeaveDate = planLeaveDate;
-        this.registerState = registerState;
-    }
-
     public void setStudentId(Long studentId) {
         this.studentId = studentId;
     }
@@ -104,9 +95,53 @@ public class StudentResultObject extends ResultObject {
         this.registerState = registerState;
     }
 
+    public Long getStudentId() {
+        return studentId;
+    }
+
+    public String getCscId() {
+        return cscId;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public String getPassportName() {
+        return passportName;
+    }
+
+    public String getCertificateNO() {
+        return certificateNO;
+    }
+
+    public String getStudentType() {
+        return studentType;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public Date getPlanLeaveDate() {
+        return planLeaveDate;
+    }
+
+    public String getRegisterState() {
+        return registerState;
+    }
+
     public static String getResultObject() {
 
-        String resultSql = "select new StudentResultObject(student.studentId, student.cscId, basicInfo.sex, basicInfo.birthday, basicInfo.passportName, schoolRoll.certificateNO, schoolRoll.studentType, basicInfo.country, schoolRoll.planLeaveDate, schoolRoll.registerState)";
+        String resultSql = "select student.id as studentId, student.cscId as cscId, basicInfo.sex as sex, " +
+                "basicInfo.birthday as birthday, basicInfo.passportName as passportName, " +
+                "schoolRoll.certificateNO as certificateNO, schoolRoll.studentType as studentType, " +
+                "basicInfo.country as country, schoolRoll.planLeaveDate as planLeaveDate, " +
+                "schoolRoll.registerState as registerState";
         return resultSql;
     }
 }

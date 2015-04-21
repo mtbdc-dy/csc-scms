@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityResult;
 import javax.persistence.Query;
 import javax.sql.DataSource;
 import java.util.List;
@@ -47,13 +48,14 @@ public class BaseDAO {
         }
     }
 
-    public <T> List<T> getObjectListByType(String sql, Class<T> clazz) {
+    public <T> List<T> getObjectListByNativeSQLAndType(String sql, Class<T> clazz) {
         List<T> objectList;
         EntityManager em = null;
-
+        System.out.println("SQL::" + sql);
         try {
             em = entityManagerFactory.createEntityManager();
             Query query = em.createNativeQuery(sql, clazz);
+
             objectList = query.getResultList();
             return objectList;
         } finally {

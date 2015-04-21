@@ -31,7 +31,7 @@ public class StudentFilter implements Filter {
                 if (str.length > 1) {
                     sb.append(" and ").append(fc.getTableName()).append(".").append(fc.getColumnName()).append(" in (");
                     for (String parm : str) {
-                        sb.append(parm).append(",");
+                        sb.append("'").append(parm).append("',");
                     }
                     sb.setCharAt(sb.length(), ')');
                 } else {
@@ -40,8 +40,8 @@ public class StudentFilter implements Filter {
             }
             if ("Date".equalsIgnoreCase(fc.getType())) {
                 if (str.length > 1) {
-                    sb.append(" and ").append(fc.getTableName()).append(".").append(fc.getColumnName()).append(" between (");
-                    sb.append("to_date('").append(str[0]).append("','yyyy-mm-dd hh24:mi:ss'),").append("to_date('").append(str[1]).append("','yyyy-mm-dd hh24:mi:ss'))");
+                    sb.append(" and to_char(").append(fc.getTableName()).append(".").append(fc.getColumnName()).append(",'yyyy-mm-dd hh24:mi:ss') between ");
+                    sb.append("'").append(str[0]).append("' and '").append(str[1]).append("' ");
                 } else {
                     sb.append(" and ").append(fc.getTableName()).append(".").append(fc.getColumnName()).append(" = ").append("to_date('").append(str[0]).append("','yyyy-mm-dd hh24:mi:ss')");
                 }
