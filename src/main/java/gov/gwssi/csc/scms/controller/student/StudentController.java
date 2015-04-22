@@ -49,7 +49,7 @@ public class StudentController {
 //            return "-1";
 //        }
         //尚未开通支持
-        return null;
+        return "no such method";
     }
 
     /**
