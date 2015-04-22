@@ -55,13 +55,23 @@ public class StudentService extends BaseService {
 
     public List<StudentResultObject> getStudentsByFilter(FilterObject filterObject) {
         List<StudentResultObject> studentList;
+        int startPosition, pageSize;
 
         String sql = getSqlByBody(filterObject);
         if (sql == null) {
             return null;
         }
 
-        studentList = super.getBaseDao().getObjectListByNativeSQLAndType(sql, StudentResultObject.class);
+        try {
+            startPosition = Integer.parseInt(filterObject.getOffSet());
+            pageSize = Integer.parseInt(filterObject.getPageSize());
+        } catch (NumberFormatException ne) {
+            ne.printStackTrace();
+            startPosition = 0;
+            pageSize = 200;
+        }
+
+        studentList = super.getBaseDao().getObjectListByHQL(sql, StudentResultObject.class, startPosition, pageSize);
         return studentList;
     }
 
@@ -71,7 +81,7 @@ public class StudentService extends BaseService {
             return 0;
         }
 
-        int count = super.getBaseDao().getCountByNativeSQL(sql);
+        int count = super.getBaseDao().getCountObjectByHQL(sql);
         return count;
     }
 
@@ -82,9 +92,9 @@ public class StudentService extends BaseService {
 
         StringBuilder sb = new StringBuilder();
         String tempSql = "select count(*) " +
-                "from SCMS_Student student,SCMS_Basic_Info basicInfo, SCMS_SchoolRoll schoolRoll " +
-                "where student.basicInfo = basicInfo.studentId " +
-                "and student.schoolRoll = schoolRoll.studentId ";
+                "from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll " +
+                "where student.basicInfo = basicInfo.student " +
+                "and student.schoolRoll = schoolRoll.student ";
         sb.append(tempSql);
 
         sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter());
@@ -99,9 +109,9 @@ public class StudentService extends BaseService {
 
         sb.append(StudentResultObject.getResultObject());
 
-        String tempSql = " from SCMS_Student student,SCMS_Basic_Info basicInfo, SCMS_SchoolRoll schoolRoll " +
-                "where student.basicInfo = basicInfo.studentId " +
-                "and student.schoolRoll = schoolRoll.studentId ";
+        String tempSql = " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll " +
+                "where student.basicInfo = basicInfo.student " +
+                "and student.schoolRoll = schoolRoll.student ";
         sb.append(tempSql);
 
         sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter());

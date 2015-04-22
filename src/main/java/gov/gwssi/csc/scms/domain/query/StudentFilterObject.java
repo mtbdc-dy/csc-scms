@@ -9,7 +9,7 @@ import java.util.List;
  * 学生列表查询实体类
  * Created by Murray on 2015/4/2.
  */
-public class StudentFilterObject implements FilterObject {
+public class StudentFilterObject extends FilterObject {
 
     /**
      * 主要查询条件
@@ -46,15 +46,8 @@ public class StudentFilterObject implements FilterObject {
     private String planLeaveDateBegin = null;//预计离华时间起始时间
     private String planLeaveDateEnd = null;//预计离华时间终止时间
 
-    private boolean isCutPage = true;
-    private String offSet = "0";
-    private String pageCount = "200";
-
     public List<FilterCell> getConditions() {
         List<FilterCell> conditions = new ArrayList<FilterCell>();
-
-        if (isCutPage)
-            conditions = addCondition(conditions, "", "rownum", "page", getOffSet() + "," + getPageCount());
 
         conditions = addCondition(conditions, "basicInfo", "passportName", "String", getPassportName());
         conditions = addCondition(conditions, "basicInfo", "continent", "String", getContinent());
@@ -315,29 +308,5 @@ public class StudentFilterObject implements FilterObject {
 
     public void setPlanLeaveDateEnd(String planLeaveDateEnd) {
         this.planLeaveDateEnd = planLeaveDateEnd;
-    }
-
-    public boolean isCutPage() {
-        return isCutPage;
-    }
-
-    public void setIsCutPage(boolean isCutPage) {
-        this.isCutPage = isCutPage;
-    }
-
-    public String getOffSet() {
-        return offSet;
-    }
-
-    public void setOffSet(String offSet) {
-        this.offSet = offSet;
-    }
-
-    public String getPageCount() {
-        return pageCount;
-    }
-
-    public void setPageCount(String pageCount) {
-        this.pageCount = pageCount;
     }
 }

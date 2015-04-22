@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -26,7 +27,8 @@ public class StudentServiceTest extends UnitTestBase {
 
         StudentService studentService = getBean("studentService");
         String body = "{\"cscId\" : \"csc11000001\",\"passportName\" : \"null\"," +
-                "\"planLeaveDateBegin\" : \"2015-09-09\" , \"planLeaveDateEnd\" : \"2016-09-09 \"}";
+                "\"planLeaveDateBegin\" : \"\" , \"planLeaveDateEnd\" : \"null\"," +
+                "\"offSet\" : \"0\" , \"pageSize\" : \"2\"}";
         StudentFilterObject sfo;
         List<StudentResultObject> stus = null;
         try {
@@ -38,7 +40,9 @@ public class StudentServiceTest extends UnitTestBase {
 
         Assert.assertNotNull(stus);
         System.out.println("list size::" + stus.size());
+
         for (StudentResultObject sro : stus) {
+            System.out.println("==============================");
             System.out.println("studentId::" + sro.getStudentId());
             System.out.println("CscId::" + sro.getCscId());
             System.out.println("planLeaveDate::" + sro.getPlanLeaveDate());
@@ -49,17 +53,15 @@ public class StudentServiceTest extends UnitTestBase {
     public void getCountByFilterTest() throws JsonProcessingException {
         StudentService studentService = getBean("studentService");
         String body = "{\"cscId\" : \"csc11000001\",\"passportName\" : \"null\"," +
-                "\"planLeaveDateBegin\" : \"2015-09-09\" , \"planLeaveDateEnd\" : \"2016-09-09 \"}";
+                "\"planLeaveDateBegin\" : \"null\" , \"planLeaveDateEnd\" : \"2016-09-09 \"}";
         StudentFilterObject sfo;
         int count = 0;
         try {
             sfo = new ObjectMapper().readValue(body, StudentFilterObject.class);
-            sfo.setIsCutPage(false);
             count = studentService.getCountByQueryFilter(sfo);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         System.out.println("count::" + count);
     }
 

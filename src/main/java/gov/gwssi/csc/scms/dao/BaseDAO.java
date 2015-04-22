@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.dao;
 
+import gov.gwssi.csc.scms.domain.query.StudentResultObject;
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.Transformers;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -47,16 +48,21 @@ public class BaseDAO {
         }
     }
 
-    public <T> List<T> getObjectListByNativeSQLAndType(String sql, Class<T> clazz) {
-        List<T> objectList;
+    public <T> List<T> getObjectListByHQL(String hSql, Class<T> clazz) {
+        return getObjectListByHQL(hSql,clazz,0,200);
+    }
+
+    public <T> List<T> getObjectListByHQL(String hSql, Class<T> clazz, int startPosition,int pageSize) {
         EntityManager em = null;
-        System.out.println("SQL::" + sql);
+        List<T> list;
+        System.out.println("HQL::" + hSql);
         try {
             em = entityManagerFactory.createEntityManager();
-            Query query = em.createNativeQuery(sql, clazz);
-
-            objectList = query.getResultList();
-            return objectList;
+            Query query = em.createQuery(hSql);
+            query.setFirstResult(startPosition);
+            query.setMaxResults(pageSize);
+            list = query.getResultList();
+            return list;
         } finally {
             if (em != null) {
                 em.close();
@@ -64,12 +70,12 @@ public class BaseDAO {
         }
     }
 
-    public int getCountByNativeSQL(String sql) {
+    public int getCountObjectByHQL(String hSql) {
         EntityManager em = null;
-        System.out.println("SQL::" + sql);
+        System.out.println("SQL::" + hSql);
         try {
             em = entityManagerFactory.createEntityManager();
-            Query query = em.createNativeQuery(sql);
+            Query query = em.createQuery(hSql);
             Object o = query.getSingleResult();
             return Integer.parseInt(o.toString());
         } finally {

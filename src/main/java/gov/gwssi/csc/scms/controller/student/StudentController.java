@@ -71,10 +71,8 @@ public class StudentController {
         }
 
         //按照分页（默认）要求，返回列表内容
-        sfo.setIsCutPage(true);
         List<StudentResultObject> studentResultObjects = studentService.getStudentsByFilter(sfo);
         //获取列表最大量
-        sfo.setIsCutPage(false);
         int count = studentService.getCountByQueryFilter(sfo);
 
         return studentResultObjects;

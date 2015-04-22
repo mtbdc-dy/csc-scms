@@ -46,17 +46,6 @@ public class StudentFilter implements Filter {
                     sb.append(" and ").append(fc.getTableName()).append(".").append(fc.getColumnName()).append(" = ").append("to_date('").append(str[0]).append("','yyyy-mm-dd hh24:mi:ss')");
                 }
             }
-            if ("page".equalsIgnoreCase(fc.getType())) {
-                int offSet, maxCount;
-                try {
-                    offSet = Integer.parseInt(str[0]);
-                    maxCount = Integer.parseInt(str[1]);
-                } catch (NumberFormatException ne) {
-                    offSet = 0;
-                    maxCount = 200;
-                }
-                sb.append(" and rownum > ").append(offSet).append(" and rownum <= ").append(offSet + maxCount);
-            }
         }
         return sb.toString();
     }

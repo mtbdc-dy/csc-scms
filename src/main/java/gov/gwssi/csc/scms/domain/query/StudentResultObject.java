@@ -1,7 +1,5 @@
 package gov.gwssi.csc.scms.domain.query;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
 import java.util.Date;
 
 /**
@@ -52,6 +50,19 @@ public class StudentResultObject extends ResultObject {
      * 报到状态（0未处理 1报到 2放弃来华）
      */
     private String registerState;
+
+    public StudentResultObject(Long studentId, String cscId, String sex, String birthday, String passportName, String certificateNO, String studentType, String country, Date planLeaveDate, String registerState) {
+        this.studentId = studentId;
+        this.cscId = cscId;
+        this.sex = sex;
+        this.birthday = birthday;
+        this.passportName = passportName;
+        this.certificateNO = certificateNO;
+        this.studentType = studentType;
+        this.country = country;
+        this.planLeaveDate = planLeaveDate;
+        this.registerState = registerState;
+    }
 
     public void setStudentId(Long studentId) {
         this.studentId = studentId;
@@ -134,12 +145,9 @@ public class StudentResultObject extends ResultObject {
     }
 
     public static String getResultObject() {
-
-        String resultSql = "select student.id as studentId, student.cscId as cscId, basicInfo.sex as sex, " +
-                "basicInfo.birthday as birthday, basicInfo.passportName as passportName, " +
-                "schoolRoll.certificateNO as certificateNO, schoolRoll.studentType as studentType, " +
-                "basicInfo.country as country, schoolRoll.planLeaveDate as planLeaveDate, " +
-                "schoolRoll.registerState as registerState";
+        String resultSql = "select new gov.gwssi.csc.scms.domain.query.StudentResultObject(student.id, student.cscId, basicInfo.sex, " +
+                "basicInfo.birthday, basicInfo.passportName,schoolRoll.certificateNO, schoolRoll.studentType, " +
+                "basicInfo.country, schoolRoll.planLeaveDate,schoolRoll.registerState) ";
         return resultSql;
     }
 }
