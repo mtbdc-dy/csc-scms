@@ -16,40 +16,23 @@ import java.util.List;
  * Created by WangZishi on 3/27/2015.
  */
 @RestController
-@RequestMapping("/service/student")
+@RequestMapping(value = "/service/student")
 public class StudentController {
 
     @Autowired
     private StudentService studentService;
 
-    @RequestMapping(
-            value = "/{id}",
-            method = RequestMethod.POST
-    )
-
-    @Transactional
-    public Student saveStudent(@PathVariable String id) {
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public String saveStudent(@PathVariable String id) {
         //尚未开通支持
-        return null;
+        return id;
     }
 
-    @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json")
-    public String getStuInfoList() {
-        //尚未开通支持
-        return null;
-    }
 
-    @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
-    public String addStudent(@RequestBody String body) {
-//        ObjectMapper mapper = new ObjectMapper();
-//        try {
-//            Student student = mapper.readValue(body, Student.class);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return "-1";
-//        }
+    @RequestMapping(value = "/{value}", method = RequestMethod.OPTIONS)
+    public String addStudent(@PathVariable String value) {
         //尚未开通支持
-        return "no such method";
+        return value;
     }
 
     /**
@@ -59,7 +42,7 @@ public class StudentController {
      * @param body
      * @return
      */
-    @RequestMapping(method = RequestMethod.OPTIONS, headers = "Accept=application/json")
+    @RequestMapping(value = "/list", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
     public List<StudentResultObject> getStudentsByConditions(@RequestBody String body) {
         ObjectMapper mapper = new ObjectMapper();
         StudentFilterObject sfo = null;
@@ -72,10 +55,23 @@ public class StudentController {
 
         //按照分页（默认）要求，返回列表内容
         List<StudentResultObject> studentResultObjects = studentService.getStudentsByFilter(sfo);
+        return studentResultObjects;
+    }
+
+    @RequestMapping(value = "/count", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
+    public int getCountByConditions(@RequestBody String body) {
+        ObjectMapper mapper = new ObjectMapper();
+        StudentFilterObject sfo = null;
+        try {
+            sfo = mapper.readValue(body, StudentFilterObject.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return 0;
+        }
+
         //获取列表最大量
         int count = studentService.getCountByQueryFilter(sfo);
-
-        return studentResultObjects;
+        return count;
     }
 
 }
