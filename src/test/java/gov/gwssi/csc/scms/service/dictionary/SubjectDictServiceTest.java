@@ -10,64 +10,15 @@ import java.util.Map;
 
 /**
  * Created by WangZhenghua on 2015/4/20.
+ * 学科代码表测试用例
  */
 public class SubjectDictServiceTest  extends UnitTestBase {
 
     @Test
-    public void getSubjectInfo(){
+    public void getSubject(){
         SubjectDictService subjectDictService = getBean("subjectDictService");
-        subjectDictService.getSubjectDictInfo();
+        subjectDictService.getSubjectDictJsonData("1");
+        subjectDictService.getSubjectDictJsonData("2");
+        subjectDictService.getSubjectDictJsonData("3");
     }
-
-    @Test
-    public void getSubjectDict(){
-        SubjectDictService subjectDictService = getBean("subjectDictService");
-        long begin = System.currentTimeMillis();;
-        List subjectDictList = subjectDictService.getSubjectDict();
-        List<SubjectDictTreeJson> list = Lists.newArrayList();
-        for(int i=0;i<subjectDictList.size();i++){
-            Map map = (Map)subjectDictList.get(i);
-            SubjectDictTreeJson treeJson = new SubjectDictTreeJson();
-            treeJson.setCode((String) map.get("SUBJECT_ID") == null ? "" : (String) map.get("SUBJECT_ID"));
-            treeJson.setValue((String) map.get("SUBJECT_NAME_CH") == null ? "" : (String) map.get("SUBJECT_NAME_CH"));
-            treeJson.setCodePid(map.get("PARENT_ID") == null ? "" : (String) map.get("PARENT_ID"));
-            if(map.get("ENABLED").equals("1")){
-                treeJson.setValid("true");
-            }else{
-                treeJson.setValid("false");
-            }
-            list.add(treeJson);
-        }
-            List<SubjectDictTreeJson> dictList = SubjectDictTreeJson.formatTree(list);
-            String json = JsonMapper.getInstance().toJson(dictList);
-            System.out.println("json======"+json);
-            long end = System.currentTimeMillis();
-            System.out.println("cost time="+(end-begin));
-
-    }
-
-    @Test
-    public void getSubjectDictBySpec1(){
-        SubjectDictService subjectDictService = getBean("subjectDictService");
-        List subjectDictList = subjectDictService.getSubjectDictBySpec1();
-        List<SubjectDictTreeJson> list = Lists.newArrayList();
-        for(int i=0;i<subjectDictList.size();i++){
-            Map map = (Map)subjectDictList.get(i);
-            SubjectDictTreeJson treeJson = new SubjectDictTreeJson();
-            treeJson.setCode((String) map.get("SUBJECT_ID") == null ? "" : (String) map.get("SUBJECT_ID"));
-            treeJson.setValue((String) map.get("SUBJECT_NAME_CH") == null ? "" : (String) map.get("SUBJECT_NAME_CH"));
-            treeJson.setCodePid(map.get("PARENT_ID") == null ? "" : (String) map.get("PARENT_ID"));
-            if(map.get("ENABLED").equals("1")){
-                treeJson.setValid("true");
-            }else{
-                treeJson.setValid("false");
-            }
-            list.add(treeJson);
-        }
-        List<SubjectDictTreeJson> dictList = SubjectDictTreeJson.formatTree(list);
-        String json = JsonMapper.getInstance().toJson(dictList);
-        System.out.println("json****======"+json);
-    }
-
-
 }
