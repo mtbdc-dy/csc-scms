@@ -15,48 +15,27 @@ import java.util.Map;
 
 @Service("subjectDictDAO")
 public class SubjectDictDAO extends BaseDAO{
-    public List getSubjectDict(){
+
+    private final String SUBJECT_LEVEL_ONE = "1";
+    private final String SUBJECT_LEVEL_TWO = "2";
+    private final String SUBJECT_LEVEL_THREE = "3";
+
+    public List getSubjectDictByLevel(String level){
         List subjectDictList;
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("select subject_id,subject_name_ch,parent_id,enabled from v_dim_spec_3");
+        if(level.equals(SUBJECT_LEVEL_ONE)){
+            stringBuilder.append("select subject_id,subject_name_ch,parent_id,enabled from v_dim_spec_1");
+        }else if(level.equals(SUBJECT_LEVEL_TWO)){
+            stringBuilder.append("select subject_id,subject_name_ch,parent_id,enabled from v_dim_spec_2");
+        }else if(level.equals(SUBJECT_LEVEL_THREE)){
+            stringBuilder.append("select subject_id,subject_name_ch,parent_id,enabled from v_dim_spec_3");
+        }
         subjectDictList = super.queryListBySql(stringBuilder.toString());
         return subjectDictList;
     }
 
-    public List getSubjectDictBySpec1(){
-        List subjectDictList;
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("select subject_id,subject_name_ch,parent_id,enabled from v_dim_spec_1");
-        subjectDictList = super.queryListBySql(stringBuilder.toString());
-        return subjectDictList;
-    }
-
-    public String getSubjectDictJsonDataBySpec1(){
-        List subjecDictList = null;
-        String jsonData = "";
-        subjecDictList = getSubjectDictBySpec1();
-        jsonData = obtainSubjectDictJsonData(subjecDictList);
-        return jsonData;
-    }
-
-    public List getSubjectDictBySpec2(){
-        List subjectDictList;
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("select subject_id,subject_name_ch,parent_id,enabled from v_dim_spec_2");
-        subjectDictList = super.queryListBySql(stringBuilder.toString());
-        return subjectDictList;
-    }
-
-    public String getSubjectDictJsonDataBySpec2(){
-        List subjecDictList = null;
-        String jsonData = "";
-        subjecDictList = getSubjectDictBySpec1();
-        jsonData = obtainSubjectDictJsonData(subjecDictList);
-        return jsonData;
-    }
-
-    public String getSubjectDictJsonData(){
-        List subjectDictList = getSubjectDict();
+    public String getSubjectDictJsonDataByLevel(String level){
+        List subjectDictList = getSubjectDictByLevel(level);
         List<SubjectDictTreeJson> list = Lists.newArrayList();
         if(subjectDictList != null && subjectDictList.size()>0) {
             for (int i = 0; i < subjectDictList.size(); i++) {
@@ -78,25 +57,4 @@ public class SubjectDictDAO extends BaseDAO{
         return jsonData;
     }
 
-    public String obtainSubjectDictJsonData(List subjectDictList){
-        List<SubjectDictTreeJson> list = Lists.newArrayList();
-        if(subjectDictList != null && subjectDictList.size()>0){
-            for (int i = 0; i < subjectDictList.size(); i++) {
-                Map map = (Map) subjectDictList.get(i);
-                SubjectDictTreeJson treeJson = new SubjectDictTreeJson();
-                treeJson.setCode((String) map.get("SUBJECT_ID") == null ? "" : (String) map.get("SUBJECT_ID"));
-                treeJson.setValue((String) map.get("SUBJECT_NAME_CH") == null ? "" : (String) map.get("SUBJECT_NAME_CH"));
-                treeJson.setCodePid(map.get("PARENT_ID") == null ? "" : (String) map.get("PARENT_ID"));
-                if (map.get("ENABLED").equals("1")) {
-                    treeJson.setValid("true");
-                } else {
-                    treeJson.setValid("false");
-                }
-                list.add(treeJson);
-            }
-        }
-        List<SubjectDictTreeJson> dictList = SubjectDictTreeJson.formatTree(list);
-        String jsonData = JsonMapper.getInstance().toJson(dictList);
-        return jsonData;
-    }
 }

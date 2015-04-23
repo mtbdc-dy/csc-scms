@@ -21,8 +21,8 @@ public class SubjectDictController {
     public String getSubjectDict(){
         String subjectJsonData = "";
         try{
-            subjectJsonData = subjectDictService.getSubjectDictJsonData();
-            System.out.println("subectJsonData="+subjectJsonData);
+            subjectJsonData = subjectDictService.getSubjectDictJsonData("3");
+            System.out.println("SubjectDictController-->getSubjectDict方法中subectJsonData="+subjectJsonData);
         }catch (Exception e){
             e.printStackTrace();
             return "";
