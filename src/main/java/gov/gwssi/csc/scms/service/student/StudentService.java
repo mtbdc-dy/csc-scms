@@ -38,7 +38,7 @@ public class StudentService extends BaseService {
     @Autowired
     private ProfilesHistoryService profilesHistoryService;
     @Autowired
-    private SchoolFellowService schoolFellowService;
+    private SchoolfellowService schoolfellowService;
     @Autowired
     private GradeService gradeService;
     @Autowired
@@ -139,7 +139,7 @@ public class StudentService extends BaseService {
         if (!(student.getGradeAttachment() == null || student.getGradeAttachment().isEmpty()))
             gradeAttachmentService.saveGradeAttachment(student.getGradeAttachment());
         if (student.getSchoolfellow() != null)
-            schoolFellowService.saveSchoolfellow(student.getSchoolfellow());
+            schoolfellowService.saveSchoolfellow(student.getSchoolfellow());
 
         return studentRepository.save(student);
     }

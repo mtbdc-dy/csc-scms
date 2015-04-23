@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
  * Created by Murray on 2015/4/16.
  */
 @Service("schoolfellowService")
-public class SchoolFellowService extends BaseService {
+public class SchoolfellowService extends BaseService {
 
     @Autowired
     @Qualifier("schoolfellowRepository")
