@@ -87,7 +87,7 @@ public class StudentServiceTest extends UnitTestBase {
         StudentService studentService = getBean("studentService");
         Student stu = studentService.getStudentByCscId("csc11000023");
         stu.getBasicInfo().setChineseName("小红");
-        Student stu1 = studentService.updateStudent(stu);
+        Student stu1 = studentService.saveStudent(stu);
         Assert.assertNotNull(stu1);
     }
 
