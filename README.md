@@ -44,3 +44,54 @@ echo Hack JPA End
 - 重启`Weblogic`，搞定，收工。
 
 最后，希望还在继续奋斗在Weblogic11g上各种坑的同胞们尽早脱离苦海o(*￣▽￣*)ブ
+
+# Restful APIs
+
+后端系统中对外发布复合 Restful API 设计的资源
+
+## Student
+
+学生资源
+
+### 资源URI `/student`
+
+HTTP请求 | 可用性 | 期望返回值 | 说明
+------- | ----- | -------- | ---
+GET | 支持 | JSON 数组 | API服务器返回对应的Student列表
+POST | 不支持 | - | -
+PUT | 不支持 | - | -
+DELETE | 不支持 | - | -
+
+### 资源格式
+
+Student JSON Object Example
+
+```
+{
+  "studentId": 1,
+  "cscId": "CSC11000001",
+  "sex": null,
+  "birthday": null,
+  "passportName": null,
+  "certificateNO": null,
+  "studentType": null,
+  "country": "美国",
+  "planLeaveDate": 61414992000000,
+  "registerState": null,
+  ...
+}
+```
+
+Student JSON Array Example
+
+```
+[{
+  "studentId": 1,
+  "cscId": "CSC11000001",
+  ...
+},{
+  "studentId": 1,
+  "cscId": "CSC11000001",
+  ...
+},...]
+```
