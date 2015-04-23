@@ -19,7 +19,7 @@ public class RelatedAddressService extends BaseService {
     @Qualifier("relatedAddressRepository")
     private RelatedAddressRepository relatedAddressRepository;
 
-    public RelatedAddress getRelatedAddressById(String id) {
+    public RelatedAddress getRelatedAddressById(Long id) {
         return relatedAddressRepository.findOne(id);
     }
 
@@ -32,14 +32,16 @@ public class RelatedAddressService extends BaseService {
     }
 
     public RelatedAddress updateRelatedAddress(RelatedAddress relatedAddress) {
-        return relatedAddressRepository.save(relatedAddress);
+        RelatedAddress relatedAddress1 = getRelatedAddressById(relatedAddress.getId());
+        super.copyFiledValue(RelatedAddress.class, relatedAddress, relatedAddress1);
+        return relatedAddressRepository.save(relatedAddress1);
     }
 
     public Iterable updateRelatedAddress(List<RelatedAddress> relatedAddresses) {
         return relatedAddressRepository.save(relatedAddresses);
     }
 
-    public List<RelatedAddress> getRelatedAddressByStudentId(Long studentId){
+    public List<RelatedAddress> getRelatedAddressByStudentId(Long studentId) {
         return relatedAddressRepository.findByStudentId(studentId);
     }
 
