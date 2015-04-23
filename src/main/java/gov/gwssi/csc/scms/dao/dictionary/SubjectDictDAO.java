@@ -25,11 +25,11 @@ public class SubjectDictDAO extends BaseDAO{
         List subjectDictList;
         StringBuilder stringBuilder = new StringBuilder();
         if(level.equals(SUBJECT_LEVEL_ONE)){
-            stringBuilder.append("select subject_id,subject_name_ch,parent_id,enabled from v_dim_spec_1");
+            stringBuilder.append("select subjectid,subjectnamech,parentid,enabled from v_dim_spec_1");
         }else if(level.equals(SUBJECT_LEVEL_TWO)){
-            stringBuilder.append("select subject_id,subject_name_ch,parent_id,enabled from v_dim_spec_2");
+            stringBuilder.append("select subjectid,subjectnamech,parentid,enabled from v_dim_spec_2");
         }else if(level.equals(SUBJECT_LEVEL_THREE)){
-            stringBuilder.append("select subject_id,subject_name_ch,parent_id,enabled from v_dim_spec_3");
+            stringBuilder.append("select subjectid,subjectnamech,parentid,enabled from v_dim_spec_3");
         }
         subjectDictList = super.queryListBySql(stringBuilder.toString());
         return subjectDictList;
@@ -43,9 +43,9 @@ public class SubjectDictDAO extends BaseDAO{
             for (int i = 0; i < subjectDictList.size(); i++) {
                 Map map = (Map) subjectDictList.get(i);
                 SubjectDictTreeJson treeJson = new SubjectDictTreeJson();
-                treeJson.setCode((String) map.get("SUBJECT_ID") == null ? "" : (String) map.get("SUBJECT_ID"));
-                treeJson.setValue((String) map.get("SUBJECT_NAME_CH") == null ? "" : (String) map.get("SUBJECT_NAME_CH"));
-                treeJson.setCodePid(map.get("PARENT_ID") == null ? "" : (String) map.get("PARENT_ID"));
+                treeJson.setCode((String) map.get("SUBJECTID") == null ? "" : (String) map.get("SUBJECTID"));
+                treeJson.setValue((String) map.get("SUBJECTNAMECH") == null ? "" : (String) map.get("SUBJECTNAMECH"));
+                treeJson.setCodePid(map.get("PARENTID") == null ? "" : (String) map.get("PARENTID"));
                 if (map.get("ENABLED").equals("1")) {
                     treeJson.setValid("true");
                 } else {
