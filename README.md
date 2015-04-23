@@ -49,18 +49,33 @@ echo Hack JPA End
 
 后端系统中对外发布复合 Restful API 设计的资源
 
-## Student
+## FilterResult
 
-学生资源
+过滤器资源
 
-### 资源URI `/student`
+### 资源格式
+
+FilterResult JSON Object Example
+
+```
+{
+  "count": 2390
+}
+```
+
+### 资源 URI `/filterResult`
 
 HTTP请求 | 可用性 | 期望返回值 | 说明
 ------- | ----- | -------- | ---
-GET | 支持 | JSON 数组 | API服务器返回对应的Student列表
+GET | 支持 | JSON 对象 | API服务器返回对应的Filter，筛选条件为`?filter=` + URLEncode，无参数时返回空白FilterResult对象
 POST | 不支持 | - | -
 PUT | 不支持 | - | -
 DELETE | 不支持 | - | -
+
+
+## Student
+
+学生资源
 
 ### 资源格式
 
@@ -95,3 +110,48 @@ Student JSON Array Example
   ...
 },...]
 ```
+
+Student Property JSON Object Example
+
+```
+{
+  "property": "passportName",
+  "value": "Wang Zhenghua",
+}
+```
+
+### 资源 URI `/student`
+
+HTTP请求 | 可用性 | 期望返回值 | 说明
+------- | ----- | -------- | ---
+GET | 支持 | JSON 数组 | API服务器返回对应的 Student 列表，筛选条件为`?filter=` + URLEncode
+POST | 支持 | JSON 对象 | 创建一个新 Student，API 服务器返回对应完整的 Student 对象
+PUT | 不支持 | - | -
+DELETE | 不支持 | - | -
+
+
+### 资源 URI `/student/@id`
+
+HTTP请求 | 可用性 | 期望返回值 | 说明
+------- | ----- | -------- | ---
+GET | 支持 | JSON 对象 | 查询某一个指定 ID 的 Student，API 服务器返回对应完整的 Student 对象
+POST | 不支持 | - | -
+PUT | 支持 | JSON 对象 | 更新一个 Student，API服务器返回对应完整的 Student 对象
+DELETE | 支持 | JSON 对象 | 删除一个 Student，API服务器返回对应完整的 Student 对象
+
+### 资源 URI `/student/:id/@group`
+
+HTTP请求 | 可用性 | 期望返回值 | 说明
+------- | ----- | -------- | ---
+GET | 支持 | JSON 对象 | 查询某一个指定 ID 的 Student 的 Property Group（即对应 Tab 页的 Domain 对象），API 服务器返回对应完整的 Property Group 对象
+POST | 不支持 | - | -
+PUT | 支持 | JSON 对象 | 更新一个指定ID的 Student 的 Property Group，API服务器返回对应完整的 Property Group 对象
+DELETE | 不支持 | － | －
+
+### 资源 URI `/student/:id/:group/@prop`
+HTTP请求 | 可用性 | 期望返回值 | 说明
+------- | ----- | -------- | ---
+GET | 支持 | JSON 对象 | 查询一个指定 ID 的 Student 的指定 Property，API 服务器返回 Student Property 对象
+POST | 不支持 | - | -
+PUT | 支持 | JSON 对象 | 更新一个指定ID的 Student 的指定 Property，API 服务器返回的 Student Property 对象
+DELETE | 不支持 | － | －
