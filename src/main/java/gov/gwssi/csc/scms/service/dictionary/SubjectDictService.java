@@ -1,10 +1,7 @@
 package gov.gwssi.csc.scms.service.dictionary;
 
-import com.google.common.collect.Lists;
 import gov.gwssi.csc.scms.dao.dictionary.SubjectDictDAO;
-import gov.gwssi.csc.scms.domain.dictionary.SubjectDictTreeJson;
 import gov.gwssi.csc.scms.service.BaseService;
-import gov.gwssi.csc.scms.service.dictionary.util.JsonMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +19,7 @@ public class SubjectDictService extends BaseService{
     @Autowired
     private SubjectDictDAO subjectDictDAO;
 
+    // 根据学科层级获取相应的学科代码表信息(level:1为一级，2为二级，3为三级)
     public String getSubjectDictJsonData(String level){
        String jsonData = "";
        jsonData = subjectDictDAO.getSubjectDictJsonDataByLevel(level);

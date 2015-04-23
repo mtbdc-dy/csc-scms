@@ -5,12 +5,12 @@ import gov.gwssi.csc.scms.dao.BaseDAO;
 import gov.gwssi.csc.scms.domain.dictionary.SubjectDictTreeJson;
 import gov.gwssi.csc.scms.service.dictionary.util.JsonMapper;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Map;
 
 /**
  * Created by WangZhenghua on 2015/4/21.
+ * 学科代码表DAO层封装类
  */
 
 @Service("subjectDictDAO")
@@ -20,6 +20,7 @@ public class SubjectDictDAO extends BaseDAO{
     private final String SUBJECT_LEVEL_TWO = "2";
     private final String SUBJECT_LEVEL_THREE = "3";
 
+    // 根据学科层级获取排序后的学科List
     public List getSubjectDictByLevel(String level){
         List subjectDictList;
         StringBuilder stringBuilder = new StringBuilder();
@@ -34,6 +35,7 @@ public class SubjectDictDAO extends BaseDAO{
         return subjectDictList;
     }
 
+    // 根据学科层级得到转义后的JSONData
     public String getSubjectDictJsonDataByLevel(String level){
         List subjectDictList = getSubjectDictByLevel(level);
         List<SubjectDictTreeJson> list = Lists.newArrayList();
