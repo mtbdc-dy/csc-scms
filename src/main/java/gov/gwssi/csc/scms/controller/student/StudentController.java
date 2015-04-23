@@ -3,10 +3,8 @@ package gov.gwssi.csc.scms.controller.student;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.StudentResultObject;
-import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.service.student.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -26,13 +24,6 @@ public class StudentController {
     public String saveStudent(@PathVariable String id) {
         //尚未开通支持
         return id;
-    }
-
-
-    @RequestMapping(value = "/{value}", method = RequestMethod.OPTIONS)
-    public String addStudent(@PathVariable String value) {
-        //尚未开通支持
-        return value;
     }
 
     /**
