@@ -126,7 +126,8 @@ public class Abnormal {
     @Column(name = "handleTime")
     private Date handleTime;//处理日期
     /**
-     *处理状态 0未提交 1提交未上报 2上报未审核 3审核未处理 4 处理
+     *处理状态
+     *  0未提交 1提交未上报 2上报未审核 3审核未处理 4 处理
      */
     @Column(name = "state",length=1)
     private String state;//处理状态 0未提交 1提交未上报 2上报未审核 3审核未处理 4 处理
