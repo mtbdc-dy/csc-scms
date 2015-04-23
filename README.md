@@ -146,7 +146,7 @@ HTTP请求 | 可用性 | 期望返回值 | 说明
 GET | 支持 | JSON 对象 | 查询某一个指定 ID 的 Student 的 Property Group（即对应 Tab 页的 Domain 对象），API 服务器返回对应完整的 Property Group 对象
 POST | 不支持 | - | -
 PUT | 支持 | JSON 对象 | 更新一个指定ID的 Student 的 Property Group，API服务器返回对应完整的 Property Group 对象
-DELETE | 不支持 | － | －
+DELETE | 不支持 | - | -
 
 ### 资源 URI `/student/:id/:group/@prop`
 HTTP请求 | 可用性 | 期望返回值 | 说明
@@ -154,4 +154,4 @@ HTTP请求 | 可用性 | 期望返回值 | 说明
 GET | 支持 | JSON 对象 | 查询一个指定 ID 的 Student 的指定 Property，API 服务器返回 Student Property 对象
 POST | 不支持 | - | -
 PUT | 支持 | JSON 对象 | 更新一个指定ID的 Student 的指定 Property，API 服务器返回的 Student Property 对象
-DELETE | 不支持 | － | －
+DELETE | 不支持 | - | -
