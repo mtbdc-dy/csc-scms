@@ -19,13 +19,13 @@ public class SubjectDictController {
 
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json")
     public String getSubjectDict(){
-        String subjectJsonData = "";
+        String subjectJsonData = "[]";
         try{
             subjectJsonData = subjectDictService.getSubjectDictJsonData("3");
             System.out.println("SubjectDictController-->getSubjectDict方法中subectJsonData="+subjectJsonData);
         }catch (Exception e){
             e.printStackTrace();
-            return "";
+            return "[]";
         }
         return subjectJsonData;
     }
