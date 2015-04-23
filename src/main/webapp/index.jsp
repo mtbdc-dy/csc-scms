@@ -5,6 +5,6 @@
   </head>
   <body>
   this is my JSP!!
-  from wangrui!
+  from wangrui and lzs passed!
   </body>
 </html>
