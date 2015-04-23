@@ -22,12 +22,14 @@ public class BasicInfoService extends BaseService {
         return basicInfoRepository.findOne(id);
     }
 
-    public BasicInfo getBasicInfoByStudentId(Long studentId){
+    public BasicInfo getBasicInfoByStudentId(Long studentId) {
         return basicInfoRepository.findByStudentId(studentId);
     }
 
     public BasicInfo updateBasicInfo(BasicInfo basicInfo) {
-        return basicInfoRepository.save(basicInfo);
+        BasicInfo basicInfoTemp = getBasicInfoById(basicInfo.getId());
+        copyFiledValue(BasicInfo.class,basicInfo,basicInfoTemp);
+        return basicInfoRepository.save(basicInfoTemp);
     }
 
     public BasicInfo saveBasicInfo(BasicInfo basicInfo) {

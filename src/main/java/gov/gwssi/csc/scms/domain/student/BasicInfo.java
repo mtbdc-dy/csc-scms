@@ -15,7 +15,7 @@ public class BasicInfo {
     /**
      * 年度
      */
-    private Integer annual;
+    private int annual;
     /**
      * 护照姓名
      */
@@ -79,11 +79,11 @@ public class BasicInfo {
         this.id = id;
     }
 
-    public Integer getAnnual() {
+    public int getAnnual() {
         return annual;
     }
 
-    public void setAnnual(Integer annual) {
+    public void setAnnual(int annual) {
         this.annual = annual;
     }
 
@@ -189,5 +189,26 @@ public class BasicInfo {
 
     public void setStudent(Student student) {
         this.student = student;
+    }
+
+    @Override
+    public String toString() {
+        return "BasicInfo{" +
+                "student=" + student +
+                ", travelType='" + travelType + '\'' +
+                ", dispatch='" + dispatch + '\'' +
+                ", projectName='" + projectName + '\'' +
+                ", projectType='" + projectType + '\'' +
+                ", planned=" + planned +
+                ", photo='" + photo + '\'' +
+                ", country='" + country + '\'' +
+                ", continent='" + continent + '\'' +
+                ", birthday='" + birthday + '\'' +
+                ", sex='" + sex + '\'' +
+                ", chineseName='" + chineseName + '\'' +
+                ", passportName='" + passportName + '\'' +
+                ", annual=" + annual +
+                ", id=" + id +
+                '}';
     }
 }

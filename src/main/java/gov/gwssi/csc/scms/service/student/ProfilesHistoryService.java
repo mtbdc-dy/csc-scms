@@ -25,7 +25,13 @@ public class ProfilesHistoryService extends BaseService {
         return profilesHistoryRepository.save(profilesHistory);
     }
 
-    public ProfilesHistory getProfilesHistoryByStudentId(Long studentId){
+    public ProfilesHistory updateProfilesHistory(ProfilesHistory profilesHistory) {
+        ProfilesHistory profilesHistory1 = getProfilesHistoryById(profilesHistory.getId());
+        super.copyFiledValue(ProfilesHistory.class, profilesHistory, profilesHistory1);
+        return profilesHistoryRepository.save(profilesHistory1);
+    }
+
+    public ProfilesHistory getProfilesHistoryByStudentId(Long studentId) {
         return profilesHistoryRepository.findByStudentId(studentId);
     }
 }

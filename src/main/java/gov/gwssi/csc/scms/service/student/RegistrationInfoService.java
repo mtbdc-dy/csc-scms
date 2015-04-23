@@ -25,7 +25,13 @@ public class RegistrationInfoService extends BaseService {
         return registrationInfoRepository.save(registrationInfo);
     }
 
-    public RegistrationInfo getRegistrationInfoByStudentId(Long studentId){
+    public RegistrationInfo updateRegistrationInfo(RegistrationInfo registrationInfo) {
+        RegistrationInfo registrationInfo1 = getRegistrationInfoById(registrationInfo.getId());
+        super.copyFiledValue(RegistrationInfo.class, registrationInfo, registrationInfo1);
+        return registrationInfoRepository.save(registrationInfo1);
+    }
+
+    public RegistrationInfo getRegistrationInfoByStudentId(Long studentId) {
         return registrationInfoRepository.findByStudentId(studentId);
     }
 }

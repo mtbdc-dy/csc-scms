@@ -119,11 +119,6 @@ public class StudentService extends BaseService {
     }
 
     @Transactional
-    public Student updateStudent(Student student) {
-        return saveStudent(student);
-    }
-
-    @Transactional
     public Student saveStudent(Student student) {
         if (student.getBasicInfo() != null)
             basicInfoService.saveBasicInfo(student.getBasicInfo());

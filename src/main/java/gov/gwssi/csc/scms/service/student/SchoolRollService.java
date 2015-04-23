@@ -21,6 +21,12 @@ public class SchoolRollService extends BaseService {
         return schoolRollRepository.findOne(id);
     }
 
+    public SchoolRoll updateSchoolRoll(SchoolRoll schoolRoll) {
+        SchoolRoll schoolRollTemp = getSchoolRollById(schoolRoll.getId());
+        copyFiledValue(SchoolRoll.class, schoolRoll, schoolRollTemp);
+        return schoolRollRepository.save(schoolRollTemp);
+    }
+
     public SchoolRoll saveSchoolRoll(SchoolRoll schoolRoll) {
         return schoolRollRepository.save(schoolRoll);
     }

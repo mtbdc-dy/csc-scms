@@ -21,11 +21,17 @@ public class DiscussService extends BaseService {
         return discussRepository.findOne(id);
     }
 
-    public Discuss getDiscussByStudentId(Long studentID){
+    public Discuss getDiscussByStudentId(Long studentID) {
         return discussRepository.findByStudentId(studentID);
     }
 
     public Discuss saveDiscuss(Discuss discuss) {
         return discussRepository.save(discuss);
+    }
+
+    public Discuss updateDiscuss(Discuss discuss) {
+        Discuss discuss1 = getDiscussById(discuss.getId());
+        super.copyFiledValue(Discuss.class, discuss, discuss1);
+        return saveDiscuss(discuss1);
     }
 }
