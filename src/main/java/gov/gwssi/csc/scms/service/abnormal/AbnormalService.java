@@ -1,5 +1,7 @@
 package gov.gwssi.csc.scms.service.abnormal;
 
+import gov.gwssi.csc.scms.repository.abnormal.AbnormalRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -8,4 +10,5 @@ import org.springframework.stereotype.Service;
 
 @Service("abnormaltService")
 public class AbnormalService {
+
 }
