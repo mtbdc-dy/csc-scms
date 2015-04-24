@@ -5,7 +5,6 @@ import gov.gwssi.csc.scms.dao.BaseDAO;
 import gov.gwssi.csc.scms.domain.dictionary.DictTreeJson;
 import gov.gwssi.csc.scms.service.dictionary.util.JsonMapper;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Map;
 
