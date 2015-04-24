@@ -1,7 +1,6 @@
 package gov.gwssi.csc.scms.domain.abnormal;
 
 import gov.gwssi.csc.scms.domain.student.Student;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -9,8 +8,8 @@ import java.util.Date;
  * Created by Wang Rui on 2015/4/15.
  * 异动管理
  */
-@Entity
-@Table(name = "SCMS_ABNORMAL")
+ @Entity
+ @Table(name = "SCMS_ABNORMAL")
 public class Abnormal {
     @Id
     @SequenceGenerator(name = "SCMS_ABNORMAL_ID",sequenceName = "SCMS_ABNORMAL_SEQ",allocationSize = 1)
