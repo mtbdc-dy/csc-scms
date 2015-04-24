@@ -10,35 +10,35 @@ import java.util.Map;
 
 /**
  * Created by WangZhenghua on 2015/4/23.
- * 大洲代码表DAO层封装类
+ * 项目代码表DAO层封装类
  */
 
-@Service("regionDictDAO")
-public class RegionDictDAO extends BaseDAO{
+@Service("projectDictDAO")
+public class ProjectDictDAO extends BaseDAO{
 
-    private final String REGION_LEVEL_ONE = "1";
-    private final String REGION_LEVEL_TWO = "2";
+    private final String PROJECT_LEVEL_ONE = "1";
+    private final String PROJECT_LEVEL_TWO = "2";
 
-    // 根据region层次获取排序后的List
-    public List getRegionDictByLevel(String level){
-        List regionList = null;
+    // 根据project层级获取排序后的项目List
+    public List getProjectDictByLevel(String level){
+        List projectList = null;
         StringBuilder stringBuilder = new StringBuilder();
-        if(level.equals(REGION_LEVEL_ONE)){
-            stringBuilder.append("select regionid,namech,parentid,enabled from v_dim_region_1");
-        }else if(level.equals(REGION_LEVEL_TWO)){
-            stringBuilder.append("select regionid,namech,parentid,enabled from v_dim_region_2");
+        if(level.equals(PROJECT_LEVEL_ONE)){
+            stringBuilder.append("select regionid,namech,parentid,enabled from v_dim_project_1");
+        }else if(level.equals(PROJECT_LEVEL_TWO)){
+            stringBuilder.append("select regionid,namech,parentid,enabled from v_dim_project_2");
         }
-        regionList = super.queryListBySql(stringBuilder.toString());
-        return regionList;
+        projectList = super.queryListBySql(stringBuilder.toString());
+        return projectList;
     }
 
-    // 根据region层级得到转义后的JSONData
-    public String getRegionDictJsonDataByLevel(String level){
-        List regionList = getRegionDictByLevel(level);
+    // 根据project层级得到转义后的JSONData
+    public String getProjectDictJsonDataByLevel(String level){
+        List projectList = getProjectDictByLevel(level);
         List<DictTreeJson> list = Lists.newArrayList();
-        if(regionList != null && regionList.size()>0){
-            for(int i=0;i<regionList.size();i++){
-                Map map = (Map)regionList.get(i);
+        if(projectList != null && projectList.size()>0){
+            for(int i=0;i<projectList.size();i++){
+                Map map = (Map)projectList.get(i);
                 DictTreeJson dictTreeJson = new DictTreeJson();
                 dictTreeJson.setCode(map.get("REGIONID") == null?"":(String)map.get("REGIONID"));
                 dictTreeJson.setValue(map.get("NAMECH") == null ? "" : (String) map.get("NAMECH"));

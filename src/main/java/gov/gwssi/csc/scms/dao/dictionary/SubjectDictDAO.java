@@ -2,7 +2,7 @@ package gov.gwssi.csc.scms.dao.dictionary;
 
 import com.google.common.collect.Lists;
 import gov.gwssi.csc.scms.dao.BaseDAO;
-import gov.gwssi.csc.scms.domain.dictionary.SubjectDictTreeJson;
+import gov.gwssi.csc.scms.domain.dictionary.DictTreeJson;
 import gov.gwssi.csc.scms.service.dictionary.util.JsonMapper;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -38,11 +38,11 @@ public class SubjectDictDAO extends BaseDAO{
     // 根据学科层级得到转义后的JSONData
     public String getSubjectDictJsonDataByLevel(String level){
         List subjectDictList = getSubjectDictByLevel(level);
-        List<SubjectDictTreeJson> list = Lists.newArrayList();
+        List<DictTreeJson> list = Lists.newArrayList();
         if(subjectDictList != null && subjectDictList.size()>0) {
             for (int i = 0; i < subjectDictList.size(); i++) {
                 Map map = (Map) subjectDictList.get(i);
-                SubjectDictTreeJson treeJson = new SubjectDictTreeJson();
+                DictTreeJson treeJson = new DictTreeJson();
                 treeJson.setCode((String) map.get("SUBJECTID") == null ? "" : (String) map.get("SUBJECTID"));
                 treeJson.setValue((String) map.get("SUBJECTNAMECH") == null ? "" : (String) map.get("SUBJECTNAMECH"));
                 treeJson.setCodePid(map.get("PARENTID") == null ? "" : (String) map.get("PARENTID"));
@@ -54,7 +54,7 @@ public class SubjectDictDAO extends BaseDAO{
                 list.add(treeJson);
             }
         }
-        List<SubjectDictTreeJson> dictList = SubjectDictTreeJson.formatTree(list);
+        List<DictTreeJson> dictList = DictTreeJson.formatTree(list);
         String jsonData = JsonMapper.getInstance().toJson(dictList);
         return jsonData;
     }
