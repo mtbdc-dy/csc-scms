@@ -17,7 +17,7 @@ public class SubjectDictController {
     @Autowired
     private SubjectDictService subjectDictService;
 
-    @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json")
+    @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
     public String getSubjectDict(){
         String subjectJsonData = "[]";
         try{
