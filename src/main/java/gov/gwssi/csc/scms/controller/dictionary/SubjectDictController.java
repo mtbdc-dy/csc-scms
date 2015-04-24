@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
  */
 
 @RestController
-@RequestMapping("api/dict/subjects")
+@RequestMapping("api/codeTable")
 public class SubjectDictController {
     @Autowired
     private SubjectDictService subjectDictService;
 
-    @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
+    @RequestMapping(value = "subjects",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
     public String getSubjectDict(){
         String subjectJsonData = "[]";
         try{
