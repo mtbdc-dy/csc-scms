@@ -49,13 +49,13 @@ echo Hack JPA End
 
 后端系统中对外发布复合 Restful API 设计的资源
 
-## FilterResult
+## Filter Result
 
 过滤器资源
 
 ### 资源格式
 
-FilterResult JSON Object Example
+Filter Result JSON Object Example
 
 ```
 {
@@ -155,3 +155,38 @@ GET | 支持 | JSON 对象 | 查询一个指定 ID 的 Student 的指定 Propert
 POST | 不支持 | - | -
 PUT | 支持 | JSON 对象 | 更新一个指定ID的 Student 的指定 Property，API 服务器返回的 Student Property 对象
 DELETE | 不支持 | - | -
+
+## Code Table
+
+代码表资源
+
+### 资源格式
+
+Code Table JSON Object Example
+
+```
+{
+  "code": "A0001",
+  "value": "Asia",
+  "children":[
+    ...
+  ]
+}
+```
+
+Code Table JSON Array Example
+
+```
+[{
+  "code": "A0001",
+  "value": "Asia",
+  "children":[]
+},{
+  "code": "A0001",
+  "value": "Asia",
+  "children":[]
+},...
+]
+```
+
+### 资源 URI
