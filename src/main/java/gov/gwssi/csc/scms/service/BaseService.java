@@ -64,34 +64,29 @@ public class BaseService {
         if (bean == null) {
             return null;
         }
-        Object[] obj = new Object[]{null};
-        String methodName = "set" + fieldName.substring(0, 1)
-                .toUpperCase() + fieldName.substring(1);
         try {
-            System.out.println("seter " + fieldName + "::" + methodName);
-            Method setMethod = clazz.getMethod(methodName);
-            setMethod.invoke(bean, obj);
-            return bean;
+            Object[] obj = new Object[]{null};
+            PropertyDescriptor pd = new PropertyDescriptor(fieldName, clazz);
+            Method writeMethod = pd.getWriteMethod();
+            writeMethod.invoke(bean, obj);
         } catch (Exception e) {
             e.printStackTrace();
-            return bean;
         }
+        return bean;
     }
 
     protected <T> List<T> setNullByField(List<T> beans, String fieldName, Class<T> clazz) {
         if (beans == null || beans.size() == 0)
             return beans;
-        Object[] obj = new Object[]{null};
-        String methodName = "set" + fieldName.substring(0, 1)
-                .toUpperCase() + fieldName.substring(1);
         try {
-            Method setMethod = clazz.getMethod(methodName);
+            Object[] obj = new Object[]{null};
+            PropertyDescriptor pd = new PropertyDescriptor(fieldName, clazz);
+            Method setMethod = pd.getWriteMethod();
             for (T bean : beans)
                 setMethod.invoke(bean, obj);
-            return beans;
         } catch (Exception e) {
             e.printStackTrace();
-            return beans;
         }
+        return beans;
     }
 }
