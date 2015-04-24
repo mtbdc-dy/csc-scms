@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
  * Created by WangZhenghua on 2015/4/24.
  */
 
-@Service("abnormaltService")
+@Service("abnormalService")
 public class AbnormalService {
 
 }
