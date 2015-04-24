@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,8 +38,11 @@ public class RelatedAddressService extends BaseService {
         return relatedAddressRepository.save(relatedAddress1);
     }
 
-    public Iterable updateRelatedAddress(List<RelatedAddress> relatedAddresses) {
-        return relatedAddressRepository.save(relatedAddresses);
+    public List<RelatedAddress> updateRelatedAddress(List<RelatedAddress> relatedAddresses) {
+        List<RelatedAddress> list = new ArrayList<RelatedAddress>();
+        for (RelatedAddress relatedAddress : relatedAddresses)
+            list.add(updateRelatedAddress(relatedAddress));
+        return list;
     }
 
     public List<RelatedAddress> getRelatedAddressByStudentId(Long studentId) {

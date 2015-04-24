@@ -4,7 +4,7 @@ import gov.gwssi.csc.scms.domain.query.FilterObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilter;
 import gov.gwssi.csc.scms.domain.query.StudentResultObject;
-import gov.gwssi.csc.scms.domain.student.Student;
+import gov.gwssi.csc.scms.domain.student.*;
 import gov.gwssi.csc.scms.repository.student.*;
 import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,9 +44,36 @@ public class StudentService extends BaseService {
     @Autowired
     private GradeAttachmentService gradeAttachmentService;
 
-
     public Student getStudentById(Long id) {
-        return studentRepository.findOne(id);
+        Student student = studentRepository.findOne(id);
+        student.getBasicInfo().setStudent(null);
+        if (student.getSchoolfellow() != null)
+            student.getSchoolfellow().setStudent(null);
+        if (student.getDiscuss() != null)
+            student.getDiscuss().setStudent(null);
+        if (student.getProfilesHistory() != null)
+            student.getProfilesHistory().setStudent(null);
+        if (student.getRegistrationInfo() != null)
+            student.getProfilesHistory().setStudent(null);
+        if (student.getSchoolRoll() != null)
+            student.getSchoolRoll().setStudent(null);
+        List<Accident> accidents = student.getAccidents();
+        if (accidents != null && accidents.size() > 0)
+            for (Accident accident : accidents)
+                accident.setStudent(null);
+        List<RelatedAddress> relatedAddresses = student.getRelatedAddress();
+        if (relatedAddresses != null && relatedAddresses.size() > 0)
+            for (RelatedAddress relatedAddress : relatedAddresses)
+                relatedAddress.setStudent(null);
+        List<Grade> grades = student.getGrades();
+        if (grades != null && grades.size() > 0)
+            for (Grade grade : grades)
+                grade.setStudent(null);
+        List<GradeAttachment> gradeAttachments = student.getGradeAttachment();
+        if ((gradeAttachments != null && gradeAttachments.size() > 0))
+            for (GradeAttachment gradeAttachment : gradeAttachments)
+                gradeAttachment.setStudent(null);
+        return student;
     }
 
     public Student getStudentByCscId(String scsId) {
@@ -140,7 +167,104 @@ public class StudentService extends BaseService {
             gradeAttachmentService.saveGradeAttachment(student.getGradeAttachment());
         if (student.getSchoolfellow() != null)
             schoolfellowService.saveSchoolfellow(student.getSchoolfellow());
-
         return studentRepository.save(student);
+    }
+
+    @SuppressWarnings("unchecked")
+    public Object getGroupByStudentId(Long studentId, String groupName) {
+        if ("basicInfo".equalsIgnoreCase(groupName)) {
+            BasicInfo basicInfo = basicInfoService.getBasicInfoByStudentId(studentId);
+            return setNullByField(basicInfo, "student", BasicInfo.class);
+        }
+        if ("schoolRoll".equalsIgnoreCase(groupName)) {
+            SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(studentId);
+            return setNullByField(schoolRoll, "student", SchoolRoll.class);
+        }
+        if ("registrationInfo".equalsIgnoreCase(groupName)) {
+            RegistrationInfo registrationInfo = registrationInfoService.getRegistrationInfoByStudentId(studentId);
+            return setNullByField(registrationInfo, "student", RegistrationInfo.class);
+        }
+        if ("profilesHistory".equalsIgnoreCase(groupName)) {
+            ProfilesHistory profilesHistory = profilesHistoryService.getProfilesHistoryByStudentId(studentId);
+            return setNullByField(profilesHistory, "student", ProfilesHistory.class);
+        }
+        if ("discuss".equalsIgnoreCase(groupName)) {
+            Discuss discuss = discussService.getDiscussByStudentId(studentId);
+            return setNullByField(discuss, "student", Discuss.class);
+        }
+        if ("schoolfellow".equalsIgnoreCase(groupName)) {
+            Schoolfellow schoolfellow = schoolfellowService.getSchoolfellowByStudentId(studentId);
+            return setNullByField(schoolfellow, "student", Schoolfellow.class);
+        }
+        if ("accident".equalsIgnoreCase(groupName)) {
+            List<Accident> list = accidentService.getAccidentByStudentId(studentId);
+            return setNullByField(list, "student", Accident.class);
+        }
+        if ("relatedAddress".equalsIgnoreCase(groupName)) {
+            List<RelatedAddress> list = relatedAddressService.getRelatedAddressByStudentId(studentId);
+            return setNullByField(list, "student", RelatedAddress.class);
+        }
+        if ("grade".equalsIgnoreCase(groupName)) {
+            List<Grade> list = gradeService.getGradeByStudentId(studentId);
+            return setNullByField(list, "student", Grade.class);
+        }
+        if ("gradeAttachment".equalsIgnoreCase(groupName)) {
+            List<GradeAttachment> list = gradeAttachmentService.getGradeAttachmentByStudentId(studentId);
+            return setNullByField(list, "student", GradeAttachment.class);
+        }
+        return null;
+    }
+
+    public Student deleteStudentById(Long studentId) {
+        Student student = getStudentById(studentId);
+        if (student == null)
+            return null;
+        studentRepository.delete(student);
+        return student;
+    }
+
+    @SuppressWarnings("unchecked")
+    public Object updateGroupByName(String groupName, Object groupObj) {
+        if ("basicInfo".equalsIgnoreCase(groupName)) {
+            BasicInfo basicInfo = basicInfoService.updateBasicInfo((BasicInfo) groupObj);
+            return setNullByField(basicInfo, "student", BasicInfo.class);
+        }
+        if ("schoolRoll".equalsIgnoreCase(groupName)) {
+            SchoolRoll schoolRoll = schoolRollService.updateSchoolRoll((SchoolRoll) groupObj);
+            return setNullByField(schoolRoll, "student", SchoolRoll.class);
+        }
+        if ("registrationInfo".equalsIgnoreCase(groupName)) {
+            RegistrationInfo registrationInfo = registrationInfoService.updateRegistrationInfo((RegistrationInfo) groupObj);
+            return setNullByField(registrationInfo, "student", RegistrationInfo.class);
+        }
+        if ("profilesHistory".equalsIgnoreCase(groupName)) {
+            ProfilesHistory profilesHistory = profilesHistoryService.updateProfilesHistory((ProfilesHistory) groupObj);
+            return setNullByField(profilesHistory, "student", ProfilesHistory.class);
+        }
+        if ("discuss".equalsIgnoreCase(groupName)) {
+            Discuss discuss = discussService.updateDiscuss((Discuss) groupObj);
+            return setNullByField(discuss, "student", Discuss.class);
+        }
+        if ("schoolfellow".equalsIgnoreCase(groupName)) {
+            Schoolfellow schoolfellow = schoolfellowService.updateSchoolfellow((Schoolfellow) groupObj);
+            return setNullByField(schoolfellow, "student", Schoolfellow.class);
+        }
+        if ("accident".equalsIgnoreCase(groupName)) {
+            List<Accident> list = accidentService.updateAccident((List<Accident>) groupObj);
+            return setNullByField(list, "student", Accident.class);
+        }
+        if ("relatedAddress".equalsIgnoreCase(groupName)) {
+            List<RelatedAddress> list = relatedAddressService.updateRelatedAddress((List<RelatedAddress>) groupObj);
+            return setNullByField(list, "student", RelatedAddress.class);
+        }
+        if ("grade".equalsIgnoreCase(groupName)) {
+            List<Grade> list = gradeService.updateGrade((List<Grade>) groupObj);
+            return setNullByField(list, "student", Grade.class);
+        }
+        if ("gradeAttachment".equalsIgnoreCase(groupName)) {
+            List<GradeAttachment> list = gradeAttachmentService.updateGradeAttachment((List<GradeAttachment>) groupObj);
+            return setNullByField(list, "student", GradeAttachment.class);
+        }
+        return null;
     }
 }

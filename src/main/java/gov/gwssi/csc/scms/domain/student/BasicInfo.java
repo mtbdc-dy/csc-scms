@@ -67,7 +67,7 @@ public class BasicInfo {
     /**
      * 学生
      */
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "STUDENTID")
     private Student student;
 
@@ -191,24 +191,4 @@ public class BasicInfo {
         this.student = student;
     }
 
-    @Override
-    public String toString() {
-        return "BasicInfo{" +
-                "student=" + student +
-                ", travelType='" + travelType + '\'' +
-                ", dispatch='" + dispatch + '\'' +
-                ", projectName='" + projectName + '\'' +
-                ", projectType='" + projectType + '\'' +
-                ", planned=" + planned +
-                ", photo='" + photo + '\'' +
-                ", country='" + country + '\'' +
-                ", continent='" + continent + '\'' +
-                ", birthday='" + birthday + '\'' +
-                ", sex='" + sex + '\'' +
-                ", chineseName='" + chineseName + '\'' +
-                ", passportName='" + passportName + '\'' +
-                ", annual=" + annual +
-                ", id=" + id +
-                '}';
-    }
 }

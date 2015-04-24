@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,8 +38,11 @@ public class GradeService extends BaseService {
         return gradeRepository.save(grade1);
     }
 
-    public Iterable updateGrade(List<Grade> grade) {
-        return gradeRepository.save(grade);
+    public List<Grade> updateGrade(List<Grade> grades) {
+        List<Grade> list = new ArrayList<Grade>();
+        for (Grade grade : grades)
+            list.add(updateGrade(grade));
+        return list;
     }
 
     public List<Grade> getGradeByStudentId(Long studentId) {

@@ -54,28 +54,28 @@ public class Student {
     /**
      * 相关地址
      */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "student")
     private List<RelatedAddress> relatedAddress = new ArrayList<RelatedAddress>();
     /**
      * 突发事件
      */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "student")
     private List<Accident> accidents = new ArrayList<Accident>();
     /**
      * 校友信息
      */
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "SCHOOLFELLOW")
     private Schoolfellow schoolfellow;
     /**
      * 成绩信息
      */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "student")
     private List<Grade> Grades = new ArrayList<Grade>();
     /**
      * 成绩附件
      */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "student")
     private List<GradeAttachment> gradeAttachment;
 
     public Long getId() {
