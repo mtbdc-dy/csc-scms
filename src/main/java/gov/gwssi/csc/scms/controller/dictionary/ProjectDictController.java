@@ -22,6 +22,7 @@ public class ProjectDictController {
     private final String PROJECT_LEVEL_ONE = "1";
     private final String PROJECT_LEVEL_TWO = "2";
 
+    // 获取资源-项目代码
     @RequestMapping(value="project",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
     public String getProject(){
         String projectJsonData = "[]";

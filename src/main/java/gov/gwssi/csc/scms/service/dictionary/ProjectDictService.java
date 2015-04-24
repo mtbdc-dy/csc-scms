@@ -17,7 +17,7 @@ public class ProjectDictService {
 
     // 根据project层次获取相应的项目代码表(1为一级,2为二级)
     public String getProjectDictJsonData(String level){
-        String jsonData = "";
+        String jsonData = "[]";
         jsonData = projectDictDAO.getProjectDictJsonDataByLevel(level);
         System.out.println("ProjectDictService-->getProjectDictJsonData方法jsonData == " + jsonData);
         return jsonData;
