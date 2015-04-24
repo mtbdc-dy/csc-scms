@@ -41,6 +41,12 @@ public class DictTreeJson implements Serializable {
             }
         }
         treeList.add(root);
+        // 特殊处理,对返回的List去掉根root节点，只取root节点下的所有children
+        if(treeList != null && treeList.size()>0){
+            DictTreeJson dictTreeJson = (DictTreeJson)treeList.get(0);
+            List<DictTreeJson> nodeList = dictTreeJson.getChildren();
+            treeList = nodeList;
+        }
         return treeList;
     }
 
