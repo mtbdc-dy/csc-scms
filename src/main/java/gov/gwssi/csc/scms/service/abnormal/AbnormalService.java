@@ -11,4 +11,7 @@ import org.springframework.stereotype.Service;
 @Service("abnormalService")
 public class AbnormalService {
 
+public void find(){
+System.out.print("1");
+}
 }
