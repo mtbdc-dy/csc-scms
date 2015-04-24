@@ -34,16 +34,17 @@ public class ProjectDictDAO extends BaseDAO{
 
     // 根据project层级得到转义后的JSONData
     public String getProjectDictJsonDataByLevel(String level){
+        Map map = null;
         List projectList = getProjectDictByLevel(level);
         List<DictTreeJson> list = Lists.newArrayList();
         if(projectList != null && projectList.size()>0){
             for(int i=0;i<projectList.size();i++){
-                Map map = (Map)projectList.get(i);
+                map = (Map)projectList.get(i);
                 DictTreeJson dictTreeJson = new DictTreeJson();
-                dictTreeJson.setCode(map.get("REGIONID") == null?"":(String)map.get("REGIONID"));
-                dictTreeJson.setValue(map.get("NAMECH") == null ? "" : (String) map.get("NAMECH"));
-                dictTreeJson.setCodePid(map.get("PARENTID") == null ? "" : (String) map.get("PARENTID"));
-                if (map.get("ENABLED").equals("1")) {
+                dictTreeJson.setCode((map.get("REGIONID") == null || map.get("REGIONID").equals(""))?"":(String)map.get("REGIONID"));
+                dictTreeJson.setValue((map.get("NAMECH") == null || map.get("NAMECH").equals(""))? "" : (String) map.get("NAMECH"));
+                dictTreeJson.setCodePid((map.get("PARENTID") == null || map.get("PARENTID").equals(""))? "" : (String) map.get("PARENTID"));
+                if (map.get("ENABLED") != null && map.get("ENABLED").equals("1")) {
                     dictTreeJson.setValid("true");
                 } else {
                     dictTreeJson.setValid("false");
