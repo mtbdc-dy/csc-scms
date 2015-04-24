@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
  * Created by lzs on 2015/4/23.
  * 异动申请接口
  */
-@Repository("abnormalRepository")
+ @Repository("abnormalRepository")
 public interface AbnormalRepository extends CrudRepository<Abnormal,Long> {
 
 
