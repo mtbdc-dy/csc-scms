@@ -11,7 +11,9 @@ public class ProjectDictServiceTest extends UnitTestBase {
     @Test
     public void getProjectDict(){
         ProjectDictService projectDictService = getBean("projectDictService");
+        // 测试项目代码表：一级层次
         projectDictService.getProjectDictJsonData("1");
+        // 测试项目代码表：二级层次
         projectDictService.getProjectDictJsonData("2");
     }
 }
