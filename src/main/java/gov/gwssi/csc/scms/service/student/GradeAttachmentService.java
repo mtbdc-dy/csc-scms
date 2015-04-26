@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,6 +36,13 @@ public class GradeAttachmentService extends BaseService {
         GradeAttachment gradeAttachment1 = getGradeAttachmentById(gradeAttachment.getId());
         super.copyFiledValue(GradeAttachment.class, gradeAttachment, gradeAttachment1);
         return saveGradeAttachment(gradeAttachment1);
+    }
+
+    public List<GradeAttachment> updateGradeAttachment(List<GradeAttachment> gradeAttachments) {
+        List<GradeAttachment> list = new ArrayList<GradeAttachment>();
+        for (GradeAttachment gradeAttachment : gradeAttachments)
+            list.add(updateGradeAttachment(gradeAttachment));
+        return list;
     }
 
     public List<GradeAttachment> getGradeAttachmentByStudentId(Long studentId) {
