@@ -190,3 +190,11 @@ Code Table JSON Array Example
 ```
 
 ### 资源 URI
+`\codeTable\:firstTable\:secondTable\:thirdTable`,
+
+'\codeTable\continent',
+'\codeTable\continent\country',
+'\codeTable\continent\country\province',
+
+'\codeTable\country\province',
+'\codeTable\province'
