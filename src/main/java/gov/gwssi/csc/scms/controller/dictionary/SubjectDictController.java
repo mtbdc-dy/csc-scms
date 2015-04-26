@@ -17,11 +17,16 @@ public class SubjectDictController {
     @Autowired
     private SubjectDictService subjectDictService;
 
+    private final String SUBJECT_LEVEL_ONE = "1";
+    private final String SUBJECT_LEVEL_TWO = "2";
+    private final String SUBJECT_LEVEL_THREE = "3";
+
+    // 获取资源-学科三级列表
     @RequestMapping(value = "subjects",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
     public String getSubjectDict(){
         String subjectJsonData = "[]";
         try{
-            subjectJsonData = subjectDictService.getSubjectDictJsonData("3");
+            subjectJsonData = subjectDictService.getSubjectDictJsonData(SUBJECT_LEVEL_THREE);
             System.out.println("SubjectDictController-->getSubjectDict方法中subectJsonData="+subjectJsonData);
         }catch (Exception e){
             e.printStackTrace();
