@@ -37,16 +37,17 @@ public class SubjectDictDAO extends BaseDAO{
 
     // 根据学科层级得到转义后的JSONData
     public String getSubjectDictJsonDataByLevel(String level){
+        Map map = null;
         List subjectDictList = getSubjectDictByLevel(level);
         List<DictTreeJson> list = Lists.newArrayList();
         if(subjectDictList != null && subjectDictList.size()>0) {
             for (int i = 0; i < subjectDictList.size(); i++) {
-                Map map = (Map) subjectDictList.get(i);
+                map = (Map) subjectDictList.get(i);
                 DictTreeJson treeJson = new DictTreeJson();
-                treeJson.setCode((String) map.get("SUBJECTID") == null ? "" : (String) map.get("SUBJECTID"));
-                treeJson.setValue((String) map.get("SUBJECTNAMECH") == null ? "" : (String) map.get("SUBJECTNAMECH"));
-                treeJson.setCodePid(map.get("PARENTID") == null ? "" : (String) map.get("PARENTID"));
-                if (map.get("ENABLED").equals("1")) {
+                treeJson.setCode((map.get("SUBJECTID") == null || map.get("SUBJECTID").equals(""))? "" : (String) map.get("SUBJECTID"));
+                treeJson.setValue((map.get("SUBJECTNAMECH") == null || map.get("SUBJECTNAMECH").equals(""))? "" : (String) map.get("SUBJECTNAMECH"));
+                treeJson.setCodePid((map.get("PARENTID") == null || map.get("PARENTID").equals(""))? "" : (String) map.get("PARENTID"));
+                if (map.get("ENABLED") != null && map.get("ENABLED").equals("1")) {
                     treeJson.setValid("true");
                 } else {
                     treeJson.setValid("false");
