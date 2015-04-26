@@ -17,7 +17,7 @@ public class RegionDictService {
 
     // 根据region层次获取相应的大洲以及国别信息
     public String getRegionDictJsonData(String level){
-        String jsonData = "";
+        String jsonData = "[]";
         jsonData = regionDictDAO.getRegionDictJsonDataByLevel(level);
         System.out.println("RegionDictService-->getRegionDictJsonData方法jsonData == " + jsonData);
         return jsonData;
