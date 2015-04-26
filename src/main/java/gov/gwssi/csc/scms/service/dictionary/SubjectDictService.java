@@ -21,7 +21,7 @@ public class SubjectDictService extends BaseService{
 
     // 根据学科层级获取相应的学科代码表信息(level:1为一级，2为二级，3为三级)
     public String getSubjectDictJsonData(String level){
-       String jsonData = "";
+       String jsonData = "[]";
        jsonData = subjectDictDAO.getSubjectDictJsonDataByLevel(level);
        System.out.println("SubjectDictService-->getSubjectDict方法jsonData == " + jsonData);
        return  jsonData;
