@@ -17,8 +17,11 @@ public class SubjectDictServiceTest  extends UnitTestBase {
     @Test
     public void getSubject(){
         SubjectDictService subjectDictService = getBean("subjectDictService");
+        // 测试学科代码表--一级层次
         subjectDictService.getSubjectDictJsonData("1");
+        // 测试学科代码表--二级层次
         subjectDictService.getSubjectDictJsonData("2");
+        // 测试学科代码表--三级层次
         subjectDictService.getSubjectDictJsonData("3");
     }
 }
