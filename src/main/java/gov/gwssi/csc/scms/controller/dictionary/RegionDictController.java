@@ -21,6 +21,7 @@ public class RegionDictController {
     private final String REGION_LEVEL_ONE = "1";
     private final String REGION_LEVEL_TWO = "2";
 
+    // 获取资源-大洲
     @RequestMapping(value="continent",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
     public String getContinent(){
         String continentJsonData = "[]";
@@ -33,6 +34,7 @@ public class RegionDictController {
         return continentJsonData;
     }
 
+    // 获取资源-各大洲以及大洲下的国家
     @RequestMapping(value = "continent/country",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
     public String getContinentAndCountries(){
         String jsonData = "[]";
