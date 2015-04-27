@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.service.student;
 
+import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.FilterObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilter;
@@ -7,6 +8,8 @@ import gov.gwssi.csc.scms.domain.query.StudentResultObject;
 import gov.gwssi.csc.scms.domain.student.*;
 import gov.gwssi.csc.scms.repository.student.*;
 import gov.gwssi.csc.scms.service.BaseService;
+import gov.gwssi.csc.scms.service.log.OperationLogService;
+import org.hibernate.id.enhanced.Optimizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -43,6 +46,8 @@ public class StudentService extends BaseService {
     private GradeService gradeService;
     @Autowired
     private GradeAttachmentService gradeAttachmentService;
+    @Autowired
+    private OperationLogService operationLogService;
 
     public Student getStudentById(Long id) {
         Student student = studentRepository.findOne(id);
@@ -146,7 +151,10 @@ public class StudentService extends BaseService {
     }
 
     @Transactional
-    public Student saveStudent(Student student) {
+    public Student saveStudent(Student student, List<OperationLog> operationLogs) {
+        //记录日志
+        operationLogService.saveOperationLog(operationLogs);
+
         if (student.getBasicInfo() != null)
             basicInfoService.saveBasicInfo(student.getBasicInfo());
         if (student.getDiscuss() != null)
@@ -167,6 +175,7 @@ public class StudentService extends BaseService {
             gradeAttachmentService.saveGradeAttachment(student.getGradeAttachment());
         if (student.getSchoolfellow() != null)
             schoolfellowService.saveSchoolfellow(student.getSchoolfellow());
+
         return studentRepository.save(student);
     }
 
@@ -215,16 +224,21 @@ public class StudentService extends BaseService {
         return null;
     }
 
-    public Student deleteStudentById(Long studentId) {
+    public Student deleteStudentById(Long studentId,List<OperationLog> operationLogs) {
         Student student = getStudentById(studentId);
         if (student == null)
             return null;
         studentRepository.delete(student);
+        //记录日志
+        operationLogService.saveOperationLog(operationLogs);
         return student;
     }
 
     @SuppressWarnings("unchecked")
-    public Object updateGroupByName(String groupName, Object groupObj) {
+    public Object updateGroupByName(String groupName, Object groupObj,List<OperationLog> operationLogs) {
+        //记录日志
+        operationLogService.saveOperationLog(operationLogs);
+
         if ("basicInfo".equalsIgnoreCase(groupName)) {
             BasicInfo basicInfo = basicInfoService.updateBasicInfo((BasicInfo) groupObj);
             return setNullByField(basicInfo, "student", BasicInfo.class);

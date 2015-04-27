@@ -2,6 +2,7 @@ package gov.gwssi.csc.scms.controller.student;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.StudentResultObject;
 import gov.gwssi.csc.scms.domain.student.*;
@@ -71,7 +72,8 @@ public class StudentController {
     public Student deleteStudent(@PathVariable(value = "id") String id) {
         try {
             Long studentId = Long.parseLong(id);
-            Student student = studentService.deleteStudentById(studentId);
+            List<OperationLog> operationLogs = null;
+            Student student = studentService.deleteStudentById(studentId, operationLogs);
             return student;
         } catch (Exception e) {
             e.printStackTrace();
@@ -96,10 +98,10 @@ public class StudentController {
             Object groupObj = updateStudentGroup(group, body);
             if (groupObj == null)
                 return null;
-            groupObj = studentService.updateGroupByName(group, groupObj);
+            List<OperationLog> operationLogs = null;
+            groupObj = studentService.updateGroupByName(group, groupObj, operationLogs);
             System.out.println("groupObj :: " + groupObj.toString());
             return groupObj;
-            //return new ObjectMapper().writeValueAsString(groupObj);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
