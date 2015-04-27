@@ -15,6 +15,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @ComponentScan(
         basePackages = {
                 "gov.gwssi.csc.scms.service.student",
+                "gov.gwssi.csc.scms.service.abnormal",
                 "gov.gwssi.csc.scms.dao",
                 "gov.gwssi.csc.scms.domain.student",
                 "gov.gwssi.csc.scms.repository.student",
