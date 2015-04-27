@@ -39,7 +39,7 @@ public class TranslateDictDAO extends BaseDAO{
                 TranslateDictJson translateDictJson = new TranslateDictJson();
                 translateDictJson.setCode((map.get("TRANSLATEID") == null || map.get("TRANSLATEID").equals(""))?"":(String)map.get("TRANSLATEID"));
                 translateDictJson.setValue((map.get("NAMECH") == null || map.get("NAMECH").equals(""))?"":(String)map.get("NAMECH"));
-                if (map.get("ENABLED") != null && map.get("ENABLED").equals("1")) {
+                if (map.get("ENABLE") != null && map.get("ENABLE").equals("1")) {
                     translateDictJson.setValid("true");
                 } else {
                     translateDictJson.setValid("false");
