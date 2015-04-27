@@ -15,7 +15,7 @@ public class BasicInfoTest extends UnitTestBase {
     @Test
     public void saveBasicInfoTest() {
         StudentService studentService = getBean("studentService");
-        student = studentService.saveStudent(getStudentInTest());
+        student = studentService.saveStudent(getStudentInTest(),null);
         Assert.assertNotNull(student);
     }
 

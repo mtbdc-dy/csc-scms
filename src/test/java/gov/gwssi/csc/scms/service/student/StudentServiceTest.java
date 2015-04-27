@@ -68,7 +68,7 @@ public class StudentServiceTest extends UnitTestBase {
     @Test
     public void saveStudentTest() {
         StudentService studentService = getBean("studentService");
-        Student stu = studentService.saveStudent(getStudentInTest());
+        Student stu = studentService.saveStudent(getStudentInTest(),null);
         Assert.assertNotNull(stu);
     }
 
@@ -87,7 +87,7 @@ public class StudentServiceTest extends UnitTestBase {
         StudentService studentService = getBean("studentService");
         Student stu = studentService.getStudentByCscId("csc11000023");
         stu.getBasicInfo().setChineseName("小红");
-        Student stu1 = studentService.saveStudent(stu);
+        Student stu1 = studentService.saveStudent(stu,null);
         Assert.assertNotNull(stu1);
     }
 

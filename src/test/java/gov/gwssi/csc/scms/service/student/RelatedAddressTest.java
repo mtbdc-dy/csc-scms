@@ -18,7 +18,7 @@ public class RelatedAddressTest extends UnitTestBase {
     @Test
     public void saveRelatedAddressTest() {
         StudentService studentService = getBean("studentService");
-        student = studentService.saveStudent(getStudentInTest());
+        student = studentService.saveStudent(getStudentInTest(),null);
         Assert.assertNotNull(student);
     }
 
