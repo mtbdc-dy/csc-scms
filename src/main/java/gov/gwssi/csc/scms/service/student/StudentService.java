@@ -47,6 +47,7 @@ public class StudentService extends BaseService {
     @Autowired
     private GradeAttachmentService gradeAttachmentService;
     @Autowired
+    @Qualifier("operationLogService")
     private OperationLogService operationLogService;
 
     public Student getStudentById(Long id) {
@@ -224,7 +225,7 @@ public class StudentService extends BaseService {
         return null;
     }
 
-    public Student deleteStudentById(Long studentId,List<OperationLog> operationLogs) {
+    public Student deleteStudentById(Long studentId, List<OperationLog> operationLogs) {
         Student student = getStudentById(studentId);
         if (student == null)
             return null;
@@ -235,7 +236,7 @@ public class StudentService extends BaseService {
     }
 
     @SuppressWarnings("unchecked")
-    public Object updateGroupByName(String groupName, Object groupObj,List<OperationLog> operationLogs) {
+    public Object updateGroupByName(String groupName, Object groupObj, List<OperationLog> operationLogs) {
         //记录日志
         operationLogService.saveOperationLog(operationLogs);
 

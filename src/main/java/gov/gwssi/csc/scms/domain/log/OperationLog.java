@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.domain.log;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
@@ -13,6 +14,7 @@ public class OperationLog {
     /**
      * id
      */
+    @Id
     private Long id;
     /**
      * 操作类型：

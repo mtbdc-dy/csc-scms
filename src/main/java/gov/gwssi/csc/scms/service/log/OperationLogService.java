@@ -4,6 +4,7 @@ import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.repository.log.OperationLogRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 public class OperationLogService extends BaseService {
 
     @Autowired
+    @Qualifier("operationLogRepository")
     private OperationLogRepository operationLogRepository;
 
     public OperationLog saveOperationLog(OperationLog operationLog) {
