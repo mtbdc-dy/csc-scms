@@ -11,9 +11,7 @@ import javax.persistence.*;
 @Table(name = "SCMS_SCHOOL_FELLOW")
 public class Schoolfellow {
     @Id
-    @SequenceGenerator(name = "SCHOOL_FELLOW_ID", sequenceName = "SCMS_SCHOOL_FELLOW_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "SCHOOL_FELLOW_ID", strategy = GenerationType.SEQUENCE)
-    private Long id;
+    private String id;
     /**
      * CSCID
      */
@@ -57,11 +55,11 @@ public class Schoolfellow {
     @JoinColumn(name = "STUDENTID")
     private Student student;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

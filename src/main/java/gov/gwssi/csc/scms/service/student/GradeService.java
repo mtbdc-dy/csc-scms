@@ -20,22 +20,19 @@ public class GradeService extends BaseService {
     @Qualifier("grateRepository")
     private GradeRepository gradeRepository;
 
-    public Grade getGradeById(Long id) {
+    public Grade getGradeById(String id) {
         return gradeRepository.findOne(id);
     }
 
-    public Grade saveGrade(Grade grade) {
-        return gradeRepository.save(grade);
-    }
-
-    public Iterable saveGrade(List<Grade> grade) {
-        return gradeRepository.save(grade);
+    public List<Grade> saveGrade(List<Grade> grades) {
+        for (Grade grade : grades)
+            grade.setId(getBaseDao().getIdBySequence("SEQ_GRADE"));
+        return (List<Grade>) gradeRepository.save(grades);
     }
 
     public Grade updateGrade(Grade grade) {
-        Grade grade1 = getGradeById(grade.getId());
-        super.copyFiledValue(Grade.class, grade, grade1);
-        return gradeRepository.save(grade1);
+        grade.setStudent(getGradeById(grade.getId()).getStudent());
+        return gradeRepository.save(grade);
     }
 
     public List<Grade> updateGrade(List<Grade> grades) {
@@ -45,7 +42,7 @@ public class GradeService extends BaseService {
         return list;
     }
 
-    public List<Grade> getGradeByStudentId(Long studentId) {
+    public List<Grade> getGradeByStudentId(String studentId) {
         return gradeRepository.findByStudentId(studentId);
     }
 }

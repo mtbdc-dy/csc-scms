@@ -18,9 +18,8 @@ public class BasicInfoController {
     @RequestMapping(value = "/{studentId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public BasicInfo saveStudent(@PathVariable String studentId) {
         try {
-            Long student = Long.parseLong(studentId);
 
-            BasicInfo basicInfo = basicInfoService.getBasicInfoByStudentId(student);
+            BasicInfo basicInfo = basicInfoService.getBasicInfoByStudentId(studentId);
 
             basicInfo.setStudent(null);
             return basicInfo;

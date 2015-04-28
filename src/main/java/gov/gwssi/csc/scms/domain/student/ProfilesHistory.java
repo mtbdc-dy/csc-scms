@@ -9,10 +9,7 @@ import javax.persistence.*;
 @Table(name = "SCMS_PROFILES_HISTORY")
 public class ProfilesHistory {
     @Id
-    @SequenceGenerator(name = "SCMS_PROFILES_HISTORY_ID", sequenceName = "SCMS_PROFILES_HISTORY_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "SCMS_PROFILES_HISTORY_ID", strategy = GenerationType.SEQUENCE)
-    @Column(nullable = false, unique = true, length = 19)
-    private Long id;
+    private String id;
     /**
      * 工作单位
      */
@@ -52,11 +49,11 @@ public class ProfilesHistory {
     @JoinColumn(name = "STUDENTID")
     private Student student;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

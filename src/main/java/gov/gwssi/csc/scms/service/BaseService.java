@@ -37,29 +37,6 @@ public class BaseService {
         }
     }
 
-    protected <T> void copyFiledValue(Class<T> clazz, T source, T target) {
-        if (target == null) {
-            target = source;
-            return;
-        }
-        Field[] fields = clazz.getDeclaredFields();
-        for (Field field : fields) {
-            try {
-                PropertyDescriptor pd = new PropertyDescriptor(field.getName(), clazz);
-                Method getMethod = pd.getReadMethod();
-                Object oValue = getMethod.invoke(source);
-                if (oValue == null) {
-                    continue;
-                } else {
-                    pd.getWriteMethod().invoke(target, oValue);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                continue;
-            }
-        }
-    }
-
     protected <T> T setNullByField(T bean, String fieldName, Class<T> clazz) {
         if (bean == null) {
             return null;

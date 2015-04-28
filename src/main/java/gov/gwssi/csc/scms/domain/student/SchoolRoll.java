@@ -7,9 +7,7 @@ import java.util.Date;
 @Table(name = "SCMS_SCHOOLROLL")
 public class SchoolRoll {
     @Id
-    @SequenceGenerator(name = "SCMS_SCHOOLROLL_ID", sequenceName = "SCMS_SCHOOLROLL_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "SCMS_SCHOOLROLL_ID", strategy = GenerationType.SEQUENCE)
-    private Long id;
+    private String id;
     /**
      * 证件种类
      */
@@ -145,11 +143,11 @@ public class SchoolRoll {
     @JoinColumn(name = "STUDENTID")
     private Student student;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

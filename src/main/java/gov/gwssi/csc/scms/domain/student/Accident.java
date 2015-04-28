@@ -10,9 +10,7 @@ import java.util.Date;
 @Table(name = "SCMS_ACCIDENT")
 public class Accident {
     @Id
-    @SequenceGenerator(name = "ACCIDENT_ID", sequenceName = "SCMS_ACCIDENT_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "ACCIDENT_ID", strategy = GenerationType.SEQUENCE)
-    private Long id;
+    private String id;
     /**
      * 责任类别
      */
@@ -51,11 +49,12 @@ public class Accident {
     @ManyToOne(fetch = FetchType.LAZY,targetEntity = Student.class)
     @JoinColumn(name = "STUDENTID")
     private Student student;
-    public Long getId() {
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -18,21 +18,23 @@ public class BasicInfoService extends BaseService {
     @Qualifier("basicInfoRepository")
     private BasicInfoRepository basicInfoRepository;
 
-    public BasicInfo getBasicInfoById(Long id) {
+    public BasicInfo getBasicInfoById(String id) {
         return basicInfoRepository.findOne(id);
     }
 
-    public BasicInfo getBasicInfoByStudentId(Long studentId) {
+    public BasicInfo getBasicInfoByStudentId(String studentId) {
         return basicInfoRepository.findByStudentId(studentId);
     }
 
     public BasicInfo updateBasicInfo(BasicInfo basicInfo) {
-        BasicInfo basicInfoTemp = getBasicInfoById(basicInfo.getId());
-        copyFiledValue(BasicInfo.class,basicInfo,basicInfoTemp);
-        return basicInfoRepository.save(basicInfoTemp);
+        basicInfo.setStudent(getBasicInfoById(basicInfo.getId()).getStudent());
+        return basicInfoRepository.save(basicInfo);
     }
 
     public BasicInfo saveBasicInfo(BasicInfo basicInfo) {
+        String basicInfoId = getBaseDao().getIdBySequence("SEQ_BASIC_INFO");
+        System.out.println("baiscInfoId :: " + basicInfoId);
+        basicInfo.setId(basicInfoId);
         return basicInfoRepository.save(basicInfo);
     }
 }

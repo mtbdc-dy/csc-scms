@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
  * Created by WangZishi on 3/25/2015.
  */
 @Repository(value = "basicInfoRepository")
-public interface BasicInfoRepository extends CrudRepository<BasicInfo, Long> {
+public interface BasicInfoRepository extends CrudRepository<BasicInfo, String> {
 
-    BasicInfo findByStudentId(Long studentId);
+    BasicInfo findByStudentId(String studentId);
 }

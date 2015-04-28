@@ -10,6 +10,6 @@ import java.util.List;
  * Created by WangZishi on 3/25/2015.
  */
 @Repository(value = "relatedAddressRepository")
-public interface RelatedAddressRepository extends CrudRepository<RelatedAddress, Long> {
-    List<RelatedAddress> findByStudentId(Long studentId);
+public interface RelatedAddressRepository extends CrudRepository<RelatedAddress, String> {
+    List<RelatedAddress> findByStudentId(String studentId);
 }

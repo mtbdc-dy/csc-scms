@@ -54,8 +54,7 @@ public class StudentController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public Student getStudentById(@PathVariable(value = "id") String id) {
         try {
-            Long studentId = Long.parseLong(id);
-            Student student = studentService.getStudentById(studentId);
+            Student student = studentService.getStudentById(id);
             return student;
         } catch (Exception e) {
             e.printStackTrace();
@@ -71,9 +70,8 @@ public class StudentController {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
     public Student deleteStudent(@PathVariable(value = "id") String id) {
         try {
-            Long studentId = Long.parseLong(id);
             List<OperationLog> operationLogs = null;
-            Student student = studentService.deleteStudentById(studentId, operationLogs);
+            Student student = studentService.deleteStudentById(id, operationLogs);
             return student;
         } catch (Exception e) {
             e.printStackTrace();
@@ -84,8 +82,7 @@ public class StudentController {
     @RequestMapping(value = "/{id}/{group}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public Object getStudentGroupById(@PathVariable(value = "id") String id, @PathVariable("group") String group) {
         try {
-            Long studentId = Long.parseLong(id);
-            return studentService.getGroupByStudentId(studentId, group);
+            return studentService.getGroupByStudentId(id, group);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

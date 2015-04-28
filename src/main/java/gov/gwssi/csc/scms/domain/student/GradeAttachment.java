@@ -6,9 +6,7 @@ import javax.persistence.*;
 @Table(name = "SCMS_GRADEATTACHMENT")
 public class GradeAttachment {
     @Id
-    @SequenceGenerator(name = "SCMS_GRADEATTACHMENT_ID", sequenceName = "SCMS_GRADEATTACHMENT_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "SCMS_GRADEATTACHMENT_ID", strategy = GenerationType.SEQUENCE)
-    private Long id;
+    private String id;
     /**
      * cscid
      */
@@ -24,11 +22,11 @@ public class GradeAttachment {
     @JoinColumn(name = "STUDENTID")
     private Student student;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

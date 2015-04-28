@@ -17,21 +17,21 @@ public class DiscussService extends BaseService {
     @Qualifier("discussRepository")
     private DiscussRepository discussRepository;
 
-    public Discuss getDiscussById(Long id) {
+    public Discuss getDiscussById(String id) {
         return discussRepository.findOne(id);
     }
 
-    public Discuss getDiscussByStudentId(Long studentID) {
+    public Discuss getDiscussByStudentId(String studentID) {
         return discussRepository.findByStudentId(studentID);
     }
 
     public Discuss saveDiscuss(Discuss discuss) {
+        discuss.setId(getBaseDao().getIdBySequence("SEQ_DISCUSS"));
         return discussRepository.save(discuss);
     }
 
     public Discuss updateDiscuss(Discuss discuss) {
-        Discuss discuss1 = getDiscussById(discuss.getId());
-        super.copyFiledValue(Discuss.class, discuss, discuss1);
-        return saveDiscuss(discuss1);
+        discuss.setStudent(getDiscussByStudentId(discuss.getId()).getStudent());
+        return saveDiscuss(discuss);
     }
 }

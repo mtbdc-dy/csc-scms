@@ -1,8 +1,6 @@
 package gov.gwssi.csc.scms.domain.student;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,13 +11,11 @@ public class Student {
      * STUDENT主键ID
      */
     @Id
-    @SequenceGenerator(name = "SCMS_STUDENT_ID", sequenceName = "SCMS_STUDENT_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "SCMS_STUDENT_ID", strategy = GenerationType.SEQUENCE)
-    private Long id;
+    private String id;
     /**
      * CSCID
      */
-    @Column(name = "CSCID", length = 12)
+    @Column(name = "CSCID", length = 12, unique = true, nullable = true)
     private String cscId;
     /**
      * 基本信息
@@ -78,11 +74,11 @@ public class Student {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "student")
     private List<GradeAttachment> gradeAttachment;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

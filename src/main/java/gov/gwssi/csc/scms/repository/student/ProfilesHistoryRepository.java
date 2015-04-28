@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
  * Created by Murray on 2015/4/3.
  */
 @Repository(value = "profilesHistoryRepository")
-public interface ProfilesHistoryRepository extends CrudRepository<ProfilesHistory, Long> {
-    ProfilesHistory findByStudentId(Long studentId);
+public interface ProfilesHistoryRepository extends CrudRepository<ProfilesHistory, String> {
+    ProfilesHistory findByStudentId(String studentId);
 }

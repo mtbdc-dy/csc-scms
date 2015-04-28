@@ -10,9 +10,7 @@ import javax.persistence.*;
 @Table(name = "SCMS_REGISTRATION_INFO")
 public class RegistrationInfo {
     @Id
-    @SequenceGenerator(name = "SCMS_REGISTRATION_ID", sequenceName = "SCMS_REGISTRATION_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "SCMS_REGISTRATION_ID", strategy = GenerationType.SEQUENCE)
-    private Long id;
+    private String id;
     /**
      * 学生类别
      */
@@ -64,11 +62,11 @@ public class RegistrationInfo {
     @JoinColumn(name = "STUDENTID")
     private Student student;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

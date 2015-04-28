@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
  * Created by WangZishi on 3/25/2015.
  */
 @Repository(value = "studentRepository")
-public interface StudentRepository extends CrudRepository<Student, Long> {
+public interface StudentRepository extends CrudRepository<Student, String> {
 
     Student findByCscId(String cscId);
 }

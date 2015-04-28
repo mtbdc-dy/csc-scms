@@ -15,7 +15,7 @@ public class BasicInfoTest extends UnitTestBase {
     @Test
     public void saveBasicInfoTest() {
         StudentService studentService = getBean("studentService");
-        student = studentService.saveStudent(getStudentInTest(),null);
+        student = studentService.saveStudent(getStudentInTest(), null);
         Assert.assertNotNull(student);
     }
 
@@ -34,7 +34,7 @@ public class BasicInfoTest extends UnitTestBase {
     public void getStudentByBasicInfo() {
         BasicInfoService basicInfoService = getBean("basicInfoService");
 
-        BasicInfo basicInfo = basicInfoService.getBasicInfoById(1L);
+        BasicInfo basicInfo = basicInfoService.getBasicInfoById("");
         Assert.assertNotNull(basicInfo);
 
         student = basicInfo.getStudent();
@@ -45,7 +45,7 @@ public class BasicInfoTest extends UnitTestBase {
     public void updateBasicInfoTest() {
         BasicInfoService basicInfoService = getBean("basicInfoService");
 
-        BasicInfo basicInfo = basicInfoService.getBasicInfoById(1L);
+        BasicInfo basicInfo = basicInfoService.getBasicInfoById("");
         basicInfo.setChineseName("大灰狼");
         basicInfoService.updateBasicInfo(basicInfo);
         Assert.assertNotNull(basicInfo);

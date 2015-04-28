@@ -20,22 +20,19 @@ public class GradeAttachmentService extends BaseService {
     @Qualifier("gradeAttachmentRepository")
     private GradeAttachmentRepository gradeAttachmentRepository;
 
-    public GradeAttachment getGradeAttachmentById(Long id) {
+    public GradeAttachment getGradeAttachmentById(String id) {
         return gradeAttachmentRepository.findOne(id);
     }
 
-    public GradeAttachment saveGradeAttachment(GradeAttachment gradeAttachment) {
-        return gradeAttachmentRepository.save(gradeAttachment);
-    }
-
-    public Iterable saveGradeAttachment(List<GradeAttachment> gradeAttachment) {
-        return gradeAttachmentRepository.save(gradeAttachment);
+    public List<GradeAttachment> saveGradeAttachment(List<GradeAttachment> gradeAttachments) {
+        for (GradeAttachment gradeAttachment : gradeAttachments)
+            gradeAttachment.setId(getBaseDao().getIdBySequence("SEQ_GRADEATTACHMENT"));
+        return (List<GradeAttachment>) gradeAttachmentRepository.save(gradeAttachments);
     }
 
     public GradeAttachment updateGradeAttachment(GradeAttachment gradeAttachment) {
-        GradeAttachment gradeAttachment1 = getGradeAttachmentById(gradeAttachment.getId());
-        super.copyFiledValue(GradeAttachment.class, gradeAttachment, gradeAttachment1);
-        return saveGradeAttachment(gradeAttachment1);
+        gradeAttachment.setStudent(getGradeAttachmentById(gradeAttachment.getId()).getStudent());
+        return gradeAttachmentRepository.save(gradeAttachment);
     }
 
     public List<GradeAttachment> updateGradeAttachment(List<GradeAttachment> gradeAttachments) {
@@ -45,7 +42,7 @@ public class GradeAttachmentService extends BaseService {
         return list;
     }
 
-    public List<GradeAttachment> getGradeAttachmentByStudentId(Long studentId) {
+    public List<GradeAttachment> getGradeAttachmentByStudentId(String studentId) {
         return gradeAttachmentRepository.findByStudentId(studentId);
     }
 }

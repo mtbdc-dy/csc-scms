@@ -10,7 +10,7 @@ import java.util.List;
  * Created by WangZishi on 3/25/2015.
  */
 @Repository("accidentRepository")
-public interface AccidentRepository extends CrudRepository<Accident, Long> {
+public interface AccidentRepository extends CrudRepository<Accident, String> {
 
-    List<Accident> findByStudentId(Long studentId);
+    List<Accident> findByStudentId(String studentId);
 }

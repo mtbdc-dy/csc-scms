@@ -17,21 +17,21 @@ public class RegistrationInfoService extends BaseService {
     @Qualifier("registrationInfoRepository")
     private RegistrationInfoRepository registrationInfoRepository;
 
-    public RegistrationInfo getRegistrationInfoById(Long id) {
+    public RegistrationInfo getRegistrationInfoById(String id) {
         return registrationInfoRepository.findOne(id);
     }
 
     public RegistrationInfo saveRegistrationInfo(RegistrationInfo registrationInfo) {
+        registrationInfo.setId(getBaseDao().getIdBySequence("SEQ_REGISTRATION_INFO"));
         return registrationInfoRepository.save(registrationInfo);
     }
 
     public RegistrationInfo updateRegistrationInfo(RegistrationInfo registrationInfo) {
-        RegistrationInfo registrationInfo1 = getRegistrationInfoById(registrationInfo.getId());
-        super.copyFiledValue(RegistrationInfo.class, registrationInfo, registrationInfo1);
-        return registrationInfoRepository.save(registrationInfo1);
+        registrationInfo.setStudent(getRegistrationInfoById(registrationInfo.getId()).getStudent());
+        return registrationInfoRepository.save(registrationInfo);
     }
 
-    public RegistrationInfo getRegistrationInfoByStudentId(Long studentId) {
+    public RegistrationInfo getRegistrationInfoByStudentId(String studentId) {
         return registrationInfoRepository.findByStudentId(studentId);
     }
 }

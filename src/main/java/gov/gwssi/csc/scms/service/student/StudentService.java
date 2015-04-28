@@ -50,35 +50,20 @@ public class StudentService extends BaseService {
     @Qualifier("operationLogService")
     private OperationLogService operationLogService;
 
-    public Student getStudentById(Long id) {
+    public Student getStudentById(String id) {
         Student student = studentRepository.findOne(id);
-        student.getBasicInfo().setStudent(null);
-        if (student.getSchoolfellow() != null)
-            student.getSchoolfellow().setStudent(null);
-        if (student.getDiscuss() != null)
-            student.getDiscuss().setStudent(null);
-        if (student.getProfilesHistory() != null)
-            student.getProfilesHistory().setStudent(null);
-        if (student.getRegistrationInfo() != null)
-            student.getProfilesHistory().setStudent(null);
-        if (student.getSchoolRoll() != null)
-            student.getSchoolRoll().setStudent(null);
-        List<Accident> accidents = student.getAccidents();
-        if (accidents != null && accidents.size() > 0)
-            for (Accident accident : accidents)
-                accident.setStudent(null);
-        List<RelatedAddress> relatedAddresses = student.getRelatedAddress();
-        if (relatedAddresses != null && relatedAddresses.size() > 0)
-            for (RelatedAddress relatedAddress : relatedAddresses)
-                relatedAddress.setStudent(null);
-        List<Grade> grades = student.getGrades();
-        if (grades != null && grades.size() > 0)
-            for (Grade grade : grades)
-                grade.setStudent(null);
-        List<GradeAttachment> gradeAttachments = student.getGradeAttachment();
-        if ((gradeAttachments != null && gradeAttachments.size() > 0))
-            for (GradeAttachment gradeAttachment : gradeAttachments)
-                gradeAttachment.setStudent(null);
+        setNullByField(student.getBasicInfo(), "student", BasicInfo.class);
+        setNullByField(student.getSchoolfellow(), "student", Schoolfellow.class);
+        setNullByField(student.getDiscuss(), "student", Discuss.class);
+        setNullByField(student.getProfilesHistory(), "student", ProfilesHistory.class);
+        setNullByField(student.getRegistrationInfo(), "student", RegistrationInfo.class);
+        setNullByField(student.getSchoolRoll(), "student", SchoolRoll.class);
+
+
+        setNullByField(student.getAccidents(), "student", Accident.class);
+        setNullByField(student.getRelatedAddress(), "student", RelatedAddress.class);
+        setNullByField(student.getGrades(), "student", Grade.class);
+        setNullByField(student.getGradeAttachment(), "student", GradeAttachment.class);
         return student;
     }
 
@@ -156,6 +141,10 @@ public class StudentService extends BaseService {
         //记录日志
         operationLogService.saveOperationLog(operationLogs);
 
+        String studentId = getBaseDao().getIdBySequence("SEQ_STUDENT");
+        System.out.println("StudentId :: " + studentId);
+        student.setId(studentId);
+
         if (student.getBasicInfo() != null)
             basicInfoService.saveBasicInfo(student.getBasicInfo());
         if (student.getDiscuss() != null)
@@ -177,11 +166,12 @@ public class StudentService extends BaseService {
         if (student.getSchoolfellow() != null)
             schoolfellowService.saveSchoolfellow(student.getSchoolfellow());
 
+
         return studentRepository.save(student);
     }
 
     @SuppressWarnings("unchecked")
-    public Object getGroupByStudentId(Long studentId, String groupName) {
+    public Object getGroupByStudentId(String studentId, String groupName) {
         if ("basicInfo".equalsIgnoreCase(groupName)) {
             BasicInfo basicInfo = basicInfoService.getBasicInfoByStudentId(studentId);
             return setNullByField(basicInfo, "student", BasicInfo.class);
@@ -225,7 +215,7 @@ public class StudentService extends BaseService {
         return null;
     }
 
-    public Student deleteStudentById(Long studentId, List<OperationLog> operationLogs) {
+    public Student deleteStudentById(String studentId, List<OperationLog> operationLogs) {
         Student student = getStudentById(studentId);
         if (student == null)
             return null;

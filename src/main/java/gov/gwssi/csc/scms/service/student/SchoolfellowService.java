@@ -17,21 +17,21 @@ public class SchoolfellowService extends BaseService {
     @Qualifier("schoolfellowRepository")
     private SchoolfellowRepository schoolfellowRepository;
 
-    public Schoolfellow getSchoolfellowById(Long id) {
+    public Schoolfellow getSchoolfellowById(String id) {
         return schoolfellowRepository.findOne(id);
     }
 
-    public Schoolfellow getSchoolfellowByStudentId(Long studentId) {
+    public Schoolfellow getSchoolfellowByStudentId(String studentId) {
         return schoolfellowRepository.findByStudentId(studentId);
     }
 
     public Schoolfellow saveSchoolfellow(Schoolfellow schoolfellow) {
+        schoolfellow.setId(getBaseDao().getIdBySequence("SEQ_SCHOOL_FELLOW"));
         return schoolfellowRepository.save(schoolfellow);
     }
 
     public Schoolfellow updateSchoolfellow(Schoolfellow schoolfellow) {
-        Schoolfellow schoolFellowTemp = getSchoolfellowById(schoolfellow.getId());
-        super.copyFiledValue(Schoolfellow.class, schoolfellow, schoolFellowTemp);
-        return saveSchoolfellow(schoolFellowTemp);
+        schoolfellow.setStudent(getSchoolfellowById(schoolfellow.getId()).getStudent());
+        return saveSchoolfellow(schoolfellow);
     }
 }
