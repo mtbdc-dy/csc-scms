@@ -70,14 +70,14 @@ public class StudentController {
     public Student putStudent(@PathVariable(value = "id") String id, @RequestBody String studentJson) {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> map = mapper.convertValue(studentJson, Map.class);
+            JsonBody jbosy = new ObjectMapper().readValue(studentJson, JsonBody.class);
 
-            Student student = mapper.readValue(map.get("student"), Student.class);
+            Student student = mapper.readValue(jbosy.getValue(), Student.class);
             if (student == null)
                 return null;
 
             JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
-            List<OperationLog> operationLogs = mapper.readValue(map.get("log"), javaType);
+            List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
 
             student = studentService.saveStudent(student, operationLogs);
             return student;
@@ -121,14 +121,13 @@ public class StudentController {
     public Object putStudentGroup(@PathVariable(value = "id") String id, @PathVariable("group") String group, @RequestBody String body) {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> map = mapper.convertValue(body, Map.class);
-
-            Object groupObj = updateStudentGroup(group, map.get("groupValue"));
+            JsonBody jbosy = new ObjectMapper().readValue(body, JsonBody.class);
+            Object groupObj = updateStudentGroup(group, jbosy.getValue());
             if (groupObj == null)
                 return null;
 
             JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
-            List<OperationLog> operationLogs = mapper.readValue(map.get("log"), javaType);
+            List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
 
             groupObj = studentService.updateGroupByName(group, groupObj, operationLogs);
             return groupObj;
