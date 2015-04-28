@@ -46,7 +46,7 @@ public class Accident {
     /**
      * 学生id
      */
-    @ManyToOne(fetch = FetchType.LAZY,targetEntity = Student.class)
+    @ManyToOne(fetch = FetchType.EAGER,targetEntity = Student.class)
     @JoinColumn(name = "STUDENTID")
     private Student student;
 

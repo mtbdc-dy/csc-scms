@@ -33,7 +33,6 @@ public class BasicInfoService extends BaseService {
 
     public BasicInfo saveBasicInfo(BasicInfo basicInfo) {
         String basicInfoId = getBaseDao().getIdBySequence("SEQ_BASIC_INFO");
-        System.out.println("baiscInfoId :: " + basicInfoId);
         basicInfo.setId(basicInfoId);
         return basicInfoRepository.save(basicInfo);
     }

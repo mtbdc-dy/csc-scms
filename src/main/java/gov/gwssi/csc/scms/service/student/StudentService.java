@@ -141,10 +141,7 @@ public class StudentService extends BaseService {
         //记录日志
         operationLogService.saveOperationLog(operationLogs);
 
-        String studentId = getBaseDao().getIdBySequence("SEQ_STUDENT");
-        System.out.println("StudentId :: " + studentId);
-        student.setId(studentId);
-
+        student.setId(getBaseDao().getIdBySequence("SEQ_STUDENT"));
         if (student.getBasicInfo() != null)
             basicInfoService.saveBasicInfo(student.getBasicInfo());
         if (student.getDiscuss() != null)
@@ -165,8 +162,6 @@ public class StudentService extends BaseService {
             gradeAttachmentService.saveGradeAttachment(student.getGradeAttachment());
         if (student.getSchoolfellow() != null)
             schoolfellowService.saveSchoolfellow(student.getSchoolfellow());
-
-
         return studentRepository.save(student);
     }
 

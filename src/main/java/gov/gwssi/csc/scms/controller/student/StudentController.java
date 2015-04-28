@@ -1,11 +1,14 @@
 package gov.gwssi.csc.scms.controller.student;
 
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.MappingJsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.StudentResultObject;
 import gov.gwssi.csc.scms.domain.student.*;
+import gov.gwssi.csc.scms.service.dictionary.util.JsonMapper;
 import gov.gwssi.csc.scms.service.student.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +17,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by WangZishi on 3/27/2015.
@@ -64,7 +68,23 @@ public class StudentController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public Student putStudent(@PathVariable(value = "id") String id, @RequestBody String studentJson) {
-        return null;
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, String> map = mapper.convertValue(studentJson, Map.class);
+
+            Student student = mapper.readValue(map.get("student"), Student.class);
+            if (student == null)
+                return null;
+
+            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
+            List<OperationLog> operationLogs = mapper.readValue(map.get("log"), javaType);
+
+            student = studentService.saveStudent(student, operationLogs);
+            return student;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
@@ -89,15 +109,28 @@ public class StudentController {
         }
     }
 
+    /**
+     * 更新学生相关信息
+     *
+     * @param id
+     * @param group
+     * @param body
+     * @return
+     */
     @RequestMapping(value = "/{id}/{group}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public Object putStudentGroup(@PathVariable(value = "id") String id, @PathVariable("group") String group, @RequestBody String body) {
         try {
-            Object groupObj = updateStudentGroup(group, body);
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, String> map = mapper.convertValue(body, Map.class);
+
+            Object groupObj = updateStudentGroup(group, map.get("groupValue"));
             if (groupObj == null)
                 return null;
-            List<OperationLog> operationLogs = null;
+
+            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
+            List<OperationLog> operationLogs = mapper.readValue(map.get("log"), javaType);
+
             groupObj = studentService.updateGroupByName(group, groupObj, operationLogs);
-            System.out.println("groupObj :: " + groupObj.toString());
             return groupObj;
         } catch (Exception e) {
             e.printStackTrace();

@@ -65,7 +65,7 @@ public class BasicInfo {
     /**
      * 学生
      */
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "STUDENTID")
     private Student student;
 

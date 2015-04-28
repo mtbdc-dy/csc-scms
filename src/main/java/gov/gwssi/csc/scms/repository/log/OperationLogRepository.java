@@ -10,9 +10,9 @@ import java.util.List;
  * Created by Murray on 2015/4/27.
  */
 @Repository("operationLogRepository")
-public interface OperationLogRepository extends CrudRepository<OperationLog, Long> {
+public interface OperationLogRepository extends CrudRepository<OperationLog, String> {
 
     List<OperationLog> findByCreateBy(String userId);
 
-    List<OperationLog> findByStudentId(Long studentId);
+    List<OperationLog> findByStudentId(String studentId);
 }

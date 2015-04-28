@@ -41,7 +41,7 @@ public class RelatedAddress {
     /**
      * 学生id
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "STUDENTID")
     private Student student;
 

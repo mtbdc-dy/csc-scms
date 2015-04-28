@@ -87,7 +87,7 @@ public class Discuss {
     /**
      * 学生
      */
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "STUDENTID")
     private Student student;
 
