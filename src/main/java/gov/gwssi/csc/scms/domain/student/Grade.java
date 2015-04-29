@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.domain.student;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * 学生成绩
@@ -11,9 +12,9 @@ public class Grade {
     @Id
     private String id;
     /**
-     * CSCID
+     * studentID
      */
-    private String cscId;
+    private String studentId;
     /**
      * 年度
      */
@@ -31,6 +32,24 @@ public class Grade {
      */
     private String grade;
     /**
+     * 创建人
+     */
+    private String createBy;
+    /**
+     * 创建时间
+     */
+    @Column(name = "CREATED")
+    private Date createDate;
+    /**
+     * 修改人
+     */
+    private String updateBy;
+    /**
+     * 修改时间
+     */
+    @Column(name = "UPDATED")
+    private Date updateDate;
+    /**
      * 学生id
      */
     @ManyToOne(fetch = FetchType.EAGER)
@@ -45,12 +64,12 @@ public class Grade {
         this.id = id;
     }
 
-    public String getCscId() {
-        return cscId;
+    public String getStudentId() {
+        return studentId;
     }
 
-    public void setCscId(String cscId) {
-        this.cscId = cscId;
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
     }
 
     public String getAnnual() {
@@ -83,6 +102,38 @@ public class Grade {
 
     public void setGrade(String grade) {
         this.grade = grade;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getUpdateBy() {
+        return updateBy;
+    }
+
+    public void setUpdateBy(String updateBy) {
+        this.updateBy = updateBy;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 
     public Student getStudent() {

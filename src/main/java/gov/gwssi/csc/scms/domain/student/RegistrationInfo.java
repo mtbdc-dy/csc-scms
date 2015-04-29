@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.domain.student;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * 相关地址
@@ -54,6 +55,24 @@ public class RegistrationInfo {
     /**
      * 院校3
      */
+    /**
+     * 创建人
+     */
+    private String createBy;
+    /**
+     * 创建时间
+     */
+    @Column(name = "CREATED")
+    private Date createDate;
+    /**
+     * 修改人
+     */
+    private String updateBy;
+    /**
+     * 修改时间
+     */
+    @Column(name = "UPDATED")
+    private Date updateDate;
     private String university3;
     /**
      * 学生
@@ -156,6 +175,38 @@ public class RegistrationInfo {
 
     public void setUniversity3(String university3) {
         this.university3 = university3;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getUpdateBy() {
+        return updateBy;
+    }
+
+    public void setUpdateBy(String updateBy) {
+        this.updateBy = updateBy;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 
     public Student getStudent() {

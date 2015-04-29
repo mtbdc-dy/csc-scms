@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.domain.student;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * 来华前概况
@@ -42,6 +43,24 @@ public class ProfilesHistory {
      * 可否英语授课
      */
     private Boolean engTeach;
+    /**
+     * 创建人
+     */
+    private String createBy;
+    /**
+     * 创建时间
+     */
+    @Column(name = "CREATED")
+    private Date createDate;
+    /**
+     * 修改人
+     */
+    private String updateBy;
+    /**
+     * 修改时间
+     */
+    @Column(name = "UPDATED")
+    private Date updateDate;
     /**
      * 学生
      */
@@ -119,6 +138,38 @@ public class ProfilesHistory {
 
     public void setEngTeach(Boolean engTeach) {
         this.engTeach = engTeach;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getUpdateBy() {
+        return updateBy;
+    }
+
+    public void setUpdateBy(String updateBy) {
+        this.updateBy = updateBy;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 
     public Student getStudent() {

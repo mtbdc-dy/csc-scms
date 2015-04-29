@@ -1,20 +1,30 @@
 package gov.gwssi.csc.scms.domain.student;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
-@Table(name = "SCMS_GRADEATTACHMENT")
+@Table(name = "SCMS_ATTACHMENT")
 public class GradeAttachment {
     @Id
     private String id;
     /**
-     * cscid
+     * 附件类型 1.学生成绩 2.学历和学位
      */
-    private String cscId;
+    private String type;
     /**
      * 附件地址
      */
     private String attachmentUri;
+    /**
+     * 创建时间
+     */
+    @Column(name = "CREATED")
+    private Date createDate;
+    /**
+     * 修改人
+     */
+    private String updateBy;
     /**
      * 学生id
      */
@@ -30,20 +40,36 @@ public class GradeAttachment {
         this.id = id;
     }
 
-    public String getCscId() {
-        return cscId;
-    }
-
-    public void setCscId(String cscId) {
-        this.cscId = cscId;
-    }
-
     public String getAttachmentUri() {
         return attachmentUri;
     }
 
     public void setAttachmentUri(String attachmentUri) {
         this.attachmentUri = attachmentUri;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getUpdateBy() {
+        return updateBy;
+    }
+
+    public void setUpdateBy(String updateBy) {
+        this.updateBy = updateBy;
     }
 
     public Student getStudent() {
