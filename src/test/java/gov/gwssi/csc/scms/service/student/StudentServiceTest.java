@@ -3,6 +3,7 @@ package gov.gwssi.csc.scms.service.student;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.base.UnitTestBase;
+import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.StudentResultObject;
 import gov.gwssi.csc.scms.domain.student.*;
@@ -67,7 +68,7 @@ public class StudentServiceTest extends UnitTestBase {
     @Test
     public void saveStudentTest() {
         StudentService studentService = getBean("studentService");
-        Student stu = studentService.saveStudent(getStudentInTest(), null);
+        Student stu = studentService.saveStudent(getStudentInTest(), getLogList());
         Assert.assertNotNull(stu);
     }
 
@@ -144,5 +145,29 @@ public class StudentServiceTest extends UnitTestBase {
         stu.setRelatedAddress(relatedAddress);
 
         return stu;
+    }
+
+    private List<OperationLog> getLogList(){
+        List<OperationLog> list = new ArrayList<OperationLog>();
+
+        OperationLog op1 = new OperationLog();
+        op1.setMenu("在校生管理");
+        op1.setTableEN("basicInfo");
+        op1.setColunmEN("passportName");
+        op1.setBefore("beForeName");
+        op1.setAfter("afterName");
+        op1.setStudentId("2005042828");
+        list.add(op1);
+
+        OperationLog op2 = new OperationLog();
+        op2.setMenu("离校生管理");
+        op2.setTableEN("relatedAddress");
+        op2.setColunmEN("personName");
+        op2.setBefore("beForeAddress");
+        op2.setAfter("afterAddress");
+        op2.setStudentId("2005042828");
+        list.add(op2);
+
+        return list;
     }
 }
