@@ -3,7 +3,7 @@ package gov.gwssi.csc.scms.domain.query;
 import java.util.List;
 
 /**
- * Created by think on 2015/4/29.
+ * Created by lzs on 2015/4/29.
  */
 public class AbnormalFilter implements Filter{
     private AbnormalFilterObject filterObject;
