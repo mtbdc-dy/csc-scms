@@ -9,25 +9,10 @@ import java.util.List;
  */
 public abstract class FilterObject {
 
-    private String offSet = "0";
 
-    private String pageSize = "200";
+    public static final int OFFSETDEFULT = 0;//始值
+    public static final int PAGESIZEDEFULT = 200;//页值
 
-    public String getOffSet() {
-        return offSet;
-    }
-
-    public void setOffSet(String offSet) {
-        this.offSet = offSet;
-    }
-
-    public String getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(String pageSize) {
-        this.pageSize = pageSize;
-    }
 
     abstract List getConditions();
 
