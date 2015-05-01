@@ -2,11 +2,15 @@
 out
 g
 build
-.gradle
-.idea
 gradle
+bin
 
 #忽略文件
+.gradle
+.idea
+.project
+.classpath
+.settings
 *.iml
 *.class
 build.gradle
