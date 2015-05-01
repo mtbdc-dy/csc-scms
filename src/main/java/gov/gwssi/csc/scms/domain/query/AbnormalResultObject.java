@@ -4,11 +4,11 @@ import java.util.Date;
 
 /**
  * Created by lzs on 2015/4/29.
- * Òì¶¯ÉêÇë¹ÜÀí²éÑ¯Ñ§ÉúĞÅÏ¢ÁĞ±í½á¹ûÀà
+ * å¼‚åŠ¨ç”³è¯·ç®¡ç†æŸ¥è¯¢å­¦ç”Ÿä¿¡æ¯åˆ—è¡¨ç»“æœç±»
  */
 public class AbnormalResultObject extends ResultObject{
     /**
-     * Ñ§ÉúID
+     * å­¦ç”ŸID
      */
     private Long studentId;
     /**
@@ -16,34 +16,34 @@ public class AbnormalResultObject extends ResultObject{
      */
     private String cscId;
     /**
-     * ĞÔ±ğ
+     * æ€§åˆ«
      */
     private String sex;
 
     /**
-     * »¤ÕÕĞÕÃû
+     * æŠ¤ç…§å§“å
      */
     private String passportName;
 
     /**
-     * ÉêÇëÈË
+     * ç”³è¯·äºº
      *
      */
     private String applyUserName;
     /**
-     * ¹ú¼®
+     * å›½ç±
      */
     private String country;
     /**
-     * ÉêÇëÊ±¼ä
+     * ç”³è¯·æ—¶é—´
      */
     private Date applyDate;
     /**
-     * Ñ§¼®×´Ì¬
+     * å­¦ç±çŠ¶æ€
      */
     private String rollState;
     /**
-     * ´¦Àí×´Ì¬£¨ 0Î´Ìá½» 1Ìá½»Î´ÉÏ±¨ 2ÉÏ±¨Î´ÉóºË 3ÉóºËÎ´´¦Àí 4 ´¦Àí£©
+     * å¤„ç†çŠ¶æ€ï¼ˆ 0æœªæäº¤ 1æäº¤æœªä¸ŠæŠ¥ 2ä¸ŠæŠ¥æœªå®¡æ ¸ 3å®¡æ ¸æœªå¤„ç† 4 å¤„ç†ï¼‰
      */
     private String handleState;
 

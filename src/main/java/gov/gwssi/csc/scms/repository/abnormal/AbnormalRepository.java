@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.repository.abnormal;
 
 import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
+import gov.gwssi.csc.scms.domain.student.Student;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Repository;
  * 异动申请接口
  */
  @Repository("abnormalRepository")
-public interface AbnormalRepository extends CrudRepository<Abnormal,Long> {
+public interface AbnormalRepository extends CrudRepository<Abnormal,String> {
 
-
+     Student findByStudentId(String studentId);
 }

@@ -8,40 +8,40 @@ import java.util.List;
 
 /**
  * Created by lzs on 2015/4/29.
- * Òì¶¯ÉêÇëÁĞ±í²éÑ¯ÊµÌåÀà
+ * å¼‚åŠ¨ç”³è¯·åˆ—è¡¨æŸ¥è¯¢å®ä½“ç±»
  */
 public class AbnormalFilterObject extends FilterObject {
     /**
-     * Ö÷Òª²éÑ¯Ìõ¼ş
+     * ä¸»è¦æŸ¥è¯¢æ¡ä»¶
      */
-    private String cscId = null;//SCSµÇ¼ÇºÅ
-    private String passportName = null;//»¤ÕÕÃû³Æ
-    private String continent = null;//ÖŞ±ğ
-    private String country = null;//¹ú¼®
-    private String projectType = null;//ÏîÄ¿Àà±ğ
-    private String projectName = null;//ÏîÄ¿Ãû³Æ
-    private String handleState = null;//Òì¶¯´¦Àí×´Ì¬ 0Î´Ìá½» 1Ìá½»Î´ÉÏ±¨ 2ÉÏ±¨Î´ÉóºË 3ÉóºËÎ´´¦Àí 4 ´¦Àí
+    private String cscId = null;//SCSç™»è®°å·
+    private String passportName = null;//æŠ¤ç…§åç§°
+    private String continent = null;//æ´²åˆ«
+    private String country = null;//å›½ç±
+    private String projectType = null;//é¡¹ç›®ç±»åˆ«
+    private String projectName = null;//é¡¹ç›®åç§°
+    private String handleState = null;//å¼‚åŠ¨å¤„ç†çŠ¶æ€ 0æœªæäº¤ 1æäº¤æœªä¸ŠæŠ¥ 2ä¸ŠæŠ¥æœªå®¡æ ¸ 3å®¡æ ¸æœªå¤„ç† 4 å¤„ç†
     /**
-     * Òş²Ø²éÑ¯Ìõ¼ş
+     * éšè—æŸ¥è¯¢æ¡ä»¶
      */
-    private String planned = null;//Ãû¶îĞÔÖÊ£¨¼Æ»®ÄÚ ¼Æ»®Íâ£©
-    private String dispatch = null;//ÅÉÇ²Í¾¾¶
-    private String travelType = null;//¹ú¼ÊÂÃ·Ñ
-    private String annual = null; //Äê¶È
-    private String studentType = null;//Ñ§ÉúÀà±ğ
-    private String appropriations = null;//¾­·Ñ°ì·¨
-    private String teachLanguage = null;//ÊÚ¿ÎÓïÑÔ
-    private String schoolRollState = null;//Ñ§¼®×´Ì¬
-    private String arrivalDateBegin = null;//À´»ªÊ±¼äÆğÊ¼Ê±¼ä
-    private String arrivalDateEnd = null;//À´»ªÊ±¼äÖÕÖ¹Ê±¼ä
-    private String leaveDateBegin = null;//Àë»ªÊ±¼äÆğÊ¼Ê±¼ä
-    private String leaveDateEnd = null;//Àë»ªÊ±¼äÖÕÖ¹Ê±¼ä
-    private String cramDateBeginBegin = null;//ºº²¹¿ªÊ¼Ê±¼äÆğÊ¼Ê±¼ä
-    private String cramDateBeginEnd = null;//ºº²¹¿ªÊ¼Ê±¼äÖÕÖ¹Ê±¼ä
-    private String cramDateEndBegin = null;//ºº²¹½áÊøÊ±¼äÆğÊ¼Ê±¼ä
-    private String cramDateEndEnd = null;//ºº²¹½áÊøÊ±¼äÖÕÖ¹Ê±¼ä
-    private String majorStartDateBegin = null;//Èë×¨ÒµÔºĞ£Ê±¼äÆğÊ¼Ê±¼ä
-    private String majorStartDateEnd = null;//Èë×¨ÒµÔºĞ£Ê±¼äÖÕÖ¹Ê±¼ä
+    private String planned = null;//åé¢æ€§è´¨ï¼ˆè®¡åˆ’å†… è®¡åˆ’å¤–ï¼‰
+    private String dispatch = null;//æ´¾é£é€”å¾„
+    private String travelType = null;//å›½é™…æ—…è´¹
+    private String annual = null; //å¹´åº¦
+    private String studentType = null;//å­¦ç”Ÿç±»åˆ«
+    private String appropriations = null;//ç»è´¹åŠæ³•
+    private String teachLanguage = null;//æˆè¯¾è¯­è¨€
+    private String schoolRollState = null;//å­¦ç±çŠ¶æ€
+    private String arrivalDateBegin = null;//æ¥åæ—¶é—´èµ·å§‹æ—¶é—´
+    private String arrivalDateEnd = null;//æ¥åæ—¶é—´ç»ˆæ­¢æ—¶é—´
+    private String leaveDateBegin = null;//ç¦»åæ—¶é—´èµ·å§‹æ—¶é—´
+    private String leaveDateEnd = null;//ç¦»åæ—¶é—´ç»ˆæ­¢æ—¶é—´
+    private String cramDateBeginBegin = null;//æ±‰è¡¥å¼€å§‹æ—¶é—´èµ·å§‹æ—¶é—´
+    private String cramDateBeginEnd = null;//æ±‰è¡¥å¼€å§‹æ—¶é—´ç»ˆæ­¢æ—¶é—´
+    private String cramDateEndBegin = null;//æ±‰è¡¥ç»“æŸæ—¶é—´èµ·å§‹æ—¶é—´
+    private String cramDateEndEnd = null;//æ±‰è¡¥ç»“æŸæ—¶é—´ç»ˆæ­¢æ—¶é—´
+    private String majorStartDateBegin = null;//å…¥ä¸“ä¸šé™¢æ ¡æ—¶é—´èµ·å§‹æ—¶é—´
+    private String majorStartDateEnd = null;//å…¥ä¸“ä¸šé™¢æ ¡æ—¶é—´ç»ˆæ­¢æ—¶é—´
 
     public List<FilterCell> getConditions() {
         List<FilterCell> conditions = new ArrayList<FilterCell>();
