@@ -21,7 +21,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
         "gov.gwssi.csc.scms.controller",
         "gov.gwssi.csc.scms.service",
         "gov.gwssi.csc.scms.repository",
-        "gov.gwssi.csc.scms.dao"
+        "gov.gwssi.csc.scms.dao",
+        "gov.gwssi.csc.scms.domain.user"
     }
 )
 @Import(DatabaseConfig.class)

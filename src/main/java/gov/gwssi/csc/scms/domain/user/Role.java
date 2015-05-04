@@ -1,8 +1,8 @@
 package gov.gwssi.csc.scms.domain.user;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Murray on 2015/4/30.
@@ -13,7 +13,7 @@ public class Role {
     /**
      * 角色代码
      */
-	@Id
+    @Id
     private String roleId;
     /**
      * 角色名称
@@ -27,6 +27,13 @@ public class Role {
      * 有效标识：0 无效 ，1 有效
      */
     private String enable;
+    /**
+     * 角色菜单
+     */
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "PUB_ROLE_MENU", joinColumns = {@JoinColumn(name = "ROLEID")},
+            inverseJoinColumns = {@JoinColumn(name = "MENUID")})
+    private List<Menu> menus = new ArrayList<Menu>();
 
     public String getRoleId() {
         return roleId;
@@ -58,5 +65,13 @@ public class Role {
 
     public void setEnable(String enable) {
         this.enable = enable;
+    }
+
+    public List<Menu> getMenus() {
+        return menus;
+    }
+
+    public void setMenus(List<Menu> menus) {
+        this.menus = menus;
     }
 }

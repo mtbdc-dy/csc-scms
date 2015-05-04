@@ -25,8 +25,10 @@ public class UserService extends BaseService {
         return userRepository.save(user);
     }
 
-    public void enabledUser(String userId, String enabled) {
-        userRepository.updateEnabledByUserId(userId, enabled);
+    public User enabledUser(String userId, String enable) {
+        User u = getUserByUserId(userId);
+        u.setEnable(enable);
+        return userRepository.save(u);
     }
 
     public User updateUser(User user) {
@@ -37,7 +39,7 @@ public class UserService extends BaseService {
     }
 
     public boolean userExists(String userId) {
-        return userRepository.userCount(userId) > 0;
+        return userRepository.exists(userId);
     }
 
     public User userLogin(String userId, String password) {
