@@ -1,5 +1,8 @@
 package gov.gwssi.csc.scms.domain.query;
 
+import gov.gwssi.csc.scms.domain.user.Right;
+import gov.gwssi.csc.scms.domain.user.User;
+
 import java.util.List;
 
 /**
@@ -17,14 +20,11 @@ public class StudentFilter implements Filter {
             conditions = filterObject.getConditions();
     }
 
-    public String getFilter() {
-        if (conditions == null || conditions.isEmpty()) {
-            return "";
-        }
+    private String getConditionFilter(List<FilterCell> condition) {
 
         StringBuilder sb = new StringBuilder();
 
-        for (FilterCell fc : conditions) {
+        for (FilterCell fc : condition) {
             String str[] = fc.getValue().split(",");
 
             if ("String".equalsIgnoreCase(fc.getType())) {
@@ -48,5 +48,55 @@ public class StudentFilter implements Filter {
             }
         }
         return sb.toString();
+
+    }
+
+    public String getFilter(User user) {
+        if (conditions == null || conditions.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(getConditionFilter(conditions));
+
+        sb.append(getUserFilter(user));
+
+        return sb.toString();
+
+    }
+
+    private String getUserFilter(User user) {
+        //节点类型：1基金委；2驻外使（领）馆教育处（组）；3高等院校
+        String nodeType = user.getNode().getNodeType();
+
+        if ("1".equals(nodeType)) {
+            StringBuilder sb = new StringBuilder();
+            List<Right> rights = user.getRights();
+
+            if (rights.size() == 0)
+                return "";
+            if (rights.size() == 1) {
+                sb.append(" and schoolRoll.studentType = '").append(rights.get(0).getRegionId()).append("\' ");
+            } else {
+                StringBuilder tempRight = new StringBuilder();
+                tempRight.append('(');
+                for (Right right : rights) {
+                    tempRight.append("'").append(right.getRegionId()).append("\'").append(",");
+                }
+                tempRight.setCharAt(tempRight.length() - 1, ')');
+
+                sb.append(" and schoolRoll.studentType in ").append(tempRight);
+
+                return sb.toString();
+            }
+
+        }
+        if ("3".equals(nodeType)) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(" and schoolRoll.currentUniversity = '").append(user.getNode().getNodeId()).append("' ");
+            return sb.toString();
+        }
+        throw new RuntimeException("wrong value of the nodeType:" + nodeType);
     }
 }

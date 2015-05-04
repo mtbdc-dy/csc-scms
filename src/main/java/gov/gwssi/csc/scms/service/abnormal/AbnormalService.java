@@ -5,6 +5,7 @@ import gov.gwssi.csc.scms.domain.query.AbnormalFilter;
 import gov.gwssi.csc.scms.domain.query.AbnormalFilterObject;
 import gov.gwssi.csc.scms.domain.query.AbnormalResultObject;
 import gov.gwssi.csc.scms.domain.query.FilterObject;
+import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.abnormal.AbnormalRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +19,16 @@ import java.util.List;
  */
 
 @Service("abnormalService")
-public class AbnormalService  extends BaseService {
+public class AbnormalService extends BaseService {
     @Autowired
     @Qualifier("abnormalRepository")
     private AbnormalRepository abnormalRepository;
 
-    public List<AbnormalResultObject> getAbnormalsByFilter(FilterObject filterObject) {
+    public List<AbnormalResultObject> getAbnormalsByFilter(FilterObject filterObject, User user) {
         List<AbnormalResultObject> abnormalList;
         int startPosition, pageSize;
 
-        String sql = getSqlByBody(filterObject);
+        String sql = getSqlByBody(filterObject, user);
         if (sql == null) {
             return null;
         }
@@ -45,7 +46,7 @@ public class AbnormalService  extends BaseService {
         return abnormalList;
     }
 
-    private String getSqlByBody(FilterObject filterObject) {
+    private String getSqlByBody(FilterObject filterObject, User user) {
         if (filterObject == null)
             return null;
 
@@ -58,7 +59,7 @@ public class AbnormalService  extends BaseService {
                 "and student.schoolRoll = schoolRoll.student and student.id = abnormal.student";
         sb.append(tempSql);
 
-        sb.append(new AbnormalFilter((AbnormalFilterObject) filterObject).getFilter());
+        sb.append(new AbnormalFilter((AbnormalFilterObject) filterObject).getFilter(user));
         return sb.toString();
     }
 }

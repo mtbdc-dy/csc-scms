@@ -1,5 +1,7 @@
 package gov.gwssi.csc.scms.domain.query;
 
+import gov.gwssi.csc.scms.domain.user.User;
+
 import java.util.List;
 
 /**
@@ -14,7 +16,7 @@ public class AbnormalFilter implements Filter{
             conditions = filterObject.getConditions();
     }
     @Override
-    public String getFilter() {
+    public String getFilter(User user) {
         if (conditions == null || conditions.isEmpty()) {
             return "";
         }

@@ -8,8 +8,10 @@ import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.StudentResultObject;
 import gov.gwssi.csc.scms.domain.student.*;
+import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.dictionary.util.JsonMapper;
 import gov.gwssi.csc.scms.service.student.*;
+import gov.gwssi.csc.scms.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +31,9 @@ public class StudentController {
     @Autowired
     private StudentService studentService;
 
+    @Autowired
+    private UserService userService;
+
     /**
      * 学籍信息管理相关操作，获取学生列表
      * 请求信息为Json格式对应的StudentFilterObject类
@@ -37,14 +42,20 @@ public class StudentController {
      * @return
      */
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public List<StudentResultObject> getStudentsByConditions(@RequestParam(value = "filter", required = true) String filter) {
-
+    public List<StudentResultObject> getStudentsByConditions(
+            @RequestParam(value = "filter") String filter, @RequestParam(value = "userId") String userId) {
         try {
             StudentFilterObject sfo = null;
             sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);
 
+            //
+            User user = userService.getUserByUserId(userId);
+            if (user == null) {
+                throw new RuntimeException("no such user valid with userId:" + userId);
+            }
+
             //按照分页（默认）要求，返回列表内容
-            List<StudentResultObject> studentResultObjects = studentService.getStudentsByFilter(sfo);
+            List<StudentResultObject> studentResultObjects = studentService.getStudentsByFilter(sfo, user);
             return studentResultObjects;
         } catch (UnsupportedEncodingException uee) {
             uee.printStackTrace();

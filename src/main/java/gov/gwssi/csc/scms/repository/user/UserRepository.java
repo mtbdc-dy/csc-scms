@@ -11,4 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository("userRepository")
 public interface UserRepository extends CrudRepository<User, String> {
     User getUserByUserIdAndPasswordAndEnable(String userId, String password, String enabled);
+
+    User getUserByUserIdAndEnable(String userId, String enable);
 }

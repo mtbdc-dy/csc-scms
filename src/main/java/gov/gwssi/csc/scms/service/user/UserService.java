@@ -18,7 +18,7 @@ public class UserService extends BaseService {
     private UserRepository userRepository;
 
     public User getUserByUserId(String userId) {
-        return userRepository.findOne(userId);
+        return userRepository.getUserByUserIdAndEnable(userId, "1");
     }
 
     public User saveUser(User user) {

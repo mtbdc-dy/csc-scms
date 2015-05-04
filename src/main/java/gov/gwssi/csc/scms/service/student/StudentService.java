@@ -6,6 +6,7 @@ import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilter;
 import gov.gwssi.csc.scms.domain.query.StudentResultObject;
 import gov.gwssi.csc.scms.domain.student.*;
+import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.student.*;
 import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.service.log.OperationLogService;
@@ -71,11 +72,11 @@ public class StudentService extends BaseService {
         return studentRepository.findByCscId(scsId);
     }
 
-    public List<StudentResultObject> getStudentsByFilter(FilterObject filterObject) {
+    public List<StudentResultObject> getStudentsByFilter(FilterObject filterObject, User user) {
         List<StudentResultObject> studentList;
         int startPosition, pageSize;
 
-        String sql = getSqlByBody(filterObject);
+        String sql = getSqlByBody(filterObject, user);
         if (sql == null) {
             return null;
         }
@@ -85,16 +86,16 @@ public class StudentService extends BaseService {
             pageSize = Integer.parseInt(filterObject.getPageSize());
         } catch (NumberFormatException ne) {
             ne.printStackTrace();
-            startPosition = 0;
-            pageSize = 200;
+            startPosition = FilterObject.OFFSETDEFULT;
+            pageSize = FilterObject.PAGESIZEDEFULT;
         }
 
         studentList = super.getBaseDao().getObjectListByHQL(sql, StudentResultObject.class, startPosition, pageSize);
         return studentList;
     }
 
-    public int getCountByQueryFilter(FilterObject filterObject) {
-        String sql = getCountSqlByBody(filterObject);
+    public int getCountByQueryFilter(FilterObject filterObject, User user) {
+        String sql = getCountSqlByBody(filterObject, user);
         if (sql == null) {
             return 0;
         }
@@ -103,7 +104,7 @@ public class StudentService extends BaseService {
         return count;
     }
 
-    private String getCountSqlByBody(FilterObject filterObject) {
+    private String getCountSqlByBody(FilterObject filterObject, User user) {
         if (filterObject == null) {
             return null;
         }
@@ -115,11 +116,11 @@ public class StudentService extends BaseService {
                 "and student.schoolRoll = schoolRoll.student ";
         sb.append(tempSql);
 
-        sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter());
+        sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter(user));
         return sb.toString();
     }
 
-    private String getSqlByBody(FilterObject filterObject) {
+    private String getSqlByBody(FilterObject filterObject, User user) {
         if (filterObject == null)
             return null;
 
@@ -132,7 +133,7 @@ public class StudentService extends BaseService {
                 "and student.schoolRoll = schoolRoll.student ";
         sb.append(tempSql);
 
-        sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter());
+        sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter(user));
         return sb.toString();
     }
 

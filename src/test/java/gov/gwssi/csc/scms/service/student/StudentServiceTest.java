@@ -33,7 +33,7 @@ public class StudentServiceTest extends UnitTestBase {
         List<StudentResultObject> stus = null;
         try {
             sfo = new ObjectMapper().readValue(body, StudentFilterObject.class);
-            stus = studentService.getStudentsByFilter(sfo);
+            stus = studentService.getStudentsByFilter(sfo, null);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -58,7 +58,7 @@ public class StudentServiceTest extends UnitTestBase {
         int count = 0;
         try {
             sfo = new ObjectMapper().readValue(body, StudentFilterObject.class);
-            count = studentService.getCountByQueryFilter(sfo);
+            count = studentService.getCountByQueryFilter(sfo, null);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -147,7 +147,7 @@ public class StudentServiceTest extends UnitTestBase {
         return stu;
     }
 
-    private List<OperationLog> getLogList(){
+    private List<OperationLog> getLogList() {
         List<OperationLog> list = new ArrayList<OperationLog>();
 
         OperationLog op1 = new OperationLog();
