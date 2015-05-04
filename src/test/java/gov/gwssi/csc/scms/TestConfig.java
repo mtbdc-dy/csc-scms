@@ -19,9 +19,11 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
                 "gov.gwssi.csc.scms.dao",
                 "gov.gwssi.csc.scms.domain.student",
                 "gov.gwssi.csc.scms.domain.log",
+                "gov.gwssi.csc.scms.domain.user",
                 "gov.gwssi.csc.scms.repository.student",
                 "gov.gwssi.csc.scms.repository.log",
                 "gov.gwssi.csc.scms.service.log",
+                "gov.gwssi.csc.scms.service.user",
                 "gov.gwssi.csc.scms.service.dictionary",
                 "gov.gwssi.csc.scms.domain.dictionary",
                 "gov.gwssi.csc.scms.repository.dictionary"
