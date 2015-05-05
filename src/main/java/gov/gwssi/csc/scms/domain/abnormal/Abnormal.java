@@ -21,7 +21,7 @@ public class Abnormal {
      */
 //    @Column(name = "cscId",length=19)
 //    private String cscId;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "studentid")
     private Student student;
 

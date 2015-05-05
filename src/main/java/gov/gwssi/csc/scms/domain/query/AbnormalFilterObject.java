@@ -1,5 +1,4 @@
 package gov.gwssi.csc.scms.domain.query;
-
 import gov.gwssi.csc.scms.domain.query.FilterCell;
 import gov.gwssi.csc.scms.domain.query.FilterObject;
 
@@ -11,6 +10,7 @@ import java.util.List;
  * 异动申请列表查询实体类
  */
 public class AbnormalFilterObject extends FilterObject {
+
     /**
      * 主要查询条件
      */

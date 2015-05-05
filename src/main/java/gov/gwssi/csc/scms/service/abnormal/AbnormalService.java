@@ -38,8 +38,8 @@ public class AbnormalService extends BaseService {
             pageSize = Integer.parseInt(filterObject.getPageSize());
         } catch (NumberFormatException ne) {
             ne.printStackTrace();
-            startPosition = 0;
-            pageSize = 200;
+            startPosition =FilterObject.OFFSETDEFULT;
+            pageSize =FilterObject.PAGESIZEDEFULT;
         }
 
         abnormalList = super.getBaseDao().getObjectListByHQL(sql, AbnormalResultObject.class, startPosition, pageSize);
@@ -54,9 +54,9 @@ public class AbnormalService extends BaseService {
 
         sb.append(AbnormalResultObject.getResultObject());
 
-        String tempSql = " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll Abnormal abnormal" +
-                "where student.basicInfo = basicInfo.student " +
-                "and student.schoolRoll = schoolRoll.student and student.id = abnormal.student";
+        String tempSql = " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll, Abnormal abnormal " +
+                "where student.id = basicInfo.student " +
+                "and student.id = schoolRoll.student and student.id = abnormal.student";
         sb.append(tempSql);
 
         sb.append(new AbnormalFilter((AbnormalFilterObject) filterObject).getFilter(user));

@@ -10,7 +10,7 @@ public class AbnormalResultObject extends ResultObject{
     /**
      * 学生ID
      */
-    private Long studentId;
+    private String studentId;
     /**
      * CSCID
      */
@@ -47,7 +47,7 @@ public class AbnormalResultObject extends ResultObject{
      */
     private String handleState;
 
-    public AbnormalResultObject(Long studentId, String cscId, String sex, String passportName, String applyUserName, String country, Date applyDate, String rollState, String handleState) {
+    public AbnormalResultObject(String studentId, String cscId, String sex, String passportName, String applyUserName, String country, Date applyDate, String rollState, String handleState) {
         this.studentId = studentId;
         this.cscId = cscId;
         this.sex = sex;
@@ -59,11 +59,11 @@ public class AbnormalResultObject extends ResultObject{
         this.handleState = handleState;
     }
 
-    public Long getStudentId() {
+    public String getStudentId() {
         return studentId;
     }
 
-    public void setStudentId(Long studentId) {
+    public void setStudentId(String studentId) {
         this.studentId = studentId;
     }
 
@@ -142,9 +142,9 @@ public class AbnormalResultObject extends ResultObject{
          this.rollState = rollState;
          this.handleState = handleState;
          */
-        String resultSql = "select new gov.gwssi.csc.scms.domain.query.AbnormalResultObject(student.id, student.cscId, basicInfo.sex, " +
+        String resultSql = "select new gov.gwssi.csc.scms.domain.query.AbnormalResultObject(student.id, student.cscId, basicInfo.gender, " +
                 "basicInfo.passportName, " +
-                "basicInfo.country, schoolRoll.rollState,abnormal.handleState,abnormal.applyUserName,abnormal.applyDate) ";
+                "abnormal.applyUserName,basicInfo.country,abnormal.applyTime, schoolRoll.state,abnormal.state) ";
         return resultSql;
     }
 }
