@@ -3,7 +3,7 @@ package gov.gwssi.csc.scms.controller.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.user.User;
-import gov.gwssi.csc.scms.repository.user.UserException;
+import gov.gwssi.csc.scms.service.user.UserException;
 import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

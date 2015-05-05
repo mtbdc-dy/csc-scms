@@ -18,7 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Created by WangZishi on 3/25/2015.
+ * Created by Murray on 4/5/2015.
+ * 学生业务操作类
  */
 @Service(value = "studentService")
 public class StudentService extends BaseService {
@@ -47,7 +48,6 @@ public class StudentService extends BaseService {
     @Autowired
     private GradeAttachmentService gradeAttachmentService;
     @Autowired
-    @Qualifier("operationLogService")
     private OperationLogService operationLogService;
 
     public Student getStudentById(String id) {
@@ -213,9 +213,9 @@ public class StudentService extends BaseService {
         Student student = getStudentById(studentId);
         if (student == null)
             return null;
-        studentRepository.delete(student);
         //记录日志
         operationLogService.saveOperationLog(operationLogs);
+        studentRepository.delete(student);
         return student;
     }
 
@@ -223,7 +223,6 @@ public class StudentService extends BaseService {
     public Object updateGroupByName(String groupName, Object groupObj, List<OperationLog> operationLogs) {
         //记录日志
         operationLogService.saveOperationLog(operationLogs);
-
         if ("basicInfo".equalsIgnoreCase(groupName)) {
             BasicInfo basicInfo = basicInfoService.updateBasicInfo((BasicInfo) groupObj);
             return setNullByField(basicInfo, "student", BasicInfo.class);

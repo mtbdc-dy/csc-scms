@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * Created by Murray on 2015/4/30.
+ * 系统用户类
  */
 @Entity
 @Table(name = "PUB_USER")
