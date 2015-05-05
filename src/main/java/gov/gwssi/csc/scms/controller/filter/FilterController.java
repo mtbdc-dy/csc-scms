@@ -3,6 +3,7 @@ package gov.gwssi.csc.scms.controller.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.user.User;
+import gov.gwssi.csc.scms.repository.user.UserException;
 import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,23 +29,21 @@ public class FilterController {
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public int getCountByConditions(@RequestParam String filter, @RequestParam String userId) {
         try {
-
-            //
             User user = userService.getUserByUserId(userId);
             if (user == null) {
-                throw new RuntimeException("no such user valid with userId:" + userId);
+                throw new UserException("can't find the user by userId:" + userId);
             }
 
             String jsonStr = URLDecoder.decode(filter, "utf-8");
-
             StudentFilterObject sfo = new ObjectMapper().readValue(jsonStr, StudentFilterObject.class);
-
-            int count = studentService.getCountByQueryFilter(sfo, user);
-            return count;
+            return studentService.getCountByQueryFilter(sfo, user);
         } catch (UnsupportedEncodingException uee) {
             uee.printStackTrace();
             return 0;
         } catch (IOException e) {
+            e.printStackTrace();
+            return 0;
+        } catch (UserException e) {
             e.printStackTrace();
             return 0;
         }

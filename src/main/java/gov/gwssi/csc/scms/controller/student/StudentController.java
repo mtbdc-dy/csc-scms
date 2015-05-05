@@ -9,6 +9,7 @@ import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.StudentResultObject;
 import gov.gwssi.csc.scms.domain.student.*;
 import gov.gwssi.csc.scms.domain.user.User;
+import gov.gwssi.csc.scms.repository.user.UserException;
 import gov.gwssi.csc.scms.service.dictionary.util.JsonMapper;
 import gov.gwssi.csc.scms.service.student.*;
 import gov.gwssi.csc.scms.service.user.UserService;
@@ -48,11 +49,9 @@ public class StudentController {
             StudentFilterObject sfo = null;
             sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);
 
-            //
             User user = userService.getUserByUserId(userId);
-            if (user == null) {
-                throw new RuntimeException("no such user valid with userId:" + userId);
-            }
+            if (user == null)
+                throw new UserException("can't find the user by userId:" + userId);
 
             //按照分页（默认）要求，返回列表内容
             List<StudentResultObject> studentResultObjects = studentService.getStudentsByFilter(sfo, user);
@@ -61,6 +60,9 @@ public class StudentController {
             uee.printStackTrace();
             return null;
         } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } catch (UserException e) {
             e.printStackTrace();
             return null;
         }
