@@ -41,7 +41,7 @@ public class NodeService extends BaseService {
         if (node == null)
             throw new NoSuchNodeException();
 
-        if (node.getEnable() == "1") {
+        if ( "1".equals(node.getEnable())) {
             List<User> users = userService.getUsersByNode(node);
             if (users == null || users.size() == 0) {
                 node.setEnable("0");

@@ -18,8 +18,12 @@ public class RightService extends BaseService {
     }
 
     public Right saveRight(Right right) {
-        right.setRegionId(getBaseDao().getDicIdByClassType(right.getType()));
         return rightRepository.save(right);
+    }
+
+    public Right addRight(Right right) {
+        right.setRegionId(getBaseDao().getDicIdByClassType(right.getType()));
+        return saveRight(right);
     }
 
 }

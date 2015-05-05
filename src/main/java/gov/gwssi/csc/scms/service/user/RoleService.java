@@ -57,7 +57,7 @@ public class RoleService extends BaseService {
         if (role == null)
             throw new NoSuchRoleException();
 
-        if (role.getEnable() == "1") {
+        if ("1".equals(role.getEnable())) {
             List<User> users = userService.getUsersByRole(role);
             if (users == null || users.size() == 0) {
                 role.setEnable("0");

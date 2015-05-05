@@ -35,11 +35,14 @@ public class UserService extends BaseService {
         return userRepository.save(user);
     }
 
-    public User changeUserEnable(String userId, String enable) throws NoSuchUserException {
+    public User enableUser(String userId) throws NoSuchUserException {
         User u = getUserByUserId(userId);
         if (u == null)
             throw new NoSuchUserException();
-        u.setEnable(enable);
+        if ("1".equals(u.getEnable()))
+            u.setEnable("0");
+        else
+        u.setEnable("1");
         return userRepository.save(u);
     }
 
@@ -47,8 +50,6 @@ public class UserService extends BaseService {
         User u = getUserByUserId(user.getUserId());
         if (u == null)
             throw new NoSuchUserException();
-        user.setRoll(u.getRole());
-        user.setNode(u.getNode());
         return userRepository.save(user);
     }
 
