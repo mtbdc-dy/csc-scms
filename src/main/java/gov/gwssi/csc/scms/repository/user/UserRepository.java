@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.repository.user;
 
+import gov.gwssi.csc.scms.domain.user.Node;
 import gov.gwssi.csc.scms.domain.user.Role;
 import gov.gwssi.csc.scms.domain.user.User;
 import org.springframework.data.repository.CrudRepository;
@@ -18,5 +19,7 @@ public interface UserRepository extends CrudRepository<User, String> {
 
     User getUserByUserIdAndEnable(String userId, String enable);
 
-    List<User> findUserByRole(Role role);
+    List<User> findUserByRoleAndEnable(Role role,String enable);
+
+    List<User> findUserByNodeAndEnable(Node node,String enable);
 }

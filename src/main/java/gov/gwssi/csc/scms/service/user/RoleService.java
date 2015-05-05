@@ -43,22 +43,26 @@ public class RoleService extends BaseService {
         return saveRole(role);
     }
 
-    public void deleteRole(Role role) throws UsedException {
+    public void deleteRole(Role role) throws RoleBeingUsedException {
         List<User> users = userService.getUsersByRole(role);
         if (users == null || users.size() == 0) {
             roleRepository.delete(role);
         } else
-            throw new UsedException();
+            throw new RoleBeingUsedException();
     }
 
-    public void enableRole(String roleId) throws UsedException {
+    public void enableRole(String roleId) throws RoleBeingUsedException, NoSuchRoleException {
         Role role = getRoleByRoleId(roleId);
+
+        if (role == null)
+            throw new NoSuchRoleException();
+
         if (role.getEnable() == "1") {
             List<User> users = userService.getUsersByRole(role);
             if (users == null || users.size() == 0) {
                 role.setEnable("0");
             } else
-                throw new UsedException("the Role is used by user, can`t be disabled!");
+                throw new RoleBeingUsedException();
         } else
             role.setEnable("1");
         saveRole(role);

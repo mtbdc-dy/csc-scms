@@ -1,5 +1,7 @@
 package gov.gwssi.csc.scms.domain.user;
 
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;

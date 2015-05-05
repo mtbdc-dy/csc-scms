@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.service.user;
 
+import gov.gwssi.csc.scms.domain.user.Node;
 import gov.gwssi.csc.scms.domain.user.Role;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.user.UserRepository;
@@ -34,8 +35,10 @@ public class UserService extends BaseService {
         return userRepository.save(user);
     }
 
-    public User changeUserEnable(String userId, String enable) {
+    public User changeUserEnable(String userId, String enable) throws NoSuchUserException {
         User u = getUserByUserId(userId);
+        if (u == null)
+            throw new NoSuchUserException();
         u.setEnable(enable);
         return userRepository.save(u);
     }
@@ -58,7 +61,11 @@ public class UserService extends BaseService {
     }
 
     public List<User> getUsersByRole(Role role) {
-        return userRepository.findUserByRole(role);
+        return userRepository.findUserByRoleAndEnable(role, "1");
+    }
+
+    public List<User> getUsersByNode(Node node) {
+        return userRepository.findUserByNodeAndEnable(node, "1");
     }
 
 }

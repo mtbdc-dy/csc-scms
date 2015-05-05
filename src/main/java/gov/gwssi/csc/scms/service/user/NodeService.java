@@ -1,9 +1,12 @@
 package gov.gwssi.csc.scms.service.user;
 
 import gov.gwssi.csc.scms.domain.user.Node;
+import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.user.NodeRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * Created by Lei on 2015/5/5.
@@ -12,6 +15,9 @@ public class NodeService extends BaseService {
 
     @Autowired
     private NodeRepository nodeRepository;
+
+    @Autowired
+    private UserService userService;
 
     public Node getNodeByNodeId(String nodeId) {
         return nodeRepository.findOne(nodeId);
@@ -30,15 +36,21 @@ public class NodeService extends BaseService {
         return saveNode(node);
     }
 
-    public Node enableNode(String nodeId) throws NoSuchNodeException {
+    public Node enableNode(String nodeId) throws NoSuchNodeException, NodeBeingUsedException {
         Node node = getNodeByNodeId(nodeId);
         if (node == null)
             throw new NoSuchNodeException();
+
         if (node.getEnable() == "1") {
-            node.setEnable("0");
+            List<User> users = userService.getUsersByNode(node);
+            if (users == null || users.size() == 0) {
+                node.setEnable("0");
+            } else
+                throw new NodeBeingUsedException();
         } else {
             node.setEnable("1");
         }
         return saveNode(node);
     }
+
 }
