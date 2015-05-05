@@ -100,4 +100,18 @@ public class BaseDAO {
             }
         }
     }
+
+    public String getDicIdByClassType(String classType){
+        String sql = "select f_scms_dim_id('" + classType + "') from dual ";
+        EntityManager em = null;
+        try {
+            em = entityManagerFactory.createEntityManager();
+            Query query = em.createNativeQuery(sql);
+            return String.valueOf(query.getSingleResult());
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
 }

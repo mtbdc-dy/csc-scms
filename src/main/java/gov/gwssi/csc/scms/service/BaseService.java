@@ -16,7 +16,6 @@ import java.util.List;
  */
 @Service
 public class BaseService {
-
     @Autowired
     private ApplicationContext context;
 
