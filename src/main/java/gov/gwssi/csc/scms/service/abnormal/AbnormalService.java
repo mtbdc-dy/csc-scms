@@ -26,6 +26,9 @@ public class AbnormalService extends BaseService {
     private AbnormalRepository abnormalRepository;
     @Autowired
     private OperationLogService operationLogService;
+    public Abnormal getAbnormalById(String id) {
+        return abnormalRepository.findOne(id);
+    }
 //    @Autowired
 //    private StudentService studentService;
 //获取学校用户异动申请列表
@@ -109,10 +112,18 @@ public class AbnormalService extends BaseService {
     }
     //保存新增的异动申请
     @Transactional
-    public Abnormal saveabnormal(Abnormal abnormal, List<OperationLog> operationLogs) {
+    public Abnormal saveAbnormal(Abnormal abnormal, List<OperationLog> operationLogs) {
         //记录日志
         operationLogService.saveOperationLog(operationLogs);
         abnormal.setId(getBaseDao().getIdBySequence("SEQ_ABNORMAL"));
+        return abnormalRepository.save(abnormal);
+    }
+    //更新异动申请状态
+    @Transactional
+    public Abnormal updateAbnormal(Abnormal abnormal, List<OperationLog> operationLogs) {
+        //记录日志
+        operationLogService.saveOperationLog(operationLogs);
+
         return abnormalRepository.save(abnormal);
     }
 }

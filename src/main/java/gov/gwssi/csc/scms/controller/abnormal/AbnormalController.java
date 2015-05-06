@@ -91,7 +91,7 @@ public List<AddStudentResultObject> getAddStudentsByConditions(@RequestParam(val
             JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
             List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
 
-            abnormal = abnormalService.saveabnormal(abnormal, operationLogs);
+            abnormal = abnormalService.saveAbnormal(abnormal, operationLogs);
             return abnormal;
         } catch (Exception e) {
             e.printStackTrace();

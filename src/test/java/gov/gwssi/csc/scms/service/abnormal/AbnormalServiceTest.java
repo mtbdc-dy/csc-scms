@@ -69,8 +69,16 @@ public class AbnormalServiceTest  extends UnitTestBase {
      @Test
      public void saveAbnormalTest() {
          AbnormalService abnormalService = getBean("abnormalService");
-         Abnormal ab = abnormalService.saveabnormal(getAbnormalInTest(), getLogList());
+         Abnormal ab = abnormalService.saveAbnormal(getAbnormalInTest(), getLogList());
          Assert.assertNotNull(ab);
+     }
+     @Test
+     public void updateAbnormalTest() {
+         AbnormalService abnormalService = getBean("abnormalService");
+         Abnormal ab = abnormalService.getAbnormalById("2015050600000000007");
+         ab.setState("1");
+         Abnormal abc = abnormalService.updateAbnormal(ab, getLogList());
+         Assert.assertNotNull(abc);
      }
      private Abnormal getAbnormalInTest() {
 
