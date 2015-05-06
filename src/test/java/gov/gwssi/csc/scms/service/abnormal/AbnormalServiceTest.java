@@ -3,8 +3,7 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.base.UnitTestBase;
 
-import gov.gwssi.csc.scms.domain.query.AbnormalFilterObject;
-import gov.gwssi.csc.scms.domain.query.AbnormalResultObject;
+import gov.gwssi.csc.scms.domain.query.*;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -37,4 +36,26 @@ public class AbnormalServiceTest  extends UnitTestBase {
 
         }
     }
+     @Test
+     public void getAllStudentTest() {
+         AbnormalService abnormalService = getBean("abnormalService");
+         String body = "{\"cscId\" : \"1\" ," +
+                 "\"offSet\" : \"0\" , \"pageSize\" : \"2\"}";
+         StudentFilterObject studentResultObject;
+         List<AddStudentResultObject> list1 = null;
+         try {
+             studentResultObject=new ObjectMapper().readValue(body, StudentFilterObject.class);
+             list1 =  abnormalService.getAddStudentsByFilter(studentResultObject,null);
+         } catch (IOException e) {
+             e.printStackTrace();
+         }
+         Assert.assertNotNull(list1);
+         System.out.println("list size::" + list1.size());
+         for (AddStudentResultObject sro : list1) {
+             System.out.println("==============================");
+             System.out.println("studentId::" + sro.getStudentId());
+             System.out.println("CscId::" + sro.getCscId());
+
+         }
+     }
 }

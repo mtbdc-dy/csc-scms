@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
 import gov.gwssi.csc.scms.domain.query.AbnormalFilterObject;
 import gov.gwssi.csc.scms.domain.query.AbnormalResultObject;
+import gov.gwssi.csc.scms.domain.query.AddStudentResultObject;
+import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.abnormal.AbnormalService;
 import gov.gwssi.csc.scms.service.user.UserService;
@@ -23,14 +25,14 @@ import java.util.List;
  * 移动申请控制器
  */
 @RestController
-@RequestMapping("/service/abnormal")
+@RequestMapping("/abnormal")
 public class AbnormalController {
     @Autowired
     private AbnormalService abnormalService;
     @Autowired
     private UserService userService;
-
-    @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+//学校用户在前台点击异动申请菜单后，返回异动申请列表
+    @RequestMapping(value = "/manager",method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<AbnormalResultObject> getAbnormalsByConditions(@RequestParam(value = "filter") String filter, @RequestParam(value = "filter") String userId) {
         try {
             AbnormalFilterObject sfo = null;
@@ -52,5 +54,27 @@ public class AbnormalController {
             return null;
         }
     }
+//学校用户在前台点击新增申请，返回需要申请的学生信息列表
+@RequestMapping(value = "/add",method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+public List<AddStudentResultObject> getAddStudentsByConditions(@RequestParam(value = "filter") String filter, @RequestParam(value = "filter") String userId) {
+    try {
+        StudentFilterObject sfo = null;
+        sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);
 
+        User user = userService.getUserByUserId(userId);
+        if (user == null) {
+            throw new RuntimeException("no such user valid with userId:" + userId);
+        }
+
+        //按照分页（默认）要求，返回列表内容
+        List<AddStudentResultObject> studentResultObjects = abnormalService.getAddStudentsByFilter(sfo, user);
+        return studentResultObjects;
+    } catch (UnsupportedEncodingException uee) {
+        uee.printStackTrace();
+        return null;
+    } catch (IOException e) {
+        e.printStackTrace();
+        return null;
+    }
+}
 }
