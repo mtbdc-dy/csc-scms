@@ -19,8 +19,4 @@ public class IdBeUsedException extends Throwable {
         super(cause);
     }
 
-    public IdBeUsedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
-
 }

@@ -19,7 +19,4 @@ public class NoSuchRoleException extends Throwable {
         super(cause);
     }
 
-    public NoSuchRoleException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }

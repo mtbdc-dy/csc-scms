@@ -19,7 +19,4 @@ public class RoleBeingUsedException extends Throwable {
         super(cause);
     }
 
-    public RoleBeingUsedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }
