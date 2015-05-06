@@ -3,11 +3,19 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.base.UnitTestBase;
 
+import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
+import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.*;
+import gov.gwssi.csc.scms.domain.student.Student;
+import gov.gwssi.csc.scms.service.student.StudentService;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
  /**
@@ -45,7 +53,7 @@ public class AbnormalServiceTest  extends UnitTestBase {
          List<AddStudentResultObject> list1 = null;
          try {
              studentResultObject=new ObjectMapper().readValue(body, StudentFilterObject.class);
-             list1 =  abnormalService.getAddStudentsByFilter(studentResultObject,null);
+             list1 =  abnormalService.getAddStudentsByFilter(studentResultObject, null);
          } catch (IOException e) {
              e.printStackTrace();
          }
@@ -57,5 +65,50 @@ public class AbnormalServiceTest  extends UnitTestBase {
              System.out.println("CscId::" + sro.getCscId());
 
          }
+     }
+     @Test
+     public void saveAbnormalTest() {
+         AbnormalService abnormalService = getBean("abnormalService");
+         Abnormal ab = abnormalService.saveabnormal(getAbnormalInTest(), getLogList());
+         Assert.assertNotNull(ab);
+     }
+     private Abnormal getAbnormalInTest() {
+
+         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+         Date date = null;
+         try {
+             date = sdf.parse("2016-02-02 00:00:00");
+         } catch (ParseException e) {
+             e.printStackTrace();
+         }
+
+//         Student stu = new Student();
+         StudentService studentService = getBean("studentService");
+         Student student = studentService.getStudentByCscId("1");
+         Abnormal ab = new Abnormal();
+//         stu.setCscId("csc11000001");
+         ab.setStudent(student);
+         ab.setState("0");
+
+         return ab;
+     }
+     private List<OperationLog> getLogList() {
+         List<OperationLog> list = new ArrayList<OperationLog>();
+
+         OperationLog op1 = new OperationLog();
+         op1.setMenu("在校生管理");
+         op1.setTableEN("basicInfo");
+         op1.setColunmEN("passportName");
+         op1.setBefore("beForeName");
+         op1.setAfter("afterName");
+         op1.setStudentId("1");
+         op1.setOptType("1");
+         op1.setMenuId(11111111l);
+         op1.setNodeId("2");
+         list.add(op1);
+
+
+
+         return list;
      }
 }

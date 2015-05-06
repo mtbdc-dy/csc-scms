@@ -1,7 +1,10 @@
 package gov.gwssi.csc.scms.controller.abnormal;
 
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.gwssi.csc.scms.controller.student.JsonBody;
 import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
+import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.AbnormalFilterObject;
 import gov.gwssi.csc.scms.domain.query.AbnormalResultObject;
 import gov.gwssi.csc.scms.domain.query.AddStudentResultObject;
@@ -10,10 +13,7 @@ import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.abnormal.AbnormalService;
 import gov.gwssi.csc.scms.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -77,4 +77,25 @@ public List<AddStudentResultObject> getAddStudentsByConditions(@RequestParam(val
         return null;
     }
 }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
+    public Abnormal putAbnormal(@PathVariable(value = "id") String id, @RequestBody String abnormalJson) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonBody jbosy = new ObjectMapper().readValue(abnormalJson, JsonBody.class);
+
+            Abnormal abnormal = mapper.readValue(jbosy.getValue(), Abnormal.class);
+            if (abnormal == null)
+                return null;
+
+            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
+            List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
+
+            abnormal = abnormalService.saveabnormal(abnormal, operationLogs);
+            return abnormal;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

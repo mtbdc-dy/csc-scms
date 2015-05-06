@@ -1,14 +1,17 @@
 package gov.gwssi.csc.scms.service.abnormal;
 
 import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
+import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.*;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.abnormal.AbnormalRepository;
 import gov.gwssi.csc.scms.service.BaseService;
+import gov.gwssi.csc.scms.service.log.OperationLogService;
 import gov.gwssi.csc.scms.service.student.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,6 +24,8 @@ public class AbnormalService extends BaseService {
     @Autowired
     @Qualifier("abnormalRepository")
     private AbnormalRepository abnormalRepository;
+    @Autowired
+    private OperationLogService operationLogService;
 //    @Autowired
 //    private StudentService studentService;
 //获取学校用户异动申请列表
@@ -101,5 +106,13 @@ public class AbnormalService extends BaseService {
 
         sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter(user));
         return sb.toString();
+    }
+    //保存新增的异动申请
+    @Transactional
+    public Abnormal saveabnormal(Abnormal abnormal, List<OperationLog> operationLogs) {
+        //记录日志
+        operationLogService.saveOperationLog(operationLogs);
+        abnormal.setId(getBaseDao().getIdBySequence("SEQ_ABNORMAL"));
+        return abnormalRepository.save(abnormal);
     }
 }
