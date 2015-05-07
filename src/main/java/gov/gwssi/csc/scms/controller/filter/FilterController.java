@@ -3,8 +3,8 @@ package gov.gwssi.csc.scms.controller.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.user.User;
-import gov.gwssi.csc.scms.service.user.UserException;
 import gov.gwssi.csc.scms.service.student.StudentService;
+import gov.gwssi.csc.scms.service.user.UserIdBeUsedException;
 import gov.gwssi.csc.scms.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +31,7 @@ public class FilterController {
         try {
             User user = userService.getUserByUserId(userId);
             if (user == null) {
-                throw new UserException("can't find the user by userId:" + userId);
+                throw new UserIdBeUsedException(userId);
             }
 
             String jsonStr = URLDecoder.decode(filter, "utf-8");
@@ -43,7 +43,7 @@ public class FilterController {
         } catch (IOException e) {
             e.printStackTrace();
             return 0;
-        } catch (UserException e) {
+        } catch (UserIdBeUsedException e) {
             e.printStackTrace();
             return 0;
         }

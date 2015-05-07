@@ -7,7 +7,7 @@ import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.StudentResultObject;
 import gov.gwssi.csc.scms.domain.student.*;
 import gov.gwssi.csc.scms.domain.user.User;
-import gov.gwssi.csc.scms.service.user.UserException;
+import gov.gwssi.csc.scms.service.user.NoSuchUserException;
 import gov.gwssi.csc.scms.service.student.*;
 import gov.gwssi.csc.scms.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +47,7 @@ public class StudentController {
 
             User user = userService.getUserByUserId(userId);
             if (user == null)
-                throw new UserException("can't find the user by userId:" + userId);
+                throw new NoSuchUserException(userId);
 
             //按照分页（默认）要求，返回列表内容
             List<StudentResultObject> studentResultObjects = studentService.getStudentsByFilter(sfo, user);
@@ -58,7 +58,7 @@ public class StudentController {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
-        } catch (UserException e) {
+        } catch (NoSuchUserException e) {
             e.printStackTrace();
             return null;
         }

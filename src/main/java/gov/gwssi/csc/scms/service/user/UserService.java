@@ -25,9 +25,9 @@ public class UserService extends BaseService {
         return userRepository.getUserByUserIdAndEnable(userId, "1");
     }
 
-    public User addUser(User user) throws IdBeUsedException {
+    public User addUser(User user) throws UserIdBeUsedException {
         if (userExists(user.getUserId()))
-            throw new IdBeUsedException("this id for new user is used :" + user.getUserId());
+            throw new UserIdBeUsedException("this id for new user is used :" + user.getUserId());
         return saveUser(user);
     }
 
