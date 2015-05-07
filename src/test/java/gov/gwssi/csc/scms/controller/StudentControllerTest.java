@@ -1,7 +1,6 @@
 package gov.gwssi.csc.scms.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.gwssi.csc.scms.controller.student.JsonBody;
 import org.junit.Test;
 
 import java.io.IOException;

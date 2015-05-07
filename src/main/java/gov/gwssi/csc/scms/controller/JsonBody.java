@@ -1,4 +1,4 @@
-package gov.gwssi.csc.scms.controller.student;
+package gov.gwssi.csc.scms.controller;
 
 /**
  * Created by Murray on 2015/4/28.
