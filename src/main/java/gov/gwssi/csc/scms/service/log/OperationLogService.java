@@ -20,6 +20,8 @@ public class OperationLogService extends BaseService {
     private OperationLogRepository operationLogRepository;
 
     public List<OperationLog> saveOperationLog(List<OperationLog> operationLogs) {
+        if(operationLogs == null)
+            return null;
         for (OperationLog operationLog : operationLogs)
             operationLog.setId(getBaseDao().getIdBySequence("SEQ_OPT_LOG"));
         return (List<OperationLog>) operationLogRepository.save(operationLogs);

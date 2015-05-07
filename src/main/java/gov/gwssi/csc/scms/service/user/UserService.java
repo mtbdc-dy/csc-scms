@@ -5,6 +5,7 @@ import gov.gwssi.csc.scms.domain.user.Role;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.user.UserRepository;
 import gov.gwssi.csc.scms.service.BaseService;
+import gov.gwssi.csc.scms.utils.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ public class UserService extends BaseService {
     public User addUser(User user) throws UserIdBeUsedException {
         if (userExists(user.getUserId()))
             throw new UserIdBeUsedException("this id for new user is used :" + user.getUserId());
+        user.setPassword(MD5Util.MD5(user.getPassword()));
         return saveUser(user);
     }
 
@@ -58,6 +60,7 @@ public class UserService extends BaseService {
     }
 
     public User userLogin(String userId, String password) {
+        password = MD5Util.MD5(password);
         return userRepository.getUserByUserIdAndPasswordAndEnable(userId, password, "1");
     }
 
