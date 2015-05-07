@@ -1,6 +1,9 @@
 package gov.gwssi.csc.scms.domain.student;
 
+import gov.gwssi.csc.scms.utils.UnicodeUtil;
+
 import javax.persistence.*;
+import java.util.Base64;
 import java.util.Date;
 
 /**
@@ -105,11 +108,11 @@ public class BasicInfo {
     }
 
     public String getPassportName() {
-        return passportName;
+        return UnicodeUtil.toCharSequence(passportName);
     }
 
     public void setPassportName(String passportName) {
-        this.passportName = passportName;
+        this.passportName = UnicodeUtil.toUNICODE(passportName);
     }
 
     public String getChineseName() {

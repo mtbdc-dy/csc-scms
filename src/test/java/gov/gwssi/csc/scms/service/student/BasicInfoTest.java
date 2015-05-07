@@ -5,6 +5,8 @@ import gov.gwssi.csc.scms.domain.student.*;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Date;
+
 /**
  * Created by Murray on 2015/4/2.
  * 学生基本信息单元测试
@@ -37,11 +39,17 @@ public class BasicInfoTest extends UnitTestBase {
         BasicInfo basicInfo = basicInfoService.getBasicInfoById("2015050700000000025");
 
         System.out.println("basicInfo passportName :: "+ basicInfo.getPassportName());
+        System.out.println("basicInfo ChineseName :: "+ basicInfo.getChineseName());
 
         basicInfo.setChineseName("大灰狼");
         basicInfo.setPassportName("큰바보");
+        basicInfo.setUpdateDate(new Date());
+
+        basicInfo = basicInfoService.getBasicInfoById("2015050700000000025");
         basicInfoService.updateBasicInfo(basicInfo);
-        Assert.assertNotNull(basicInfo);
+
+        System.out.println("basicInfo passportName :: " + basicInfo.getPassportName());
+        System.out.println("basicInfo ChineseName :: " + basicInfo.getChineseName());
     }
 
     private Student getStudentInTest() {
