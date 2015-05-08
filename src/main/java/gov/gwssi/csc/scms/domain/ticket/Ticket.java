@@ -62,7 +62,7 @@ public class Ticket {
      *机票价格（元）
      */
     @Column(name = "price",length=16)
-    private BigDecimal price;
+    private long price;
     /**
      *订票状态 0未导出 1已导出 2已反馈
      */
@@ -170,11 +170,11 @@ public class Ticket {
         this.leaveCity = leaveCity;
     }
 
-    public BigDecimal getPrice() {
+    public long getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(long price) {
         this.price = price;
     }
 
