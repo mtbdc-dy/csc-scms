@@ -3,7 +3,6 @@ package gov.gwssi.csc.scms.domain.student;
 import gov.gwssi.csc.scms.utils.UnicodeUtil;
 
 import javax.persistence.*;
-import java.util.Base64;
 import java.util.Date;
 
 /**
