@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * Created by Lei on 2015/5/5.
+ * 节点服务类
  */
 @Service("nodeService")
 public class NodeService extends BaseService {
@@ -25,7 +26,7 @@ public class NodeService extends BaseService {
         return nodeRepository.findOne(nodeId);
     }
 
-    public List<Node> getAllNodeByEnable(String enable) {
+    public List<Node> getNodesByEnable(String enable) {
         return nodeRepository.findNodeByEnable(enable);
     }
 

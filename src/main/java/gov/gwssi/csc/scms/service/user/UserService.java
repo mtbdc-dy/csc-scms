@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * Created by Murray on 15/5/2.
+ * 用户服务类
  */
 @Service
 public class UserService extends BaseService {
@@ -29,9 +30,13 @@ public class UserService extends BaseService {
         return user;
     }
 
-    public User addUser(User user) throws UserIdBeUsedException {
+    public List<User> getUsersByEnable(String enable) {
+        return userRepository.findUserByEnable(enable);
+    }
+
+    public User addUser(User user) throws UserIdBeingUsedException {
         if (userExists(user.getUserId()))
-            throw new UserIdBeUsedException("this id for new user is used :" + user.getUserId());
+            throw new UserIdBeingUsedException("this id for new user is used :" + user.getUserId());
         user.setPassword(MD5Util.MD5(user.getPassword()));
         return saveUser(user);
     }
@@ -47,7 +52,7 @@ public class UserService extends BaseService {
         if ("1".equals(u.getEnable()))
             u.setEnable("0");
         else
-        u.setEnable("1");
+            u.setEnable("1");
         return userRepository.save(u);
     }
 

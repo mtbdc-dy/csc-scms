@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * Created by Lei on 2015/5/5.
+ * 角色服务类
  */
 
 @Service("roleService")
@@ -30,7 +31,7 @@ public class RoleService extends BaseService {
         return roleRepository.findRoleByRoleIdAndEnable(roleId, enable);
     }
 
-    public List<Role> getAllRoleByEnable(String enable) {
+    public List<Role> getRolesByEnable(String enable) {
         return roleRepository.findRoleByEnable(enable);
     }
 
