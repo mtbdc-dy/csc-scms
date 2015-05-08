@@ -3,7 +3,6 @@ package gov.gwssi.csc.scms.service.user;
 import gov.gwssi.csc.scms.base.UnitTestBase;
 import gov.gwssi.csc.scms.domain.user.Role;
 import junit.framework.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
@@ -23,7 +22,7 @@ public class RoleServiceTest extends UnitTestBase {
 
     @Test
     public void getAllRoleByEnable() {
-        List<Role> roles = roleService.getAllRoleByEnable("1");
+        List<Role> roles = roleService.getRolesByEnable("1");
         for (Role role : roles)
             System.out.println(role.getRoleId() + "," + role.getRole());
     }
