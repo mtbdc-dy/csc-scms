@@ -36,12 +36,16 @@ public class AbnormalServiceTest  extends UnitTestBase {
             e.printStackTrace();
         }
         Assert.assertNotNull(list1);
-        System.out.println("list size::" + list1.size());
-        for (AbnormalResultObject sro : list1) {
-            System.out.println("==============================");
-            System.out.println("studentId::" + sro.getStudentId());
-            System.out.println("CscId::" + sro.getCscId());
+        if(list1.size()>0) {
+            System.out.println("list size::" + list1.size());
+            for (AbnormalResultObject sro : list1) {
+                System.out.println("==============================");
+                System.out.println("studentId::" + sro.getStudentId());
+                System.out.println("CscId::" + sro.getCscId());
 
+            }
+        }else{
+            System.out.println("no date display");
         }
     }
      @Test
@@ -92,7 +96,7 @@ public class AbnormalServiceTest  extends UnitTestBase {
 
 //         Student stu = new Student();
          StudentService studentService = getBean("studentService");
-         Student student = studentService.getStudentByCscId("1");
+         Student student = studentService.getStudentByCscId("11");
          Abnormal ab = new Abnormal();
 //         stu.setCscId("csc11000001");
          ab.setStudent(student);
