@@ -16,8 +16,8 @@ import java.net.URLDecoder;
 
 /**
  * Created by Murray on 4/23/2015.
- * 列表总数
- */API
+ * 列表总数API
+ */
 @RestController
 @RequestMapping(value = "/filterResult")
 public class FilterController {
