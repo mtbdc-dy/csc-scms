@@ -65,11 +65,11 @@ public class AbnormalFilter implements Filter{
     private String getUserFilter(User user) {
         //节点类型：1基金委；2驻外使（领）馆教育处（组）；3高等院校
         String nodeType = user.getNode().getNodeType();
-
+        String identity = user.getRole().getIdentity();
         if ("1".equals(nodeType)) {
             StringBuilder sb = new StringBuilder();
             List<Right> rights = user.getRights();
-
+            sb.append(" and abnormal.state in ('1','2','3','4')  ");
             if (rights.size() == 0)
                 return "";
             if (rights.size() == 1) {
