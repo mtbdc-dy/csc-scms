@@ -4,6 +4,7 @@ import gov.gwssi.csc.scms.domain.scholarship.ScholarshipDetail;
 import gov.gwssi.csc.scms.domain.student.Student;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -61,7 +62,7 @@ public class Ticket {
      *机票价格（元）
      */
     @Column(name = "price",length=16)
-    private Double price;
+    private BigDecimal price;
     /**
      *订票状态 0未导出 1已导出 2已反馈
      */
@@ -169,11 +170,11 @@ public class Ticket {
         this.leaveCity = leaveCity;
     }
 
-    public Double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
