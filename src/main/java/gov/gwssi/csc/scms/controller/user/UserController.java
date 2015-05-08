@@ -1,0 +1,64 @@
+package gov.gwssi.csc.scms.controller.user;
+
+import gov.gwssi.csc.scms.domain.user.*;
+import gov.gwssi.csc.scms.service.user.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * Created by Lei on 2015/5/8.
+ * 用户权限相关API
+ */
+
+@RestController
+@RequestMapping(value = "/user")
+public class UserController {
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private RoleService roleService;
+
+    @Autowired
+    private NodeService nodeService;
+
+    @Autowired
+    private RightService rightService;
+
+    @Autowired
+    private MenuService menuService;
+
+    @RequestMapping(name = "/menu", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public List<Menu> getMenuList() {
+        return menuService.getAllMenus();
+    }
+
+    @RequestMapping(name = "/role", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public List<Role> getRoleList() {
+        return roleService.getRolesByEnable("1");
+    }
+
+    @RequestMapping(name = "/node", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public List<Node> getNodeList() {
+        return nodeService.getNodesByEnable("1");
+    }
+
+    @RequestMapping(name = "/user", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public List<User> getUserList() {
+        return userService.getUsersByEnable("1");
+    }
+
+    @RequestMapping(name = "/login", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
+    public User login(@RequestParam(value = "username") String userName, @RequestParam("password") String password) {
+        try {
+            return userService.userLogin(userName, password);
+        } catch (NoSuchUserException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+}

@@ -26,6 +26,7 @@ public class UnicodeUtil {
     public static String toCharSequence(String unicodeValues) {
         if (StringUtils.isEmpty(unicodeValues))
             return "";
+
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < unicodeValues.length() - 4; i++) {
             if (unicodeValues.charAt(i) == '\\') {
