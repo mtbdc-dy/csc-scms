@@ -38,22 +38,23 @@ public class UserController {
 
     @RequestMapping(name = "/role", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<Role> getRoleList() {
-        return roleService.getAllRoleByEnable("1");
+        return roleService.getRolesByEnable("1");
     }
 
     @RequestMapping(name = "/node", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<Node> getNodeList() {
-        return nodeService.getAllNodeByEnable("1");
+        return nodeService.getNodesByEnable("1");
+    }
+
+    @RequestMapping(name = "/user", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public List<User> getUserList() {
+        return userService.getUsersByEnable("1");
     }
 
     @RequestMapping(name = "/login", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
     public User login(@RequestParam(value = "username") String userName, @RequestParam("password") String password) {
-
-        System.out.println("one user is login::" + userName + " , " + password);
-
         try {
-            User user = userService.userLogin(userName, password);
-            return user;
+            return userService.userLogin(userName, password);
         } catch (NoSuchUserException e) {
             e.printStackTrace();
             return null;
