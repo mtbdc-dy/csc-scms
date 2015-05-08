@@ -5,12 +5,14 @@ import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.user.NodeRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * Created by Lei on 2015/5/5.
  */
+@Service("nodeService")
 public class NodeService extends BaseService {
 
     @Autowired
@@ -21,6 +23,10 @@ public class NodeService extends BaseService {
 
     public Node getNodeByNodeId(String nodeId) {
         return nodeRepository.findOne(nodeId);
+    }
+
+    public List<Node> getAllNodeByEnable(String enable) {
+        return nodeRepository.findNodeByEnable(enable);
     }
 
     public Node saveNode(Node node) {
@@ -41,7 +47,7 @@ public class NodeService extends BaseService {
         if (node == null)
             throw new NoSuchNodeException();
 
-        if ( "1".equals(node.getEnable())) {
+        if ("1".equals(node.getEnable())) {
             List<User> users = userService.getUsersByNode(node);
             if (users == null || users.size() == 0) {
                 node.setEnable("0");

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.student.StudentService;
+import gov.gwssi.csc.scms.service.user.NoSuchUserException;
 import gov.gwssi.csc.scms.service.user.UserIdBeUsedException;
 import gov.gwssi.csc.scms.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,9 @@ public class FilterController {
             e.printStackTrace();
             return 0;
         } catch (UserIdBeUsedException e) {
+            e.printStackTrace();
+            return 0;
+        } catch (NoSuchUserException e) {
             e.printStackTrace();
             return 0;
         }

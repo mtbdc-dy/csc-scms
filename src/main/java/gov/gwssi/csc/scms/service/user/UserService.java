@@ -22,8 +22,11 @@ public class UserService extends BaseService {
     @Qualifier("userRepository")
     private UserRepository userRepository;
 
-    public User getUserByUserId(String userId) {
-        return userRepository.getUserByUserIdAndEnable(userId, "1");
+    public User getUserByUserId(String userId) throws NoSuchUserException {
+        User user = userRepository.getUserByUserIdAndEnable(userId, "1");
+        if (user == null)
+            throw new NoSuchUserException();
+        return user;
     }
 
     public User addUser(User user) throws UserIdBeUsedException {
@@ -59,9 +62,12 @@ public class UserService extends BaseService {
         return userRepository.exists(userId);
     }
 
-    public User userLogin(String userId, String password) {
+    public User userLogin(String userId, String password) throws NoSuchUserException {
         password = MD5Util.MD5(password);
-        return userRepository.getUserByUserIdAndPasswordAndEnable(userId, password, "1");
+        User user = userRepository.getUserByUserIdAndPasswordAndEnable(userId, password, "1");
+        if (user == null)
+            throw new NoSuchUserException();
+        return user;
     }
 
     public List<User> getUsersByRole(Role role) {

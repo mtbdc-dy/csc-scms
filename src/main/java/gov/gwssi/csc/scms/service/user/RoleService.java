@@ -26,6 +26,14 @@ public class RoleService extends BaseService {
         return roleRepository.findOne(roleId);
     }
 
+    public Role getRoleByRoleIdAndEnable(String roleId, String enable) {
+        return roleRepository.findRoleByRoleIdAndEnable(roleId, enable);
+    }
+
+    public List<Role> getAllRoleByEnable(String enable) {
+        return roleRepository.findRoleByEnable(enable);
+    }
+
     public Role addRole(Role role) {
 //        role.setRoleId();
         return saveRole(role);
@@ -39,11 +47,14 @@ public class RoleService extends BaseService {
         Role role1 = getRoleByRoleId(role.getRoleId());
         if (role1 == null)
             throw new NoSuchRoleException();
-        role.setMenus(role1.getMenus());
+
         return saveRole(role);
     }
 
-    public void deleteRole(Role role) throws RoleBeingUsedException {
+    public void deleteRole(Role role) throws RoleBeingUsedException, NoSuchRoleException {
+        if (roleRepository.exists(role.getRoleId()))
+            throw new NoSuchRoleException();
+
         List<User> users = userService.getUsersByRole(role);
         if (users == null || users.size() == 0) {
             roleRepository.delete(role);
