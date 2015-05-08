@@ -86,13 +86,13 @@ public class Ticket {
     @Column(name = "created")
     private Date created;
     /**
-     *创建人
+     *修改人
      */
     @Column(name = "updateBy",length=20)
     private String userName;
 
     /**
-     *创建时间
+     *修改时间
      */
     @Column(name = "updated")
     private Date updated;

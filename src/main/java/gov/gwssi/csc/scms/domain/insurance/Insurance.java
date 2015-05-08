@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.domain.insurance;
 
 import gov.gwssi.csc.scms.domain.student.Grade;
+import gov.gwssi.csc.scms.domain.student.Student;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -14,45 +15,51 @@ import java.util.List;
 @Table(name="SCMS_INSURANCE")
 public class Insurance {
     @Id
-    @SequenceGenerator(name = "SCMS_INSURANCE_ID",sequenceName = "SCMS_INSURANCE_SEQ",allocationSize = 1)
-    @GeneratedValue(generator = "SCMS_INSURANCE_ID",strategy = GenerationType.SEQUENCE)
-    private Long id;
 
+    private String id;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "studentid")
+    private Student student;
     /**
      *保险种类 0预定 1正式
      */
     @Column(name = "insurSta",length=1)
     private String insurSta;
+    /**
+     *保单号
+     */
+    @Column(name = "insurNo",length=100)
+    private String insurNo;
 
     /**
-     *总人数
+     *预定状态 0未导出 1已导出 2已反馈
      */
-    @Column(name = "totalNum",length=8)
-    private Long totalNum;
+    @Column(name = "preSta",length=1)
+    private String preSta;
 
     /**
-     *导出人数
-    /**
-     *用户id
+     *创建人
      */
-    @Column(name = "userId",length=20)
-    private String userId;
-
-    /**
-     *用户名
-     */
-    @Column(name = "userName",length=50)
-    private String userName;
+    @Column(name = "createBy",length=20)
+    private String createBy;
 
     /**
      *创建时间
      */
-    @Column(name = "time")
-    private Date time;
+    @Column(name = "created")
+    private Date created;
     /**
-     * 保险明细
+     *修改人
      */
-    //@OneToMany(fetch = FetchType.LAZY, mappedBy = "insuranceid")
-  //  private List<InsuranceDetail> Grades = new ArrayList<InsuranceDetail>();
+    @Column(name = "updateBy",length=20)
+    private String userName;
+
+    /**
+     *修改时间
+     */
+    @Column(name = "updated")
+    private Date updated;
+
 
 }
