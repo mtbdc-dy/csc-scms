@@ -1,8 +1,7 @@
 package gov.gwssi.csc.scms.domain.user;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by Murray on 2015/4/30.
@@ -20,11 +19,11 @@ public class Node {
      */
     private String node;
     /**
-     * 节点类型：1基金委；2驻外使（领）馆教育处（组）；3高等院校
+     * 节点类型：AD基金委；AE省市；AF高等院校；AG派遣机构；AH洲；AI国家；AJ驻外使（领）馆教育处（组）。
      */
     private String nodeType;
     /**
-     * 节点级别
+     * 节点级别：0、根节点；1、一级；2、二级；3、三级；4、四级
      */
     private String nodeLevel;
     /**
@@ -51,6 +50,11 @@ public class Node {
      * 是否有效
      */
     private String enable;
+    /**
+     * 子节点
+     */
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Node> children;
 
     public String getNodeId() {
         return nodeId;
@@ -130,5 +134,13 @@ public class Node {
 
     public void setEnable(String enable) {
         this.enable = enable;
+    }
+
+    public List<Node> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Node> children) {
+        this.children = children;
     }
 }

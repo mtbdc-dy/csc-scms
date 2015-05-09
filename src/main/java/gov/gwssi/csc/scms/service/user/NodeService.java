@@ -16,18 +16,45 @@ import java.util.List;
 @Service("nodeService")
 public class NodeService extends BaseService {
 
+    public final static String ENABLE = "1";
+
+    public final static String UNENABLE = "0";
+
+    public final static String ROOT_LEVEL = "1";
+
     @Autowired
     private NodeRepository nodeRepository;
 
     @Autowired
     private UserService userService;
 
-    public Node getNodeByNodeId(String nodeId) {
-        return nodeRepository.findOne(nodeId);
+    public Node getNodeByNodeIdAndEnable(String nodeId, String enable) {
+        return nodeRepository.findNodeByNodeIdAndEnable(nodeId, enable);
     }
 
     public List<Node> getNodesByEnable(String enable) {
         return nodeRepository.findNodeByEnable(enable);
+    }
+
+    private List<Node> getRootNode() {
+        return nodeRepository.findNodeByNodeLevelAndEnable(ROOT_LEVEL, ENABLE);
+    }
+
+    private Node getChildrenNode(Node node) {
+        if (node == null)
+            return null;
+        node.setChildren(nodeRepository.findNodeByParentIdAndEnable(node.getNodeId(), ENABLE));
+        return node;
+    }
+
+    private List<Node> getChildrenNode(List<Node> nodes) {
+        if (nodes == null || nodes.size() == 0)
+            return null;
+        for (Node node : nodes) {
+            node = getChildrenNode(node);
+            getChildrenNode(node.getChildren());
+        }
+        return nodes;
     }
 
     public Node saveNode(Node node) {
@@ -44,20 +71,24 @@ public class NodeService extends BaseService {
     }
 
     public Node enableNode(String nodeId) throws NoSuchNodeException, NodeBeingUsedException {
-        Node node = getNodeByNodeId(nodeId);
+        Node node = getNodeByNodeIdAndEnable(nodeId, ENABLE);
         if (node == null)
             throw new NoSuchNodeException();
 
-        if ("1".equals(node.getEnable())) {
+        if (ENABLE.equals(node.getEnable())) {
             List<User> users = userService.getUsersByNode(node);
             if (users == null || users.size() == 0) {
-                node.setEnable("0");
+                node.setEnable(UNENABLE);
             } else
                 throw new NodeBeingUsedException();
         } else {
-            node.setEnable("1");
+            node.setEnable(ENABLE);
         }
         return saveNode(node);
     }
 
+    public List<Node> getNodeTree() {
+        List<Node> root = getChildrenNode(getRootNode());
+        return root;
+    }
 }

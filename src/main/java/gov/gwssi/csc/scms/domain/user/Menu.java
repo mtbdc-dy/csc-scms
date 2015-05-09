@@ -1,8 +1,7 @@
 package gov.gwssi.csc.scms.domain.user;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by Murray on 2015/4/30.
@@ -20,33 +19,26 @@ public class Menu {
      */
     private String menu;
     /**
-     * 系统代码
+     * 父菜单Id
      */
-    private String systemId;
+    private String parentId;
     /**
-     * 链接open窗口的方式，function为调函数，self为自身窗口更新
+     * 菜单类型：1、一级菜单 ；2、二级菜单 ；3、三级菜单
      */
-    private String linkType;
+    private String menuType;
     /**
-     * 弹窗宽度
+     * 菜单对应的模块名称
      */
-    private String winWidth;
+    private String module;
     /**
-     * 弹窗高度
+     * 菜单对应的图标的名称，如flower
      */
-    private String winHeight;
+    private String ico;
     /**
-     * 弹窗是否显示滚动条
+     * 子菜单
      */
-    private String scrollBar;
-    /**
-     * 图片名称
-     */
-    private String imageUrl;
-    /**
-     * 类别代码，菜单需要将同类的用分隔线分隔开
-     */
-    private String groupId;
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<Menu> children;
 
     public String getMenuId() {
         return menuId;
@@ -64,59 +56,43 @@ public class Menu {
         this.menu = menu;
     }
 
-    public String getSystemId() {
-        return systemId;
+    public String getParentId() {
+        return parentId;
     }
 
-    public void setSystemId(String systemId) {
-        this.systemId = systemId;
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
     }
 
-    public String getLinkType() {
-        return linkType;
+    public String getMenuType() {
+        return menuType;
     }
 
-    public void setLinkType(String linkType) {
-        this.linkType = linkType;
+    public void setMenuType(String menuType) {
+        this.menuType = menuType;
     }
 
-    public String getWinWidth() {
-        return winWidth;
+    public String getModule() {
+        return module;
     }
 
-    public void setWinWidth(String winWidth) {
-        this.winWidth = winWidth;
+    public void setModule(String module) {
+        this.module = module;
     }
 
-    public String getWinHeight() {
-        return winHeight;
+    public String getIco() {
+        return ico;
     }
 
-    public void setWinHeight(String winHeight) {
-        this.winHeight = winHeight;
+    public void setIco(String ico) {
+        this.ico = ico;
     }
 
-    public String getScrollBar() {
-        return scrollBar;
+    public List<Menu> getChildren() {
+        return children;
     }
 
-    public void setScrollBar(String scrollBar) {
-        this.scrollBar = scrollBar;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public String getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
+    public void setChildren(List<Menu> children) {
+        this.children = children;
     }
 }

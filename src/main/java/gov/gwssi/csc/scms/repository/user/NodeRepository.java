@@ -10,5 +10,11 @@ import java.util.List;
  */
 public interface NodeRepository extends CrudRepository<Node, String> {
 
+    Node findNodeByNodeIdAndEnable(String nodeId, String enable);
+
     List<Node> findNodeByEnable(String enable);
+
+    List<Node> findNodeByNodeLevelAndEnable(String nodeLevel, String enable);
+
+    List<Node> findNodeByParentIdAndEnable(String parentId, String enable);
 }
