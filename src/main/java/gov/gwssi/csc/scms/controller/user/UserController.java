@@ -26,34 +26,31 @@ public class UserController {
     private NodeService nodeService;
 
     @Autowired
-    private RightService rightService;
-
-    @Autowired
     private MenuService menuService;
 
-    @RequestMapping(name = "/menu", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public List<Menu> getMenuList() {
-        return menuService.getAllMenus();
+    @RequestMapping(name = "/menuTree", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public List<Menu> getMenuTree() {
+        return menuService.getMenuTree();
     }
 
-    @RequestMapping(name = "/role", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public List<Role> getRoleList() {
-        return roleService.getRolesByEnable("1");
-    }
-
-    @RequestMapping(name = "/node", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    @RequestMapping(name = "/nodeList", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<Node> getNodeList() {
         return nodeService.getNodesByEnable("1");
     }
 
-    @RequestMapping(name = "/node", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    @RequestMapping(name = "/nodeTree", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<Node> getNodeTree() {
         return nodeService.getNodeTree();
     }
 
+    @RequestMapping(name = "/role", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public List<Role> getRoleList() {
+        return roleService.getRolesByEnable(Role.ENABLE);
+    }
+
     @RequestMapping(name = "/user", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<User> getUserList() {
-        return userService.getUsersByEnable("1");
+        return userService.getUsersByEnable(User.ENABLE);
     }
 
     @RequestMapping(name = "/login", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")

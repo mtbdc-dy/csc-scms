@@ -1,15 +1,22 @@
 package gov.gwssi.csc.scms.domain.user;
 
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Murray on 2015/4/30.
+ * 角色实体类
  */
 @Entity
 @Table(name = "PUB_ROLE")
 public class Role {
+
+    public final static String ENABLE = "1";
+
+    public final static String UNENABLE = "0";
     /**
      * 角色代码
      */

@@ -16,12 +16,6 @@ import java.util.List;
 @Service("nodeService")
 public class NodeService extends BaseService {
 
-    public final static String ENABLE = "1";
-
-    public final static String UNENABLE = "0";
-
-    public final static String ROOT_LEVEL = "1";
-
     @Autowired
     private NodeRepository nodeRepository;
 
@@ -55,23 +49,23 @@ public class NodeService extends BaseService {
     }
 
     public Node enableNode(String nodeId) throws NoSuchNodeException, NodeBeingUsedException {
-        Node node = getNodeByNodeIdAndEnable(nodeId, ENABLE);
+        Node node = getNodeByNodeIdAndEnable(nodeId, Node.ENABLE);
         if (node == null)
             throw new NoSuchNodeException();
 
-        if (ENABLE.equals(node.getEnable())) {
+        if (Node.ENABLE.equals(node.getEnable())) {
             List<User> users = userService.getUsersByNode(node);
             if (users == null || users.size() == 0) {
-                node.setEnable(UNENABLE);
+                node.setEnable(Node.UNENABLE);
             } else
                 throw new NodeBeingUsedException();
         } else {
-            node.setEnable(ENABLE);
+            node.setEnable(Node.ENABLE);
         }
         return saveNode(node);
     }
 
     private List<Node> getRootNode() {
-        return nodeRepository.findNodeByNodeLevelAndEnable(ROOT_LEVEL, ENABLE);
+        return nodeRepository.findNodeByNodeLevelAndEnable(Node.ROOT_LEVEL, Node.ENABLE);
     }
 }

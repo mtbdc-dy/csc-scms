@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.service.user;
 
 import gov.gwssi.csc.scms.domain.user.Menu;
+import gov.gwssi.csc.scms.domain.user.Role;
 import gov.gwssi.csc.scms.repository.user.MenuRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,6 @@ import java.util.List;
 @Service("menuService")
 public class MenuService extends BaseService {
 
-    public final static String ROOT_LEVEL = "1";
-
     @Autowired
     MenuRepository menuRepository;
 
@@ -31,15 +30,36 @@ public class MenuService extends BaseService {
     }
 
     public List<Menu> getMenuTree() {
-        List<Menu> root = menuRepository.findMenuByMenuType(ROOT_LEVEL);
+        List<Menu> root = menuRepository.findMenuByMenuType(Menu.ROOT_LEVEL);
         return root;
     }
 
-    private List<Menu> getMenuRoot() {
-        return null;
+    public List<Menu> getMenuByRole(Role role) {
+        List<Menu> root = menuRepository.findMenuByRoleAndMenuType(role, Menu.ROOT_LEVEL);
+        root = getChildrenMenuByRole(root, role);
+        return root;
     }
 
-    public List<Menu> getAllMenus() {
-        return (List<Menu>) menuRepository.findAll();
+    private List<Menu> getChildrenMenuByRole(Menu parentMenu, Role role) {
+        List<Menu> childrenNode = menuRepository.findMenuByRoleAndParent(role, parentMenu);
+        return childrenNode;
     }
+
+    private List<Menu> getChildrenMenuByRole(List<Menu> menus, Role role) {
+        if (menus == null || menus.size() == 0)
+            return null;
+
+        List<Menu> childrenNode = null;
+        for (Menu menu : menus) {
+            childrenNode = getChildrenMenuByRole(menu, role);
+            menu.setChildren(childrenNode);
+            menu.setParent(null);
+
+            if (childrenNode != null && childrenNode.size() > 0) {
+                getChildrenMenuByRole(childrenNode, role);
+            }
+        }
+        return menus;
+    }
+
 }

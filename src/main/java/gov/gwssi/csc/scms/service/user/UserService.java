@@ -23,15 +23,22 @@ public class UserService extends BaseService {
     @Qualifier("userRepository")
     private UserRepository userRepository;
 
+    @Autowired
+    private MenuService menuService;
+
     public User getUserByUserId(String userId) throws NoSuchUserException {
-        User user = userRepository.getUserByUserIdAndEnable(userId, "1");
+        User user = userRepository.findUserByUserIdAndEnable(userId, User.ENABLE);
+        initRoleMenuByUser(user);
         if (user == null)
             throw new NoSuchUserException();
         return user;
     }
 
     public List<User> getUsersByEnable(String enable) {
-        return userRepository.findUserByEnable(enable);
+        List<User> users = userRepository.findUserByEnable(enable);
+        for (User user : users)
+            initRoleMenuByUser(user);
+        return users;
     }
 
     public User addUser(User user) throws UserIdBeingUsedException {
@@ -49,10 +56,10 @@ public class UserService extends BaseService {
         User u = getUserByUserId(userId);
         if (u == null)
             throw new NoSuchUserException();
-        if ("1".equals(u.getEnable()))
-            u.setEnable("0");
+        if (User.ENABLE.equals(u.getEnable()))
+            u.setEnable(User.UNENABLE);
         else
-            u.setEnable("1");
+            u.setEnable(User.ENABLE);
         return userRepository.save(u);
     }
 
@@ -69,18 +76,25 @@ public class UserService extends BaseService {
 
     public User userLogin(String userId, String password) throws NoSuchUserException {
         password = MD5Util.MD5(password);
-        User user = userRepository.getUserByUserIdAndPasswordAndEnable(userId, password, "1");
+        User user = userRepository.findUserByUserIdAndPasswordAndEnable(userId, password, User.ENABLE);
+        initRoleMenuByUser(user);
+
         if (user == null)
             throw new NoSuchUserException();
         return user;
     }
 
     public List<User> getUsersByRole(Role role) {
-        return userRepository.findUserByRoleAndEnable(role, "1");
+        return userRepository.findUserByRoleAndEnable(role, User.ENABLE);
     }
 
     public List<User> getUsersByNode(Node node) {
-        return userRepository.findUserByNodeAndEnable(node, "1");
+        return userRepository.findUserByNodeAndEnable(node, User.ENABLE);
     }
 
+    private User initRoleMenuByUser(User user) {
+        Role role = user.getRole();
+        role.setMenus(menuService.getMenuByRole(role));
+        return user;
+    }
 }

@@ -15,9 +15,9 @@ import java.util.List;
 
 @Repository("userRepository")
 public interface UserRepository extends CrudRepository<User, String> {
-    User getUserByUserIdAndPasswordAndEnable(String userId, String password, String enable);
+    User findUserByUserIdAndPasswordAndEnable(String userId, String password, String enable);
 
-    User getUserByUserIdAndEnable(String userId, String enable);
+    User findUserByUserIdAndEnable(String userId, String enable);
 
     List<User> findUserByEnable(String enable);
 

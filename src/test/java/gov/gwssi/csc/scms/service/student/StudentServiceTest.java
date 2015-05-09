@@ -70,17 +70,41 @@ public class StudentServiceTest extends UnitTestBase {
         StudentService studentService = getBean("studentService");
         Student stu = studentService.saveStudent(getStudentInTest(), getLogList());
         Assert.assertNotNull(stu);
+
     }
 
     @Test
     public void getStudentByScsIdTest() {
         StudentService studentService = getBean("studentService");
         Student student = studentService.getStudentByCscId("csc11000001");
-        student.getRelatedAddress();
         Assert.assertNotNull(student);
-        System.out.println("BasicInfo ID ::" + student.getBasicInfo().getId());
-        System.out.println("BasicInfo ChineseName ::" + student.getBasicInfo().getChineseName());
-        System.out.println("RelatedAddress personOrAddress :: " + student.getRelatedAddress().get(0).getAddressOrName());
+
+        ObjectMapper mp = new ObjectMapper();
+        String json = null;
+        try {
+            json = mp.writeValueAsString(student);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            System.out.println("ERROR======");
+        }
+        System.out.println("Json :" + json);
+    }
+
+    @Test
+    public void getStudentByIdTest() {
+        StudentService studentService = getBean("studentService");
+        Student student = studentService.getStudentById("2015050900000000044");
+        Assert.assertNotNull(student);
+
+        ObjectMapper mp = new ObjectMapper();
+        String json = null;
+        try {
+            json = mp.writeValueAsString(student);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            System.out.println("ERROR======");
+        }
+        System.out.println("Json :" + json);
     }
 
     @Test
@@ -114,7 +138,7 @@ public class StudentServiceTest extends UnitTestBase {
 
         RegistrationInfo ri = new RegistrationInfo();
         ri.setSubject("古汉语");
-        ri.setTeachLanguage("阿拉伯语");
+        ri.setTeachLanguage("EN");
         stu.setRegistrationInfo(ri);
 
         Discuss discuss = new Discuss();
@@ -124,6 +148,8 @@ public class StudentServiceTest extends UnitTestBase {
         SchoolRoll schoolroll = new SchoolRoll();
         schoolroll.setRegisterYear("2013");
         schoolroll.setPlanLeaveDate(date);
+        schoolroll.setCurrentUniversity("ET001");
+        schoolroll.setLeaveChina(false);
         stu.setSchoolRoll(schoolroll);
 
         ProfilesHistory ph = new ProfilesHistory();
@@ -133,10 +159,10 @@ public class StudentServiceTest extends UnitTestBase {
         List<RelatedAddress> relatedAddress = new ArrayList<RelatedAddress>();
         RelatedAddress ra1 = new RelatedAddress();
         RelatedAddress ra2 = new RelatedAddress();
-        ra1.setType("Address");
+        ra1.setType("Add");
         ra1.setAddressOrName("北京市海淀区");
         ra1.setStudent(stu);
-        ra2.setType("person");
+        ra2.setType("per");
         ra2.setAddressOrName("张三 18800000000");
         ra2.setNature("personInAccedent");
         ra2.setStudent(stu);

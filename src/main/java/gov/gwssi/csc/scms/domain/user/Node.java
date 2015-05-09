@@ -9,6 +9,13 @@ import java.util.List;
 @Entity
 @Table(name = "PUB_NODE")
 public class Node {
+
+    public final static String ENABLE = "1";
+
+    public final static String UNENABLE = "0";
+
+    public final static String ROOT_LEVEL = "1";
+
     /**
      * 节点代码
      */

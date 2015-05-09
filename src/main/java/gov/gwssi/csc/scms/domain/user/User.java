@@ -12,6 +12,10 @@ import java.util.List;
 @Entity
 @Table(name = "PUB_USER")
 public class User {
+
+    public final static String ENABLE = "1";
+
+    public final static String UNENABLE = "0";
     /**
      * 用户名
      */

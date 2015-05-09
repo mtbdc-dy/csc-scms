@@ -3,6 +3,8 @@ package gov.gwssi.csc.scms.service.user;
 import gov.gwssi.csc.scms.base.UnitTestBase;
 import gov.gwssi.csc.scms.domain.user.Menu;
 import gov.gwssi.csc.scms.domain.user.Node;
+import gov.gwssi.csc.scms.domain.user.Role;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -17,10 +19,13 @@ public class MenuServiceTest extends UnitTestBase {
 
     MenuService menuService;
 
+    RoleService roleService;
+
     @Override
     public void before() {
         super.before();
         menuService = getBean(MenuService.class);
+        roleService = getBean(RoleService.class);
     }
 
     @Test
@@ -37,6 +42,18 @@ public class MenuServiceTest extends UnitTestBase {
 
         System.out.println("menus size :: " + menus.size());
         printMenuTree(menus, "");
+    }
+
+    @Test
+    public void getMenuTreeByRole() {
+        Role role = roleService.getRoleByRoleIdAndEnable("1", Role.ENABLE);
+        Assert.assertNotNull(role);
+        List<Menu> menus = menuService.getMenuByRole(role);
+        Assert.assertNotNull(menus);
+
+        System.out.println("menus size: " + menus.size());
+        printMenuTree(menus, "");
+
     }
 
     private void printMenuTree(Menu root, String path) {

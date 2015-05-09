@@ -1,8 +1,12 @@
 package gov.gwssi.csc.scms.service.user;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.base.UnitTestBase;
+import gov.gwssi.csc.scms.domain.user.Menu;
 import gov.gwssi.csc.scms.domain.user.Role;
-import junit.framework.Assert;
+import gov.gwssi.csc.scms.service.dictionary.util.JsonMapper;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.List;
@@ -28,11 +32,63 @@ public class RoleServiceTest extends UnitTestBase {
     }
 
     @Test
+    public void getRoleTest() {
+        Role role = roleService.getRoleByRoleId("1");
+        Assert.assertNotNull(role);
+    }
+
+    @Test
+    public void getRoleMenuTest() {
+        Role role = roleService.getRoleByRoleId("1");
+        Assert.assertNotNull(role);
+
+        List<Menu> menus = role.getMenus();
+        Assert.assertNotNull(menus);
+
+        for (Menu menu : menus) {
+            System.out.println("|--" + menu.getMenuId() + "," + menu.getMenu() + "," + menu.getMenuType());
+            printChildremMenu(menu.getChildren(), "   ");
+        }
+    }
+
+    @Test
+    public void getRoleJsonTest() {
+        Role role = roleService.getRoleByRoleId("1");
+        Assert.assertNotNull(role);
+
+        List<Menu> menus = role.getMenus();
+        Assert.assertNotNull(menus);
+
+        ObjectMapper mp = new ObjectMapper();
+        String json = null;
+        try {
+            json = mp.writeValueAsString(role);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            System.out.println("ERROR======");
+        }
+        System.out.println("Json :" + json);
+    }
+
+    private void printChildremMenu(List<Menu> children, String s) {
+        String path = "   ";
+
+        if (children == null || children.size() == 0)
+            return;
+
+        for (Menu menu : children) {
+            String newPath = s + path;
+            System.out.println(newPath + "|--" + menu.getMenuId() + "," + menu.getMenu() + "," + menu.getMenuType());
+            printChildremMenu(menu.getChildren(), newPath);
+        }
+    }
+
+    @Test
     public void getRoleByRoleAndEnable() {
-        Role role1 = roleService.getRoleByRoleIdAndEnable("3","0");
-        Role role2 = roleService.getRoleByRoleIdAndEnable("3","1");
-        Role role3 = roleService.getRoleByRoleIdAndEnable("2","0");
-        Role role4 = roleService.getRoleByRoleIdAndEnable("4","1");
+        Role role1 = roleService.getRoleByRoleIdAndEnable("3", "0");
+        Role role2 = roleService.getRoleByRoleIdAndEnable("3", "1");
+        Role role3 = roleService.getRoleByRoleIdAndEnable("2", "0");
+        Role role4 = roleService.getRoleByRoleIdAndEnable("4", "1");
 
         Assert.assertNotNull(role1);
         Assert.assertNull(role2);

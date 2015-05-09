@@ -21,18 +21,26 @@ public class RoleService extends BaseService {
     private RoleRepository roleRepository;
 
     @Autowired
+    private MenuService menuService;
+
+    @Autowired
     private UserService userService;
 
     public Role getRoleByRoleId(String roleId) {
-        return roleRepository.findOne(roleId);
+        Role role = roleRepository.findOne(roleId);
+        return initMenu(role);
     }
 
     public Role getRoleByRoleIdAndEnable(String roleId, String enable) {
-        return roleRepository.findRoleByRoleIdAndEnable(roleId, enable);
+        Role role = roleRepository.findRoleByRoleIdAndEnable(roleId, enable);
+        return initMenu(role);
     }
 
     public List<Role> getRolesByEnable(String enable) {
-        return roleRepository.findRoleByEnable(enable);
+        List<Role> roles = roleRepository.findRoleByEnable(enable);
+        for (Role role : roles)
+            initMenu(role);
+        return roles;
     }
 
     public Role addRole(Role role) {
@@ -69,15 +77,20 @@ public class RoleService extends BaseService {
         if (role == null)
             throw new NoSuchRoleException();
 
-        if ("1".equals(role.getEnable())) {
+        if (Role.ENABLE.equals(role.getEnable())) {
             List<User> users = userService.getUsersByRole(role);
             if (users == null || users.size() == 0) {
-                role.setEnable("0");
+                role.setEnable(Role.UNENABLE);
             } else
                 throw new RoleBeingUsedException();
         } else
-            role.setEnable("1");
+            role.setEnable(Role.ENABLE);
         saveRole(role);
+    }
+
+    private Role initMenu(Role role) {
+        role.setMenus(menuService.getMenuByRole(role));
+        return role;
     }
 }
 
