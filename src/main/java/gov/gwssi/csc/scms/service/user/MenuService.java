@@ -6,6 +6,8 @@ import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,15 +17,26 @@ import java.util.List;
 @Service("menuService")
 public class MenuService extends BaseService {
 
+    public final static String ROOT_LEVEL = "1";
+
     @Autowired
     MenuRepository menuRepository;
 
-    public List<Menu> getMenusByIds(List<String> ids) {
-        return (List<Menu>) menuRepository.findAll(ids);
-    }
-
     public Menu getMenuByMenuId(String menuId) {
         return menuRepository.findOne(menuId);
+    }
+
+    public Menu saveMenu(Menu menu) {
+        return menuRepository.save(menu);
+    }
+
+    public List<Menu> getMenuTree() {
+        List<Menu> root = menuRepository.findMenuByMenuType(ROOT_LEVEL);
+        return root;
+    }
+
+    private List<Menu> getMenuRoot() {
+        return null;
     }
 
     public List<Menu> getAllMenus() {

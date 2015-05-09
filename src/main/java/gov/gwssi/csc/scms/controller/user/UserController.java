@@ -46,6 +46,11 @@ public class UserController {
         return nodeService.getNodesByEnable("1");
     }
 
+    @RequestMapping(name = "/node", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public List<Node> getNodeTree() {
+        return nodeService.getNodeTree();
+    }
+
     @RequestMapping(name = "/user", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<User> getUserList() {
         return userService.getUsersByEnable("1");

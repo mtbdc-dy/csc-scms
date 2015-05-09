@@ -8,12 +8,13 @@ import java.util.List;
 
 /**
  * Created by Lei on 2015/5/9.
+ * node相关测试类
  */
 public class NodeServiceTest extends UnitTestBase {
 
     private NodeService nodeService;
 
-    private static String beforePath = "   ";
+    private final static String beforePath = "   ";
 
     @Override
     public void before() {
@@ -34,7 +35,6 @@ public class NodeServiceTest extends UnitTestBase {
     }
 
     private void printTree(List<Node> nodes, String path) {
-
         if (nodes == null || nodes.size() == 0)
             return;
         for (Node node : nodes) {

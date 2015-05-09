@@ -36,25 +36,9 @@ public class NodeService extends BaseService {
         return nodeRepository.findNodeByEnable(enable);
     }
 
-    private List<Node> getRootNode() {
-        return nodeRepository.findNodeByNodeLevelAndEnable(ROOT_LEVEL, ENABLE);
-    }
-
-    private Node getChildrenNode(Node node) {
-        if (node == null)
-            return null;
-        node.setChildren(nodeRepository.findNodeByParentIdAndEnable(node.getNodeId(), ENABLE));
-        return node;
-    }
-
-    private List<Node> getChildrenNode(List<Node> nodes) {
-        if (nodes == null || nodes.size() == 0)
-            return null;
-        for (Node node : nodes) {
-            node = getChildrenNode(node);
-            getChildrenNode(node.getChildren());
-        }
-        return nodes;
+    public List<Node> getNodeTree() {
+        List<Node> root = getRootNode();
+        return root;
     }
 
     public Node saveNode(Node node) {
@@ -87,8 +71,7 @@ public class NodeService extends BaseService {
         return saveNode(node);
     }
 
-    public List<Node> getNodeTree() {
-        List<Node> root = getChildrenNode(getRootNode());
-        return root;
+    private List<Node> getRootNode() {
+        return nodeRepository.findNodeByNodeLevelAndEnable(ROOT_LEVEL, ENABLE);
     }
 }

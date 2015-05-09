@@ -21,7 +21,9 @@ public class Menu {
     /**
      * 父菜单Id
      */
-    private String parentId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parentId")
+    private Menu parent;
     /**
      * 菜单类型：1、一级菜单 ；2、二级菜单 ；3、三级菜单
      */
@@ -37,7 +39,7 @@ public class Menu {
     /**
      * 子菜单
      */
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent", fetch = FetchType.EAGER)
     private List<Menu> children;
 
     public String getMenuId() {
@@ -56,12 +58,12 @@ public class Menu {
         this.menu = menu;
     }
 
-    public String getParentId() {
-        return parentId;
+    public Menu getParent() {
+        return parent;
     }
 
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
+    public void setParent(Menu parent) {
+        this.parent = parent;
     }
 
     public String getMenuType() {

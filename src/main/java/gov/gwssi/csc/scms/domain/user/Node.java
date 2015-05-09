@@ -29,7 +29,9 @@ public class Node {
     /**
      * 上级节点
      */
-    private String parentId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parentId")
+    private Node parent;
     /**
      * 联系人姓名
      */
@@ -53,7 +55,7 @@ public class Node {
     /**
      * 子节点
      */
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent", fetch = FetchType.EAGER)
     private List<Node> children;
 
     public String getNodeId() {
@@ -88,12 +90,12 @@ public class Node {
         this.nodeLevel = nodeLevel;
     }
 
-    public String getParentId() {
-        return parentId;
+    public Node getParent() {
+        return parent;
     }
 
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
+    public void setParent(Node parent) {
+        this.parent = parent;
     }
 
     public String getContacts() {
