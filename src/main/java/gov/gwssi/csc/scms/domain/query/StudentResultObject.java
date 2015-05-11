@@ -50,8 +50,13 @@ public class StudentResultObject extends ResultObject {
      * 报到状态（0未处理 1报到 2放弃来华）
      */
     private String registerState;
+    //add by lzs20150511异动申请页面需要的一个字段
+    /**
+     * 州别
+     */
+    private String continent;
 
-    public StudentResultObject(Long studentId, String cscId, String sex, String birthday, String passportName, String certificateNO, String studentType, String country, Date planLeaveDate, String registerState) {
+    public StudentResultObject(Long studentId, String cscId, String sex, String birthday, String passportName, String certificateNO, String studentType, String country, Date planLeaveDate, String registerState,String continent) {
         this.studentId = studentId;
         this.cscId = cscId;
         this.sex = sex;
@@ -62,6 +67,7 @@ public class StudentResultObject extends ResultObject {
         this.country = country;
         this.planLeaveDate = planLeaveDate;
         this.registerState = registerState;
+        this.continent = continent;
     }
 
     public void setStudentId(Long studentId) {
@@ -144,10 +150,18 @@ public class StudentResultObject extends ResultObject {
         return registerState;
     }
 
+    public String getContinent() {
+        return continent;
+    }
+
+    public void setContinent(String continent) {
+        this.continent = continent;
+    }
+
     public static String getResultObject() {
         String resultSql = "select new gov.gwssi.csc.scms.domain.query.StudentResultObject(student.id, student.cscId, basicInfo.sex, " +
                 "basicInfo.birthday, basicInfo.passportName,schoolRoll.certificateNO, schoolRoll.studentType, " +
-                "basicInfo.country, schoolRoll.planLeaveDate,schoolRoll.registerState) ";
+                "basicInfo.country, schoolRoll.planLeaveDate,schoolRoll.registerState,basicInfo.continent) ";
         return resultSql;
     }
 }
