@@ -44,7 +44,7 @@ public class RoleService extends BaseService {
     }
 
     public Role addRole(Role role) {
-//        role.setRoleId();
+        role.setRoleId(getBaseDao().getIdBySequence("seq_role"));
         return saveRole(role);
     }
 

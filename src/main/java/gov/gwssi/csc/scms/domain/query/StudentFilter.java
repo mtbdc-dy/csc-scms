@@ -1,6 +1,6 @@
 package gov.gwssi.csc.scms.domain.query;
 
-import gov.gwssi.csc.scms.domain.user.Right;
+import gov.gwssi.csc.scms.domain.user.Project;
 import gov.gwssi.csc.scms.domain.user.User;
 
 import java.util.List;
@@ -67,22 +67,22 @@ public class StudentFilter implements Filter {
     }
 
     private String getUserFilter(User user) {
-        //节点类型：1基金委；2驻外使（领）馆教育处（组）；3高等院校
-        String nodeType = user.getNode().getNodeType();
+        //用户类别：1基金委；2学校；
+        String userType = user.getUserType();
 
-        if ("1".equals(nodeType)) {
+        if ("1".equals(userType)) {
             StringBuilder sb = new StringBuilder();
-            List<Right> rights = user.getRights();
+            List<Project> projects = user.getProjects();
 
-            if (rights.size() == 0)
+            if (projects.size() == 0)
                 return "";
-            if (rights.size() == 1) {
-                sb.append(" and schoolRoll.studentType = '").append(rights.get(0).getRegionId()).append("\' ");
+            if (projects.size() == 1) {
+                sb.append(" and schoolRoll.studentType = '").append(projects.get(0).getProjectId()).append("\' ");
             } else {
                 StringBuilder tempRight = new StringBuilder();
                 tempRight.append('(');
-                for (Right right : rights) {
-                    tempRight.append("'").append(right.getRegionId()).append("\'").append(",");
+                for (Project project : projects) {
+                    tempRight.append("'").append(project.getProjectId()).append("\'").append(",");
                 }
                 tempRight.setCharAt(tempRight.length() - 1, ')');
 
@@ -92,11 +92,11 @@ public class StudentFilter implements Filter {
             }
 
         }
-        if ("3".equals(nodeType)) {
+        if ("2".equals(userType)) {
             StringBuilder sb = new StringBuilder();
             sb.append(" and schoolRoll.currentUniversity = '").append(user.getNode().getNodeId()).append("' ");
             return sb.toString();
         }
-        throw new RuntimeException("wrong value of the nodeType:" + nodeType);
+        throw new RuntimeException("wrong value of the nodeType:" + userType);
     }
 }

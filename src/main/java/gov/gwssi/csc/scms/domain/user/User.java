@@ -65,9 +65,9 @@ public class User {
      * 用户权限
      */
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "PUB_USER_RIGHT", joinColumns = {@JoinColumn(name = "USERID")},
-            inverseJoinColumns = {@JoinColumn(name = "RIGHTID",referencedColumnName = "REGIONID")})
-    private List<Right> rights = new ArrayList<Right>();
+    @JoinTable(name = "PUB_USER_PROJECT", joinColumns = {@JoinColumn(name = "USERID")},
+            inverseJoinColumns = {@JoinColumn(name = "PROJECTID")})
+    private List<Project> projects = new ArrayList<Project>();
 
     public String getUserId() {
         return userId;
@@ -153,11 +153,11 @@ public class User {
         this.role = role;
     }
 
-    public List<Right> getRights() {
-        return rights;
+    public List<Project> getProjects() {
+        return projects;
     }
 
-    public void setRights(List<Right> rights) {
-        this.rights = rights;
+    public void setProjects(List<Project> projects) {
+        this.projects = projects;
     }
 }

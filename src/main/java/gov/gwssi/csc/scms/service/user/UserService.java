@@ -97,4 +97,5 @@ public class UserService extends BaseService {
         role.setMenus(menuService.getMenuByRole(role));
         return user;
     }
+
 }

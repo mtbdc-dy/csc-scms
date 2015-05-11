@@ -40,7 +40,7 @@ public class NodeService extends BaseService {
     }
 
     public Node addNode(Node node) {
-        //node.setNodeId();
+        node.setNodeId(getBaseDao().getDicIdByClassType(node.getNodeType()));
         return saveNode(node);
     }
 
