@@ -84,8 +84,8 @@ public class AbnormalController {
     }
 
     //保存新增的异动申请
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
-    public Abnormal putAbnormal(@PathVariable(value = "id") String id, @RequestBody String abnormalJson) {
+    @RequestMapping(value = "/save", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
+    public Abnormal putAbnormal( @RequestBody String abnormalJson) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonBody jbosy = new ObjectMapper().readValue(abnormalJson, JsonBody.class);
