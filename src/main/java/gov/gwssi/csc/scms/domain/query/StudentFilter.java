@@ -46,6 +46,15 @@ public class StudentFilter implements Filter {
                     sb.append(" and ").append(fc.getTableName()).append(".").append(fc.getColumnName()).append(" = ").append("to_date('").append(str[0]).append("','yyyy-mm-dd hh24:mi:ss')");
                 }
             }
+            //单独处理mode字段-参数待定
+            if ("Char".equalsIgnoreCase(fc.getType())) {
+               if("".equals(str[0])){
+
+               }else if("abnormal".equals(str[0])){
+                   //sb.append(" and ").append(fc.getTableName()).append(".").append(fc.getColumnName()).append(" = '").append(str[0]).append("' ");
+               }
+
+            }
         }
         return sb.toString();
 
