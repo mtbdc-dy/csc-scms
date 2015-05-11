@@ -1,6 +1,5 @@
 package gov.gwssi.csc.scms.dao;
 
-import gov.gwssi.csc.scms.domain.query.StudentResultObject;
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.Transformers;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -49,13 +48,12 @@ public class BaseDAO {
     }
 
     public <T> List<T> getObjectListByHQL(String hSql, Class<T> clazz) {
-        return getObjectListByHQL(hSql,clazz,0,200);
+        return getObjectListByHQL(hSql, clazz, 0, 200);
     }
 
-    public <T> List<T> getObjectListByHQL(String hSql, Class<T> clazz, int startPosition,int pageSize) {
+    public <T> List<T> getObjectListByHQL(String hSql, Class<T> clazz, int startPosition, int pageSize) {
         EntityManager em = null;
         List<T> list;
-        System.out.println("HQL::" + hSql);
         try {
             em = entityManagerFactory.createEntityManager();
             Query query = em.createQuery(hSql);
@@ -72,7 +70,6 @@ public class BaseDAO {
 
     public int getCountObjectByHQL(String hSql) {
         EntityManager em = null;
-        System.out.println("SQL::" + hSql);
         try {
             em = entityManagerFactory.createEntityManager();
             Query query = em.createQuery(hSql);
@@ -90,4 +87,31 @@ public class BaseDAO {
         return jdbcTemplate;
     }
 
+    public String getIdBySequence(String sequenceName) {
+        String sql = "select f_scms_gen_id('" + sequenceName + "') from dual ";
+        EntityManager em = null;
+        try {
+            em = entityManagerFactory.createEntityManager();
+            Query query = em.createNativeQuery(sql);
+            return String.valueOf(query.getSingleResult());
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
+    public String getDicIdByClassType(String classType){
+        String sql = "select f_scms_dim_id('" + classType + "') from dual ";
+        EntityManager em = null;
+        try {
+            em = entityManagerFactory.createEntityManager();
+            Query query = em.createNativeQuery(sql);
+            return String.valueOf(query.getSingleResult());
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
 }

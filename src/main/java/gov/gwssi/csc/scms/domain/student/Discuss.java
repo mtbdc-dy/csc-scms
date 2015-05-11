@@ -11,9 +11,7 @@ import java.util.Date;
 @Table(name = "SCMS_DISCUSS")
 public class Discuss {
     @Id
-    @SequenceGenerator(name = "SCMS_DISCUSS_ID", sequenceName = "SCMS_DISCUSS_SEQ",allocationSize = 1)
-    @GeneratedValue(generator = "SCMS_DISCUSS_ID", strategy = GenerationType.SEQUENCE)
-    private Long id;
+    private String id;
     /**
      * 经费办法
      */
@@ -87,17 +85,35 @@ public class Discuss {
      */
     private String remark;
     /**
+     * 创建人
+     */
+    private String createBy;
+    /**
+     * 创建时间
+     */
+    @Column(name = "CREATED")
+    private Date createDate;
+    /**
+     * 修改人
+     */
+    private String updateBy;
+    /**
+     * 修改时间
+     */
+    @Column(name = "UPDATED")
+    private Date updateDate;
+    /**
      * 学生
      */
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "STUDENTID")
     private Student student;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -243,6 +259,38 @@ public class Discuss {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getUpdateBy() {
+        return updateBy;
+    }
+
+    public void setUpdateBy(String updateBy) {
+        this.updateBy = updateBy;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 
     public Student getStudent() {

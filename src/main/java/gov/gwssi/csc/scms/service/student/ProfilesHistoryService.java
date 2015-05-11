@@ -17,21 +17,21 @@ public class ProfilesHistoryService extends BaseService {
     @Qualifier("profilesHistoryRepository")
     private ProfilesHistoryRepository profilesHistoryRepository;
 
-    public ProfilesHistory getProfilesHistoryById(Long id) {
+    public ProfilesHistory getProfilesHistoryById(String id) {
         return profilesHistoryRepository.findOne(id);
     }
 
     public ProfilesHistory saveProfilesHistory(ProfilesHistory profilesHistory) {
+        profilesHistory.setId(getBaseDao().getIdBySequence("SEQ_PROFILES_HISTORY"));
         return profilesHistoryRepository.save(profilesHistory);
     }
 
     public ProfilesHistory updateProfilesHistory(ProfilesHistory profilesHistory) {
-        ProfilesHistory profilesHistory1 = getProfilesHistoryById(profilesHistory.getId());
-        super.copyFiledValue(ProfilesHistory.class, profilesHistory, profilesHistory1);
-        return profilesHistoryRepository.save(profilesHistory1);
+        profilesHistory.setStudent(getProfilesHistoryById(profilesHistory.getId()).getStudent());
+        return profilesHistoryRepository.save(profilesHistory);
     }
 
-    public ProfilesHistory getProfilesHistoryByStudentId(Long studentId) {
+    public ProfilesHistory getProfilesHistoryByStudentId(String studentId) {
         return profilesHistoryRepository.findByStudentId(studentId);
     }
 }

@@ -7,9 +7,7 @@ import java.util.Date;
 @Table(name = "SCMS_SCHOOLROLL")
 public class SchoolRoll {
     @Id
-    @SequenceGenerator(name = "SCMS_SCHOOLROLL_ID", sequenceName = "SCMS_SCHOOLROLL_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "SCMS_SCHOOLROLL_ID", strategy = GenerationType.SEQUENCE)
-    private Long id;
+    private String id;
     /**
      * 证件种类
      */
@@ -17,7 +15,7 @@ public class SchoolRoll {
     /**
      * 是否报道
      */
-    private Boolean registered;
+    private boolean registed;
     /**
      * 学科门类
      */
@@ -108,12 +106,13 @@ public class SchoolRoll {
     private Boolean leaveChina;
     /**
      * 离华时间
+     * LEAVE_DATE？
      */
     private Date leaveDate;
     /**
      * 离华原因
      */
-    private String scholarshipReviewResult;
+    private String LeaveReason;
     /**
      * 学历证书编号
      */
@@ -139,17 +138,35 @@ public class SchoolRoll {
      */
     private String registerYear;
     /**
+     * 创建人
+     */
+    private String createBy;
+    /**
+     * 创建时间
+     */
+    @Column(name = "CREATED")
+    private Date createDate;
+    /**
+     * 修改人
+     */
+    private String updateBy;
+    /**
+     * 修改时间
+     */
+    @Column(name = "UPDATED")
+    private Date updateDate;
+    /**
      * 学生
      */
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "STUDENTID")
     private Student student;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -161,12 +178,12 @@ public class SchoolRoll {
         this.certificateType = certificateType;
     }
 
-    public Boolean isRegistered() {
-        return registered;
+    public boolean isRegisted() {
+        return registed;
     }
 
-    public void setRegistered(Boolean registered) {
-        this.registered = registered;
+    public void setRegisted(boolean registed) {
+        this.registed = registed;
     }
 
     public String getDisciplines() {
@@ -353,12 +370,12 @@ public class SchoolRoll {
         this.leaveDate = leave_Date;
     }
 
-    public String getScholarshipReviewResult() {
-        return scholarshipReviewResult;
+    public String getLeaveReason() {
+        return LeaveReason;
     }
 
-    public void setScholarshipReviewResult(String scholarshipReviewResult) {
-        this.scholarshipReviewResult = scholarshipReviewResult;
+    public void setLeaveReason(String leaveReason) {
+        LeaveReason = leaveReason;
     }
 
     public String getAcademicCertificateNO() {
@@ -407,6 +424,38 @@ public class SchoolRoll {
 
     public void setRegisterYear(String registerYear) {
         this.registerYear = registerYear;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getUpdateBy() {
+        return updateBy;
+    }
+
+    public void setUpdateBy(String updateBy) {
+        this.updateBy = updateBy;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 
     public Student getStudent() {

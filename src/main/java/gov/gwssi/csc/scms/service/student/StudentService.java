@@ -2,14 +2,14 @@ package gov.gwssi.csc.scms.service.student;
 
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.FilterObject;
-import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilter;
+import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.StudentResultObject;
 import gov.gwssi.csc.scms.domain.student.*;
-import gov.gwssi.csc.scms.repository.student.*;
+import gov.gwssi.csc.scms.domain.user.User;
+import gov.gwssi.csc.scms.repository.student.StudentRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.service.log.OperationLogService;
-import org.hibernate.id.enhanced.Optimizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Created by WangZishi on 3/25/2015.
+ * Created by Murray on 4/5/2015.
+ * 学生业务操作类
  */
 @Service(value = "studentService")
 public class StudentService extends BaseService {
@@ -47,38 +48,22 @@ public class StudentService extends BaseService {
     @Autowired
     private GradeAttachmentService gradeAttachmentService;
     @Autowired
-    @Qualifier("operationLogService")
     private OperationLogService operationLogService;
 
-    public Student getStudentById(Long id) {
+    public Student getStudentById(String id) {
         Student student = studentRepository.findOne(id);
-        student.getBasicInfo().setStudent(null);
-        if (student.getSchoolfellow() != null)
-            student.getSchoolfellow().setStudent(null);
-        if (student.getDiscuss() != null)
-            student.getDiscuss().setStudent(null);
-        if (student.getProfilesHistory() != null)
-            student.getProfilesHistory().setStudent(null);
-        if (student.getRegistrationInfo() != null)
-            student.getProfilesHistory().setStudent(null);
-        if (student.getSchoolRoll() != null)
-            student.getSchoolRoll().setStudent(null);
-        List<Accident> accidents = student.getAccidents();
-        if (accidents != null && accidents.size() > 0)
-            for (Accident accident : accidents)
-                accident.setStudent(null);
-        List<RelatedAddress> relatedAddresses = student.getRelatedAddress();
-        if (relatedAddresses != null && relatedAddresses.size() > 0)
-            for (RelatedAddress relatedAddress : relatedAddresses)
-                relatedAddress.setStudent(null);
-        List<Grade> grades = student.getGrades();
-        if (grades != null && grades.size() > 0)
-            for (Grade grade : grades)
-                grade.setStudent(null);
-        List<GradeAttachment> gradeAttachments = student.getGradeAttachment();
-        if ((gradeAttachments != null && gradeAttachments.size() > 0))
-            for (GradeAttachment gradeAttachment : gradeAttachments)
-                gradeAttachment.setStudent(null);
+        setNullByField(student.getBasicInfo(), "student", BasicInfo.class);
+        setNullByField(student.getSchoolfellow(), "student", Schoolfellow.class);
+        setNullByField(student.getDiscuss(), "student", Discuss.class);
+        setNullByField(student.getProfilesHistory(), "student", ProfilesHistory.class);
+        setNullByField(student.getRegistrationInfo(), "student", RegistrationInfo.class);
+        setNullByField(student.getSchoolRoll(), "student", SchoolRoll.class);
+
+
+        setNullByField(student.getAccidents(), "student", Accident.class);
+        setNullByField(student.getRelatedAddress(), "student", RelatedAddress.class);
+        setNullByField(student.getGrades(), "student", Grade.class);
+        setNullByField(student.getGradeAttachment(), "student", GradeAttachment.class);
         return student;
     }
 
@@ -86,11 +71,11 @@ public class StudentService extends BaseService {
         return studentRepository.findByCscId(scsId);
     }
 
-    public List<StudentResultObject> getStudentsByFilter(FilterObject filterObject) {
+    public List<StudentResultObject> getStudentsByFilter(FilterObject filterObject, User user) {
         List<StudentResultObject> studentList;
         int startPosition, pageSize;
 
-        String sql = getSqlByBody(filterObject);
+        String sql = getSqlByBody(filterObject, user);
         if (sql == null) {
             return null;
         }
@@ -100,16 +85,16 @@ public class StudentService extends BaseService {
             pageSize = Integer.parseInt(filterObject.getPageSize());
         } catch (NumberFormatException ne) {
             ne.printStackTrace();
-            startPosition = 0;
-            pageSize = 200;
+            startPosition = FilterObject.OFFSETDEFULT;
+            pageSize = FilterObject.PAGESIZEDEFULT;
         }
 
         studentList = super.getBaseDao().getObjectListByHQL(sql, StudentResultObject.class, startPosition, pageSize);
         return studentList;
     }
 
-    public int getCountByQueryFilter(FilterObject filterObject) {
-        String sql = getCountSqlByBody(filterObject);
+    public int getCountByQueryFilter(FilterObject filterObject, User user) {
+        String sql = getCountSqlByBody(filterObject, user);
         if (sql == null) {
             return 0;
         }
@@ -118,7 +103,7 @@ public class StudentService extends BaseService {
         return count;
     }
 
-    private String getCountSqlByBody(FilterObject filterObject) {
+    private String getCountSqlByBody(FilterObject filterObject, User user) {
         if (filterObject == null) {
             return null;
         }
@@ -130,16 +115,15 @@ public class StudentService extends BaseService {
                 "and student.schoolRoll = schoolRoll.student ";
         sb.append(tempSql);
 
-        sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter());
+        sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter(user));
         return sb.toString();
     }
 
-    private String getSqlByBody(FilterObject filterObject) {
+    private String getSqlByBody(FilterObject filterObject, User user) {
         if (filterObject == null)
             return null;
 
         StringBuilder sb = new StringBuilder();
-
         sb.append(StudentResultObject.getResultObject());
 
         String tempSql = " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll " +
@@ -147,7 +131,7 @@ public class StudentService extends BaseService {
                 "and student.schoolRoll = schoolRoll.student ";
         sb.append(tempSql);
 
-        sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter());
+        sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter(user));
         return sb.toString();
     }
 
@@ -156,6 +140,7 @@ public class StudentService extends BaseService {
         //记录日志
         operationLogService.saveOperationLog(operationLogs);
 
+        student.setId(getBaseDao().getIdBySequence("SEQ_STUDENT"));
         if (student.getBasicInfo() != null)
             basicInfoService.saveBasicInfo(student.getBasicInfo());
         if (student.getDiscuss() != null)
@@ -176,12 +161,11 @@ public class StudentService extends BaseService {
             gradeAttachmentService.saveGradeAttachment(student.getGradeAttachment());
         if (student.getSchoolfellow() != null)
             schoolfellowService.saveSchoolfellow(student.getSchoolfellow());
-
         return studentRepository.save(student);
     }
 
     @SuppressWarnings("unchecked")
-    public Object getGroupByStudentId(Long studentId, String groupName) {
+    public Object getGroupByStudentId(String studentId, String groupName) {
         if ("basicInfo".equalsIgnoreCase(groupName)) {
             BasicInfo basicInfo = basicInfoService.getBasicInfoByStudentId(studentId);
             return setNullByField(basicInfo, "student", BasicInfo.class);
@@ -225,13 +209,13 @@ public class StudentService extends BaseService {
         return null;
     }
 
-    public Student deleteStudentById(Long studentId, List<OperationLog> operationLogs) {
+    public Student deleteStudentById(String studentId, List<OperationLog> operationLogs) {
         Student student = getStudentById(studentId);
         if (student == null)
             return null;
-        studentRepository.delete(student);
         //记录日志
         operationLogService.saveOperationLog(operationLogs);
+        studentRepository.delete(student);
         return student;
     }
 
@@ -239,7 +223,6 @@ public class StudentService extends BaseService {
     public Object updateGroupByName(String groupName, Object groupObj, List<OperationLog> operationLogs) {
         //记录日志
         operationLogService.saveOperationLog(operationLogs);
-
         if ("basicInfo".equalsIgnoreCase(groupName)) {
             BasicInfo basicInfo = basicInfoService.updateBasicInfo((BasicInfo) groupObj);
             return setNullByField(basicInfo, "student", BasicInfo.class);

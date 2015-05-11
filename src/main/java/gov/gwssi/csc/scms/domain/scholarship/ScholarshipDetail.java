@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.domain.scholarship;
 
 import gov.gwssi.csc.scms.domain.insurance.Insurance;
+import gov.gwssi.csc.scms.domain.student.Student;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -13,16 +14,9 @@ import java.util.Date;
 @Table(name = "SCMS_SCHOLARSHIP_DETAIL")
 public class ScholarshipDetail {
     @Id
-    @SequenceGenerator(name = "SCMS_SCHOLARSHIP_DETAIL_ID",sequenceName = "SCHOLARSHIP_DETAIL_SEQ",allocationSize = 1)
-    @GeneratedValue(generator = "SCMS_SCHOLARSHIP_DETAIL_ID",strategy = GenerationType.SEQUENCE)
-    @Column(length = 16)
-    private Long id;
 
-    /**
-     *csc登记号
-     */
-    @Column(name = "cscId", length = 12)
-    private String cscId;//csc登记号
+    private String id;
+
 
     /**
      *评审结果(院校) 0不合格 1合格
@@ -69,7 +63,93 @@ public class ScholarshipDetail {
     /**
      * 主表id
      */
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "SCHOLARSHIPID")
-//    private Scholarship scholarship;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "SCHOLARSHIPID")
+    private Scholarship scholarship;
+    /**
+     * 学生id
+     */
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "STUDENTID")
+    private Student student;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getSchReview() {
+        return schReview;
+    }
+
+    public void setSchReview(String schReview) {
+        this.schReview = schReview;
+    }
+
+    public String getSchResult() {
+        return schResult;
+    }
+
+    public void setSchResult(String schResult) {
+        this.schResult = schResult;
+    }
+
+    public String getCscReview() {
+        return cscReview;
+    }
+
+    public void setCscReview(String cscReview) {
+        this.cscReview = cscReview;
+    }
+
+    public String getCscRresult() {
+        return cscRresult;
+    }
+
+    public void setCscRresult(String cscRresult) {
+        this.cscRresult = cscRresult;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public Scholarship getScholarship() {
+        return scholarship;
+    }
+
+    public void setScholarship(Scholarship scholarship) {
+        this.scholarship = scholarship;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
 }

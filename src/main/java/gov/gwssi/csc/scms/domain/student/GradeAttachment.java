@@ -1,43 +1,43 @@
 package gov.gwssi.csc.scms.domain.student;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
-@Table(name = "SCMS_GRADEATTACHMENT")
+@Table(name = "SCMS_ATTACHMENT")
 public class GradeAttachment {
     @Id
-    @SequenceGenerator(name = "SCMS_GRADEATTACHMENT_ID", sequenceName = "SCMS_GRADEATTACHMENT_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "SCMS_GRADEATTACHMENT_ID", strategy = GenerationType.SEQUENCE)
-    private Long id;
+    private String id;
     /**
-     * cscid
+     * 附件类型 1.学生成绩 2.学历和学位
      */
-    private String cscId;
+    private String type;
     /**
      * 附件地址
      */
     private String attachmentUri;
     /**
+     * 创建时间
+     */
+    @Column(name = "CREATED")
+    private Date createDate;
+    /**
+     * 修改人
+     */
+    private String updateBy;
+    /**
      * 学生id
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "STUDENTID")
     private Student student;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
-    }
-
-    public String getCscId() {
-        return cscId;
-    }
-
-    public void setCscId(String cscId) {
-        this.cscId = cscId;
     }
 
     public String getAttachmentUri() {
@@ -46,6 +46,30 @@ public class GradeAttachment {
 
     public void setAttachmentUri(String attachmentUri) {
         this.attachmentUri = attachmentUri;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getUpdateBy() {
+        return updateBy;
+    }
+
+    public void setUpdateBy(String updateBy) {
+        this.updateBy = updateBy;
     }
 
     public Student getStudent() {

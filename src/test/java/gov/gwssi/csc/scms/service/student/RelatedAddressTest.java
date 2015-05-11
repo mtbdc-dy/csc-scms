@@ -18,7 +18,7 @@ public class RelatedAddressTest extends UnitTestBase {
     @Test
     public void saveRelatedAddressTest() {
         StudentService studentService = getBean("studentService");
-        student = studentService.saveStudent(getStudentInTest(),null);
+        student = studentService.saveStudent(getStudentInTest(), null);
         Assert.assertNotNull(student);
     }
 
@@ -26,10 +26,10 @@ public class RelatedAddressTest extends UnitTestBase {
     public void getRelatedAddressByStudentTest() {
         RelatedAddressService relatedAddressService = getBean("relatedAddressService");
 
-        List<RelatedAddress> relatedAddress = relatedAddressService.getRelatedAddressByStudentId(1L);
+        List<RelatedAddress> relatedAddress = relatedAddressService.getRelatedAddressByStudentId("");
         Assert.assertNotNull(relatedAddress);
 
-        for(RelatedAddress ra : relatedAddress){
+        for (RelatedAddress ra : relatedAddress) {
             System.out.println(ra.getAddressOrName());
         }
     }

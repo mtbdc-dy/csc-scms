@@ -20,22 +20,19 @@ public class RelatedAddressService extends BaseService {
     @Qualifier("relatedAddressRepository")
     private RelatedAddressRepository relatedAddressRepository;
 
-    public RelatedAddress getRelatedAddressById(Long id) {
+    public RelatedAddress getRelatedAddressById(String id) {
         return relatedAddressRepository.findOne(id);
     }
 
-    public RelatedAddress saveRelatedAddress(RelatedAddress relatedAddress) {
-        return relatedAddressRepository.save(relatedAddress);
-    }
-
     public Iterable saveRelatedAddress(List<RelatedAddress> relatedAddresses) {
+        for (RelatedAddress relatedAddress : relatedAddresses)
+            relatedAddress.setId(getBaseDao().getIdBySequence("SEQ_RELATED_ADDRESS"));
         return relatedAddressRepository.save(relatedAddresses);
     }
 
     public RelatedAddress updateRelatedAddress(RelatedAddress relatedAddress) {
-        RelatedAddress relatedAddress1 = getRelatedAddressById(relatedAddress.getId());
-        super.copyFiledValue(RelatedAddress.class, relatedAddress, relatedAddress1);
-        return relatedAddressRepository.save(relatedAddress1);
+        relatedAddress.setStudent(getRelatedAddressById(relatedAddress.getId()).getStudent());
+        return relatedAddressRepository.save(relatedAddress);
     }
 
     public List<RelatedAddress> updateRelatedAddress(List<RelatedAddress> relatedAddresses) {
@@ -45,7 +42,7 @@ public class RelatedAddressService extends BaseService {
         return list;
     }
 
-    public List<RelatedAddress> getRelatedAddressByStudentId(Long studentId) {
+    public List<RelatedAddress> getRelatedAddressByStudentId(String studentId) {
         return relatedAddressRepository.findByStudentId(studentId);
     }
 

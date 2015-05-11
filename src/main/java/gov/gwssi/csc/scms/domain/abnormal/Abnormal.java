@@ -12,16 +12,16 @@ import java.util.Date;
  @Table(name = "SCMS_ABNORMAL")
 public class Abnormal {
     @Id
-    @SequenceGenerator(name = "SCMS_ABNORMAL_ID",sequenceName = "SCMS_ABNORMAL_SEQ",allocationSize = 1)
-    @GeneratedValue(generator = "SCMS_ABNORMAL_ID",strategy = GenerationType.SEQUENCE)
-    private Long id;
+//    @SequenceGenerator(name = "SCMS_ABNORMAL_ID",sequenceName = "SCMS_ABNORMAL_SEQ",allocationSize = 1)
+//    @GeneratedValue(generator = "SCMS_ABNORMAL_ID",strategy = GenerationType.SEQUENCE)
+    private String id;
 
     /**
      * STUDENTID
      */
 //    @Column(name = "cscId",length=19)
 //    private String cscId;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "studentid")
     private Student student;
 
@@ -131,11 +131,11 @@ public class Abnormal {
     @Column(name = "state",length=1)
     private String state;//处理状态 0未提交 1提交未上报 2上报未审核 3审核未处理 4 处理
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

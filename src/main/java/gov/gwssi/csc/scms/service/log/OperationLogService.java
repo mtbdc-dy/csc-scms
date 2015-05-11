@@ -19,11 +19,11 @@ public class OperationLogService extends BaseService {
     @Qualifier("operationLogRepository")
     private OperationLogRepository operationLogRepository;
 
-    public OperationLog saveOperationLog(OperationLog operationLog) {
-        return operationLogRepository.save(operationLog);
-    }
-
     public List<OperationLog> saveOperationLog(List<OperationLog> operationLogs) {
+        if(operationLogs == null)
+            return null;
+        for (OperationLog operationLog : operationLogs)
+            operationLog.setId(getBaseDao().getIdBySequence("SEQ_OPT_LOG"));
         return (List<OperationLog>) operationLogRepository.save(operationLogs);
     }
 
@@ -31,7 +31,7 @@ public class OperationLogService extends BaseService {
         return operationLogRepository.findByCreateBy(userId);
     }
 
-    public List<OperationLog> getLogByStudentId(Long studentId) {
+    public List<OperationLog> getLogByStudentId(String studentId) {
         return operationLogRepository.findByStudentId(studentId);
     }
 }

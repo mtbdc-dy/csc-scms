@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
  * 异动申请接口
  */
  @Repository("abnormalRepository")
-public interface AbnormalRepository extends CrudRepository<Abnormal,Long> {
+public interface AbnormalRepository extends CrudRepository<Abnormal,String> {
 
-
+    Abnormal findByStudentId(String studentId);
 }

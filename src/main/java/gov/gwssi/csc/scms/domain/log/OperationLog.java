@@ -15,7 +15,7 @@ public class OperationLog {
      * id
      */
     @Id
-    private Long id;
+    private String id;
     /**
      * 操作类型：
      * 1.新增，2.修改，3.删除
@@ -33,7 +33,7 @@ public class OperationLog {
     /**
      * 学生id
      */
-    private Long studentId;
+    private String studentId;
     /**
      * 修改前内容
      */
@@ -75,11 +75,11 @@ public class OperationLog {
      */
     private Date creatD;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -107,11 +107,11 @@ public class OperationLog {
         this.menu = menu;
     }
 
-    public Long getStudentId() {
+    public String getStudentId() {
         return studentId;
     }
 
-    public void setStudentId(Long studentId) {
+    public void setStudentId(String studentId) {
         this.studentId = studentId;
     }
 

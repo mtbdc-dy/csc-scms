@@ -2,11 +2,15 @@ package gov.gwssi.csc.scms.controller.student;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.gwssi.csc.scms.controller.JsonBody;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.StudentResultObject;
 import gov.gwssi.csc.scms.domain.student.*;
+import gov.gwssi.csc.scms.domain.user.User;
+import gov.gwssi.csc.scms.service.user.NoSuchUserException;
 import gov.gwssi.csc.scms.service.student.*;
+import gov.gwssi.csc.scms.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +29,9 @@ public class StudentController {
     @Autowired
     private StudentService studentService;
 
+    @Autowired
+    private UserService userService;
+
     /**
      * 学籍信息管理相关操作，获取学生列表
      * 请求信息为Json格式对应的StudentFilterObject类
@@ -33,19 +40,26 @@ public class StudentController {
      * @return
      */
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public List<StudentResultObject> getStudentsByConditions(@RequestParam(value = "filter", required = true) String filter) {
-
+    public List<StudentResultObject> getStudentsByConditions(
+            @RequestParam(value = "filter") String filter, @RequestParam(value = "userId") String userId) {
         try {
             StudentFilterObject sfo = null;
             sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);
 
+            User user = userService.getUserByUserId(userId);
+            if (user == null)
+                throw new NoSuchUserException(userId);
+
             //按照分页（默认）要求，返回列表内容
-            List<StudentResultObject> studentResultObjects = studentService.getStudentsByFilter(sfo);
+            List<StudentResultObject> studentResultObjects = studentService.getStudentsByFilter(sfo, user);
             return studentResultObjects;
         } catch (UnsupportedEncodingException uee) {
             uee.printStackTrace();
             return null;
         } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } catch (NoSuchUserException e) {
             e.printStackTrace();
             return null;
         }
@@ -54,8 +68,7 @@ public class StudentController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public Student getStudentById(@PathVariable(value = "id") String id) {
         try {
-            Long studentId = Long.parseLong(id);
-            Student student = studentService.getStudentById(studentId);
+            Student student = studentService.getStudentById(id);
             return student;
         } catch (Exception e) {
             e.printStackTrace();
@@ -65,15 +78,30 @@ public class StudentController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public Student putStudent(@PathVariable(value = "id") String id, @RequestBody String studentJson) {
-        return null;
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonBody jbosy = new ObjectMapper().readValue(studentJson, JsonBody.class);
+
+            Student student = mapper.readValue(jbosy.getValue(), Student.class);
+            if (student == null)
+                return null;
+
+            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
+            List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
+
+            student = studentService.saveStudent(student, operationLogs);
+            return student;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
     public Student deleteStudent(@PathVariable(value = "id") String id) {
         try {
-            Long studentId = Long.parseLong(id);
             List<OperationLog> operationLogs = null;
-            Student student = studentService.deleteStudentById(studentId, operationLogs);
+            Student student = studentService.deleteStudentById(id, operationLogs);
             return student;
         } catch (Exception e) {
             e.printStackTrace();
@@ -84,23 +112,34 @@ public class StudentController {
     @RequestMapping(value = "/{id}/{group}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public Object getStudentGroupById(@PathVariable(value = "id") String id, @PathVariable("group") String group) {
         try {
-            Long studentId = Long.parseLong(id);
-            return studentService.getGroupByStudentId(studentId, group);
+            return studentService.getGroupByStudentId(id, group);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
+    /**
+     * 更新学生相关信息
+     *
+     * @param id
+     * @param group
+     * @param body
+     * @return
+     */
     @RequestMapping(value = "/{id}/{group}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public Object putStudentGroup(@PathVariable(value = "id") String id, @PathVariable("group") String group, @RequestBody String body) {
         try {
-            Object groupObj = updateStudentGroup(group, body);
+            ObjectMapper mapper = new ObjectMapper();
+            JsonBody jbosy = new ObjectMapper().readValue(body, JsonBody.class);
+            Object groupObj = updateStudentGroup(group, jbosy.getValue());
             if (groupObj == null)
                 return null;
-            List<OperationLog> operationLogs = null;
+
+            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
+            List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
+
             groupObj = studentService.updateGroupByName(group, groupObj, operationLogs);
-            System.out.println("groupObj :: " + groupObj.toString());
             return groupObj;
         } catch (Exception e) {
             e.printStackTrace();

@@ -17,21 +17,21 @@ public class SchoolRollService extends BaseService {
     @Qualifier("schoolRollRepository")
     private SchoolRollRepository schoolRollRepository;
 
-    public SchoolRoll getSchoolRollById(Long id) {
+    public SchoolRoll getSchoolRollById(String id) {
         return schoolRollRepository.findOne(id);
     }
 
     public SchoolRoll updateSchoolRoll(SchoolRoll schoolRoll) {
-        SchoolRoll schoolRollTemp = getSchoolRollById(schoolRoll.getId());
-        copyFiledValue(SchoolRoll.class, schoolRoll, schoolRollTemp);
-        return schoolRollRepository.save(schoolRollTemp);
-    }
-
-    public SchoolRoll saveSchoolRoll(SchoolRoll schoolRoll) {
+        schoolRoll.setStudent(getSchoolRollById(schoolRoll.getId()).getStudent());
         return schoolRollRepository.save(schoolRoll);
     }
 
-    public SchoolRoll getSchoolRollByStudentId(Long studentId) {
+    public SchoolRoll saveSchoolRoll(SchoolRoll schoolRoll) {
+        schoolRoll.setId(getBaseDao().getIdBySequence("SEQ_SCHOOLROLL"));
+        return schoolRollRepository.save(schoolRoll);
+    }
+
+    public SchoolRoll getSchoolRollByStudentId(String studentId) {
         return schoolRollRepository.findByStudentId(studentId);
     }
 }

@@ -20,19 +20,18 @@ public class AccidentService extends BaseService {
     @Qualifier("accidentRepository")
     private AccidentRepository accidentRepository;
 
-    public Accident getAccidentById(Long id) {
+    public Accident getAccidentById(String id) {
         return accidentRepository.findOne(id);
     }
 
-    public List<Accident> getAccidentByStudentId(Long studentId) {
+    public List<Accident> getAccidentByStudentId(String studentId) {
         return accidentRepository.findByStudentId(studentId);
     }
 
 
     public Accident updateAccident(Accident accident) {
-        Accident accidentTemp = getAccidentById(accident.getId());
-        copyFiledValue(Accident.class, accident, accidentTemp);
-        return saveAccident(accidentTemp);
+        accident.setStudent(getAccidentById(accident.getId()).getStudent());
+        return saveAccident(accident);
     }
 
     public List<Accident> updateAccident(List<Accident> accidents) {
@@ -44,6 +43,7 @@ public class AccidentService extends BaseService {
     }
 
     public Accident saveAccident(Accident accident) {
+        accident.setId(getBaseDao().getIdBySequence("SEQ_ACCIDENT"));
         return accidentRepository.save(accident);
     }
 

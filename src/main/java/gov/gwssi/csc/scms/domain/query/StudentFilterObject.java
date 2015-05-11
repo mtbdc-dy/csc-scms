@@ -1,7 +1,5 @@
 package gov.gwssi.csc.scms.domain.query;
 
-import org.springframework.util.StringUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +43,8 @@ public class StudentFilterObject extends FilterObject {
     private String majorStartDateEnd = null;//入专业院校时间终止时间
     private String planLeaveDateBegin = null;//预计离华时间起始时间
     private String planLeaveDateEnd = null;//预计离华时间终止时间
-
+    //add by lzs20150511添加mode字段用来区分新增学生列表时候，返回不同列表
+    private String mode = null;//区分学生列表
     public List<FilterCell> getConditions() {
         List<FilterCell> conditions = new ArrayList<FilterCell>();
 
@@ -72,26 +71,10 @@ public class StudentFilterObject extends FilterObject {
         conditions = addCondition(conditions, "schoolRoll", "planLeaveDate", "date", getPlanLeaveDateBegin(), getPlanLeaveDateEnd());
 
         conditions = addCondition(conditions, "student", "cscId", "String", getCscId());
+        //将mode字段添加到条件中
+        conditions = addCondition(conditions, "", "", "char", getMode());
 
         return conditions;
-    }
-
-    private List<FilterCell> addCondition(List<FilterCell> conditions, String tableName, String filedName, String type, String value) {
-        if (isNull(value))
-            return conditions;
-        conditions.add(new FilterCell(tableName, filedName, type, value));
-        return conditions;
-    }
-
-    private List<FilterCell> addCondition(List<FilterCell> conditions, String tableName, String filedName, String type, String value1, String value2) {
-        if (isNull(value1) || isNull(value2))
-            return conditions;
-        conditions.add(new FilterCell(tableName, filedName, type, value1 + "," + value2));
-        return conditions;
-    }
-
-    private boolean isNull(String value) {
-        return ("null".equalsIgnoreCase(value) || StringUtils.isEmpty(value));
     }
 
     public String getCscId() {
@@ -308,5 +291,13 @@ public class StudentFilterObject extends FilterObject {
 
     public void setPlanLeaveDateEnd(String planLeaveDateEnd) {
         this.planLeaveDateEnd = planLeaveDateEnd;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
     }
 }

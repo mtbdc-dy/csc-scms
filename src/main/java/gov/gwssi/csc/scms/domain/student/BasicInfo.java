@@ -1,6 +1,9 @@
 package gov.gwssi.csc.scms.domain.student;
 
+import gov.gwssi.csc.scms.utils.UnicodeUtil;
+
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * 基本信息
@@ -9,9 +12,7 @@ import javax.persistence.*;
 @Table(name = "SCMS_BASIC_INFO")
 public class BasicInfo {
     @Id
-    @SequenceGenerator(name = "SCMS_BASIC_INFO_ID", sequenceName = "SCMS_BASIC_INFO_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "SCMS_BASIC_INFO_ID", strategy = GenerationType.SEQUENCE)
-    private Long id;
+    private String id;
     /**
      * 年度
      */
@@ -27,7 +28,7 @@ public class BasicInfo {
     /**
      * 性别
      */
-    private String sex;
+    private String gender;
     /**
      * 出生日期
      */
@@ -65,17 +66,35 @@ public class BasicInfo {
      */
     private String travelType;
     /**
+     * 创建人
+     */
+    private String createBy;
+    /**
+     * 创建时间
+     */
+    @Column(name = "CREATED")
+    private Date createDate;
+    /**
+     * 修改人
+     */
+    private String updateBy;
+    /**
+     * 修改时间
+     */
+    @Column(name = "UPDATED")
+    private Date updateDate;
+    /**
      * 学生
      */
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "STUDENTID")
     private Student student;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -88,11 +107,11 @@ public class BasicInfo {
     }
 
     public String getPassportName() {
-        return passportName;
+        return UnicodeUtil.toCharSequence(passportName);
     }
 
     public void setPassportName(String passportName) {
-        this.passportName = passportName;
+        this.passportName = UnicodeUtil.toUNICODE(passportName);
     }
 
     public String getChineseName() {
@@ -103,12 +122,12 @@ public class BasicInfo {
         this.chineseName = chineseName;
     }
 
-    public String getSex() {
-        return sex;
+    public String getGender() {
+        return gender;
     }
 
-    public void setSex(String sex) {
-        this.sex = sex;
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public String getBirthday() {
@@ -181,6 +200,38 @@ public class BasicInfo {
 
     public void setTravelType(String travelType) {
         this.travelType = travelType;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getUpdateBy() {
+        return updateBy;
+    }
+
+    public void setUpdateBy(String updateBy) {
+        this.updateBy = updateBy;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 
     public Student getStudent() {
