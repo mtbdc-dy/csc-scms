@@ -17,7 +17,7 @@ public class Project {
     /**
      * 项目名称（英文）
      */
-    private String maneEN;
+    private String nameEN;
     /**
      * 项目名称（汉语）
      */
@@ -43,12 +43,12 @@ public class Project {
         this.projectId = projectId;
     }
 
-    public String getManeEN() {
-        return maneEN;
+    public String getNameEN() {
+        return nameEN;
     }
 
-    public void setManeEN(String maneEN) {
-        this.maneEN = maneEN;
+    public void setNameEN(String nameEN) {
+        this.nameEN = nameEN;
     }
 
     public String getNameCH() {

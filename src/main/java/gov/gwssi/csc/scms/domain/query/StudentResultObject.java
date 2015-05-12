@@ -10,7 +10,7 @@ public class StudentResultObject extends ResultObject {
     /**
      * 学生ID
      */
-    private Long studentId;
+    private Long id;
     /**
      * CSCID
      */
@@ -56,8 +56,8 @@ public class StudentResultObject extends ResultObject {
      */
     private String continent;
 
-    public StudentResultObject(Long studentId, String cscId, String sex, String birthday, String passportName, String certificateNO, String studentType, String country, Date planLeaveDate, String registerState,String continent) {
-        this.studentId = studentId;
+    public StudentResultObject(Long id, String cscId, String sex, String birthday, String passportName, String certificateNO, String studentType, String country, Date planLeaveDate, String registerState,String continent) {
+        this.id = id;
         this.cscId = cscId;
         this.sex = sex;
         this.birthday = birthday;
@@ -70,8 +70,8 @@ public class StudentResultObject extends ResultObject {
         this.continent = continent;
     }
 
-    public void setStudentId(Long studentId) {
-        this.studentId = studentId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setCscId(String cscId) {
@@ -110,8 +110,8 @@ public class StudentResultObject extends ResultObject {
         this.registerState = registerState;
     }
 
-    public Long getStudentId() {
-        return studentId;
+    public Long getId() {
+        return id;
     }
 
     public String getCscId() {

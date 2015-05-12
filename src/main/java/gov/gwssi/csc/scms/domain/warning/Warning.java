@@ -64,26 +64,7 @@ public class Warning {
      */
     @Column(name = "rmUserName",length=50)
     private String rmUserName;
-    /**
-     *创建人
-     */
-    @Column(name = "CREATEBY",length=50)
-    private String createBy;
-    /**
-     *入库日期
-     */
-    @Column(name = "CREATED")
-    private String created;
-    /**
-     *修改人
-     */
-    @Column(name = "UPDATEBY",length=50)
-    private String updateBy;
-    /**
-     *修改时间
-     */
-    @Column(name = "UPDATED")
-    private String updated;
+
     /**
      * 学生
      */
@@ -171,35 +152,5 @@ public class Warning {
         this.rmUserName = rmUserName;
     }
 
-    public String getCreateBy() {
-        return createBy;
-    }
 
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy;
-    }
-
-    public String getCreated() {
-        return created;
-    }
-
-    public void setCreated(String created) {
-        this.created = created;
-    }
-
-    public String getUpdateBy() {
-        return updateBy;
-    }
-
-    public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy;
-    }
-
-    public String getUpdated() {
-        return updated;
-    }
-
-    public void setUpdated(String updated) {
-        this.updated = updated;
-    }
 }

@@ -32,7 +32,7 @@ public class BasicInfo {
     /**
      * 出生日期
      */
-    private String birthday;
+    private Date birthday;
     /**
      * 大洲
      */
@@ -48,7 +48,7 @@ public class BasicInfo {
     /**
      * 是否计划内 0否；1是
      */
-    private Boolean planned;
+    private String planned;
     /**
      * 留学项目类别
      */
@@ -130,11 +130,11 @@ public class BasicInfo {
         this.gender = gender;
     }
 
-    public String getBirthday() {
+    public Date getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(String birthday) {
+    public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
 
@@ -162,11 +162,11 @@ public class BasicInfo {
         this.photo = photo;
     }
 
-    public Boolean isPlanned() {
+    public String getPlanned() {
         return planned;
     }
 
-    public void setPlanned(Boolean planned) {
+    public void setPlanned(String planned) {
         this.planned = planned;
     }
 

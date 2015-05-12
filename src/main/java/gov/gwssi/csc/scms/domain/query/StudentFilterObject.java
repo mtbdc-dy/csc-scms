@@ -72,7 +72,7 @@ public class StudentFilterObject extends FilterObject {
 
         conditions = addCondition(conditions, "student", "cscId", "String", getCscId());
         //将mode字段添加到条件中
-        conditions = addCondition(conditions, "", "", "char", getMode());
+        conditions = addCondition(conditions, "", "", "mode", getMode());
 
         return conditions;
     }

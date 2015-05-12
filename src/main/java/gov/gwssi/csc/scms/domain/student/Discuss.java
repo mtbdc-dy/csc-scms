@@ -39,7 +39,7 @@ public class Discuss {
     /**
      * 是否汉语补习
      */
-    private Boolean chineseCram;
+    private String chineseCram;
     /**
      * 汉补开始时间
      */
@@ -165,11 +165,11 @@ public class Discuss {
         this.major = major;
     }
 
-    public Boolean isChineseCram() {
+    public String getChineseCram() {
         return chineseCram;
     }
 
-    public void setChineseCram(Boolean chineseCram) {
+    public void setChineseCram(String chineseCram) {
         this.chineseCram = chineseCram;
     }
 

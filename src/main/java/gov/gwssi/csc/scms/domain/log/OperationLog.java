@@ -24,7 +24,7 @@ public class OperationLog {
     /**
      * 菜单Id
      */
-    private Long menuId;
+    private String menuId;
     /**
      * 菜单名称：
      * 报道，注册，在校生学籍管理，自动任务
@@ -45,11 +45,11 @@ public class OperationLog {
     /**
      * 修改字段英文名
      */
-    private String colunmEN;
+    private String columnEN;
     /**
      * 修改字段中文名
      */
-    private String colunmCH;
+    private String columnCH;
     /**
      * 修改表英文名
      */
@@ -73,7 +73,7 @@ public class OperationLog {
     /**
      * 创建时间
      */
-    private Date creatD;
+    private Date createD;
 
     public String getId() {
         return id;
@@ -91,11 +91,11 @@ public class OperationLog {
         this.optType = optType;
     }
 
-    public Long getMenuId() {
+    public String getMenuId() {
         return menuId;
     }
 
-    public void setMenuId(Long menuId) {
+    public void setMenuId(String menuId) {
         this.menuId = menuId;
     }
 
@@ -131,20 +131,20 @@ public class OperationLog {
         this.after = after;
     }
 
-    public String getColunmEN() {
-        return colunmEN;
+    public String getColumnEN() {
+        return columnEN;
     }
 
-    public void setColunmEN(String colunmEN) {
-        this.colunmEN = colunmEN;
+    public void setColumnEN(String columnEN) {
+        this.columnEN = columnEN;
     }
 
-    public String getColunmCH() {
-        return colunmCH;
+    public String getColumnCH() {
+        return columnCH;
     }
 
-    public void setColunmCH(String colunmCH) {
-        this.colunmCH = colunmCH;
+    public void setColumnCH(String columnCH) {
+        this.columnCH = columnCH;
     }
 
     public String getTableEN() {
@@ -187,11 +187,11 @@ public class OperationLog {
         this.createBy = createBy;
     }
 
-    public Date getCreatD() {
-        return creatD;
+    public Date getCreateD() {
+        return createD;
     }
 
-    public void setCreatD(Date creatD) {
-        this.creatD = creatD;
+    public void setCreateD(Date createD) {
+        this.createD = createD;
     }
 }

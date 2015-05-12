@@ -37,7 +37,7 @@ public class ScholarshipDetail {
     private String cscReview;//评审结果（基金委）
 
     /**
-     *处理结果（基金委） 0中止 1取消
+     *处理结果（基金委） 0中止 1取消 2 继续 3 恢复
      */
     @Column(name = "cscRresult", length = 1)
     private String cscRresult;//处理结果（基金委）

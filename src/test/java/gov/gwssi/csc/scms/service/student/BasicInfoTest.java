@@ -74,10 +74,10 @@ public class BasicInfoTest extends UnitTestBase {
         stu.setDiscuss(discuss);
 
         SchoolRoll schoolroll = new SchoolRoll();
-        schoolroll.setRegisterYear("2013");
+        schoolroll.setRegisterYear(2013);
         stu.setSchoolRoll(schoolroll);
-        schoolroll.setRegisted(false);
-        schoolroll.setLeaveChina(false);
+        schoolroll.setRegisted("1");
+        schoolroll.setLeaveChina("0");
         schoolroll.setCurrentUniversity("123");
 
         ProfilesHistory ph = new ProfilesHistory();

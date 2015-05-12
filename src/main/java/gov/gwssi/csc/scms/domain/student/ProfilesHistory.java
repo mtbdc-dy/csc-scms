@@ -26,7 +26,7 @@ public class ProfilesHistory {
     /**
      * 体检
      */
-    private Boolean phyExam;
+    private String phyExam;
     /**
      * 汉语水平
      */
@@ -42,7 +42,7 @@ public class ProfilesHistory {
     /**
      * 可否英语授课
      */
-    private Boolean engTeach;
+    private String engTeach;
     /**
      * 创建人
      */
@@ -64,7 +64,7 @@ public class ProfilesHistory {
     /**
      * 学生
      */
-    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "STUDENTID")
     private Student student;
 
@@ -100,11 +100,11 @@ public class ProfilesHistory {
         this.nativeLanguage = nativeLanguage;
     }
 
-    public Boolean isPhyExam() {
+    public String getPhyExam() {
         return phyExam;
     }
 
-    public void setPhyExam(Boolean phyExam) {
+    public void setPhyExam(String phyExam) {
         this.phyExam = phyExam;
     }
 
@@ -132,11 +132,11 @@ public class ProfilesHistory {
         this.educated = educated;
     }
 
-    public Boolean isEngTeach() {
+    public String getEngTeach() {
         return engTeach;
     }
 
-    public void setEngTeach(Boolean engTeach) {
+    public void setEngTeach(String engTeach) {
         this.engTeach = engTeach;
     }
 

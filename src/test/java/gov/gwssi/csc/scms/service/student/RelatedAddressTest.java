@@ -55,7 +55,7 @@ public class RelatedAddressTest extends UnitTestBase {
         stu.setDiscuss(discuss);
 
         SchoolRoll schoolroll = new SchoolRoll();
-        schoolroll.setRegisterYear("2013");
+        schoolroll.setRegisterYear(2014);
         stu.setSchoolRoll(schoolroll);
 
         ProfilesHistory ph = new ProfilesHistory();

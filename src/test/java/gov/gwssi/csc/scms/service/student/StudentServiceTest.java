@@ -43,7 +43,7 @@ public class StudentServiceTest extends UnitTestBase {
 
         for (StudentResultObject sro : stus) {
             System.out.println("==============================");
-            System.out.println("studentId::" + sro.getStudentId());
+            System.out.println("studentId::" + sro.getId());
             System.out.println("CscId::" + sro.getCscId());
             System.out.println("planLeaveDate::" + sro.getPlanLeaveDate());
         }
@@ -146,10 +146,10 @@ public class StudentServiceTest extends UnitTestBase {
         stu.setDiscuss(discuss);
 
         SchoolRoll schoolroll = new SchoolRoll();
-        schoolroll.setRegisterYear("2013");
+        schoolroll.setRegisterYear(2012);
         schoolroll.setPlanLeaveDate(date);
         schoolroll.setCurrentUniversity("ET001");
-        schoolroll.setLeaveChina(false);
+        schoolroll.setLeaveChina("0");
         stu.setSchoolRoll(schoolroll);
 
         ProfilesHistory ph = new ProfilesHistory();
@@ -179,7 +179,7 @@ public class StudentServiceTest extends UnitTestBase {
         OperationLog op1 = new OperationLog();
         op1.setMenu("在校生管理");
         op1.setTableEN("basicInfo");
-        op1.setColunmEN("passportName");
+        //op1.setColunmEN("passportName");
         op1.setBefore("beForeName");
         op1.setAfter("afterName");
         op1.setStudentId("2005042828");
@@ -188,7 +188,7 @@ public class StudentServiceTest extends UnitTestBase {
         OperationLog op2 = new OperationLog();
         op2.setMenu("离校生管理");
         op2.setTableEN("relatedAddress");
-        op2.setColunmEN("personName");
+        //op2.setColunmEN("personName");
         op2.setBefore("beForeAddress");
         op2.setAfter("afterAddress");
         op2.setStudentId("2005042828");

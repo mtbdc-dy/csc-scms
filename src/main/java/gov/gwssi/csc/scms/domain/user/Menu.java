@@ -41,7 +41,7 @@ public class Menu {
     /**
      * 菜单对应的图标的名称，如flower
      */
-    private String ico;
+    private String icon;
     /**
      * 子菜单
      */
@@ -95,12 +95,12 @@ public class Menu {
         this.module = module;
     }
 
-    public String getIco() {
-        return ico;
+    public String getIcon() {
+        return icon;
     }
 
-    public void setIco(String ico) {
-        this.ico = ico;
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     public List<Menu> getChildren() {

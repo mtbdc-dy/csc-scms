@@ -15,7 +15,7 @@ public class SchoolRoll {
     /**
      * 是否报道
      */
-    private boolean registed;
+    private String registed;
     /**
      * 学科门类
      */
@@ -103,7 +103,7 @@ public class SchoolRoll {
     /**
      * 是否离华
      */
-    private Boolean leaveChina;
+    private String leaveChina;
     /**
      * 离华时间
      * LEAVE_DATE？
@@ -136,7 +136,7 @@ public class SchoolRoll {
     /**
      * 报到年度
      */
-    private String registerYear;
+    private int registerYear;
     /**
      * 创建人
      */
@@ -178,11 +178,11 @@ public class SchoolRoll {
         this.certificateType = certificateType;
     }
 
-    public boolean isRegisted() {
+    public String getRegisted() {
         return registed;
     }
 
-    public void setRegisted(boolean registed) {
+    public void setRegisted(String registed) {
         this.registed = registed;
     }
 
@@ -354,11 +354,11 @@ public class SchoolRoll {
         this.majorStartDate = majorStartDate;
     }
 
-    public Boolean isLeaveChina() {
+    public String getLeaveChina() {
         return leaveChina;
     }
 
-    public void setLeaveChina(Boolean leaveChina) {
+    public void setLeaveChina(String leaveChina) {
         this.leaveChina = leaveChina;
     }
 
@@ -418,11 +418,11 @@ public class SchoolRoll {
         this.registerState = registerState;
     }
 
-    public String getRegisterYear() {
+    public int getRegisterYear() {
         return registerYear;
     }
 
-    public void setRegisterYear(String registerYear) {
+    public void setRegisterYear(int registerYear) {
         this.registerYear = registerYear;
     }
 

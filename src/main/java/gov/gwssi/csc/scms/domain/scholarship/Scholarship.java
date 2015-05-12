@@ -21,7 +21,7 @@ public class Scholarship {
      *年度
      */
     @Column(name = "year",length=4)
-    private String year;
+    private long year;
     /**
      *院校 DIM_UNIVERSITY代码
      */
@@ -29,11 +29,7 @@ public class Scholarship {
     private String school;
 
 
-    /**
-     *创建日期
-     */
-    @Column(name = "time")
-    private Date time;
+
 
     /**
      *合格人数
@@ -55,7 +51,7 @@ public class Scholarship {
      *入库日期
      */
     @Column(name = "CREATED")
-    private String created;
+    private Date created;
     /**
      *修改人
      */
@@ -65,7 +61,7 @@ public class Scholarship {
      *修改时间
      */
     @Column(name = "UPDATED")
-    private String updated;
+    private Date updated;
     /**
      *基金委状态：0未提交；1提交
      */
@@ -85,11 +81,11 @@ public class Scholarship {
         this.id = id;
     }
 
-    public String getYear() {
+    public long getYear() {
         return year;
     }
 
-    public void setYear(String year) {
+    public void setYear(long year) {
         this.year = year;
     }
 
@@ -99,14 +95,6 @@ public class Scholarship {
 
     public void setSchool(String school) {
         this.school = school;
-    }
-
-    public Date getTime() {
-        return time;
-    }
-
-    public void setTime(Date time) {
-        this.time = time;
     }
 
     public Long getQualNum() {
@@ -133,11 +121,11 @@ public class Scholarship {
         this.createBy = createBy;
     }
 
-    public String getCreated() {
+    public Date getCreated() {
         return created;
     }
 
-    public void setCreated(String created) {
+    public void setCreated(Date created) {
         this.created = created;
     }
 
@@ -149,11 +137,11 @@ public class Scholarship {
         this.updateBy = updateBy;
     }
 
-    public String getUpdated() {
+    public Date getUpdated() {
         return updated;
     }
 
-    public void setUpdated(String updated) {
+    public void setUpdated(Date updated) {
         this.updated = updated;
     }
 

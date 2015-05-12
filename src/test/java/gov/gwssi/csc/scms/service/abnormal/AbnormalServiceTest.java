@@ -25,7 +25,7 @@ public class AbnormalServiceTest  extends UnitTestBase {
     @Test
     public void getAbnormalAllTest() {
         AbnormalService abnormalService = getBean("abnormalService");
-        String body = "{\"cscId\" : \"1\" ," +
+        String body = "{\"cscId\" : \"11\" ," +
                 "\"offSet\" : \"0\" , \"pageSize\" : \"2\"}";
         AbnormalFilterObject abnormalResultObject;
         List<AbnormalResultObject> list1 = null;
@@ -110,12 +110,12 @@ public class AbnormalServiceTest  extends UnitTestBase {
          OperationLog op1 = new OperationLog();
          op1.setMenu("在校生管理");
          op1.setTableEN("basicInfo");
-         op1.setColunmEN("passportName");
+         //op1.setColunmEN("passportName");
          op1.setBefore("beForeName");
          op1.setAfter("afterName");
          op1.setStudentId("1");
          op1.setOptType("1");
-         op1.setMenuId(11111111l);
+         //op1.setMenuId(11111111l);
          op1.setNodeId("2");
          list.add(op1);
 

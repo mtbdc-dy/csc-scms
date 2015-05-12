@@ -61,5 +61,75 @@ public class Insurance {
     @Column(name = "updated")
     private Date updated;
 
+    public String getId() {
+        return id;
+    }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+
+    public String getInsurSta() {
+        return insurSta;
+    }
+
+    public void setInsurSta(String insurSta) {
+        this.insurSta = insurSta;
+    }
+
+    public String getInsurNo() {
+        return insurNo;
+    }
+
+    public void setInsurNo(String insurNo) {
+        this.insurNo = insurNo;
+    }
+
+    public String getPreSta() {
+        return preSta;
+    }
+
+    public void setPreSta(String preSta) {
+        this.preSta = preSta;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public Date getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(Date updated) {
+        this.updated = updated;
+    }
 }

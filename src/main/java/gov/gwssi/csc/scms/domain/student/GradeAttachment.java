@@ -22,9 +22,9 @@ public class GradeAttachment {
     @Column(name = "CREATED")
     private Date createDate;
     /**
-     * 修改人
+     * 上传人
      */
-    private String updateBy;
+    private String createBy;
     /**
      * 学生id
      */
@@ -64,12 +64,12 @@ public class GradeAttachment {
         this.createDate = createDate;
     }
 
-    public String getUpdateBy() {
-        return updateBy;
+    public String getCreateBy() {
+        return createBy;
     }
 
-    public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy;
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
     }
 
     public Student getStudent() {
