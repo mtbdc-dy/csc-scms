@@ -20,6 +20,7 @@ public class BasicInfo {
     /**
      * 护照姓名
      */
+    @Column(columnDefinition="nvarchar(100)")
     private String passportName;
     /**
      * 中文姓名
@@ -32,7 +33,7 @@ public class BasicInfo {
     /**
      * 出生日期
      */
-    private String birthday;
+    private Date birthday;
     /**
      * 大洲
      */
@@ -130,11 +131,11 @@ public class BasicInfo {
         this.gender = gender;
     }
 
-    public String getBirthday() {
+    public Date getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(String birthday) {
+    public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
 

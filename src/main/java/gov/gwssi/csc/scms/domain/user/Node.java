@@ -10,9 +10,9 @@ import java.util.List;
 @Table(name = "PUB_NODE")
 public class Node {
 
-    public final static String ENABLE = "1";
+    public final static String ENABLED = "1";
 
-    public final static String UNENABLE = "0";
+    public final static String UNENABLED = "0";
 
     public final static String ROOT_LEVEL = "1";
 
@@ -25,6 +25,10 @@ public class Node {
      * 节点名称
      */
     private String node;
+    /**
+     * 节点英文名称
+     */
+    private String nodeEN;
     /**
      * 节点类型：AD基金委；AE省市；AF高等院校；AG派遣机构；AH洲；AI国家；AJ驻外使（领）馆教育处（组）。
      */
@@ -56,9 +60,13 @@ public class Node {
      */
     private String email;
     /**
+     * 院校归属
+     */
+    private String collegeHome;
+    /**
      * 是否有效
      */
-    private String enable;
+    private String enabled;
     /**
      * 子节点
      */
@@ -137,12 +145,40 @@ public class Node {
         this.email = email;
     }
 
-    public String getEnable() {
-        return enable;
+    public String getEnabled() {
+        return enabled;
     }
 
-    public void setEnable(String enable) {
-        this.enable = enable;
+    public void setEnabled(String enabled) {
+        this.enabled = enabled;
+    }
+
+    public static String getENABLE() {
+        return ENABLED;
+    }
+
+    public static String getUNENABLE() {
+        return UNENABLED;
+    }
+
+    public static String getROOT_LEVEL() {
+        return ROOT_LEVEL;
+    }
+
+    public String getNodeEN() {
+        return nodeEN;
+    }
+
+    public void setNodeEN(String nodeEN) {
+        this.nodeEN = nodeEN;
+    }
+
+    public String getCollegeHome() {
+        return collegeHome;
+    }
+
+    public void setCollegeHome(String collegeHome) {
+        this.collegeHome = collegeHome;
     }
 
     public List<Node> getChildren() {

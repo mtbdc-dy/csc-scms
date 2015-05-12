@@ -22,12 +22,12 @@ public class NodeService extends BaseService {
     @Autowired
     private UserService userService;
 
-    public Node getNodeByNodeIdAndEnable(String nodeId, String enable) {
-        return nodeRepository.findNodeByNodeIdAndEnable(nodeId, enable);
+    public Node getNodeByNodeIdAndEnable(String nodeId, String enabled) {
+        return nodeRepository.findNodeByNodeIdAndEnabled(nodeId, enabled);
     }
 
-    public List<Node> getNodesByEnable(String enable) {
-        return nodeRepository.findNodeByEnable(enable);
+    public List<Node> getNodesByEnable(String enabled) {
+        return nodeRepository.findNodeByEnabled(enabled);
     }
 
     public List<Node> getNodeTree() {
@@ -49,23 +49,23 @@ public class NodeService extends BaseService {
     }
 
     public Node enableNode(String nodeId) throws NoSuchNodeException, NodeBeingUsedException {
-        Node node = getNodeByNodeIdAndEnable(nodeId, Node.ENABLE);
+        Node node = getNodeByNodeIdAndEnable(nodeId, Node.ENABLED);
         if (node == null)
             throw new NoSuchNodeException();
 
-        if (Node.ENABLE.equals(node.getEnable())) {
+        if (Node.ENABLED.equals(node.getEnabled())) {
             List<User> users = userService.getUsersByNode(node);
             if (users == null || users.size() == 0) {
-                node.setEnable(Node.UNENABLE);
+                node.setEnabled(Node.UNENABLED);
             } else
                 throw new NodeBeingUsedException();
         } else {
-            node.setEnable(Node.ENABLE);
+            node.setEnabled(Node.ENABLED);
         }
         return saveNode(node);
     }
 
     private List<Node> getRootNode() {
-        return nodeRepository.findNodeByNodeLevelAndEnable(Node.ROOT_LEVEL, Node.ENABLE);
+        return nodeRepository.findNodeByNodeLevelAndEnabled(Node.ROOT_LEVEL, Node.ENABLED);
     }
 }
