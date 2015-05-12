@@ -43,7 +43,7 @@ public class StudentServiceTest extends UnitTestBase {
 
         for (StudentResultObject sro : stus) {
             System.out.println("==============================");
-            System.out.println("studentId::" + sro.getStudentId());
+            System.out.println("studentId::" + sro.getId());
             System.out.println("CscId::" + sro.getCscId());
             System.out.println("planLeaveDate::" + sro.getPlanLeaveDate());
         }

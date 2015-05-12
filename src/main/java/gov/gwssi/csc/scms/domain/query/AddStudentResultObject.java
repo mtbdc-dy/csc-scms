@@ -1,7 +1,5 @@
 package gov.gwssi.csc.scms.domain.query;
 
-import java.util.Date;
-
 /**
  * Created by lzs on 2015/5/5.
  * 学生列表供新增申请查询使用
