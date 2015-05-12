@@ -8,7 +8,7 @@ public class TranslateDictJson {
 
     private String code;
     private String value;
-    private String valid;
+    private boolean valid;
 
     public String getCode() {
         return code;
@@ -26,11 +26,11 @@ public class TranslateDictJson {
         this.value = value;
     }
 
-    public String getValid() {
+    public boolean isValid() {
         return valid;
     }
 
-    public void setValid(String valid) {
+    public void setValid(boolean valid) {
         this.valid = valid;
     }
 }
