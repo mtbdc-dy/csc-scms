@@ -25,7 +25,7 @@ public class AbnormalServiceTest  extends UnitTestBase {
     @Test
     public void getAbnormalAllTest() {
         AbnormalService abnormalService = getBean("abnormalService");
-        String body = "{\"cscId\" : \"1\" ," +
+        String body = "{\"cscId\" : \"11\" ," +
                 "\"offSet\" : \"0\" , \"pageSize\" : \"2\"}";
         AbnormalFilterObject abnormalResultObject;
         List<AbnormalResultObject> list1 = null;
