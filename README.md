@@ -83,7 +83,7 @@ Student JSON Object Example
 
 ```
 {
-  "studentId": 1,
+  "id": 1,
   "cscId": "CSC11000001",
   "sex": null,
   "birthday": null,
@@ -101,11 +101,11 @@ Student JSON Array Example
 
 ```
 [{
-  "studentId": 1,
+  "id": 1,
   "cscId": "CSC11000001",
   ...
 },{
-  "studentId": 1,
+  "id": 1,
   "cscId": "CSC11000001",
   ...
 },...]
