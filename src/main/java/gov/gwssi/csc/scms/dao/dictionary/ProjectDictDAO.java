@@ -45,9 +45,9 @@ public class ProjectDictDAO extends BaseDAO{
                 dictTreeJson.setValue((map.get("NAMECH") == null || map.get("NAMECH").equals(""))? "" : (String) map.get("NAMECH"));
                 dictTreeJson.setCodePid((map.get("PARENTID") == null || map.get("PARENTID").equals(""))? "" : (String) map.get("PARENTID"));
                 if (map.get("ENABLED") != null && map.get("ENABLED").equals("1")) {
-                    dictTreeJson.setValid("true");
+                    dictTreeJson.setValid(true);
                 } else {
-                    dictTreeJson.setValid("false");
+                    dictTreeJson.setValid(false);
                 }
                 list.add(dictTreeJson);
             }

@@ -12,7 +12,7 @@ public class DictTreeJson implements Serializable {
     private String code;
     private String codePid;
     private String value;
-    private String valid;
+    private boolean valid;
 
     public List<DictTreeJson> children = new ArrayList<DictTreeJson>();
 
@@ -82,11 +82,11 @@ public class DictTreeJson implements Serializable {
         this.value = value;
     }
 
-    public String getValid() {
+    public boolean isValid() {
         return valid;
     }
 
-    public void setValid(String valid) {
+    public void setValid(boolean valid) {
         this.valid = valid;
     }
 

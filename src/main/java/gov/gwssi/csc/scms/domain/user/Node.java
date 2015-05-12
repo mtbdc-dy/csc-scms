@@ -40,7 +40,7 @@ public class Node {
     /**
      * 上级节点
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "parentId")
     private Node parent;
     /**

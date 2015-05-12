@@ -48,9 +48,9 @@ public class SubjectDictDAO extends BaseDAO{
                 treeJson.setValue((map.get("SUBJECTNAMECH") == null || map.get("SUBJECTNAMECH").equals(""))? "" : (String) map.get("SUBJECTNAMECH"));
                 treeJson.setCodePid((map.get("PARENTID") == null || map.get("PARENTID").equals(""))? "" : (String) map.get("PARENTID"));
                 if (map.get("ENABLED") != null && map.get("ENABLED").equals("1")) {
-                    treeJson.setValid("true");
+                    treeJson.setValid(true);
                 } else {
-                    treeJson.setValid("false");
+                    treeJson.setValid(false);
                 }
                 list.add(treeJson);
             }

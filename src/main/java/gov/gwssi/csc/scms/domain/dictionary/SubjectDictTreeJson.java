@@ -15,7 +15,7 @@ public class SubjectDictTreeJson implements Serializable{
         private String code;
         private String codePid;
         private String value;
-        private String valid;
+        private boolean valid;
 
         public List<SubjectDictTreeJson>  children = new ArrayList<SubjectDictTreeJson>();
 
@@ -79,17 +79,17 @@ public class SubjectDictTreeJson implements Serializable{
             this.value = value;
         }
 
-        public String getValid() {
+        public boolean isValid() {
             return valid;
         }
 
-        public void setValid(String valid) {
+        public void setValid(boolean valid) {
             this.valid = valid;
         }
 
         public String getCodePid() {
-            return codePid;
-        }
+                return codePid;
+            }
 
         public void setCodePid(String codePid) {
             this.codePid = codePid;
