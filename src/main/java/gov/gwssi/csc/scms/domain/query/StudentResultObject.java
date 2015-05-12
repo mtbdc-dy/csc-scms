@@ -10,7 +10,7 @@ public class StudentResultObject extends ResultObject {
     /**
      * 学生ID
      */
-    private Long id;
+    private String id;
     /**
      * CSCID
      */
@@ -18,7 +18,7 @@ public class StudentResultObject extends ResultObject {
     /**
      * 性别
      */
-    private String sex;
+    private String gender;
     /**
      * 出生日期
      */
@@ -56,10 +56,10 @@ public class StudentResultObject extends ResultObject {
      */
     private String continent;
 
-    public StudentResultObject(Long id, String cscId, String sex, String birthday, String passportName, String certificateNO, String studentType, String country, Date planLeaveDate, String registerState,String continent) {
+    public StudentResultObject(String id, String cscId, String gender, String birthday, String passportName, String certificateNO, String studentType, String country, Date planLeaveDate, String registerState, String continent) {
         this.id = id;
         this.cscId = cscId;
-        this.sex = sex;
+        this.gender = gender;
         this.birthday = birthday;
         this.passportName = passportName;
         this.certificateNO = certificateNO;
@@ -70,16 +70,13 @@ public class StudentResultObject extends ResultObject {
         this.continent = continent;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public void setCscId(String cscId) {
         this.cscId = cscId;
     }
 
-    public void setSex(String sex) {
-        this.sex = sex;
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public void setBirthday(String birthday) {
@@ -110,16 +107,20 @@ public class StudentResultObject extends ResultObject {
         this.registerState = registerState;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getCscId() {
         return cscId;
     }
 
-    public String getSex() {
-        return sex;
+    public String getGender() {
+        return gender;
     }
 
     public String getBirthday() {
@@ -159,7 +160,7 @@ public class StudentResultObject extends ResultObject {
     }
 
     public static String getResultObject() {
-        String resultSql = "select new gov.gwssi.csc.scms.domain.query.StudentResultObject(student.id, student.cscId, basicInfo.sex, " +
+        String resultSql = "select new gov.gwssi.csc.scms.domain.query.StudentResultObject(student.id, student.cscId, basicInfo.gender, " +
                 "basicInfo.birthday, basicInfo.passportName,schoolRoll.certificateNO, schoolRoll.studentType, " +
                 "basicInfo.country, schoolRoll.planLeaveDate,schoolRoll.registerState,basicInfo.continent) ";
         return resultSql;

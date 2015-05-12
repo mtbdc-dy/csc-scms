@@ -85,7 +85,7 @@ Student JSON Object Example
 {
   "id": 1,
   "cscId": "CSC11000001",
-  "sex": null,
+  "gender": null,
   "birthday": null,
   "passportName": null,
   "certificateNO": null,
