@@ -127,8 +127,8 @@ public class StudentService extends BaseService {
         sb.append(StudentResultObject.getResultObject());
 
         String tempSql = " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll " +
-                "where student.basicInfo = basicInfo.student " +
-                "and student.schoolRoll = schoolRoll.student ";
+                "where student.id = basicInfo.student " +
+                "and student.id = schoolRoll.student ";
         sb.append(tempSql);
 
         sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter(user));
