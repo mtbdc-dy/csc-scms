@@ -130,6 +130,17 @@ public class Abnormal {
      */
     @Column(name = "state",length=1)
     private String state;//处理状态 0未提交 1提交未上报 2上报未审核 3审核未处理 4 处理
+    /**
+     *修改人
+     */
+    @Column(name = "updateBy",length=20)
+    private String userName;
+
+    /**
+     *修改时间
+     */
+    @Column(name = "updated")
+    private Date updated;
 
     public String getId() {
         return id;
@@ -297,5 +308,21 @@ public class Abnormal {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public Date getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(Date updated) {
+        this.updated = updated;
     }
 }
