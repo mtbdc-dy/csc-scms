@@ -14,10 +14,6 @@ public class Schoolfellow {
     @Id
     private String id;
     /**
-     * CSCID
-     */
-    private String cscId;
-    /**
      * 工作单位
      */
     private String workUnit;
@@ -80,14 +76,6 @@ public class Schoolfellow {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getCscId() {
-        return cscId;
-    }
-
-    public void setCscId(String cscId) {
-        this.cscId = cscId;
     }
 
     public String getWorkUnit() {

@@ -146,10 +146,10 @@ public class StudentServiceTest extends UnitTestBase {
         stu.setDiscuss(discuss);
 
         SchoolRoll schoolroll = new SchoolRoll();
-        schoolroll.setRegisterYear("2013");
+        schoolroll.setRegisterYear(2012);
         schoolroll.setPlanLeaveDate(date);
         schoolroll.setCurrentUniversity("ET001");
-        schoolroll.setLeaveChina(false);
+        schoolroll.setLeaveChina("0");
         stu.setSchoolRoll(schoolroll);
 
         ProfilesHistory ph = new ProfilesHistory();
