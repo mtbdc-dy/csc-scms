@@ -1,5 +1,7 @@
 package gov.gwssi.csc.scms.service.user;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.base.UnitTestBase;
 import gov.gwssi.csc.scms.domain.user.Node;
 import org.junit.Test;
@@ -23,8 +25,9 @@ public class NodeServiceTest extends UnitTestBase {
     }
 
     @Test
-    public void getNodeTreeTest() {
+    public void getNodeTreeTest() throws JsonProcessingException {
         List<Node> root = nodeService.getNodeTree();
+        System.out.println(new ObjectMapper().writeValueAsString(root));
         printTree(root, "");
     }
 

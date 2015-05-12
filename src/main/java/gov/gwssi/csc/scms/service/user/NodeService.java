@@ -32,6 +32,7 @@ public class NodeService extends BaseService {
 
     public List<Node> getNodeTree() {
         List<Node> root = getRootNode();
+        setParentNull(root);
         return root;
     }
 
@@ -67,5 +68,14 @@ public class NodeService extends BaseService {
 
     private List<Node> getRootNode() {
         return nodeRepository.findNodeByNodeLevelAndEnabled(Node.ROOT_LEVEL, Node.ENABLED);
+    }
+
+    private void setParentNull(List<Node> nodes) {
+        if (nodes != null && nodes.size() > 0) {
+            setNullByField(nodes, "parent", Node.class);
+            for (Node node : nodes) {
+                setParentNull(node.getChildren());
+            }
+        }
     }
 }
