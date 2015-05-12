@@ -20,7 +20,6 @@ public class BasicInfo {
     /**
      * 护照姓名
      */
-    @Column(columnDefinition = "nvarchar2(100)")
     private String passportName;
     /**
      * 中文姓名

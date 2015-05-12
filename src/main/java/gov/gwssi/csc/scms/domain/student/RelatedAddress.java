@@ -1,5 +1,7 @@
 package gov.gwssi.csc.scms.domain.student;
 
+import gov.gwssi.csc.scms.utils.UnicodeUtil;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -22,7 +24,6 @@ public class RelatedAddress {
     /**
      * 详细地址或紧急联系人
      */
-    @Column(columnDefinition = "nvarchar2(400)")
     private String addressOrName;
     /**
      * 电话
@@ -39,7 +40,6 @@ public class RelatedAddress {
     /**
      * 备注
      */
-    @Column(columnDefinition = "nvarchar2(400)")
     private String remark;
     /**
      * 创建人
@@ -91,11 +91,11 @@ public class RelatedAddress {
     }
 
     public String getAddressOrName() {
-        return addressOrName;
+        return UnicodeUtil.toCharSequence(addressOrName);
     }
 
     public void setAddressOrName(String addressOrName) {
-        this.addressOrName = addressOrName;
+        this.addressOrName = UnicodeUtil.toUNICODE(addressOrName);
     }
 
     public String getPhone() {
@@ -123,11 +123,11 @@ public class RelatedAddress {
     }
 
     public String getRemark() {
-        return remark;
+        return UnicodeUtil.toCharSequence(remark);
     }
 
     public void setRemark(String remark) {
-        this.remark = remark;
+        this.remark = UnicodeUtil.toUNICODE(remark);
     }
 
     public String getCreateBy() {
