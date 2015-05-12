@@ -126,4 +126,14 @@ public class AbnormalService extends BaseService {
 
         return abnormalRepository.save(abnormal);
     }
+    //删除异动申请
+    public Abnormal deleteAbnormalById(String abnormalId, List<OperationLog> operationLogs) {
+        Abnormal abnormal = getAbnormalById(abnormalId);
+        if (abnormal == null)
+            return null;
+        //记录日志
+        operationLogService.saveOperationLog(operationLogs);
+        abnormalRepository.delete(abnormal);
+        return abnormal;
+    }
 }

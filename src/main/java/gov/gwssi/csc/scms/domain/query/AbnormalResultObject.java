@@ -8,6 +8,10 @@ import java.util.Date;
  */
 public class AbnormalResultObject extends ResultObject{
     /**
+     * 异动申请ID
+     */
+    private String abnormalId;
+    /**
      * 学生ID
      */
     private String studentId;
@@ -119,12 +123,13 @@ public class AbnormalResultObject extends ResultObject{
     public AbnormalResultObject() {
     }
 
-    public AbnormalResultObject(String studentId, String cscId, String gender, String passportName,
+    public AbnormalResultObject(String abnormalId,String studentId, String cscId, String gender, String passportName,
                                 String applyUserName, Date applyTime, String country, String rollState, String handleState,
                                 String reasonId, String reason, String applyUri, String approResult, String approOpinion,
                                 String publicUri, String applyUserId, String reportUserId, String reportUserName,
                                 Date reportTime, String approUserId, String approUserName, Date approTime,
                                 String handleUserId, String handleUserName, Date handleTime) {
+        this.abnormalId = abnormalId;
         this.studentId = studentId;
         this.cscId = cscId;
         this.gender = gender;
@@ -150,6 +155,14 @@ public class AbnormalResultObject extends ResultObject{
         this.handleUserId = handleUserId;
         this.handleUserName = handleUserName;
         this.handleTime = handleTime;
+    }
+
+    public String getAbnormalId() {
+        return abnormalId;
+    }
+
+    public void setAbnormalId(String abnormalId) {
+        this.abnormalId = abnormalId;
     }
 
     public String getGender() {
@@ -363,7 +376,7 @@ public class AbnormalResultObject extends ResultObject{
          Date reportTime, String approUserId, String approUserName, Date approTime,
          String handleUserId, String handleUserName, Date handleTime
          */
-        String resultSql = "select new gov.gwssi.csc.scms.domain.query.AbnormalResultObject(student.id, student.cscId, basicInfo.gender, " +
+        String resultSql = "select new gov.gwssi.csc.scms.domain.query.AbnormalResultObject(abnormal.id,student.id, student.cscId, basicInfo.gender, " +
                 "basicInfo.passportName, " +
                 "abnormal.applyUserName,abnormal.applyTime,basicInfo.country,schoolRoll.state,abnormal.state,abnormal.reasonId," +
                 " abnormal.reason,abnormal.applyUri,abnormal.approResult,abnormal.approOpinion,abnormal.publicUri,abnormal.applyUserId,abnormal.reportUserId," +
