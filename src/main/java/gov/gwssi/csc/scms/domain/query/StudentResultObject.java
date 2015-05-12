@@ -22,7 +22,7 @@ public class StudentResultObject extends ResultObject {
     /**
      * 出生日期
      */
-    private String birthday;
+    private Date birthday;
     /**
      * 护照姓名
      */
@@ -56,7 +56,7 @@ public class StudentResultObject extends ResultObject {
      */
     private String continent;
 
-    public StudentResultObject(String id, String cscId, String gender, String birthday, String passportName, String certificateNO, String studentType, String country, Date planLeaveDate, String registerState, String continent) {
+    public StudentResultObject(String id, String cscId, String gender, Date birthday, String passportName, String certificateNO, String studentType, String country, Date planLeaveDate, String registerState, String continent) {
         this.id = id;
         this.cscId = cscId;
         this.gender = gender;
@@ -79,7 +79,7 @@ public class StudentResultObject extends ResultObject {
         this.gender = gender;
     }
 
-    public void setBirthday(String birthday) {
+    public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
 
@@ -123,7 +123,7 @@ public class StudentResultObject extends ResultObject {
         return gender;
     }
 
-    public String getBirthday() {
+    public Date getBirthday() {
         return birthday;
     }
 
