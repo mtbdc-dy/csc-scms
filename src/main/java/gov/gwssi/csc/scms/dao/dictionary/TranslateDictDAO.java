@@ -40,9 +40,9 @@ public class TranslateDictDAO extends BaseDAO{
                 translateDictJson.setCode((map.get("TRANSLATEID") == null || map.get("TRANSLATEID").equals(""))?"":(String)map.get("TRANSLATEID"));
                 translateDictJson.setValue((map.get("NAMECH") == null || map.get("NAMECH").equals(""))?"":(String)map.get("NAMECH"));
                 if (map.get("ENABLE") != null && map.get("ENABLE").equals("1")) {
-                    translateDictJson.setValid("true");
+                    translateDictJson.setValid(true);
                 } else {
-                    translateDictJson.setValid("false");
+                    translateDictJson.setValid(false);
                 }
                 list.add(translateDictJson);
             }
