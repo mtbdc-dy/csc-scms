@@ -22,6 +22,7 @@ public class RelatedAddress {
     /**
      * 详细地址或紧急联系人
      */
+    @Column(columnDefinition = "nvarchar2(400)")
     private String addressOrName;
     /**
      * 电话
@@ -38,6 +39,7 @@ public class RelatedAddress {
     /**
      * 备注
      */
+    @Column(columnDefinition = "nvarchar2(400)")
     private String remark;
     /**
      * 创建人

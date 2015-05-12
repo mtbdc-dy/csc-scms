@@ -20,7 +20,7 @@ public class BasicInfo {
     /**
      * 护照姓名
      */
-    @Column(columnDefinition="nvarchar(100)")
+    @Column(columnDefinition = "nvarchar2(100)")
     private String passportName;
     /**
      * 中文姓名
@@ -49,7 +49,7 @@ public class BasicInfo {
     /**
      * 是否计划内 0否；1是
      */
-    private Boolean planned;
+    private String planned;
     /**
      * 留学项目类别
      */
@@ -163,11 +163,11 @@ public class BasicInfo {
         this.photo = photo;
     }
 
-    public Boolean isPlanned() {
+    public String getPlanned() {
         return planned;
     }
 
-    public void setPlanned(Boolean planned) {
+    public void setPlanned(String planned) {
         this.planned = planned;
     }
 

@@ -18,7 +18,7 @@ public class Grade {
     /**
      * 年度
      */
-    private String annual;
+    private int annual;
     /**
      * 学期
      */
@@ -72,11 +72,11 @@ public class Grade {
         this.studentId = studentId;
     }
 
-    public String getAnnual() {
+    public int getAnnual() {
         return annual;
     }
 
-    public void setAnnual(String annual) {
+    public void setAnnual(int annual) {
         this.annual = annual;
     }
 
