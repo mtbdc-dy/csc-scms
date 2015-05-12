@@ -47,7 +47,7 @@ public class StudentFilter implements Filter {
                 }
             }
             //单独处理mode字段-参数待定
-            if ("Char".equalsIgnoreCase(fc.getType())) {
+            if ("Mode".equalsIgnoreCase(fc.getType())) {
                if("".equals(str[0])){
 
                }else if("abnormal".equals(str[0])){
