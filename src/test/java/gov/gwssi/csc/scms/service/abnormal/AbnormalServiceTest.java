@@ -84,6 +84,13 @@ public class AbnormalServiceTest  extends UnitTestBase {
          Abnormal abc = abnormalService.updateAbnormal(ab, getLogList());
          Assert.assertNotNull(abc);
      }
+     @Test
+     public void delAbnormalTest() {
+         AbnormalService abnormalService = getBean("abnormalService");
+         Abnormal ab = abnormalService.deleteAbnormalById("15", getLogList());
+        // Assert.assertNotNull(ab);
+        // Assert.assertNull(ab);
+     }
      private Abnormal getAbnormalInTest() {
 
          SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -115,7 +122,7 @@ public class AbnormalServiceTest  extends UnitTestBase {
          op1.setAfter("afterName");
          op1.setStudentId("1");
          op1.setOptType("1");
-         //op1.setMenuId(11111111l);
+         op1.setMenuId("1");
          op1.setNodeId("2");
          list.add(op1);
 

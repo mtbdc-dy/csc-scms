@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
  @Repository("abnormalRepository")
 public interface AbnormalRepository extends CrudRepository<Abnormal,String> {
 
-    Abnormal findByStudentId(String studentId);
+    Abnormal findById(String id);
 }

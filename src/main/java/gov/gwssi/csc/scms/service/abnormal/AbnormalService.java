@@ -27,7 +27,7 @@ public class AbnormalService extends BaseService {
     @Autowired
     private OperationLogService operationLogService;
     public Abnormal getAbnormalById(String id) {
-        return abnormalRepository.findOne(id);
+        return abnormalRepository.findById(id);
     }
 //    @Autowired
 //    private StudentService studentService;
@@ -63,7 +63,7 @@ public class AbnormalService extends BaseService {
         sb.append(AbnormalResultObject.getResultObject());
 
         String tempSql = " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll, Abnormal abnormal " +
-                "where student.id = basicInfo.student" +
+                "where student.id = basicInfo.student  " +
                 "and student.id = schoolRoll.student and student.id = abnormal.student ";
         sb.append(tempSql);
 
@@ -127,8 +127,8 @@ public class AbnormalService extends BaseService {
         return abnormalRepository.save(abnormal);
     }
     //删除异动申请
-    public Abnormal deleteAbnormalById(String abnormalId, List<OperationLog> operationLogs) {
-        Abnormal abnormal = getAbnormalById(abnormalId);
+    public Abnormal deleteAbnormalById(String id, List<OperationLog> operationLogs) {
+        Abnormal abnormal = getAbnormalById(id);
         if (abnormal == null)
             return null;
         //记录日志
