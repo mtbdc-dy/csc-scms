@@ -105,13 +105,13 @@ public class AbnormalController {
             if (abnormal == null)
                 return null;
 
-//            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
-//            List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
+            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
+            List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
             //根据id号是否为空来判断是新增还是修改
 //            if (null != abnormal.getId() || !"".endsWith(abnormal.getId())) {
 //                abnormal = abnormalService.updateAbnormal(abnormal, null);
 //            } else {
-                abnormal = abnormalService.saveAbnormal(abnormal, null);
+                abnormal = abnormalService.saveAbnormal(abnormal, operationLogs);
            // }
             return abnormal;
         } catch (Exception e) {
@@ -131,11 +131,11 @@ public class AbnormalController {
             if (abnormal == null)
                 return null;
 
-//            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
-//            List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
+            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
+            List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
             //根据id号是否为空来判断是新增还是修改
 //            if (null != abnormal.getId() || !"".endsWith(abnormal.getId())) {
-                abnormal = abnormalService.updateAbnormal(abnormal, null);
+                abnormal = abnormalService.updateAbnormal(abnormal, operationLogs);
 //            } else {
 //                abnormal = abnormalService.saveAbnormal(abnormal, operationLogs);
 //            }
