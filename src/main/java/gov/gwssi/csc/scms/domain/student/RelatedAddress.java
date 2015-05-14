@@ -1,7 +1,5 @@
 package gov.gwssi.csc.scms.domain.student;
 
-import gov.gwssi.csc.scms.utils.UnicodeUtil;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -91,11 +89,11 @@ public class RelatedAddress {
     }
 
     public String getAddressOrName() {
-        return UnicodeUtil.toCharSequence(addressOrName);
+        return addressOrName;
     }
 
     public void setAddressOrName(String addressOrName) {
-        this.addressOrName = UnicodeUtil.toUNICODE(addressOrName);
+        this.addressOrName = addressOrName;
     }
 
     public String getPhone() {
@@ -123,11 +121,11 @@ public class RelatedAddress {
     }
 
     public String getRemark() {
-        return UnicodeUtil.toCharSequence(remark);
+        return remark;
     }
 
     public void setRemark(String remark) {
-        this.remark = UnicodeUtil.toUNICODE(remark);
+        this.remark = remark;
     }
 
     public String getCreateBy() {
