@@ -104,7 +104,7 @@ public class AbnormalController {
             Abnormal abnormal = mapper.readValue(jbosy.getValue(), Abnormal.class);
             abnormal.setStudent(student);
             if (abnormal == null)
-                return "FAILUR";
+                return "FAILURE";
 
             JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
             List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
@@ -115,11 +115,11 @@ public class AbnormalController {
                return  "SUCCESS";
             }else {
 
-                return "FAILUR";
+                return "FAILURE";
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return "FAILUR";
+            return "FAILURE";
         }
     }
     //修改新增的异动申请
@@ -134,7 +134,7 @@ public class AbnormalController {
             Abnormal abnormalold = new Abnormal();
             abnormal.setStudent(student);
             if (abnormal == null) {
-                return "FAILUR";
+                return "FAILURE";
             } else {
             JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
             List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
@@ -146,7 +146,7 @@ public class AbnormalController {
             if(rv == true){
                 return "SUCCESS";
             }else{
-                return "FAILUR";
+                return "FAILURE";
             }
 //            } else {
 //                abnormal = abnormalService.saveAbnormal(abnormal, operationLogs);
@@ -155,7 +155,7 @@ public class AbnormalController {
         }
         } catch (Exception e) {
             e.printStackTrace();
-            return "FAILUR";
+            return "FAILURE";
         }
     }
     //删除异动申请
@@ -168,11 +168,11 @@ public class AbnormalController {
                     if(null ==abnormal){
                         return "SUCCESS";
                     }else{
-                        return "FAILUR";
+                        return "FAILURE";
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    return "FAILUR";
+                    return "FAILURE";
         }
     }
 
