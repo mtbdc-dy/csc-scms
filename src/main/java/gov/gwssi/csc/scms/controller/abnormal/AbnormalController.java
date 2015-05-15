@@ -104,7 +104,7 @@ public class AbnormalController {
             Abnormal abnormal = mapper.readValue(jbosy.getValue(), Abnormal.class);
             abnormal.setStudent(student);
             if (abnormal == null)
-                return "FAILURE";
+                return "{\"result\":\"FAILURE\"}";
 
             JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
             List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
@@ -112,14 +112,14 @@ public class AbnormalController {
                 abnormal = abnormalService.saveAbnormal(abnormal, operationLogs);
             String abnormalId = abnormal.getId();
             if(!"".equals(abnormalId)){
-               return  "SUCCESS";
+               return  "{\"result\":\"SUCCESS\"}";
             }else {
 
-                return "FAILURE";
+                return "{\"result\":\"FAILURE\"}";
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return "FAILURE";
+            return "{\"result\":\"FAILURE\"}";
         }
     }
     //修改新增的异动申请
@@ -134,22 +134,22 @@ public class AbnormalController {
 
             abnormal.setStudent(student);
             if (abnormal == null) {
-                return "FAILURE";
+                return "{\"result\":\"FAILURE\"}";
             } else {
             JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
             List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
 
             abnormal = abnormalService.updateAbnormal(abnormal, operationLogs);
              if(null ==abnormal){
-                 return "FAILURE";
+                 return "{\"result\":\"FAILURE\"}";
              }else{
-                 return "SUCCESS";
+                 return  "{\"result\":\"SUCCESS\"}";
              }
 
         }
         } catch (Exception e) {
             e.printStackTrace();
-            return "FAILURE";
+            return "{\"result\":\"FAILURE\"}";
         }
     }
     //删除异动申请
@@ -160,13 +160,13 @@ public class AbnormalController {
              abnormalService.deleteAbnormalById(id, operationLogs);
                     Abnormal abnormal = abnormalService.getAbnormalById(id);
                     if(null ==abnormal){
-                        return "SUCCESS";
+                        return "{\"result\":\"SUCCESS\"}";
                     }else{
-                        return "FAILURE";
+                        return "{\"result\":\"FAILURE\"}";
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    return "FAILURE";
+                    return "{\"result\":\"FAILURE\"}";
         }
     }
 
