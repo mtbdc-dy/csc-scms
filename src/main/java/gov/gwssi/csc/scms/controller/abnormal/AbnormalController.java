@@ -131,26 +131,20 @@ public class AbnormalController {
             JsonBody jbosy = new ObjectMapper().readValue(abnormalJson, JsonBody.class);
             Student student = studentService.getStudentById(id);
             Abnormal abnormal = mapper.readValue(jbosy.getValue(), Abnormal.class);
-            Abnormal abnormalold = new Abnormal();
+
             abnormal.setStudent(student);
             if (abnormal == null) {
                 return "FAILURE";
             } else {
             JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
             List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
-            //根据id号是否为空来判断是新增还是修改
-//            if (null != abnormal.getId() || !"".endsWith(abnormal.getId())) {
+
             abnormal = abnormalService.updateAbnormal(abnormal, operationLogs);
-                abnormalold = abnormalService.getAbnormalById(abnormal.getId());
-                rv = BaseService.classOfSrc(abnormal, abnormalold, rv);
-            if(rv == true){
-                return "SUCCESS";
-            }else{
-                return "FAILURE";
-            }
-//            } else {
-//                abnormal = abnormalService.saveAbnormal(abnormal, operationLogs);
-//            }
+             if(null ==abnormal){
+                 return "FAILURE";
+             }else{
+                 return "SUCCESS";
+             }
 
         }
         } catch (Exception e) {
