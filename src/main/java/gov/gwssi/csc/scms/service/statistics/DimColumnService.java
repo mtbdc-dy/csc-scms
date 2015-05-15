@@ -19,7 +19,11 @@ public class DimColumnService extends BaseService{
     private DimColumnDAO dimColumnDAO;
 
     public String  getDimColumnJsonDataByTableEn(String tableEn){
-        return dimColumnDAO.getDimColumnJsonDataByTableEn(tableEn);
+        String jsonData = "";
+        if(tableEn != null && !tableEn.equals("")){
+            jsonData = dimColumnDAO.getDimColumnJsonDataByTableEn(tableEn);
+        }
+        return jsonData;
     }
 
 }
