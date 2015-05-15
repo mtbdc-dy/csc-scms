@@ -12,6 +12,7 @@ import gov.gwssi.csc.scms.domain.query.AddStudentResultObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.domain.user.User;
+import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.service.abnormal.AbnormalService;
 import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.user.NoSuchUserException;
@@ -94,7 +95,7 @@ public class AbnormalController {
     //保存新增的异动申请
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
-    public  Abnormal putAbnormal( @PathVariable(value = "id") String id,@RequestBody String abnormalJson) {
+    public  String putAbnormal( @PathVariable(value = "id") String id,@RequestBody String abnormalJson) {
         try {
             ObjectMapper mapper = new ObjectMapper();
 
@@ -103,58 +104,75 @@ public class AbnormalController {
             Abnormal abnormal = mapper.readValue(jbosy.getValue(), Abnormal.class);
             abnormal.setStudent(student);
             if (abnormal == null)
-                return null;
+                return "FAILUR";
 
             JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
             List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
-            //根据id号是否为空来判断是新增还是修改
-//            if (null != abnormal.getId() || !"".endsWith(abnormal.getId())) {
-//                abnormal = abnormalService.updateAbnormal(abnormal, null);
-//            } else {
+
                 abnormal = abnormalService.saveAbnormal(abnormal, operationLogs);
-           // }
-            return abnormal;
+            String abnormalId = abnormal.getId();
+            if(!"".equals(abnormalId)){
+               return  "SUCCESS";
+            }else {
+
+                return "FAILUR";
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return "FAILUR";
         }
     }
     //修改新增的异动申请
     @RequestMapping(value = "/{id}",method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
-    public Abnormal modAbnormal( @PathVariable(value = "id") String id,@RequestBody String abnormalJson) {
+    public String modAbnormal( @PathVariable(value = "id") String id,@RequestBody String abnormalJson) {
         try {
             ObjectMapper mapper = new ObjectMapper();
+            boolean rv = true;
             JsonBody jbosy = new ObjectMapper().readValue(abnormalJson, JsonBody.class);
             Student student = studentService.getStudentById(id);
             Abnormal abnormal = mapper.readValue(jbosy.getValue(), Abnormal.class);
+            Abnormal abnormalold = new Abnormal();
             abnormal.setStudent(student);
-            if (abnormal == null)
-                return null;
-
+            if (abnormal == null) {
+                return "FAILUR";
+            } else {
             JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
             List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
             //根据id号是否为空来判断是新增还是修改
 //            if (null != abnormal.getId() || !"".endsWith(abnormal.getId())) {
-                abnormal = abnormalService.updateAbnormal(abnormal, operationLogs);
+            abnormal = abnormalService.updateAbnormal(abnormal, operationLogs);
+                abnormalold = abnormalService.getAbnormalById(abnormal.getId());
+                rv = BaseService.classOfSrc(abnormal, abnormalold, rv);
+            if(rv == true){
+                return "SUCCESS";
+            }else{
+                return "FAILUR";
+            }
 //            } else {
 //                abnormal = abnormalService.saveAbnormal(abnormal, operationLogs);
 //            }
-            return abnormal;
+
+        }
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return "FAILUR";
         }
     }
     //删除异动申请
             @RequestMapping(value = "/{id}",method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
-            public  void deleteAbnormal(@PathVariable String id) {
+            public  String deleteAbnormal(@PathVariable String id) {
                 try {
             List<OperationLog> operationLogs = null;
-            Abnormal abnormal = abnormalService.deleteAbnormalById(id, operationLogs);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-
+             abnormalService.deleteAbnormalById(id, operationLogs);
+                    Abnormal abnormal = abnormalService.getAbnormalById(id);
+                    if(null ==abnormal){
+                        return "SUCCESS";
+                    }else{
+                        return "FAILUR";
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return "FAILUR";
         }
     }
 

@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -64,4 +65,64 @@ public class BaseService {
         }
         return beans;
     }
+    /**
+     * 根据字段名称取值
+     * @param obj
+     * @param fieldName
+     * @return
+     */
+    public static  Object getClassValue(Object obj, String fieldName) {
+        if (obj == null) {
+            return null;
+        }
+        try {
+            Class beanClass = obj.getClass();
+            Method[] ms = beanClass.getMethods();
+            for (int i = 0; i < ms.length; i++) {
+                // 非get方法不取
+                if (!ms[i].getName().startsWith("get")) {
+                    continue;
+                }
+                Object objValue = null;
+                try {
+                    objValue = ms[i].invoke(obj, new Object[] {});
+                } catch (Exception e) {
+
+                    continue;
+                }
+                if (objValue == null) {
+                    continue;
+                }
+                if (ms[i].getName().toUpperCase().equals(fieldName.toUpperCase())
+                        || ms[i].getName().toUpperCase().equals(fieldName.toUpperCase())) {
+                    return objValue;
+                }
+            }
+        } catch (Exception e) {
+
+        }
+        return null;
+    }
+
+
+     public static boolean classOfSrc(Object source, Object target, boolean rv) {
+        Class<?> srcClass = source.getClass();
+        Field[] fields = srcClass.getDeclaredFields();
+        for (Field field : fields) {
+            String nameKey = field.getName();
+
+                String srcValue = getClassValue(source, nameKey) == null ? "" : getClassValue(source, nameKey)
+                        .toString();
+                String tarValue = getClassValue(target, nameKey) == null ? "" : getClassValue(target, nameKey)
+                        .toString();
+                if (!srcValue.equals(tarValue)) {
+                    rv = false;
+                    break;
+                }
+
+        }
+        return rv;
+    }
+
+
 }
