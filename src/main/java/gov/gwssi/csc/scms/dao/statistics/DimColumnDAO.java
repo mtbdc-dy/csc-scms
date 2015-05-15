@@ -13,17 +13,27 @@ import java.util.List;
 @Service("dimColumnDAO")
 public class DimColumnDAO extends BaseDAO{
 
+    private final String RETURN_BLANK_JSON = "[]";
+
     public List getDimColumnByTableEn(String tableEn){
         List dimColumnList = null;
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("SELECT TABLEEN,TABLECH,COLUMNEN,COLUMNCH,DATATYPE,REFERENCETABLEEN,REFERENCETABLECH,REFERENCECOLUMNEN,REFERENCECOLUMNCH FROM DIM_COLUMN WHERE TABLEEN='"+tableEn+"'");
+        stringBuilder.append("SELECT TABLEEN,TABLECH,COLUMNEN,COLUMNCH,DATATYPE,REFERENCETABLEEN,REFERENCETABLECH,REFERENCECOLUMNEN,REFERENCECOLUMNCH FROM DIM_COLUMN WHERE TABLEEN='" + tableEn + "'");
         dimColumnList = super.queryListBySql(stringBuilder.toString());
         return dimColumnList;
     }
 
     public String getDimColumnJsonDataByTableEn(String tableEn){
-        List dimColumnList = getDimColumnByTableEn(tableEn);
-        String jsonData = JsonMapper.getInstance().toJson(dimColumnList);
+        List dimColumnList = null;
+        String jsonData = "";
+        if(tableEn != null && !tableEn.equals("")){
+            dimColumnList = getDimColumnByTableEn(tableEn);
+            if(dimColumnList != null){
+                jsonData = JsonMapper.getInstance().toJson(dimColumnList);
+            }else{
+                return RETURN_BLANK_JSON;
+            }
+        }
         return jsonData;
     }
 

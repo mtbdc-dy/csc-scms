@@ -15,6 +15,8 @@ import java.util.List;
 @Service("dimTableDAO")
 public class DimTableDAO extends BaseDAO{
 
+    private final String RETURN_BLANK_JSON = "[]";
+
     public List getAllDimTable(){
         List dimTableList = null;
         StringBuilder stringBuilder = new StringBuilder();
@@ -24,8 +26,14 @@ public class DimTableDAO extends BaseDAO{
     }
 
     public String getAllDimTableJsonData(){
-        List dimTableList = getAllDimTable();
-        String jsonData = JsonMapper.getInstance().toJson(dimTableList);
+        List dimTableList = null;
+        String jsonData = "";
+        dimTableList = getAllDimTable();
+        if(dimTableList != null){
+            jsonData = JsonMapper.getInstance().toJson(dimTableList);
+        }else{
+            return RETURN_BLANK_JSON;
+        }
         return jsonData;
     }
 
