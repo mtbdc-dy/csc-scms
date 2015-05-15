@@ -79,7 +79,7 @@ public class AbnormalServiceTest  extends UnitTestBase {
      @Test
      public void updateAbnormalTest() {
          AbnormalService abnormalService = getBean("abnormalService");
-         Abnormal ab = abnormalService.getAbnormalById("2015050600000000007");
+         Abnormal ab = abnormalService.getAbnormalById("2015051500000000023");
          ab.setState("1");
          Abnormal abc = abnormalService.updateAbnormal(ab, getLogList());
          Assert.assertNotNull(abc);
@@ -103,7 +103,7 @@ public class AbnormalServiceTest  extends UnitTestBase {
 
 //         Student stu = new Student();
          StudentService studentService = getBean("studentService");
-         Student student = studentService.getStudentByCscId("11");
+         Student student = studentService.getStudentByCscId("15");
          Abnormal ab = new Abnormal();
 //         stu.setCscId("csc11000001");
          ab.setStudent(student);
