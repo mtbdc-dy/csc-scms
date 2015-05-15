@@ -94,7 +94,7 @@ public class AbnormalController {
 
     //保存新增的异动申请
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
+    @RequestMapping(value = "/{id}", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
     public  String putAbnormal( @PathVariable(value = "id") String id,@RequestBody String abnormalJson) {
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -123,7 +123,7 @@ public class AbnormalController {
         }
     }
     //修改新增的异动申请
-    @RequestMapping(value = "/{id}",method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
+    @RequestMapping(value = "/{id}",method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public String modAbnormal( @PathVariable(value = "id") String id,@RequestBody String abnormalJson) {
         try {
             ObjectMapper mapper = new ObjectMapper();
