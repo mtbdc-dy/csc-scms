@@ -119,6 +119,14 @@ public class AbnormalResultObject extends ResultObject{
      * 处理日期
      */
     private Date handleTime;
+    /**
+     * 修改人
+     */
+    private String updateBy;
+    /**
+     * 修改日期
+     */
+    private Date updated;
 
     public AbnormalResultObject() {
     }
@@ -128,7 +136,7 @@ public class AbnormalResultObject extends ResultObject{
                                 String reasonId, String reason, String applyUri, String approResult, String approOpinion,
                                 String publicUri, String applyUserId, String reportUserId, String reportUserName,
                                 Date reportTime, String approUserId, String approUserName, Date approTime,
-                                String handleUserId, String handleUserName, Date handleTime) {
+                                String handleUserId, String handleUserName, Date handleTime,String updateBy,Date updated) {
         this.abnormalId = abnormalId;
         this.studentId = studentId;
         this.cscId = cscId;
@@ -155,6 +163,8 @@ public class AbnormalResultObject extends ResultObject{
         this.handleUserId = handleUserId;
         this.handleUserName = handleUserName;
         this.handleTime = handleTime;
+        this.updateBy = updateBy;
+        this.updated = updated;
     }
 
     public String getAbnormalId() {
@@ -367,6 +377,23 @@ public class AbnormalResultObject extends ResultObject{
     public void setHandleState(String handleState) {
         this.handleState = handleState;
     }
+
+    public String getUpdateBy() {
+        return updateBy;
+    }
+
+    public void setUpdateBy(String updateBy) {
+        this.updateBy = updateBy;
+    }
+
+    public Date getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(Date updated) {
+        this.updated = updated;
+    }
+
     public static String getResultObject() {
         /**
          * String studentId, String cscId, String gender, String passportName,
@@ -381,7 +408,7 @@ public class AbnormalResultObject extends ResultObject{
                 "abnormal.applyUserName,abnormal.applyTime,basicInfo.country,schoolRoll.state,abnormal.state,abnormal.reasonId," +
                 " abnormal.reason,abnormal.applyUri,abnormal.approResult,abnormal.approOpinion,abnormal.publicUri,abnormal.applyUserId,abnormal.reportUserId," +
                 "abnormal.reportUserName,abnormal.reportTime,abnormal.approUserId,abnormal.approUserName,abnormal.approTime,abnormal.handleUserId," +
-                "abnormal.handleUserName,abnormal.handleTime) ";
+                "abnormal.handleUserName,abnormal.handleTime,abnormal.updateBy,abnormal.updated) ";
         return resultSql;
     }
 }
