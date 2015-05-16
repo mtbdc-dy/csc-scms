@@ -1,8 +1,10 @@
 package gov.gwssi.csc.scms.controller.user;
 
+import com.sun.deploy.net.HttpResponse;
 import gov.gwssi.csc.scms.domain.user.*;
 import gov.gwssi.csc.scms.service.user.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,7 +13,6 @@ import java.util.List;
  * Created by Lei on 2015/5/8.
  * 用户权限相关API
  */
-
 @RestController
 @RequestMapping(value = "/user")
 public class UserController {
@@ -25,35 +26,39 @@ public class UserController {
     @Autowired
     private NodeService nodeService;
 
-    @Autowired
-    private MenuService menuService;
 
-    @RequestMapping(name = "/menuTree", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public List<Menu> getMenuTree() {
-        return menuService.getMenuTree();
+    @RequestMapping(value = "/nodeTree/{userId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public List<Node> getNodeTree(@PathVariable String userId) {
+        try {
+            System.out.println("getNodeTree0...");
+            User user = userService.getUserByUserId(userId);
+            System.out.println("getNodeTree1...");
+            if (!"Y0006".equalsIgnoreCase(user.getRole().getIdentity())) {
+                throw new UserIdentityError("not root user!");
+            }
+            System.out.println("getNodeTree2...");
+            List<Node> nodes = nodeService.getNodeTree();
+            System.out.println("getNodeTree3...");
+
+            return nodes;
+        } catch (NoSuchUserException e1) {
+            throw new RuntimeException(e1);
+        } catch (UserIdentityError e2) {
+            throw new RuntimeException(e2);
+        }
     }
 
-    @RequestMapping(name = "/nodeList", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public List<Node> getNodeList() {
-        return nodeService.getNodesByEnable("1");
-    }
-
-    @RequestMapping(name = "/nodeTree", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public List<Node> getNodeTree() {
-        return nodeService.getNodeTree();
-    }
-
-    @RequestMapping(name = "/role", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    @RequestMapping(value = "/role", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<Role> getRoleList() {
         return roleService.getRolesByEnable(Role.ENABLE);
     }
 
-    @RequestMapping(name = "/user", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    @RequestMapping(value = "/userList", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<User> getUserList() {
         return userService.getUsersByEnable(User.ENABLE);
     }
 
-    @RequestMapping(name = "/login", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
+    @RequestMapping(value = "/login", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
     public User login(@RequestParam(value = "username") String userName, @RequestParam("password") String password) {
         try {
             return userService.userLogin(userName, password);

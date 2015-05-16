@@ -28,9 +28,9 @@ public class UserService extends BaseService {
 
     public User getUserByUserId(String userId) throws NoSuchUserException {
         User user = userRepository.findUserByUserIdAndEnable(userId, User.ENABLE);
-        initRoleMenuByUser(user);
         if (user == null)
-            throw new NoSuchUserException();
+            throw new NoSuchUserException("error userId :" + userId);
+        initRoleMenuByUser(user);
         return user;
     }
 
@@ -66,7 +66,7 @@ public class UserService extends BaseService {
     public User updateUser(User user) throws NoSuchUserException {
         User u = getUserByUserId(user.getUserId());
         if (u == null)
-            throw new NoSuchUserException();
+            throw new NoSuchUserException("cannot find the user for update : " + user.getUserId());
         return userRepository.save(user);
     }
 

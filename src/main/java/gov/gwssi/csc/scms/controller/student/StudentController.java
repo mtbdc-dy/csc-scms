@@ -35,9 +35,6 @@ public class StudentController {
     /**
      * 学籍信息管理相关操作，获取学生列表
      * 请求信息为Json格式对应的StudentFilterObject类
-     *
-     * @param
-     * @return
      */
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<StudentResultObject> getStudentsByConditions(
