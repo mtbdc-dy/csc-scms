@@ -1,6 +1,5 @@
 package gov.gwssi.csc.scms.controller.statistics;
 
-import com.sun.deploy.net.HttpResponse;
 import gov.gwssi.csc.scms.service.statistics.DimTableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
