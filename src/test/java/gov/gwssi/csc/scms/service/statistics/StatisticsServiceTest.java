@@ -1,8 +1,11 @@
 package gov.gwssi.csc.scms.service.statistics;
 
 import gov.gwssi.csc.scms.base.UnitTestBase;
+import gov.gwssi.csc.scms.domain.statistics.DConfig;
 import junit.framework.Assert;
 import org.junit.Test;
+
+import java.util.List;
 
 
 /**
@@ -31,9 +34,17 @@ public class StatisticsServiceTest extends UnitTestBase {
     @Test
     public void getDConfig(){
         DConfigService dConfigService = getBean(DConfigService.class);
-        Assert.assertNotNull(dConfigService.findById("1").getConfigType());
-        Assert.assertEquals(dConfigService.findById("1").getConfigType(),"1");
-        System.out.println("DConig "+dConfigService.findById("1").getConfigType());
+        List<DConfig> dConfigList = dConfigService.findDConfigList();
+        if(dConfigList != null){
+            for(DConfig dConfig : dConfigList){
+                System.out.println(dConfig.getId()+"--"+dConfig.getConfigType()+"--"+dConfig.getCreateBy());
+            }
+        }
+//        Assert.assertNotNull(dConfigService.findById("1").getConfigType());
+//        Assert.assertEquals(dConfigService.findById("1").getConfigType(),"1");
+//        System.out.println("DConig "+dConfigService.findById("1").getConfigType());
     }
+
+
     
 }
