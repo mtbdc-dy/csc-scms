@@ -37,7 +37,7 @@ public class StatisticsServiceTest extends UnitTestBase {
         List<DConfig> dConfigList = dConfigService.findDConfigList();
         if(dConfigList != null){
             for(DConfig dConfig : dConfigList){
-                System.out.println(dConfig.getId()+"--"+dConfig.getConfigType()+"--"+dConfig.getCreateBy());
+                System.out.println(dConfig.getId()+"--"+dConfig.getConfigType()+"--"+dConfig.getCreateBy()+"--"+dConfig.getCreateByName());
             }
         }
 //        Assert.assertNotNull(dConfigService.findById("1").getConfigType());
