@@ -26,6 +26,10 @@ public class NodeService extends BaseService {
         return nodeRepository.findNodeByNodeIdAndEnabled(nodeId, enabled);
     }
 
+    public Node getNodeWithEnable(String nodeId) {
+        return nodeRepository.findOne(nodeId);
+    }
+
     public List<Node> getNodesByEnable(String enabled) {
         return nodeRepository.findNodeByEnabled(enabled);
     }
@@ -45,7 +49,10 @@ public class NodeService extends BaseService {
         return saveNode(node);
     }
 
-    public Node updateNode(Node node) {
+    public Node updateNode(Node node) throws NoSuchNodeException {
+        Node node1 = getNodeWithEnable(node.getNodeId());
+        if (node1 == null)
+            throw new NoSuchNodeException("cannot find node by nodeId:" + node.getNodeId());
         return saveNode(node);
     }
 

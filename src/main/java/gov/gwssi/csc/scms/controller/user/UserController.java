@@ -1,5 +1,8 @@
 package gov.gwssi.csc.scms.controller.user;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.deploy.net.HttpResponse;
 import gov.gwssi.csc.scms.domain.user.*;
 import gov.gwssi.csc.scms.service.user.*;
@@ -7,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -26,25 +30,38 @@ public class UserController {
     @Autowired
     private NodeService nodeService;
 
-
-    @RequestMapping(value = "/nodeTree/{userId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    @RequestMapping(value = "/node/{userId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<Node> getNodeTree(@PathVariable String userId) {
         try {
-            System.out.println("getNodeTree0...");
             User user = userService.getUserByUserId(userId);
-            System.out.println("getNodeTree1...");
             if (!"Y0006".equalsIgnoreCase(user.getRole().getIdentity())) {
                 throw new UserIdentityError("not root user!");
             }
-            System.out.println("getNodeTree2...");
             List<Node> nodes = nodeService.getNodeTree();
-            System.out.println("getNodeTree3...");
-
             return nodes;
         } catch (NoSuchUserException e1) {
             throw new RuntimeException(e1);
         } catch (UserIdentityError e2) {
             throw new RuntimeException(e2);
+        }
+    }
+
+    @RequestMapping(value = "/node/{userId}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
+    public Node putNode(@PathVariable String userId, @RequestBody String nodeStr) {
+        try {
+            System.out.println("some one is put node!");
+            User user = userService.getUserByUserId(userId);
+            if (!"Y0006".equalsIgnoreCase(user.getRole().getIdentity())) {
+                throw new UserIdentityError("not root user!");
+            }
+            System.out.println("user is validate!");
+            Node node = new ObjectMapper().readValue(nodeStr, Node.class);
+            System.out.println("get the node:" + node.toString());
+            node = nodeService.updateNode(node);
+            return node;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
