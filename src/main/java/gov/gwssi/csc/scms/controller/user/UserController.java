@@ -1,16 +1,13 @@
 package gov.gwssi.csc.scms.controller.user;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.deploy.net.HttpResponse;
-import gov.gwssi.csc.scms.domain.user.*;
+import gov.gwssi.csc.scms.domain.user.Node;
+import gov.gwssi.csc.scms.domain.user.Role;
+import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.user.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -39,25 +36,52 @@ public class UserController {
             }
             List<Node> nodes = nodeService.getNodeTree();
             return nodes;
-        } catch (NoSuchUserException e1) {
-            throw new RuntimeException(e1);
-        } catch (UserIdentityError e2) {
-            throw new RuntimeException(e2);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
     @RequestMapping(value = "/node/{userId}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public Node putNode(@PathVariable String userId, @RequestBody String nodeStr) {
         try {
-            System.out.println("some one is put node!");
             User user = userService.getUserByUserId(userId);
             if (!"Y0006".equalsIgnoreCase(user.getRole().getIdentity())) {
                 throw new UserIdentityError("not root user!");
             }
-            System.out.println("user is validate!");
             Node node = new ObjectMapper().readValue(nodeStr, Node.class);
-            System.out.println("get the node:" + node.toString());
             node = nodeService.updateNode(node);
+            return node;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    @RequestMapping(value = "/node/{userId}", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
+    public Node addNode(@PathVariable String userId, @RequestBody String nodeStr) {
+        try {
+            User user = userService.getUserByUserId(userId);
+            if (!"Y0006".equalsIgnoreCase(user.getRole().getIdentity())) {
+                throw new UserIdentityError("not root user!");
+            }
+            Node node = new ObjectMapper().readValue(nodeStr, Node.class);
+            node = nodeService.addNode(node);
+            return node;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    @RequestMapping(value = "/node/{userId}/{nodeId}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
+    public Node deleteNode(@PathVariable String userId, @PathVariable String nodeId) {
+        try {
+            User user = userService.getUserByUserId(userId);
+            if (!"Y0006".equalsIgnoreCase(user.getRole().getIdentity())) {
+                throw new UserIdentityError("not root user!");
+            }
+            Node node = nodeService.deleteNodeByNodeId(nodeId);
             return node;
         } catch (Exception e) {
             e.printStackTrace();

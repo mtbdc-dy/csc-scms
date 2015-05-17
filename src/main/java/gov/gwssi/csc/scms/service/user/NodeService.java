@@ -26,7 +26,7 @@ public class NodeService extends BaseService {
         return nodeRepository.findNodeByNodeIdAndEnabled(nodeId, enabled);
     }
 
-    public Node getNodeWithEnable(String nodeId) {
+    public Node getNodeWithoutEnable(String nodeId) {
         return nodeRepository.findOne(nodeId);
     }
 
@@ -44,33 +44,42 @@ public class NodeService extends BaseService {
         return nodeRepository.save(node);
     }
 
-    public Node addNode(Node node) {
+    public Node addNode(Node node) throws NoSuchNodeException {
+        Node parent = getNodeWithoutEnable(node.getParent().getNodeId());
+        if (parent == null) {
+            throw new NoSuchNodeException("cannot find the parent of the node:" + node.getParent().getNodeId());
+        }
+        if (parent.getEnabled() != Node.ENABLED) {
+            throw new NoSuchNodeException("the parent of the node is not enabled:" + node.getParent().getNodeId());
+        }
         node.setNodeId(getBaseDao().getDicIdByClassType(node.getNodeType()));
+        node.setParent(parent);
         return saveNode(node);
     }
 
     public Node updateNode(Node node) throws NoSuchNodeException {
-        Node node1 = getNodeWithEnable(node.getNodeId());
+        Node node1 = getNodeWithoutEnable(node.getNodeId());
         if (node1 == null)
             throw new NoSuchNodeException("cannot find node by nodeId:" + node.getNodeId());
+        node.setParent(node1.getParent());
+        node.setChildren(node1.getChildren());
         return saveNode(node);
     }
 
-    public Node enableNode(String nodeId) throws NoSuchNodeException, NodeBeingUsedException {
-        Node node = getNodeByNodeIdAndEnable(nodeId, Node.ENABLED);
+    public Node deleteNodeByNodeId(String nodeId) throws NoSuchNodeException, NodeBeingUsedException {
+        Node node = getNodeWithoutEnable(nodeId);
         if (node == null)
-            throw new NoSuchNodeException();
+            throw new NoSuchNodeException("cannot find node by nodeId:" + node.getNodeId());
+        return unEnableNode(node);
+    }
 
-        if (Node.ENABLED.equals(node.getEnabled())) {
-            List<User> users = userService.getUsersByNode(node);
-            if (users == null || users.size() == 0) {
-                node.setEnabled(Node.UNENABLED);
-            } else
-                throw new NodeBeingUsedException();
-        } else {
-            node.setEnabled(Node.ENABLED);
-        }
-        return saveNode(node);
+    private Node unEnableNode(Node node) throws NodeBeingUsedException {
+        List<User> users = userService.getUsersByNode(node);
+        if (users == null || users.size() == 0) {
+            node.setEnabled(Node.UNENABLED);
+            return saveNode(node);
+        } else
+            throw new NodeBeingUsedException("some user using the node:" + node.getNodeId());
     }
 
     private List<Node> getRootNode() {

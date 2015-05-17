@@ -89,7 +89,7 @@ public class UserService extends BaseService {
     }
 
     public List<User> getUsersByNode(Node node) {
-        return userRepository.findUserByNodeAndEnable(node, User.ENABLE);
+        return userRepository.findUserByNode(node);
     }
 
     private User initRoleMenuByUser(User user) {

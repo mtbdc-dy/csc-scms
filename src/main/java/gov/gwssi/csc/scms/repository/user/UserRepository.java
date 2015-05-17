@@ -23,5 +23,5 @@ public interface UserRepository extends CrudRepository<User, String> {
 
     List<User> findUserByRoleAndEnable(Role role, String enable);
 
-    List<User> findUserByNodeAndEnable(Node node, String enable);
+    List<User> findUserByNode(Node node);
 }
