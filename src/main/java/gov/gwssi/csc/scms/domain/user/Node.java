@@ -71,6 +71,7 @@ public class Node {
      * 子节点
      */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent", fetch = FetchType.EAGER)
+    @org.hibernate.annotations.Where(clause = "enabled = '1'")
     private List<Node> children;
 
     public String getNodeId() {

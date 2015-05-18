@@ -41,15 +41,18 @@ public class NodeService extends BaseService {
     }
 
     public Node saveNode(Node node) {
-        return nodeRepository.save(node);
+        node = nodeRepository.save(node);
+        node.setChildren(null);
+        node.setParent(null);
+        return node;
     }
 
     public Node addNode(Node node) throws NoSuchNodeException {
-        Node parent = getNodeWithoutEnable(node.getParent().getNodeId());
+        Node parent = getNodeWithoutEnable(node.getNodeId());
         if (parent == null) {
             throw new NoSuchNodeException("cannot find the parent of the node:" + node.getParent().getNodeId());
         }
-        if (parent.getEnabled() != Node.ENABLED) {
+        if (!Node.ENABLED.equalsIgnoreCase(parent.getEnabled())) {
             throw new NoSuchNodeException("the parent of the node is not enabled:" + node.getParent().getNodeId());
         }
         node.setNodeId(getBaseDao().getDicIdByClassType(node.getNodeType()));
@@ -75,7 +78,8 @@ public class NodeService extends BaseService {
 
     private Node unEnableNode(Node node) throws NodeBeingUsedException {
         List<User> users = userService.getUsersByNode(node);
-        if (users == null || users.size() == 0) {
+        List<Node> childrenNode = node.getChildren();
+        if ((users == null || users.size() == 0) && (childrenNode == null || childrenNode.size() == 0)) {
             node.setEnabled(Node.UNENABLED);
             return saveNode(node);
         } else

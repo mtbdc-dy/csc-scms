@@ -45,6 +45,7 @@ public class UserController {
     @RequestMapping(value = "/node/{userId}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public Node putNode(@PathVariable String userId, @RequestBody String nodeStr) {
         try {
+            System.out.println("putNode :" + nodeStr);
             User user = userService.getUserByUserId(userId);
             if (!"Y0006".equalsIgnoreCase(user.getRole().getIdentity())) {
                 throw new UserIdentityError("not root user!");
@@ -61,6 +62,7 @@ public class UserController {
     @RequestMapping(value = "/node/{userId}", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
     public Node addNode(@PathVariable String userId, @RequestBody String nodeStr) {
         try {
+            System.out.println("addNode :" + nodeStr);
             User user = userService.getUserByUserId(userId);
             if (!"Y0006".equalsIgnoreCase(user.getRole().getIdentity())) {
                 throw new UserIdentityError("not root user!");
