@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.controller.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.gwssi.csc.scms.domain.user.Menu;
 import gov.gwssi.csc.scms.domain.user.Node;
 import gov.gwssi.csc.scms.domain.user.Role;
 import gov.gwssi.csc.scms.domain.user.User;
@@ -27,14 +28,16 @@ public class UserController {
     @Autowired
     private NodeService nodeService;
 
+    @Autowired
+    private MenuService menuService;
+
     @RequestMapping(value = "/node/{userId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<Node> getNodeTree(@PathVariable String userId) {
         try {
-            User user = userService.getUserByUserId(userId);
-            if (!"Y0006".equalsIgnoreCase(user.getRole().getIdentity())) {
+            if (getRootUser(userId) == null)
                 throw new UserIdentityError("not root user!");
-            }
-            return nodeService.getNodeTree();
+            else
+                return nodeService.getNodeTree();
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -44,13 +47,13 @@ public class UserController {
     @RequestMapping(value = "/node/{userId}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public Node putNode(@PathVariable String userId, @RequestBody String nodeStr) {
         try {
-            User user = userService.getUserByUserId(userId);
-            if (!"Y0006".equalsIgnoreCase(user.getRole().getIdentity())) {
+            if (getRootUser(userId) == null)
                 throw new UserIdentityError("not root user!");
+            else {
+                Node node = new ObjectMapper().readValue(nodeStr, Node.class);
+                node = nodeService.updateNode(node);
+                return node;
             }
-            Node node = new ObjectMapper().readValue(nodeStr, Node.class);
-            node = nodeService.updateNode(node);
-            return node;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -60,10 +63,8 @@ public class UserController {
     @RequestMapping(value = "/node/{userId}", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
     public Node addNode(@PathVariable String userId, @RequestBody String nodeStr) {
         try {
-            User user = userService.getUserByUserId(userId);
-            if (!"Y0006".equalsIgnoreCase(user.getRole().getIdentity())) {
+            if (getRootUser(userId) == null)
                 throw new UserIdentityError("not root user!");
-            }
             Node node = new ObjectMapper().readValue(nodeStr, Node.class);
             node = nodeService.addNode(node);
             return node;
@@ -76,10 +77,8 @@ public class UserController {
     @RequestMapping(value = "/node/{userId}/{nodeId}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
     public Node deleteNode(@PathVariable String userId, @PathVariable String nodeId) {
         try {
-            User user = userService.getUserByUserId(userId);
-            if (!"Y0006".equalsIgnoreCase(user.getRole().getIdentity())) {
+            if (getRootUser(userId) == null)
                 throw new UserIdentityError("not root user!");
-            }
             return nodeService.deleteNodeByNodeId(nodeId);
         } catch (Exception e) {
             e.printStackTrace();
@@ -87,14 +86,65 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "/role/{userId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public List<Role> getRoleList(@PathVariable String userId) {
+    @RequestMapping(value = "/menu/{userId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public List<Menu> getMenuTree(@PathVariable String userId) {
         try {
-            User user = userService.getUserByUserId(userId);
-            if (!"Y0006".equalsIgnoreCase(user.getRole().getIdentity())) {
+            if (getRootUser(userId) == null)
                 throw new UserIdentityError("not root user!");
-            }
+            return menuService.getMenuTree();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    @RequestMapping(value = "/role/{userId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public List<Role> getRole(@PathVariable String userId) {
+        try {
+            if (getRootUser(userId) == null)
+                throw new UserIdentityError("not root user!");
             return roleService.getRolesByEnable(Role.ENABLE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    @RequestMapping(value = "/role/{userId}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
+    public Role putRole(@PathVariable String userId, @RequestBody String roleStr) {
+        try {
+            User user = getRootUser(userId);
+            if (user == null)
+                throw new UserIdentityError("not root user!");
+            Role role = new ObjectMapper().readValue(roleStr, Role.class);
+            return roleService.updateRole(role, user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    @RequestMapping(value = "/role/{userId}", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
+    public Role addRole(@PathVariable String userId, @RequestBody String nodeStr) {
+        try {
+            User user = getRootUser(userId);
+            if (user == null)
+                throw new UserIdentityError("not root user!");
+            Role role = new ObjectMapper().readValue(nodeStr, Role.class);
+            return roleService.addRole(role,user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    @RequestMapping(value = "/role/{userId}/{roleId}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
+    public Role deleteRole(@PathVariable String userId, @PathVariable String roleId) {
+        try {
+            User user = getRootUser(userId);
+            if (user == null)
+                throw new UserIdentityError("not root user!");
+            return roleService.deleteRole(roleId,user);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -114,6 +164,14 @@ public class UserController {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private User getRootUser(String userId) throws NoSuchUserException {
+        User user = userService.getUserByUserId(userId);
+        if (!"Y0006".equalsIgnoreCase(user.getRole().getIdentity())) {
+            return null;
+        }
+        return user;
     }
 
 }
