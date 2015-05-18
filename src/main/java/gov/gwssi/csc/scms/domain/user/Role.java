@@ -4,6 +4,7 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,6 +31,15 @@ public class Role {
      * 身份ID
      */
     private String identity;
+    /**
+     * 创建人
+     */
+    private String createBy;
+    /**
+     * 入库时间
+     */
+    @Column(name = "CREATED")
+    private Date createDate;
     /**
      * 有效标识：0 无效 ，1 有效
      */
@@ -64,6 +74,22 @@ public class Role {
 
     public void setIdentity(String identity) {
         this.identity = identity;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 
     public String getEnable() {

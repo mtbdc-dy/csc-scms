@@ -26,14 +26,14 @@ public class RoleServiceTest extends UnitTestBase {
 
     @Test
     public void getAllRoleByEnable() {
-        List<Role> roles = roleService.getRolesByEnable("1");
+        List<Role> roles = roleService.getRolesByEnable(Role.ENABLE);
         for (Role role : roles)
             System.out.println(role.getRoleId() + "," + role.getRole());
     }
 
     @Test
     public void getRoleTest() {
-        Role role = roleService.getRoleByRoleId("1");
+        Role role = roleService.getRoleByRoleId(Role.ENABLE);
         Assert.assertNotNull(role);
     }
 
@@ -47,7 +47,7 @@ public class RoleServiceTest extends UnitTestBase {
 
         for (Menu menu : menus) {
             System.out.println("|--" + menu.getMenuId() + "," + menu.getMenu() + "," + menu.getMenuType());
-            printChildremMenu(menu.getChildren(), "   ");
+            printChildremMenu(menu.getChildren(), "");
         }
     }
 
@@ -85,14 +85,10 @@ public class RoleServiceTest extends UnitTestBase {
 
     @Test
     public void getRoleByRoleAndEnable() {
-        Role role1 = roleService.getRoleByRoleIdAndEnable("3", "0");
-        Role role2 = roleService.getRoleByRoleIdAndEnable("3", "1");
-        Role role3 = roleService.getRoleByRoleIdAndEnable("2", "0");
-        Role role4 = roleService.getRoleByRoleIdAndEnable("4", "1");
+        Role role1 = roleService.getRoleByRoleIdAndEnable("1", Role.UNENABLE);
+        Role role2 = roleService.getRoleByRoleIdAndEnable("1", Role.ENABLE);
 
-        Assert.assertNotNull(role1);
-        Assert.assertNull(role2);
-        Assert.assertNull(role3);
-        Assert.assertNull(role4);
+        Assert.assertNull(role1);
+        Assert.assertNotNull(role2);
     }
 }

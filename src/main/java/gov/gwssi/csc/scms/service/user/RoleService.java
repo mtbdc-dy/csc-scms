@@ -33,6 +33,8 @@ public class RoleService extends BaseService {
 
     public Role getRoleByRoleIdAndEnable(String roleId, String enable) {
         Role role = roleRepository.findRoleByRoleIdAndEnable(roleId, enable);
+        if (role == null)
+            return null;
         return initMenu(role);
     }
 

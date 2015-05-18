@@ -54,9 +54,14 @@ public class User {
      */
     private String answer;
     /**
+     * 创建人
+     */
+    private String createBy;
+    /**
      * 创建时间
      */
-    private Date createTime;
+    @Column(name = "CREATED")
+    private Date createDate;
     /**
      * 有效标识：0无效 1有效
      */
@@ -133,12 +138,20 @@ public class User {
         this.answer = answer;
     }
 
-    public Date getCreateTime() {
-        return createTime;
+    public String getCreateBy() {
+        return createBy;
     }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 
     public String getEnable() {

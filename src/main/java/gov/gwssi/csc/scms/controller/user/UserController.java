@@ -34,8 +34,7 @@ public class UserController {
             if (!"Y0006".equalsIgnoreCase(user.getRole().getIdentity())) {
                 throw new UserIdentityError("not root user!");
             }
-            List<Node> nodes = nodeService.getNodeTree();
-            return nodes;
+            return nodeService.getNodeTree();
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -45,7 +44,6 @@ public class UserController {
     @RequestMapping(value = "/node/{userId}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public Node putNode(@PathVariable String userId, @RequestBody String nodeStr) {
         try {
-            System.out.println("putNode :" + nodeStr);
             User user = userService.getUserByUserId(userId);
             if (!"Y0006".equalsIgnoreCase(user.getRole().getIdentity())) {
                 throw new UserIdentityError("not root user!");
@@ -62,7 +60,6 @@ public class UserController {
     @RequestMapping(value = "/node/{userId}", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
     public Node addNode(@PathVariable String userId, @RequestBody String nodeStr) {
         try {
-            System.out.println("addNode :" + nodeStr);
             User user = userService.getUserByUserId(userId);
             if (!"Y0006".equalsIgnoreCase(user.getRole().getIdentity())) {
                 throw new UserIdentityError("not root user!");
@@ -83,17 +80,25 @@ public class UserController {
             if (!"Y0006".equalsIgnoreCase(user.getRole().getIdentity())) {
                 throw new UserIdentityError("not root user!");
             }
-            Node node = nodeService.deleteNodeByNodeId(nodeId);
-            return node;
+            return nodeService.deleteNodeByNodeId(nodeId);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
 
-    @RequestMapping(value = "/role", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public List<Role> getRoleList() {
-        return roleService.getRolesByEnable(Role.ENABLE);
+    @RequestMapping(value = "/role/{userId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public List<Role> getRoleList(@PathVariable String userId) {
+        try {
+            User user = userService.getUserByUserId(userId);
+            if (!"Y0006".equalsIgnoreCase(user.getRole().getIdentity())) {
+                throw new UserIdentityError("not root user!");
+            }
+            return roleService.getRolesByEnable(Role.ENABLE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
     @RequestMapping(value = "/userList", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
