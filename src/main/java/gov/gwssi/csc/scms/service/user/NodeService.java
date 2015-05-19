@@ -30,10 +30,6 @@ public class NodeService extends BaseService {
         return nodeRepository.findOne(nodeId);
     }
 
-    public List<Node> getNodesByEnable(String enabled) {
-        return nodeRepository.findNodeByEnabled(enabled);
-    }
-
     public List<Node> getNodeTree() {
         List<Node> root = getRootNode();
         setParentNull(root);
@@ -70,7 +66,7 @@ public class NodeService extends BaseService {
     }
 
     public Node deleteNodeByNodeId(String nodeId) throws NoSuchNodeException, NodeBeingUsedException {
-        Node node = getNodeWithoutEnable(nodeId);
+        Node node = getNodeByNodeIdAndEnable(nodeId, Node.ENABLED);
         if (node == null)
             throw new NoSuchNodeException("cannot find node by nodeId:" + node.getNodeId());
         return unEnableNode(node);

@@ -7,7 +7,6 @@ import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -68,7 +67,7 @@ public class RoleService extends BaseService {
     public Role deleteRole(String roleId, User user) throws RoleBeingUsedException, NoSuchRoleException {
         Role role = getRoleByRoleIdAndEnable(roleId, Role.ENABLE);
         if (role == null)
-            throw new NoSuchRoleException();
+            throw new NoSuchRoleException("can not find the enabled role for delete:" + roleId);
 
         List<User> users = userService.getUsersByRole(role);
         if (users == null || users.size() == 0) {
