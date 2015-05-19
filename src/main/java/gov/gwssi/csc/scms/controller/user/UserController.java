@@ -47,11 +47,12 @@ public class UserController {
     @RequestMapping(value = "/node/{userId}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public Node putNode(@PathVariable String userId, @RequestBody String nodeStr) {
         try {
-            if (getRootUser(userId) == null)
+            User user = getRootUser(userId);
+            if (user == null)
                 throw new UserIdentityError("not root user!");
             else {
                 Node node = new ObjectMapper().readValue(nodeStr, Node.class);
-                node = nodeService.updateNode(node);
+                node = nodeService.updateNode(node, user);
                 return node;
             }
         } catch (Exception e) {
@@ -63,10 +64,11 @@ public class UserController {
     @RequestMapping(value = "/node/{userId}", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
     public Node addNode(@PathVariable String userId, @RequestBody String nodeStr) {
         try {
-            if (getRootUser(userId) == null)
+            User user = getRootUser(userId);
+            if (user == null)
                 throw new UserIdentityError("not root user!");
             Node node = new ObjectMapper().readValue(nodeStr, Node.class);
-            node = nodeService.addNode(node);
+            node = nodeService.addNode(node, user);
             return node;
         } catch (Exception e) {
             e.printStackTrace();
@@ -77,9 +79,10 @@ public class UserController {
     @RequestMapping(value = "/node/{userId}/{nodeId}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
     public Node deleteNode(@PathVariable String userId, @PathVariable String nodeId) {
         try {
-            if (getRootUser(userId) == null)
+            User user = getRootUser(userId);
+            if (user == null)
                 throw new UserIdentityError("not root user!");
-            return nodeService.deleteNodeByNodeId(nodeId);
+            return nodeService.deleteNodeByNodeId(nodeId, user);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -131,7 +134,7 @@ public class UserController {
             if (user == null)
                 throw new UserIdentityError("not root user!");
             Role role = new ObjectMapper().readValue(nodeStr, Role.class);
-            return roleService.addRole(role,user);
+            return roleService.addRole(role, user);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -144,7 +147,7 @@ public class UserController {
             User user = getRootUser(userId);
             if (user == null)
                 throw new UserIdentityError("not root user!");
-            return roleService.deleteRole(roleId,user);
+            return roleService.deleteRole(roleId, user);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);

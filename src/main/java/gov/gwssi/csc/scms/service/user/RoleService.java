@@ -61,7 +61,7 @@ public class RoleService extends BaseService {
         Role role1 = getRoleByRoleId(role.getRoleId());
         if (role1 == null)
             throw new NoSuchRoleException("can not find the role with a roleId:" + role.getRoleId());
-        return saveRole(role);
+        return doUpdateRole(role,user);
     }
 
     public Role deleteRole(String roleId, User user) throws RoleBeingUsedException, NoSuchRoleException {
@@ -72,7 +72,7 @@ public class RoleService extends BaseService {
         List<User> users = userService.getUsersByRole(role);
         if (users == null || users.size() == 0) {
             role.setEnable(Role.UNENABLE);
-            return saveRole(role);
+           return doUpdateRole(role,user);
         } else
             throw new RoleBeingUsedException("role is used by user:" + role.getRoleId());
     }
@@ -80,6 +80,12 @@ public class RoleService extends BaseService {
     private Role initMenu(Role role) {
         role.setMenus(menuService.getMenuByRole(role));
         return role;
+    }
+
+    private Role doUpdateRole(Role role,User user){
+        role.setUpdateBy(user.getUserId());
+        role.setUpdateDate(new Date());
+        return saveRole(role);
     }
 }
 

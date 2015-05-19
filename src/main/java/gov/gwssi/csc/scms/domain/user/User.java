@@ -63,6 +63,15 @@ public class User {
     @Column(name = "CREATED")
     private Date createDate;
     /**
+     * 最后修改人
+     */
+    private String updateBy;
+    /**
+     * 最后修改时间
+     */
+    @Column(name = "UPDATED")
+    private Date updateDate;
+    /**
      * 有效标识：0无效 1有效
      */
     private String enable;
@@ -152,6 +161,22 @@ public class User {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    public String getUpdateBy() {
+        return updateBy;
+    }
+
+    public void setUpdateBy(String updateBy) {
+        this.updateBy = updateBy;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 
     public String getEnable() {

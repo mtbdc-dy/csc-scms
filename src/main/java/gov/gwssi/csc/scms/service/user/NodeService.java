@@ -43,7 +43,7 @@ public class NodeService extends BaseService {
         return node;
     }
 
-    public Node addNode(Node node) throws NoSuchNodeException {
+    public Node addNode(Node node,User user) throws NoSuchNodeException {
         Node parent = getNodeWithoutEnable(node.getNodeId());
         if (parent == null) {
             throw new NoSuchNodeException("cannot find the parent of the node:" + node.getParent().getNodeId());
@@ -56,7 +56,7 @@ public class NodeService extends BaseService {
         return saveNode(node);
     }
 
-    public Node updateNode(Node node) throws NoSuchNodeException {
+    public Node updateNode(Node node,User user) throws NoSuchNodeException {
         Node node1 = getNodeWithoutEnable(node.getNodeId());
         if (node1 == null)
             throw new NoSuchNodeException("cannot find node by nodeId:" + node.getNodeId());
@@ -65,7 +65,7 @@ public class NodeService extends BaseService {
         return saveNode(node);
     }
 
-    public Node deleteNodeByNodeId(String nodeId) throws NoSuchNodeException, NodeBeingUsedException {
+    public Node deleteNodeByNodeId(String nodeId,User user) throws NoSuchNodeException, NodeBeingUsedException {
         Node node = getNodeByNodeIdAndEnable(nodeId, Node.ENABLED);
         if (node == null)
             throw new NoSuchNodeException("cannot find node by nodeId:" + node.getNodeId());

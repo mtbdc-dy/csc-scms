@@ -53,7 +53,7 @@ public class SchoolRoll {
      */
     private String currentUniversity;
     /**
-     * 预计离华时间
+     * 预计毕业日期
      */
     private Date planLeaveDate;
     /**
