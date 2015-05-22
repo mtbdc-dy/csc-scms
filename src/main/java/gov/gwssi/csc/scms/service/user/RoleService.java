@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.service.user;
 
+import gov.gwssi.csc.scms.domain.user.Menu;
 import gov.gwssi.csc.scms.domain.user.Role;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.user.RoleRepository;
@@ -7,6 +8,7 @@ import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -47,6 +49,7 @@ public class RoleService extends BaseService {
     }
 
     public Role addRole(Role role, User user) {
+        getRealMenu(role);
         role.setRoleId(getBaseDao().getIdBySequence("seq_role"));
         role.setCreateBy(user.getUserId());
         role.setCreateDate(new Date());
@@ -61,7 +64,8 @@ public class RoleService extends BaseService {
         Role role1 = getRoleByRoleId(role.getRoleId());
         if (role1 == null)
             throw new NoSuchRoleException("can not find the role with a roleId:" + role.getRoleId());
-        return doUpdateRole(role,user);
+        getRealMenu(role);
+        return doUpdateRole(role, user);
     }
 
     public Role deleteRole(String roleId, User user) throws RoleBeingUsedException, NoSuchRoleException {
@@ -72,7 +76,7 @@ public class RoleService extends BaseService {
         List<User> users = userService.getUsersByRole(role);
         if (users == null || users.size() == 0) {
             role.setEnable(Role.UNENABLE);
-           return doUpdateRole(role,user);
+            return doUpdateRole(role, user);
         } else
             throw new RoleBeingUsedException("role is used by user:" + role.getRoleId());
     }
@@ -82,10 +86,20 @@ public class RoleService extends BaseService {
         return role;
     }
 
-    private Role doUpdateRole(Role role,User user){
+    private Role doUpdateRole(Role role, User user) {
         role.setUpdateBy(user.getUserId());
         role.setUpdateDate(new Date());
         return saveRole(role);
+    }
+
+    private void getRealMenu(Role role) {
+        List<Menu> menus = role.getMenus();
+        List<String> menuIds = new ArrayList<String>(menus.size());
+        for (int index = 0; index < menus.size(); index++) {
+            menuIds.set(index, menus.get(index).getMenuId());
+        }
+        menus = menuService.getMenusByIds(menuIds);
+        role.setMenus(menus);
     }
 }
 

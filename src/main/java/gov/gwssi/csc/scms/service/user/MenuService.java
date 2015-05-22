@@ -23,6 +23,10 @@ public class MenuService extends BaseService {
         return menuRepository.save(menu);
     }
 
+    public List<Menu> getMenusByIds(List<String> ids) {
+        return (List<Menu>) menuRepository.findAll(ids);
+    }
+
     public List<Menu> getMenuTree() {
         List<Menu> root = menuRepository.findMenuByMenuType(Menu.ROOT_LEVEL);
         return setParentNull(root);
