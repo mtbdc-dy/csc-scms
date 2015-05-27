@@ -57,6 +57,8 @@ public class AbnormalResultObject extends ResultObject{
      * 原因id
      */
     private String reasonId;
+    //异动原因类别代码
+    private String reasonTypeId;
     /**
      * 原因
      */
@@ -133,7 +135,7 @@ public class AbnormalResultObject extends ResultObject{
 
     public AbnormalResultObject(String abnormalId,String studentId, String cscId, String gender, String passportName,
                                 String applyUserName, Date applyTime, String country, String rollState, String handleState,
-                                String reasonId, String reason, String applyUri, String approResult, String approOpinion,
+                                String reasonId, String reasonTypeId,String reason, String applyUri, String approResult, String approOpinion,
                                 String publicUri, String applyUserId, String reportUserId, String reportUserName,
                                 Date reportTime, String approUserId, String approUserName, Date approTime,
                                 String handleUserId, String handleUserName, Date handleTime,String updateBy,Date updated) {
@@ -148,6 +150,7 @@ public class AbnormalResultObject extends ResultObject{
         this.rollState = rollState;
         this.handleState = handleState;
         this.reasonId = reasonId;
+        this.reasonTypeId= reasonTypeId;
         this.reason = reason;
         this.applyUri = applyUri;
         this.approResult = approResult;
@@ -197,6 +200,14 @@ public class AbnormalResultObject extends ResultObject{
 
     public void setReasonId(String reasonId) {
         this.reasonId = reasonId;
+    }
+
+    public String getReasonTypeId() {
+        return reasonTypeId;
+    }
+
+    public void setReasonTypeId(String reasonTypeId) {
+        this.reasonTypeId = reasonTypeId;
     }
 
     public String getReason() {
@@ -406,7 +417,7 @@ public class AbnormalResultObject extends ResultObject{
         String resultSql = "select new gov.gwssi.csc.scms.domain.query.AbnormalResultObject(abnormal.id,student.id, student.cscId, basicInfo.gender, " +
                 "basicInfo.passportName, " +
                 "abnormal.applyUserName,abnormal.applyTime,basicInfo.country,schoolRoll.state,abnormal.state,abnormal.reasonId," +
-                " abnormal.reason,abnormal.applyUri,abnormal.approResult,abnormal.approOpinion,abnormal.publicUri,abnormal.applyUserId,abnormal.reportUserId," +
+                "  abnormal.reasonTypeId,abnormal.reason,abnormal.applyUri,abnormal.approResult,abnormal.approOpinion,abnormal.publicUri,abnormal.applyUserId,abnormal.reportUserId," +
                 "abnormal.reportUserName,abnormal.reportTime,abnormal.approUserId,abnormal.approUserName,abnormal.approTime,abnormal.handleUserId," +
                 "abnormal.handleUserName,abnormal.handleTime,abnormal.updateBy,abnormal.updated) ";
         return resultSql;

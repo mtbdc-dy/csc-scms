@@ -47,13 +47,41 @@ public class StudentFilter implements Filter {
                 }
             }
             //单独处理mode字段-参数待定
-            if ("Mode".equalsIgnoreCase(fc.getType())) {
+            if ("mode".equalsIgnoreCase(fc.getType())) {
                if("".equals(str[0])){
 
                }else if("abnormal".equals(str[0])){
                    //sb.append(" and ").append(fc.getTableName()).append(".").append(fc.getColumnName()).append(" = '").append(str[0]).append("' ");
+               }else if("freshregister".equals(str[0])){//新生注册
+                /*
+                春季，即1.1（当年）<系统时间<6.30（当年）：
+                  1.1（当年）<汉补开始时间<6.30（当年），取汉补院校（或）
+                  1.1（当年）<专业开始时间<6.30（当年），取专业院校
+                 秋季，即7.1（当年）<系统时间<12.31（当年）：
+                  7.1（当年）<汉补开始时间<12.31（当年），取汉补院校（或）
+                 7.1（当年）<专业开始时间<12.31（当年），取专业院校
+                */
+                   sb.append(" and ((sysdate >= TO_DATE(extract(year from sysdate) || '-01-01','yyyy-mm-dd') and" +
+                           " sysdate < TO_DATE(extract(year from sysdate) || '-06-30','yyyy-mm-dd') and" +
+                           " ((schoolRoll.cramDateBegin >=" +
+                           "    TO_DATE(extract(year from sysdate) || '-01-01','yyyy-mm-dd') and" +
+                           " schoolRoll.cramDateBegin <" +
+                           "    TO_DATE(extract(year from sysdate) || '-06-30','yyyy-mm-dd')) or" +
+                           " (schoolRoll.majorStartDate >=" +
+                           "    TO_DATE(extract(year from sysdate) || '-01-01','yyyy-mm-dd') and" +
+                           " schoolRoll.majorStartDate <" +
+                           "    TO_DATE(extract(year from sysdate) || '-06-30','yyyy-mm-dd')))) or" +
+                           " (sysdate > TO_DATE(extract(year from sysdate) || '-07-01','yyyy-mm-dd') and" +
+                           " sysdate <= TO_DATE(extract(year from sysdate) || '-12-31','yyyy-mm-dd') and" +
+                           " ((cast(schoolRoll.cramDateBegin as date) >" +
+                           "    TO_DATE(extract(year from sysdate) || '-07-01','yyyy-mm-dd') and" +
+                           " cast(schoolRoll.cramDateBegin as date) <=" +
+                           "    TO_DATE(extract(year from sysdate) || '-12-31','yyyy-mm-dd')) or" +
+                           " (cast(schoolRoll.majorStartDate as date) >" +
+                           "    TO_DATE(extract(year from sysdate) || '-07-01','yyyy-mm-dd') and" +
+                           " cast(schoolRoll.majorStartDate as date) <=" +
+                           "    TO_DATE(extract(year from sysdate) || '-12-31','yyyy-mm-dd')))))");
                }
-
             }
         }
         return sb.toString();

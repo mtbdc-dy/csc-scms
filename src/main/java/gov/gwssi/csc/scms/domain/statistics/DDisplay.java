@@ -39,8 +39,10 @@ public class DDisplay implements Serializable{
     private String aggregate;
     // 相关表
     private String relateTable;
-    // 相关字段
-    private String relateColumn;
+    // 相关字段(英)
+    private String relateColumnEn;
+    // 相关字段(中)
+    private String relateColumnCh;
     // 层级关系
     private String hierarchy;
     // 显示名称
@@ -159,12 +161,12 @@ public class DDisplay implements Serializable{
         this.relateTable = relateTable;
     }
 
-    public String getRelateColumn() {
-        return relateColumn;
+    public String getRelateColumnEn() {
+        return relateColumnEn;
     }
 
-    public void setRelateColumn(String relateColumn) {
-        this.relateColumn = relateColumn;
+    public void setRelateColumnEn(String relateColumnEn) {
+        this.relateColumnEn = relateColumnEn;
     }
 
     public String getHierarchy() {
@@ -205,5 +207,13 @@ public class DDisplay implements Serializable{
 
     public void setIsTotal(String isTotal) {
         this.isTotal = isTotal;
+    }
+
+    public String getRelateColumnCh() {
+        return relateColumnCh;
+    }
+
+    public void setRelateColumnCh(String relateColumnCh) {
+        this.relateColumnCh = relateColumnCh;
     }
 }
