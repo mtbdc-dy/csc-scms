@@ -4,7 +4,7 @@ package gov.gwssi.csc.scms.service.user;
  * Created by Lei on 2015/5/5.
  * 用户Id正在被使用一场
  */
-public class UserIdBeingUsedException extends Throwable {
+public class UserIdBeingUsedException extends Exception {
     public UserIdBeingUsedException() {
     }
 
