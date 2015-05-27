@@ -31,6 +31,11 @@ public class Abnormal {
     @Column(name = "reasonId",length=6)
     private String reasonId;//异动原因代码
     /**
+     *异动原因类别代码
+     */
+    @Column(name = "reasonTypeId",length=6)
+    private String reasonTypeId;//异动原因类别代码
+    /**
      *异动说明 20150204会议纪要 限制150字符、必填
      */
     @Column(name = "reason",length=300)
@@ -164,6 +169,14 @@ public class Abnormal {
 
     public void setReasonId(String reasonId) {
         this.reasonId = reasonId;
+    }
+
+    public String getReasonTypeId() {
+        return reasonTypeId;
+    }
+
+    public void setReasonTypeId(String reasonTypeId) {
+        this.reasonTypeId = reasonTypeId;
     }
 
     public String getReason() {
