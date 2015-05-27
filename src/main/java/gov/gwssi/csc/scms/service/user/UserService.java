@@ -42,7 +42,7 @@ public class UserService extends BaseService {
         if (user == null)
             throw new NoSuchUserException("can not find the enable root user:" + userId);
 
-        if (!Role.ROOT_IDENTITY.equalsIgnoreCase(user.getRole().getIdentity())) {
+        if (!Role.ROOT_IDENTITY.equals(user.getRole().getIdentity())) {
             throw new UserIdentityError("not root user!");
         }
         return user;
