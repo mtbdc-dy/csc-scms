@@ -146,8 +146,8 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public List<User> getUsers(@PathVariable String userId,@RequestParam(value = "nodeId") String nodeId) {
+    @RequestMapping(value = "/user/{userId}/{nodeId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public List<User> getUsers(@PathVariable String userId,@PathVariable String nodeId) {
         try {
             userService.checkRootUser(userId);
 

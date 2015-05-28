@@ -33,14 +33,18 @@ public class UserService extends BaseService {
     @Autowired
     private MenuService menuService;
 
+    public User getUserByIdAndEnable(String id, String enable) {
+        return userRepository.findUserByIdAndEnable(id, enable);
+    }
+
     public User getUserByUserIdAndEnable(String userId, String enable) {
         return userRepository.findUserByUserIdAndEnable(userId, enable);
     }
 
-    public User checkRootUser(String userId) throws NoSuchUserException, UserIdentityError {
-        User user = getUserByUserIdAndEnable(userId, User.ENABLE);
+    public User checkRootUser(String id) throws NoSuchUserException, UserIdentityError {
+        User user = getUserByIdAndEnable(id, User.ENABLE);
         if (user == null)
-            throw new NoSuchUserException("can not find the enable root user:" + userId);
+            throw new NoSuchUserException("can not find the enable root user:" + id);
 
         if (!Role.ROOT_IDENTITY.equals(user.getRole().getIdentity())) {
             throw new UserIdentityError("not root user!");
