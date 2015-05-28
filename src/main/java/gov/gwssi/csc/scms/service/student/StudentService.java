@@ -15,7 +15,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Murray on 4/5/2015.
@@ -76,6 +81,7 @@ public class StudentService extends BaseService {
         int startPosition, pageSize;
 
         String sql = getSqlByBody(filterObject, user);
+        System.out.println("getStudentSql==="+sql);
         if (sql == null) {
             return null;
         }
@@ -263,6 +269,76 @@ public class StudentService extends BaseService {
             List<GradeAttachment> list = gradeAttachmentService.updateGradeAttachment((List<GradeAttachment>) groupObj);
             return setNullByField(list, "student", GradeAttachment.class);
         }
+        return null;
+    }
+
+    public Object transObj (Object des, Object src) throws Exception{
+//        JSONObject object
+        try {
+//            Class ownClass = Class.forName(className);
+//            Object obj = ownClass.newInstance();
+//            Field[] fds = obj.getClass().getDeclaredFields();
+            Field[] srcfields=src.getClass().getDeclaredFields();//需要其中属性值的obj
+            for(Field field:srcfields){ //遍历需要修改的所有属性
+                Field f =des.getClass().getDeclaredField(field.getName());
+                field.setAccessible(true);
+                Object value = field.get(src);
+                System.out.println("===value====="+value);
+                if(value!=null){
+                    if (f.getType().equals(String.class)) {
+                        f.setAccessible(true);
+                        f.set(des,value);
+                    } else if (!f.getType().equals(String.class) && !f.getType().equals(Date.class)) {
+                        Integer integer = (Integer) value;
+                        f.setAccessible(true);
+                        f.set(des,integer);
+                    }
+                }
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return des;
+    }
+    @SuppressWarnings("unchecked")
+    public Object updateGroupByName(String studentId, String groupName, Object groupObj, List<OperationLog> operationLogs) throws Exception {
+        //记录日志
+        operationLogService.saveOperationLog(operationLogs);
+        Object des = getGroupByStudentId(studentId, groupName);
+        System.out.println("obj==============="+des);
+        if ("basicInfo".equalsIgnoreCase(groupName)) {
+            BasicInfo basicInfo = (BasicInfo)transObj(des, groupObj);
+            basicInfo = basicInfoService.updateBasicInfo((BasicInfo) basicInfo);
+            return setNullByField(basicInfo, "student", BasicInfo.class);
+        }
+        if ("schoolRoll".equalsIgnoreCase(groupName)) {
+            SchoolRoll schoolRoll = (SchoolRoll)transObj(des, groupObj);
+            schoolRoll = schoolRollService.updateSchoolRoll((SchoolRoll) groupObj);
+            return setNullByField(schoolRoll, "student", SchoolRoll.class);
+        }
+        if ("registrationInfo".equalsIgnoreCase(groupName)) {
+            RegistrationInfo registrationInfo = (RegistrationInfo)transObj(des, groupObj);
+            registrationInfo = registrationInfoService.updateRegistrationInfo((RegistrationInfo) groupObj);
+            return setNullByField(registrationInfo, "student", RegistrationInfo.class);
+        }
+        if ("profilesHistory".equalsIgnoreCase(groupName)) {
+            ProfilesHistory profilesHistory = (ProfilesHistory)transObj(des, groupObj);
+            profilesHistory = profilesHistoryService.updateProfilesHistory((ProfilesHistory) groupObj);
+            return setNullByField(profilesHistory, "student", ProfilesHistory.class);
+        }
+        if ("discuss".equalsIgnoreCase(groupName)) {
+            Discuss discuss = (Discuss)transObj(des, groupObj);
+            discuss = discussService.updateDiscuss((Discuss) groupObj);
+            return setNullByField(discuss, "student", Discuss.class);
+        }
+        if ("schoolfellow".equalsIgnoreCase(groupName)) {
+            Schoolfellow schoolfellow = (Schoolfellow)transObj(des, groupObj);
+            schoolfellow = schoolfellowService.updateSchoolfellow((Schoolfellow) groupObj);
+            return setNullByField(schoolfellow, "student", Schoolfellow.class);
+        }
+
         return null;
     }
 }

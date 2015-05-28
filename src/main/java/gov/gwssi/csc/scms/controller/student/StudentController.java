@@ -120,23 +120,31 @@ public class StudentController {
      * 更新学生相关信息
      *
      * @param id
-     * @param group
-     * @param body
+     * @param group 修改的那个对象
+     * @param mode 用于区分修改前判断是否已经有group的完整信息，
+     *             若有，则updateGroupByName方法直接修改，若无先获取 再set需要修改的数据项并保存
+     * @param body 修改后的数据项和日志
      * @return
      */
     @RequestMapping(value = "/{id}/{group}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
-    public Object putStudentGroup(@PathVariable(value = "id") String id, @PathVariable("group") String group, @RequestBody String body) {
+    public Object putStudentGroup(@PathVariable(value = "id") String id, @PathVariable("group") String group,
+                                  @RequestParam(value = "mode") String mode, @RequestBody String body) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonBody jbosy = new ObjectMapper().readValue(body, JsonBody.class);
+            //Json转成对象 包含修改后的信息
             Object groupObj = updateStudentGroup(group, jbosy.getValue());
             if (groupObj == null)
                 return null;
 
             JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
             List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
+            if("withoutDetail".equals(mode)){//无Detail 需要传studentId
+                groupObj = studentService.updateGroupByName(id, group, groupObj, operationLogs);
+            }else{
+                groupObj = studentService.updateGroupByName(group, groupObj, operationLogs);
+            }
 
-            groupObj = studentService.updateGroupByName(group, groupObj, operationLogs);
             return groupObj;
         } catch (Exception e) {
             e.printStackTrace();
