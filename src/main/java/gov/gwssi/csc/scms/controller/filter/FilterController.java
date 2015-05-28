@@ -31,7 +31,7 @@ public class FilterController {
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public int getCountByConditions(@RequestParam String filter, @RequestParam String userId) {
         try {
-            User user = userService.getUserByUserId(userId);
+            User user = userService.getUserByUserIdAndEnable(userId, User.ENABLE);
             if (user == null) {
                 throw new UserIdBeingUsedException(userId);
             }
@@ -46,9 +46,6 @@ public class FilterController {
             e.printStackTrace();
             return 0;
         } catch (UserIdBeingUsedException e) {
-            e.printStackTrace();
-            return 0;
-        } catch (NoSuchUserException e) {
             e.printStackTrace();
             return 0;
         }

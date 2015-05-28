@@ -16,10 +16,12 @@ public class User {
     public final static String ENABLE = "1";
 
     public final static String UNENABLE = "0";
+
+    @Id
+    private String id;
     /**
      * 用户名
      */
-    @Id
     private String userId;
     /**
      * 密码
@@ -82,6 +84,14 @@ public class User {
     @JoinTable(name = "PUB_USER_PROJECT", joinColumns = {@JoinColumn(name = "USERID")},
             inverseJoinColumns = {@JoinColumn(name = "PROJECTID")})
     private List<Project> projects = new ArrayList<Project>();
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getUserId() {
         return userId;

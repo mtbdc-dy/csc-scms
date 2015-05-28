@@ -68,7 +68,7 @@ public class NodeService extends BaseService {
     public Node deleteNodeByNodeId(String nodeId,User user) throws NoSuchNodeException, NodeBeingUsedException {
         Node node = getNodeByNodeIdAndEnable(nodeId, Node.ENABLED);
         if (node == null)
-            throw new NoSuchNodeException("cannot find node by nodeId:" + node.getNodeId());
+            throw new NoSuchNodeException("cannot find node by nodeId:" + nodeId);
         return unEnableNode(node);
     }
 

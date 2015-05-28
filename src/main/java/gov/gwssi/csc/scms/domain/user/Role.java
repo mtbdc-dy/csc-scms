@@ -16,6 +16,9 @@ public class Role {
     public final static String ENABLE = "1";
 
     public final static String UNENABLE = "0";
+
+
+    public final static String ROOT_IDENTITY = "Y0006";
     /**
      * 角色代码
      */

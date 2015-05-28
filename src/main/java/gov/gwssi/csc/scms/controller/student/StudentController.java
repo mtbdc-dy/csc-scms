@@ -43,7 +43,7 @@ public class StudentController {
             StudentFilterObject sfo = null;
             sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);
 
-            User user = userService.getUserByUserId(userId);
+            User user = userService.getUserByUserIdAndEnable(userId, User.ENABLE);
             if (user == null)
                 throw new NoSuchUserException(userId);
 

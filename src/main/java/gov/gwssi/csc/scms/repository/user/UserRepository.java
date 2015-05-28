@@ -17,11 +17,11 @@ import java.util.List;
 public interface UserRepository extends CrudRepository<User, String> {
     User findUserByUserIdAndPasswordAndEnable(String userId, String password, String enable);
 
-    User findUserByUserIdAndEnable(String userId, String enable);
+    User findUserByUserId(String userId);
 
-    List<User> findUserByEnable(String enable);
+    User findUserByUserIdAndEnable(String userId, String enable);
 
     List<User> findUserByRoleAndEnable(Role role, String enable);
 
-    List<User> findUserByNodeAndEnable(Node node,String enable);
+    List<User> findUserByNodeAndEnable(Node node, String enable);
 }
