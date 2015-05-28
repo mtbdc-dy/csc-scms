@@ -14,7 +14,7 @@ public class BasicInfo {
     /**
      * 年度
      */
-    private int annual;
+    private Integer annual;
     /**
      * 护照姓名
      */
@@ -96,11 +96,11 @@ public class BasicInfo {
         this.id = id;
     }
 
-    public int getAnnual() {
+    public Integer getAnnual() {
         return annual;
     }
 
-    public void setAnnual(int annual) {
+    public void setAnnual(Integer annual) {
         this.annual = annual;
     }
 

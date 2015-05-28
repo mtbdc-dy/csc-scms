@@ -58,7 +58,7 @@ public class AbnormalFilter implements Filter {
 
         sb.append(getConditionFilter(conditions));
 
-        sb.append(getUserFilter(user));
+        //sb.append(getUserFilter(user));
 
         return sb.toString();
 

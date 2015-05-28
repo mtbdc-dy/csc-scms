@@ -136,7 +136,7 @@ public class SchoolRoll {
     /**
      * 报到年度
      */
-    private int registerYear;
+    private Integer registerYear;
     /**
      * 创建人
      */
@@ -418,11 +418,11 @@ public class SchoolRoll {
         this.registerState = registerState;
     }
 
-    public int getRegisterYear() {
+    public Integer getRegisterYear() {
         return registerYear;
     }
 
-    public void setRegisterYear(int registerYear) {
+    public void setRegisterYear(Integer registerYear) {
         this.registerYear = registerYear;
     }
 
