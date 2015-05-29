@@ -19,9 +19,9 @@ public class Ticket {
     @Id
 
     private String id;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "studentid")
-    private Student student;
+//    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    @JoinColumn(name = "studentid")
+    private  String studentId;
     /**
      *院校 可以不需要 待定
      */
@@ -106,12 +106,12 @@ public class Ticket {
         this.id = id;
     }
 
-    public Student getStudent() {
-        return student;
+    public String getStudentId() {
+        return studentId;
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
     }
 
     public String getSchool() {
