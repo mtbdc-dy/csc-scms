@@ -116,6 +116,8 @@ public class AbnormalService extends BaseService {
         //记录日志
         operationLogService.saveOperationLog(operationLogs);
         abnormal.setId(getBaseDao().getIdBySequence("SEQ_ABNORMAL"));
+
+
         return abnormalRepository.save(abnormal);
     }
     //更新异动申请状态

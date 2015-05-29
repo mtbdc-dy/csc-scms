@@ -21,10 +21,10 @@ public class Abnormal {
      */
 //    @Column(name = "cscId",length=19)
 //    private String cscId;
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "studentid")
-    private Student student;
-
+    //@ManyToOne(targetEntity = Student.class, fetch = FetchType.EAGER)
+    //@JoinColumn(name = "studentid")
+    //private Student student;
+    private String studentId;
     /**
      *异动原因代码
      */
@@ -155,12 +155,12 @@ public class Abnormal {
         this.id = id;
     }
 
-    public Student getStudent() {
-        return student;
+    public String getStudentId() {
+        return studentId;
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
     }
 
     public String getReasonId() {
