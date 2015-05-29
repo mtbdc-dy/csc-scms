@@ -94,79 +94,60 @@ public class AbnormalController {
 
     //保存新增的异动申请
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
-    public  String putAbnormal( @PathVariable(value = "id") String id,@RequestBody String abnormalJson) {
+    @RequestMapping( method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
+    public  Abnormal putAbnormal(@RequestBody String abnormalJson) {
         try {
             ObjectMapper mapper = new ObjectMapper();
 
             JsonBody jbosy = new ObjectMapper().readValue(abnormalJson, JsonBody.class);
-            Student student = studentService.getStudentById(id);
+
             Abnormal abnormal = mapper.readValue(jbosy.getValue(), Abnormal.class);
-            abnormal.setStudent(student);
+
             if (abnormal == null)
-                return "{\"result\":\"FAILURE\"}";
+                return null;
 
             JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
             List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
 
                 abnormal = abnormalService.saveAbnormal(abnormal, operationLogs);
-            String abnormalId = abnormal.getId();
-            if(!"".equals(abnormalId)){
-               return  "{\"result\":\"SUCCESS\"}";
-            }else {
-
-                return "{\"result\":\"FAILURE\"}";
-            }
+            return abnormal;
         } catch (Exception e) {
             e.printStackTrace();
-            return "{\"result\":\"FAILURE\"}";
+            return null;
         }
     }
     //修改新增的异动申请
-    @RequestMapping(value = "/{id}",method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
-    public String modAbnormal( @PathVariable(value = "id") String id,@RequestBody String abnormalJson) {
+    @RequestMapping(method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
+    public Abnormal modAbnormal(@RequestBody String abnormalJson) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             boolean rv = true;
             JsonBody jbosy = new ObjectMapper().readValue(abnormalJson, JsonBody.class);
-            Student student = studentService.getStudentById(id);
             Abnormal abnormal = mapper.readValue(jbosy.getValue(), Abnormal.class);
-
-            abnormal.setStudent(student);
             if (abnormal == null) {
-                return "{\"result\":\"FAILURE\"}";
+                return null;
             } else {
             JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
             List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
-
-            abnormal = abnormalService.updateAbnormal(abnormal, operationLogs);
-             if(null ==abnormal){
-                 return "{\"result\":\"FAILURE\"}";
-             }else{
-                 return  "{\"result\":\"SUCCESS\"}";
-             }
+            abnormal = abnormalService.updateAbnormal(abnormal, null);
+             return abnormal;
 
         }
         } catch (Exception e) {
             e.printStackTrace();
-            return "{\"result\":\"FAILURE\"}";
+            return null;
         }
     }
     //删除异动申请
             @RequestMapping(value = "/{id}",method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
-            public  String deleteAbnormal(@PathVariable String id) {
+            public  Abnormal deleteAbnormal(@PathVariable String id) {
                 try {
             List<OperationLog> operationLogs = null;
-             abnormalService.deleteAbnormalById(id, operationLogs);
-                    Abnormal abnormal = abnormalService.getAbnormalById(id);
-                    if(null ==abnormal){
-                        return "{\"result\":\"SUCCESS\"}";
-                    }else{
-                        return "{\"result\":\"FAILURE\"}";
-                    }
+                    Abnormal abnormal =  abnormalService.deleteAbnormalById(id, operationLogs);
+                   return abnormal;
                 } catch (Exception e) {
                     e.printStackTrace();
-                    return "{\"result\":\"FAILURE\"}";
+                    return null;
         }
     }
 
