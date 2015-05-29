@@ -153,6 +153,16 @@ public class UserService extends BaseService {
 
     private User initUser(User user) {
         user.getNode().setParent(null);
+
+        List<Project> projects = user.getProjects();
+        for (Project project : projects){
+            Project parent = project.getParent();
+            while(parent != null){
+                parent.setChildren(null);
+                parent = parent.getParent();
+            }
+        }
+
         return initRoleMenuByUser(user);
     }
 
