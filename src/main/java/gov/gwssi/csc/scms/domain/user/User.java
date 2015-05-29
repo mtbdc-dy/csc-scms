@@ -48,6 +48,14 @@ public class User {
      */
     private String userType;
     /**
+     * 传真
+     */
+    private String fax;
+    /**
+     * 电话
+     */
+    private String phone;
+    /**
      * 提示问题
      */
     private String question;
@@ -115,6 +123,22 @@ public class User {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String getFax() {
+        return fax;
+    }
+
+    public void setFax(String fax) {
+        this.fax = fax;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public Role getRole() {
