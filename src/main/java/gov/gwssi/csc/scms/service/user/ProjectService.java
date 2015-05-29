@@ -16,17 +16,8 @@ public class ProjectService extends BaseService {
     @Autowired
     ProjectRepository rightRepository;
 
-    public Project getRightByRightId(String rightId) {
-        return rightRepository.findOne(rightId);
-    }
-
-    public Project saveRight(Project project) {
-        return rightRepository.save(project);
-    }
-
-    public Project addRight(Project project) {
-        project.setParentId(getBaseDao().getDicIdByClassType(project.getType()));
-        return saveRight(project);
+    public Project getProjectByProjectIdAndEnabled(String projectId, String enabled) {
+        return rightRepository.findProjectByProjectIdAndEnabled(projectId, enabled);
     }
 
 }

@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.service.user;
 
 import gov.gwssi.csc.scms.domain.user.Node;
+import gov.gwssi.csc.scms.domain.user.Project;
 import gov.gwssi.csc.scms.domain.user.Role;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.user.UserRepository;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,6 +34,9 @@ public class UserService extends BaseService {
 
     @Autowired
     private MenuService menuService;
+
+    @Autowired
+    private ProjectService projectService;
 
     public User getUserByIdAndEnable(String id, String enable) {
         return userRepository.findUserByIdAndEnable(id, enable);
@@ -72,6 +77,17 @@ public class UserService extends BaseService {
             throw new NoSuchNodeException("can not find enabled node of the user with the nodeId:" + user.getNode().getNodeId());
         }
         user.setNode(node);
+
+        List<Project> projects = user.getProjects();
+        List<Project> newProjects = new ArrayList<Project>(projects.size());
+        Project newProject;
+        for (Project project : projects) {
+            newProject = projectService.getProjectByProjectIdAndEnabled(project.getProjectId(), Project.ENABLED);
+            if (newProject != null) {
+                newProjects.add(newProject);
+            }
+        }
+        user.setProjects(newProjects);
 
         user = doSave(user);
         return initUser(user);

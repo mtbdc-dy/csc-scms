@@ -9,6 +9,10 @@ import javax.persistence.*;
 @Entity
 @Table(name = "DIM_PROJECT")
 public class Project {
+
+    public static final String ENABLED = "1";
+
+    public static final String UNENABLED = "0";
     /**
      * 项目Id
      */
