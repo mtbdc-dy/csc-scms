@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.domain.user;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "PUB_USER")
-public class User {
+public class User implements Serializable {
 
     public final static String ENABLE = "1";
 
@@ -89,7 +90,7 @@ public class User {
      * 用户权限
      */
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "PUB_USER_PROJECT", joinColumns = {@JoinColumn(name = "USERID")},
+    @JoinTable(name = "PUB_USER_PROJECT", joinColumns = {@JoinColumn(name = "USERID", referencedColumnName = "USERID")},
             inverseJoinColumns = {@JoinColumn(name = "PROJECTID")})
     private List<Project> projects = new ArrayList<Project>();
 

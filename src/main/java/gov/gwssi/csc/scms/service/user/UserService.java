@@ -60,9 +60,11 @@ public class UserService extends BaseService {
     public User addUser(User user, User loginUser) throws UserIdBeingUsedException, NoSuchRoleException, NoSuchNodeException {
         if (userExists(user.getUserId()))
             throw new UserIdBeingUsedException("this username for new user is used :" + user.getUserId());
+        user.setId(getBaseDao().getIdBySequence("seq_user"));
         user.setPassword(MD5Util.MD5(user.getPassword()));
         user.setCreateBy(loginUser.getUserId());
         user.setCreateDate(new Date());
+        user.setEnable(User.ENABLE);
         return saveUser(user);
     }
 
@@ -97,7 +99,7 @@ public class UserService extends BaseService {
         return userRepository.save(user);
     }
 
-    public User deleteUser(String id, User loginUser) throws NoSuchUserException, NoSuchNodeException, NoSuchRoleException {
+    public void deleteUser(String id, User loginUser) throws NoSuchUserException, NoSuchNodeException, NoSuchRoleException {
         User user = getUserByUserIdAndEnable(id, User.ENABLE);
         if (user == null)
             throw new NoSuchUserException("can not find enable user for delete:" + id);
@@ -105,7 +107,7 @@ public class UserService extends BaseService {
         user.setEnable(User.UNENABLE);
         user.setUpdateDate(new Date());
         user.setUpdateBy(loginUser.getUserId());
-        return doSave(user);
+        doSave(user);
     }
 
     public User updateUser(User user, User loginUser) throws NoSuchUserException, NoSuchNodeException, NoSuchRoleException {
@@ -155,9 +157,9 @@ public class UserService extends BaseService {
         user.getNode().setParent(null);
 
         List<Project> projects = user.getProjects();
-        for (Project project : projects){
+        for (Project project : projects) {
             Project parent = project.getParent();
-            while(parent != null){
+            while (parent != null) {
                 parent.setChildren(null);
                 parent = parent.getParent();
             }
