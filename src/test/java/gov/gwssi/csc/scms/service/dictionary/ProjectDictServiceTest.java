@@ -9,11 +9,11 @@ import org.junit.Test;
  */
 public class ProjectDictServiceTest extends UnitTestBase {
     @Test
-    public void getProjectDict(){
+    public void getProjectDict() throws Exception{
         ProjectDictService projectDictService = getBean("projectDictService");
         // 测试项目代码表：一级层次
-        projectDictService.getProjectDictJsonData("1");
+        projectDictService.getProjectDictTreeByLevel("1");
         // 测试项目代码表：二级层次
-        projectDictService.getProjectDictJsonData("2");
+        projectDictService.getProjectDictTreeByLevel("2");
     }
 }

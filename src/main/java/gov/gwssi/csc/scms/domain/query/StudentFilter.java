@@ -11,7 +11,7 @@ import java.util.List;
 public class StudentFilter implements Filter {
     //新生注册条件 是否报到为“否”
     public static final String UNREGISTERED_STUDENT_CONDITION
-            = " and schoolRoll.registed = '0'";
+            = " and schoolRoll.registed != 'AX0002'";
     //新生注册条件
     /*春季，即1.1（当年）<系统时间<6.30（当年）：
       1.1（当年）<汉补开始时间<6.30（当年），取汉补院校（或）
@@ -40,7 +40,7 @@ public class StudentFilter implements Filter {
         "    TO_DATE(extract(year from sysdate) || '-07-01','yyyy-mm-dd') and" +
         " cast(schoolRoll.majorStartDate as date) <=" +
         "    TO_DATE(extract(year from sysdate) || '-12-31','yyyy-mm-dd')))))");
-    //在校生条件 是否报到为“是”，是否离华为“否”
+    //在校生条件 是否报到为“是”，是否离华为“否” wangrui
     public static final String INTERNAL_STUDENT_CONDITION
             = " and schoolRoll.registed = '1' and schoolRoll.leaveChina='0' ";
 //离华时间 离华时间为当年1月1日-8月31日之间
@@ -88,7 +88,7 @@ public static final String LEAVEDATA_STUDENT_CONDITION = " and sysdate >= TO_DAT
                }else if("abnormal".equals(str[0])){
                    //sb.append(" and ").append(fc.getTableName()).append(".").append(fc.getColumnName()).append(" = '").append(str[0]).append("' ");
                }else if("freshregister".equals(str[0])){//新生注册 日期条件和报到状态为“否”
-                   sb.append(UNREGISTERED_STUDENT_CONDITION); //是否报到为“否”
+                   sb.append(UNREGISTERED_STUDENT_CONDITION); //是否报到!=“是”
                    sb.append(FRESH_STUDENT_CONDITION);
                }else if("oldregister".equals(str[0])){//老生注册 日期条件和报到状态为“是”，是否离华为“否”
                    sb.append(INTERNAL_STUDENT_CONDITION);

@@ -17,9 +17,9 @@ import java.util.Map;
 @Service("projectDictDAO")
 public class ProjectDictDAO extends BaseDAO {
 
-    private final String PROJECT_LEVEL_ONE = "1";
-    private final String PROJECT_LEVEL_TWO = "2";
-    private final String PROJECT_LEVEL_THREE = "3";
+    private static final String PROJECT_LEVEL_ONE = "1";
+    private static final String PROJECT_LEVEL_TWO = "2";
+    private static final String PROJECT_LEVEL_THREE = "3";
 
     // 根据project层级获取排序后的项目List
     public List getProjectDictByLevel(String level) {
@@ -36,8 +36,8 @@ public class ProjectDictDAO extends BaseDAO {
         return projectList;
     }
 
-    // 根据project层级得到转义后的JSONData
-    public String getProjectDictJsonDataByLevel(String level) {
+    // 根据project层级得到转义后的List
+    public List<DictTreeJson> getProjectDictTreeByLevel(String level) {
         Map map = null;
         List projectList = getProjectDictByLevel(level);
         List<DictTreeJson> list = Lists.newArrayList();
@@ -57,8 +57,8 @@ public class ProjectDictDAO extends BaseDAO {
             }
         }
         List<DictTreeJson> dictList = DictTreeJson.formatTree(list);
-        String jsonData = JsonMapper.getInstance().toJson(dictList);
-        return jsonData;
+//      String jsonData = JsonMapper.getInstance().toJson(dictList);
+        return dictList;
     }
 
 }

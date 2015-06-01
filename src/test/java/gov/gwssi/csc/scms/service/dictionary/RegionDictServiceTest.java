@@ -9,11 +9,11 @@ import org.junit.Test;
  */
 public class RegionDictServiceTest extends UnitTestBase {
     @Test
-    public void getRegionDict(){
+    public void getRegionDict() throws NoSuchDictTreeException{
         RegionDictService regionDictService = getBean("regionDictService");
         // 测试获取资源--大洲
-        regionDictService.getRegionDictJsonData("1");
+        regionDictService.getRegionDictTreeByLevel("1");
         // 测试获取资源--大洲以及国别
-        regionDictService.getRegionDictJsonData("2");
+        regionDictService.getRegionDictTreeByLevel("2");
     }
 }

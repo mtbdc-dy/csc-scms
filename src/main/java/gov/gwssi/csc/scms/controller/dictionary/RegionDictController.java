@@ -1,10 +1,14 @@
 package gov.gwssi.csc.scms.controller.dictionary;
 
+import gov.gwssi.csc.scms.domain.dictionary.DictTreeJson;
 import gov.gwssi.csc.scms.service.dictionary.RegionDictService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * Created by WangZhenghua on 2015/4/24.
@@ -18,34 +22,17 @@ public class RegionDictController {
     @Autowired
     private RegionDictService regionDictService;
 
-    private final String REGION_LEVEL_ONE = "1";
-    private final String REGION_LEVEL_TWO = "2";
-
-    // 获取资源-大洲
-    @RequestMapping(value="continent",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
-    public String getContinent(){
-        String continentJsonData = "[]";
+    // 获取资源-大洲及国家
+    @RequestMapping(value="continent/{level}",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
+    public List<DictTreeJson> getRegion(@PathVariable String level){
+        List<DictTreeJson> regionDictTree = null;
         try {
-            continentJsonData = regionDictService.getRegionDictJsonData(REGION_LEVEL_ONE);
+            regionDictTree = regionDictService.getRegionDictTreeByLevel(level);
         }catch(Exception e){
             e.printStackTrace();
-            return "[]";
+            throw new RuntimeException(e);
         }
-        return continentJsonData;
+        return regionDictTree;
     }
-
-    // 获取资源-各大洲以及大洲下的国家
-    @RequestMapping(value = "continent/country",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
-    public String getContinentAndCountries(){
-        String jsonData = "[]";
-        try {
-            jsonData = regionDictService.getRegionDictJsonData(REGION_LEVEL_TWO);
-        }catch(Exception e){
-            e.printStackTrace();
-            return "[]";
-        }
-        return jsonData;
-    }
-
 
 }

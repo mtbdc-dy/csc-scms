@@ -22,14 +22,14 @@ public class TranslateDictDAO extends BaseDAO{
         List translateList = null;
         StringBuilder stringBuilder = new StringBuilder();
         if(classId != null && !classId.equals("")){
-            stringBuilder.append("select classid,translateid,namech,nameen,enable from dim_translate where classid='"+classId+"'");
+            stringBuilder.append("select classid,translateid,namech,nameen,enabled from dim_translate where classid='"+classId+"'");
         }
         translateList = super.queryListBySql(stringBuilder.toString());
         return translateList;
     }
 
-    // 根据classId转义后的JSONData
-    public String getTranslateDictJsonDataByClassId(String classId){
+    // 根据classId转义后的List
+    public List<TranslateDictJson> getTranslateDictByClassId(String classId){
         Map map = null;
         List translateList = getTranslateDictListByClassId(classId);
         List<TranslateDictJson> list = Lists.newArrayList();
@@ -39,7 +39,7 @@ public class TranslateDictDAO extends BaseDAO{
                 TranslateDictJson translateDictJson = new TranslateDictJson();
                 translateDictJson.setCode((map.get("TRANSLATEID") == null || map.get("TRANSLATEID").equals(""))?"":(String)map.get("TRANSLATEID"));
                 translateDictJson.setValue((map.get("NAMECH") == null || map.get("NAMECH").equals(""))?"":(String)map.get("NAMECH"));
-                if (map.get("ENABLE") != null && map.get("ENABLE").equals("1")) {
+                if (map.get("ENABLED") != null && map.get("ENABLED").equals("1")) {
                     translateDictJson.setValid(true);
                 } else {
                     translateDictJson.setValid(false);
@@ -47,8 +47,8 @@ public class TranslateDictDAO extends BaseDAO{
                 list.add(translateDictJson);
             }
         }
-        String jsonData = JsonMapper.getInstance().toJson(list);
-        return jsonData;
+//      String jsonData = JsonMapper.getInstance().toJson(list);
+        return list;
     }
 
 }
