@@ -112,7 +112,7 @@ public class SchoolRoll {
     /**
      * 离华原因
      */
-    private String LeaveReason;
+    private String leaveReason;
     /**
      * 学历证书编号
      */
@@ -371,11 +371,11 @@ public class SchoolRoll {
     }
 
     public String getLeaveReason() {
-        return LeaveReason;
+        return leaveReason;
     }
 
     public void setLeaveReason(String leaveReason) {
-        LeaveReason = leaveReason;
+        leaveReason = leaveReason;
     }
 
     public String getAcademicCertificateNO() {
