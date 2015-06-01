@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.domain.user;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "PUB_USER")
-public class User {
+public class User implements Serializable {
 
     public final static String ENABLE = "1";
 
@@ -48,6 +49,14 @@ public class User {
      */
     private String userType;
     /**
+     * 传真
+     */
+    private String fax;
+    /**
+     * 电话
+     */
+    private String phone;
+    /**
      * 提示问题
      */
     private String question;
@@ -81,7 +90,7 @@ public class User {
      * 用户权限
      */
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "PUB_USER_PROJECT", joinColumns = {@JoinColumn(name = "USERID")},
+    @JoinTable(name = "PUB_USER_PROJECT", joinColumns = {@JoinColumn(name = "USERID", referencedColumnName = "USERID")},
             inverseJoinColumns = {@JoinColumn(name = "PROJECTID")})
     private List<Project> projects = new ArrayList<Project>();
 
@@ -115,6 +124,22 @@ public class User {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String getFax() {
+        return fax;
+    }
+
+    public void setFax(String fax) {
+        this.fax = fax;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public Role getRole() {

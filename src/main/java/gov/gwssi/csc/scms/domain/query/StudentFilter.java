@@ -43,7 +43,8 @@ public class StudentFilter implements Filter {
     //在校生条件 是否报到为“是”，是否离华为“否” wangrui
     public static final String INTERNAL_STUDENT_CONDITION
             = " and schoolRoll.registed = '1' and schoolRoll.leaveChina='0' ";
-
+//离华时间 离华时间为当年1月1日-8月31日之间
+public static final String LEAVEDATA_STUDENT_CONDITION = " and sysdate >= TO_DATE(extract(year from sysdate) || '-01-01','yyyy-mm-dd') and sysdate <= TO_DATE(extract(year from sysdate) || '-08-31','yyyy-mm-dd') ";
     private StudentFilterObject filterObject;
 
     private List<FilterCell> conditions;
@@ -92,6 +93,8 @@ public class StudentFilter implements Filter {
                }else if("oldregister".equals(str[0])){//老生注册 日期条件和报到状态为“是”，是否离华为“否”
                    sb.append(INTERNAL_STUDENT_CONDITION);
 //                   sb.append();
+               }else if("ticket".equals(str[0])){//机票管理时间区间段 当年1月1号至8月31号
+                   sb.append(LEAVEDATA_STUDENT_CONDITION);
                }
             }
         }

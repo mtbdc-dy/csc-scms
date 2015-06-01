@@ -106,7 +106,7 @@ public class AbnormalServiceTest  extends UnitTestBase {
          Student student = studentService.getStudentByCscId("15");
          Abnormal ab = new Abnormal();
 //         stu.setCscId("csc11000001");
-         ab.setStudent(student);
+        // ab.setStudent(student);
          ab.setState("0");
 
          return ab;

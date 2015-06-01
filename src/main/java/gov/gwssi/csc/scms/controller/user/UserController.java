@@ -146,8 +146,8 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public List<User> getUsers(@PathVariable String userId,@RequestParam(value = "nodeId") String nodeId) {
+    @RequestMapping(value = "/user/{userId}/{nodeId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public List<User> getUsers(@PathVariable String userId, @PathVariable String nodeId) {
         try {
             userService.checkRootUser(userId);
 
@@ -164,7 +164,7 @@ public class UserController {
             User user = userService.checkRootUser(userId);
 
             User user1 = new ObjectMapper().readValue(UserStr, User.class);
-            return userService.updateUser(user1,user);
+            return userService.updateUser(user1, user);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -177,18 +177,18 @@ public class UserController {
             User user = userService.checkRootUser(userId);
 
             User user1 = new ObjectMapper().readValue(userStr, User.class);
-            return userService.addUser(user1,user);
+            return userService.addUser(user1, user);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
 
-    @RequestMapping(value = "/user/{userId}/{roleId}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
-    public User deleteUser(@PathVariable String userId, @PathVariable String id) {
+    @RequestMapping(value = "/user/{rootUserId}/{userId}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
+    public void deleteUser(@PathVariable String rootUserId, @PathVariable String userId) {
         try {
-            User user = userService.checkRootUser(userId);
-            return userService.deleteUser(id,user);
+            User user = userService.checkRootUser(rootUserId);
+            userService.deleteUser(userId, user);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);

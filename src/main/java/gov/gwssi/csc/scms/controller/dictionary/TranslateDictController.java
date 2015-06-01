@@ -1,10 +1,14 @@
 package gov.gwssi.csc.scms.controller.dictionary;
 
+import gov.gwssi.csc.scms.domain.dictionary.DictTreeJson;
+import gov.gwssi.csc.scms.domain.dictionary.TranslateDictJson;
 import gov.gwssi.csc.scms.service.dictionary.TranslateDictService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * Created by WangZhenghua on 2015/4/27.
@@ -39,236 +43,236 @@ public class TranslateDictController {
 
     // 获取资源-系统经费标准
     @RequestMapping(value="xtjfbz",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
-    public String getXtgfbz(){
-        String xtgfbzJsonData = "[]";
+    public List<TranslateDictJson> getXtgfbz(){
+        List<TranslateDictJson> list = null;
         try{
-            xtgfbzJsonData = translateDictService.getTranslateDictJsonData(TRANSLATE_XTJFBZ);
+            list = translateDictService.getTranslateDictByClassId(TRANSLATE_XTJFBZ);
         }catch (Exception e){
             e.printStackTrace();
-            return "[]";
+            throw new RuntimeException(e);
         }
-        return xtgfbzJsonData;
+        return list;
     }
 
     // 获取资源-系统离华原因
     @RequestMapping(value="xtlhyy",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
-    public String getXtLhyy(){
-        String xtlhyyJsonData = "[]";
+    public List<TranslateDictJson> getXtLhyy(){
+        List<TranslateDictJson> list = null;
         try{
-            xtlhyyJsonData = translateDictService.getTranslateDictJsonData(TRANSLATE_XTLHYY);
+            list = translateDictService.getTranslateDictByClassId(TRANSLATE_XTLHYY);
         }catch (Exception e){
             e.printStackTrace();
-            return "[]";
+            throw new RuntimeException(e);
         }
-        return xtlhyyJsonData;
+        return list;
     }
 
     // 获取资源-学习层次
     @RequestMapping(value="xtxxcc",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
-    public String getXtxxcc(){
-        String xtxxccJsonData = "[]";
+    public List<TranslateDictJson> getXtxxcc(){
+        List<TranslateDictJson> list = null;
         try{
-            xtxxccJsonData = translateDictService.getTranslateDictJsonData(TRANSLATE_XTXXCC);
+            list = translateDictService.getTranslateDictByClassId(TRANSLATE_XTXXCC);
         }catch (Exception e){
             e.printStackTrace();
-            return "[]";
+            throw new RuntimeException(e);
         }
-        return xtxxccJsonData;
+        return list;
     }
 
     // 获取资源-学籍状态
     @RequestMapping(value="xtxjzt",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
-    public String getXtxjzt(){
-        String xtxjzzJsonData = "[]";
+    public List<TranslateDictJson> getXtxjzt(){
+        List<TranslateDictJson> list = null;
         try{
-            xtxjzzJsonData = translateDictService.getTranslateDictJsonData(TRANSLATE_XTXJZZ);
+            list = translateDictService.getTranslateDictByClassId(TRANSLATE_XTXJZZ);
         }catch (Exception e){
             e.printStackTrace();
-            return "[]";
+            throw new RuntimeException(e);
         }
-        return xtxjzzJsonData;
+        return list;
     }
 
     // 获取资源-学生类别
     @RequestMapping(value="xtxslb",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
-    public String getXtxslb(){
-        String xtxslbJsonData = "[]";
+    public List<TranslateDictJson> getXtxslb(){
+        List<TranslateDictJson> list = null;
         try{
-            xtxslbJsonData = translateDictService.getTranslateDictJsonData(TRANSLATE_XTXSLB);
+            list = translateDictService.getTranslateDictByClassId(TRANSLATE_XTXSLB);
         }catch (Exception e){
             e.printStackTrace();
-            return "[]";
+            throw new RuntimeException(e);
         }
-        return xtxslbJsonData;
+        return list;
     }
 
     // 获取资源-国际旅费
     @RequestMapping(value="xtgjlv",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
-    public String getXtgjlv(){
-        String xtgjlvJsonData = "[]";
+    public List<TranslateDictJson> getXtgjlv(){
+        List<TranslateDictJson> list = null;
         try{
-            xtgjlvJsonData = translateDictService.getTranslateDictJsonData(TRANSLATE_XTGJLV);
+            list = translateDictService.getTranslateDictByClassId(TRANSLATE_XTGJLV);
         }catch (Exception e){
             e.printStackTrace();
-            return "[]";
+            throw new RuntimeException(e);
         }
-        return xtgjlvJsonData;
+        return list;
     }
 
     // 获取资源-系统学位
     @RequestMapping(value="xtxw",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
-    public String getXtxw(){
-        String xtxwJsonData = "[]";
+    public List<TranslateDictJson> getXtxw(){
+        List<TranslateDictJson> list = null;
         try{
-            xtxwJsonData = translateDictService.getTranslateDictJsonData(TRANSLATE_XTXW);
+            list = translateDictService.getTranslateDictByClassId(TRANSLATE_XTXW);
         }catch (Exception e){
             e.printStackTrace();
-            return "[]";
+            throw new RuntimeException(e);
         }
-        return xtxwJsonData;
+        return list;
     }
 
     // 获取资源-系统地址类别
     @RequestMapping(value="xtdzlb",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
-    public String getXtdzlb(){
-        String xtdzlbJsonData = "[]";
+    public List<TranslateDictJson> getXtdzlb(){
+        List<TranslateDictJson> list = null;
         try{
-            xtdzlbJsonData = translateDictService.getTranslateDictJsonData(TRANSLATE_XTDZLB);
+            list = translateDictService.getTranslateDictByClassId(TRANSLATE_XTDZLB);
         }catch (Exception e){
             e.printStackTrace();
-            return "[]";
+            throw new RuntimeException(e);
         }
-        return xtdzlbJsonData;
+        return list;
     }
 
     // 获取资源-入境证件种类
     @RequestMapping(value="xtrjzjzl",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
-    public String getRjzjzl(){
-        String xtrjzjzlJsonData = "[]";
+    public List<TranslateDictJson> getRjzjzl(){
+        List<TranslateDictJson> list = null;
         try{
-            xtrjzjzlJsonData = translateDictService.getTranslateDictJsonData(TRANSLATE_XTRJZJZL);
+            list = translateDictService.getTranslateDictByClassId(TRANSLATE_XTRJZJZL);
         }catch (Exception e){
             e.printStackTrace();
-            return "[]";
+            throw new RuntimeException(e);
         }
-        return xtrjzjzlJsonData;
+        return list;
     }
 
     // 获取资源-系统突发事件处理状态
     @RequestMapping(value="xttfsjclzt",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
-    public String getXttfsjclzt(){
-        String xttfsjclztJsonData = "[]";
+    public List<TranslateDictJson> getXttfsjclzt(){
+        List<TranslateDictJson> list = null;
         try{
-            xttfsjclztJsonData = translateDictService.getTranslateDictJsonData(TRANSLATE_XTTFSJCLZT);
+            list = translateDictService.getTranslateDictByClassId(TRANSLATE_XTTFSJCLZT);
         }catch (Exception e){
             e.printStackTrace();
-            return "[]";
+            throw new RuntimeException(e);
         }
-        return xttfsjclztJsonData;
+        return list;
     }
 
     // 获取资源-系统突发事件类别
     @RequestMapping(value="xttfsjlb",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
-    public String getXttfsjlb(){
-        String xttfsjlbJsonData = "[]";
+    public List<TranslateDictJson> getXttfsjlb(){
+        List<TranslateDictJson> list = null;
         try{
-            xttfsjlbJsonData = translateDictService.getTranslateDictJsonData(TRANSLATE_XTTFSJLB);
+            list = translateDictService.getTranslateDictByClassId(TRANSLATE_XTTFSJLB);
         }catch (Exception e){
             e.printStackTrace();
-            return "[]";
+            throw new RuntimeException(e);
         }
-        return xttfsjlbJsonData;
+        return list;
     }
 
     // 获取资源-系统体检情况
     @RequestMapping(value="xttjqk",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
-    public String getXttjqk(){
-        String xttjqkJsonData = "[]";
+    public List<TranslateDictJson> getXttjqk(){
+        List<TranslateDictJson> list = null;
         try{
-            xttjqkJsonData = translateDictService.getTranslateDictJsonData(TRANSLATE_XTTJQK);
+            list = translateDictService.getTranslateDictByClassId(TRANSLATE_XTTJQK);
         }catch (Exception e){
             e.printStackTrace();
-            return "[]";
+            throw new RuntimeException(e);
         }
-        return xttjqkJsonData;
+        return list;
     }
 
     // 获取资源-系统经费办法表
     @RequestMapping(value="xtjfbfb",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
-    public String getXtjfbfb(){
-        String xtjfbfbJsonData = "[]";
+    public List<TranslateDictJson> getXtjfbfb(){
+        List<TranslateDictJson> list = null;
         try{
-            xtjfbfbJsonData = translateDictService.getTranslateDictJsonData(TRANSLATE_XTJFBFB);
+            list = translateDictService.getTranslateDictByClassId(TRANSLATE_XTJFBFB);
         }catch (Exception e){
             e.printStackTrace();
-            return "[]";
+            throw new RuntimeException(e);
         }
-        return xtjfbfbJsonData;
+        return list;
     }
 
     // 获取资源-系统省市
     @RequestMapping(value="xtss",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
-    public String getXtss(){
-        String xtssJsonData = "[]";
+    public List<TranslateDictJson> getXtss(){
+        List<TranslateDictJson> list = null;
         try{
-            xtssJsonData = translateDictService.getTranslateDictJsonData(TRANSLATE_XTSS);
+            list = translateDictService.getTranslateDictByClassId(TRANSLATE_XTSS);
         }catch (Exception e){
             e.printStackTrace();
-            return "[]";
+            throw new RuntimeException(e);
         }
-        return xtssJsonData;
+        return list;
     }
 
     // 获取资源-系统语言
     @RequestMapping(value="xtyy",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
-    public String getXtyy(){
-        String xtyyJsonData = "[]";
+    public List<TranslateDictJson> getXtyy(){
+        List<TranslateDictJson> list = null;
         try{
-            xtyyJsonData = translateDictService.getTranslateDictJsonData(TRANSLATE_XTYY);
+            list = translateDictService.getTranslateDictByClassId(TRANSLATE_XTYY);
         }catch (Exception e){
             e.printStackTrace();
-            return "[]";
+            throw new RuntimeException(e);
         }
-        return xtyyJsonData;
+        return list;
     }
 
     // 获取资源-系统派遣条件
     @RequestMapping(value="xtpqtj",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
-    public String getXtpqtj(){
-        String xtpqtjJsonData = "[]";
+    public List<TranslateDictJson> getXtpqtj(){
+        List<TranslateDictJson> list = null;
         try{
-            xtpqtjJsonData = translateDictService.getTranslateDictJsonData(TRANSLATE_XTPQTJ);
+            list = translateDictService.getTranslateDictByClassId(TRANSLATE_XTPQTJ);
         }catch (Exception e){
             e.printStackTrace();
-            return "[]";
+            throw new RuntimeException(e);
         }
-        return xtpqtjJsonData;
+        return list;
     }
 
     // 获取资源-系统院校
     @RequestMapping(value="xtyx",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
-    public String getXtyx(){
-        String xtyxJsonData = "[]";
+    public List<TranslateDictJson> getXtyx(){
+        List<TranslateDictJson> list = null;
         try{
-            xtyxJsonData = translateDictService.getTranslateDictJsonData(TRANSLATE_XTYX);
+            list = translateDictService.getTranslateDictByClassId(TRANSLATE_XTYX);
         }catch (Exception e){
             e.printStackTrace();
-            return "[]";
+            throw new RuntimeException(e);
         }
-        return xtyxJsonData;
+        return list;
     }
 
     // 获取资源-系统院校
     @RequestMapping(value="xtsf",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
-    public String getXtsf(){
-        String xtsfJsonData = "[]";
+    public List<TranslateDictJson> getXtsf(){
+        List<TranslateDictJson> list = null;
         try{
-            xtsfJsonData = translateDictService.getTranslateDictJsonData(TRANSLATE_XTSF);
+            list = translateDictService.getTranslateDictByClassId(TRANSLATE_XTSF);
         }catch (Exception e){
             e.printStackTrace();
-            return "[]";
+            throw new RuntimeException(e);
         }
-        return xtsfJsonData;
+        return list;
     }
 
 }

@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.domain.user;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by Lei on 2015/5/4.
@@ -9,6 +10,10 @@ import javax.persistence.*;
 @Entity
 @Table(name = "DIM_PROJECT")
 public class Project {
+
+    public static final String ENABLED = "1";
+
+    public static final String UNENABLED = "0";
     /**
      * 项目Id
      */
@@ -25,7 +30,9 @@ public class Project {
     /**
      * 上级节点
      */
-    private String parentId;
+    @ManyToOne
+    @JoinColumn(name = "parentId")
+    private Project parent;
     /**
      * 类型（前缀）：T  项目类别；U  项目名称。
      */
@@ -34,6 +41,12 @@ public class Project {
      * 有效标志：0不启用；1启用
      */
     private String enabled;
+    /**
+     *子节点
+     */
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent", fetch = FetchType.EAGER)
+    @org.hibernate.annotations.Where(clause = "enabled = '1'")
+    private List<Project> children;
 
     public String getProjectId() {
         return projectId;
@@ -59,12 +72,20 @@ public class Project {
         this.nameCH = nameCH;
     }
 
-    public String getParentId() {
-        return parentId;
+    public Project getParent() {
+        return parent;
     }
 
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
+    public void setParent(Project parent) {
+        this.parent = parent;
+    }
+
+    public List<Project> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Project> children) {
+        this.children = children;
     }
 
     public String getType() {

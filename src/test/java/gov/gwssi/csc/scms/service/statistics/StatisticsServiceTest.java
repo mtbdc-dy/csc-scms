@@ -2,6 +2,9 @@ package gov.gwssi.csc.scms.service.statistics;
 
 import gov.gwssi.csc.scms.base.UnitTestBase;
 import gov.gwssi.csc.scms.domain.statistics.DConfig;
+import gov.gwssi.csc.scms.domain.statistics.TablesJson;
+import gov.gwssi.csc.scms.service.dictionary.NoSuchDictTreeException;
+import gov.gwssi.csc.scms.service.dictionary.util.JsonMapper;
 import junit.framework.Assert;
 import org.junit.Test;
 
@@ -43,6 +46,13 @@ public class StatisticsServiceTest extends UnitTestBase {
 //        Assert.assertNotNull(dConfigService.findById("1").getConfigType());
 //        Assert.assertEquals(dConfigService.findById("1").getConfigType(),"1");
 //        System.out.println("DConig "+dConfigService.findById("1").getConfigType());
+    }
+
+    @Test
+    public void getTables() throws NoSuchDictTreeException{
+        DimTableService dimTableService = getBean(DimTableService.class);
+        List<TablesJson> list = dimTableService.getTables();
+        System.out.println(JsonMapper.getInstance().toJson(list));
     }
 
 

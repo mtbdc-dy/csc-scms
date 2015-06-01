@@ -9,8 +9,8 @@ import org.junit.Test;
  */
 public class TranslateDictServiceTest  extends UnitTestBase {
     @Test
-    public void getTranslateDict(){
+    public void getTranslateDict() throws  NoSuchDictTreeException{
         TranslateDictService translateDictService = getBean("translateDictService");
-        translateDictService.getTranslateDictJsonData("B");
+        translateDictService.getTranslateDictByClassId("B");
     }
 }

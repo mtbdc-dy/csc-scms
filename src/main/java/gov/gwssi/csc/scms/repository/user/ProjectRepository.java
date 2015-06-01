@@ -8,4 +8,6 @@ import org.springframework.data.repository.CrudRepository;
  */
 public interface ProjectRepository extends CrudRepository<Project,String> {
 
+    Project findProjectByProjectIdAndEnabled(String Project, String enabled);
+
 }

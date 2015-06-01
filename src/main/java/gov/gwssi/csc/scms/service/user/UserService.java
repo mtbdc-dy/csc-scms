@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.service.user;
 
 import gov.gwssi.csc.scms.domain.user.Node;
+import gov.gwssi.csc.scms.domain.user.Project;
 import gov.gwssi.csc.scms.domain.user.Role;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.user.UserRepository;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -33,14 +35,21 @@ public class UserService extends BaseService {
     @Autowired
     private MenuService menuService;
 
+    @Autowired
+    private ProjectService projectService;
+
+    public User getUserByIdAndEnable(String id, String enable) {
+        return userRepository.findUserByIdAndEnable(id, enable);
+    }
+
     public User getUserByUserIdAndEnable(String userId, String enable) {
         return userRepository.findUserByUserIdAndEnable(userId, enable);
     }
 
-    public User checkRootUser(String userId) throws NoSuchUserException, UserIdentityError {
-        User user = getUserByUserIdAndEnable(userId, User.ENABLE);
+    public User checkRootUser(String id) throws NoSuchUserException, UserIdentityError {
+        User user = getUserByIdAndEnable(id, User.ENABLE);
         if (user == null)
-            throw new NoSuchUserException("can not find the enable root user:" + userId);
+            throw new NoSuchUserException("can not find the enable root user:" + id);
 
         if (!Role.ROOT_IDENTITY.equals(user.getRole().getIdentity())) {
             throw new UserIdentityError("not root user!");
@@ -51,9 +60,11 @@ public class UserService extends BaseService {
     public User addUser(User user, User loginUser) throws UserIdBeingUsedException, NoSuchRoleException, NoSuchNodeException {
         if (userExists(user.getUserId()))
             throw new UserIdBeingUsedException("this username for new user is used :" + user.getUserId());
+        user.setId(getBaseDao().getIdBySequence("seq_user"));
         user.setPassword(MD5Util.MD5(user.getPassword()));
         user.setCreateBy(loginUser.getUserId());
         user.setCreateDate(new Date());
+        user.setEnable(User.ENABLE);
         return saveUser(user);
     }
 
@@ -69,6 +80,17 @@ public class UserService extends BaseService {
         }
         user.setNode(node);
 
+        List<Project> projects = user.getProjects();
+        List<Project> newProjects = new ArrayList<Project>(projects.size());
+        Project newProject;
+        for (Project project : projects) {
+            newProject = projectService.getProjectByProjectIdAndEnabled(project.getProjectId(), Project.ENABLED);
+            if (newProject != null) {
+                newProjects.add(newProject);
+            }
+        }
+        user.setProjects(newProjects);
+
         user = doSave(user);
         return initUser(user);
     }
@@ -77,7 +99,7 @@ public class UserService extends BaseService {
         return userRepository.save(user);
     }
 
-    public User deleteUser(String id, User loginUser) throws NoSuchUserException, NoSuchNodeException, NoSuchRoleException {
+    public void deleteUser(String id, User loginUser) throws NoSuchUserException, NoSuchNodeException, NoSuchRoleException {
         User user = getUserByUserIdAndEnable(id, User.ENABLE);
         if (user == null)
             throw new NoSuchUserException("can not find enable user for delete:" + id);
@@ -85,7 +107,7 @@ public class UserService extends BaseService {
         user.setEnable(User.UNENABLE);
         user.setUpdateDate(new Date());
         user.setUpdateBy(loginUser.getUserId());
-        return doSave(user);
+        doSave(user);
     }
 
     public User updateUser(User user, User loginUser) throws NoSuchUserException, NoSuchNodeException, NoSuchRoleException {
@@ -133,6 +155,16 @@ public class UserService extends BaseService {
 
     private User initUser(User user) {
         user.getNode().setParent(null);
+
+        List<Project> projects = user.getProjects();
+        for (Project project : projects) {
+            Project parent = project.getParent();
+            while (parent != null) {
+                parent.setChildren(null);
+                parent = parent.getParent();
+            }
+        }
+
         return initRoleMenuByUser(user);
     }
 
