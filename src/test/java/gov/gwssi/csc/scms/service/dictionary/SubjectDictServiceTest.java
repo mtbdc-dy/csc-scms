@@ -15,13 +15,13 @@ import java.util.Map;
 public class SubjectDictServiceTest  extends UnitTestBase {
 
     @Test
-    public void getSubject(){
+    public void getSubject() throws NoSuchDictTreeException{
         SubjectDictService subjectDictService = getBean("subjectDictService");
         // 测试学科代码表--一级层次
-        subjectDictService.getSubjectDictJsonData("1");
+        subjectDictService.getSubjectDictTree("1");
         // 测试学科代码表--二级层次
-        subjectDictService.getSubjectDictJsonData("2");
+        subjectDictService.getSubjectDictTree("2");
         // 测试学科代码表--三级层次
-        subjectDictService.getSubjectDictJsonData("3");
+        subjectDictService.getSubjectDictTree("3");
     }
 }
