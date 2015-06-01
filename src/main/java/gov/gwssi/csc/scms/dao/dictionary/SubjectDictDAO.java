@@ -16,9 +16,9 @@ import java.util.Map;
 @Service("subjectDictDAO")
 public class SubjectDictDAO extends BaseDAO{
 
-    private final String SUBJECT_LEVEL_ONE = "1";
-    private final String SUBJECT_LEVEL_TWO = "2";
-    private final String SUBJECT_LEVEL_THREE = "3";
+    private static final String SUBJECT_LEVEL_ONE = "1";
+    private static final String SUBJECT_LEVEL_TWO = "2";
+    private static final String SUBJECT_LEVEL_THREE = "3";
 
     // 根据学科层级获取排序后的学科List
     public List getSubjectDictByLevel(String level){
@@ -35,8 +35,8 @@ public class SubjectDictDAO extends BaseDAO{
         return subjectDictList;
     }
 
-    // 根据学科层级得到转义后的JSONData
-    public String getSubjectDictJsonDataByLevel(String level){
+    // 根据学科层级得到转义后的List
+    public List<DictTreeJson> getSubjectDictTreeByLevel(String level){
         Map map = null;
         List subjectDictList = getSubjectDictByLevel(level);
         List<DictTreeJson> list = Lists.newArrayList();
@@ -56,8 +56,8 @@ public class SubjectDictDAO extends BaseDAO{
             }
         }
         List<DictTreeJson> dictList = DictTreeJson.formatTree(list);
-        String jsonData = JsonMapper.getInstance().toJson(dictList);
-        return jsonData;
+//      String jsonData = JsonMapper.getInstance().toJson(dictList);
+        return dictList;
     }
 
 }

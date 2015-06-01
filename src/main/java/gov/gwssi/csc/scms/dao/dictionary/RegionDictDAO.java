@@ -16,8 +16,8 @@ import java.util.Map;
 @Service("regionDictDAO")
 public class RegionDictDAO extends BaseDAO{
 
-    private final String REGION_LEVEL_ONE = "1";
-    private final String REGION_LEVEL_TWO = "2";
+    private static final String REGION_LEVEL_ONE = "1";
+    private static final String REGION_LEVEL_TWO = "2";
 
     // 根据region层次获取排序后的List
     public List getRegionDictByLevel(String level){
@@ -32,14 +32,14 @@ public class RegionDictDAO extends BaseDAO{
         return regionList;
     }
 
-    // 根据region层级得到转义后的JSONData
-    public String getRegionDictJsonDataByLevel(String level){
+    // 根据region层级得到转义后的List
+    public List<DictTreeJson> getRegionDictTreeByLevel(String level){
         Map map = null;
         List regionList = getRegionDictByLevel(level);
         List<DictTreeJson> list = Lists.newArrayList();
         if(regionList != null && regionList.size()>0){
             for(int i=0;i<regionList.size();i++){
-               map = (Map)regionList.get(i);
+                map = (Map)regionList.get(i);
                 DictTreeJson dictTreeJson = new DictTreeJson();
                 dictTreeJson.setCode((map.get("REGIONID") == null || map.get("REGIONID").equals(""))?"":(String)map.get("REGIONID"));
                 dictTreeJson.setValue((map.get("NAMECH") == null || map.get("NAMECH").equals(""))? "" : (String) map.get("NAMECH"));
@@ -53,8 +53,7 @@ public class RegionDictDAO extends BaseDAO{
             }
         }
         List<DictTreeJson> dictList = DictTreeJson.formatTree(list);
-        String jsonData = JsonMapper.getInstance().toJson(dictList);
-        return jsonData;
+        return dictList;
     }
 
 }
