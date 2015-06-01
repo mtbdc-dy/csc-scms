@@ -64,7 +64,10 @@ public class Ticket {
     @Column(name = "price",length=16)
     private long price;
     /**
-     *订票状态 0未导出 1已导出 2已反馈
+     *订票状态：
+     * 已提交（同未导出）、未提交、已导出、
+     * 基金委已修改<指未通过正常订票流程，由基金委直接通过学籍信息修改完成>
+     *     或已反馈<导入航空公司反馈信息>
      */
     @Column(name = "state",length=1)
     private String state;
