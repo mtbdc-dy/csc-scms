@@ -67,7 +67,7 @@ public class AbnormalService extends BaseService {
                 "and student.id = schoolRoll.student and student.id = abnormal.student ";
         sb.append(tempSql);
 
-        sb.append(new AbnormalFilter((AbnormalFilterObject) filterObject).getFilter(user));
+        sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter(user));
         return sb.toString();
     }
     //获取学校用户异动申请新增申请的学生列表

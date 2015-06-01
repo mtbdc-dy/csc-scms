@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.controller.JsonBody;
 import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
-import gov.gwssi.csc.scms.domain.query.AbnormalFilterObject;
 import gov.gwssi.csc.scms.domain.query.AbnormalResultObject;
 import gov.gwssi.csc.scms.domain.query.AddStudentResultObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
@@ -43,8 +42,8 @@ public class AbnormalController {
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<AbnormalResultObject> getAbnormalsByConditions(@RequestParam(value = "filter") String filter, @RequestParam(value = "userId") String userId) {
         try {
-            AbnormalFilterObject sfo = null;
-            sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), AbnormalFilterObject.class);
+            StudentFilterObject sfo = null;
+            sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);
 
 //            User user = userService.getUserByUserId(userId);
 //            if (user == null) {
