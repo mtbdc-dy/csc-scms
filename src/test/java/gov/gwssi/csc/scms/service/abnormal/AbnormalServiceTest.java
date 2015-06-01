@@ -27,10 +27,10 @@ public class AbnormalServiceTest  extends UnitTestBase {
         AbnormalService abnormalService = getBean("abnormalService");
         String body = "{\"cscId\" : \"11\" ," +
                 "\"offSet\" : \"0\" , \"pageSize\" : \"2\"}";
-        AbnormalFilterObject abnormalResultObject;
+        FilterObject abnormalResultObject;
         List<AbnormalResultObject> list1 = null;
         try {
-            abnormalResultObject=new ObjectMapper().readValue(body, AbnormalFilterObject.class);
+            abnormalResultObject=new ObjectMapper().readValue(body, FilterObject.class);
             list1 =  abnormalService.getAbnormalsByFilter(abnormalResultObject,null);
         } catch (IOException e) {
             e.printStackTrace();
