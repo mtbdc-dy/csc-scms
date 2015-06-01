@@ -273,11 +273,7 @@ public class StudentService extends BaseService {
     }
 
     public Object transObj (Object des, Object src) throws Exception{
-//        JSONObject object
         try {
-//            Class ownClass = Class.forName(className);
-//            Object obj = ownClass.newInstance();
-//            Field[] fds = obj.getClass().getDeclaredFields();
             Field[] srcfields=src.getClass().getDeclaredFields();//需要其中属性值的obj
             for(Field field:srcfields){ //遍历需要修改的所有属性
                 Field f =des.getClass().getDeclaredField(field.getName());
@@ -315,27 +311,27 @@ public class StudentService extends BaseService {
         }
         if ("schoolRoll".equalsIgnoreCase(groupName)) {
             SchoolRoll schoolRoll = (SchoolRoll)transObj(des, groupObj);
-            schoolRoll = schoolRollService.updateSchoolRoll((SchoolRoll) groupObj);
+            schoolRoll = schoolRollService.updateSchoolRoll((SchoolRoll) schoolRoll);
             return setNullByField(schoolRoll, "student", SchoolRoll.class);
         }
         if ("registrationInfo".equalsIgnoreCase(groupName)) {
             RegistrationInfo registrationInfo = (RegistrationInfo)transObj(des, groupObj);
-            registrationInfo = registrationInfoService.updateRegistrationInfo((RegistrationInfo) groupObj);
+            registrationInfo = registrationInfoService.updateRegistrationInfo((RegistrationInfo) registrationInfo);
             return setNullByField(registrationInfo, "student", RegistrationInfo.class);
         }
         if ("profilesHistory".equalsIgnoreCase(groupName)) {
             ProfilesHistory profilesHistory = (ProfilesHistory)transObj(des, groupObj);
-            profilesHistory = profilesHistoryService.updateProfilesHistory((ProfilesHistory) groupObj);
+            profilesHistory = profilesHistoryService.updateProfilesHistory((ProfilesHistory) profilesHistory);
             return setNullByField(profilesHistory, "student", ProfilesHistory.class);
         }
         if ("discuss".equalsIgnoreCase(groupName)) {
             Discuss discuss = (Discuss)transObj(des, groupObj);
-            discuss = discussService.updateDiscuss((Discuss) groupObj);
+            discuss = discussService.updateDiscuss((Discuss) discuss);
             return setNullByField(discuss, "student", Discuss.class);
         }
         if ("schoolfellow".equalsIgnoreCase(groupName)) {
             Schoolfellow schoolfellow = (Schoolfellow)transObj(des, groupObj);
-            schoolfellow = schoolfellowService.updateSchoolfellow((Schoolfellow) groupObj);
+            schoolfellow = schoolfellowService.updateSchoolfellow((Schoolfellow) schoolfellow);
             return setNullByField(schoolfellow, "student", Schoolfellow.class);
         }
 
