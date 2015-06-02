@@ -114,4 +114,27 @@ public class BaseDAO {
             }
         }
     }
+
+    /**
+     * 执行sql修改
+     */
+    public int updateBySql(String sql) {
+        List<Map> objectList;
+        EntityManager em = null;
+
+        try {
+            em = entityManagerFactory.createEntityManager();
+            em.joinTransaction();
+            //创建原生SQL查询QUERY实例
+            Query query = em.createNativeQuery(sql);
+            int num = query.executeUpdate();
+            return num;
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
+
 }

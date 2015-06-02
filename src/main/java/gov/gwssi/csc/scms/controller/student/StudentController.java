@@ -120,7 +120,7 @@ public class StudentController {
      * 更新学生相关信息
      *
      * @param id
-     * @param group 修改的那个对象
+     * @param group 修改的对象
      * @param mode 用于区分修改前判断是否已经有group的完整信息，
      *             若有，则updateGroupByName方法直接修改，若无先获取 再set需要修改的数据项并保存
      * @param body 修改后的数据项和日志
@@ -146,6 +146,37 @@ public class StudentController {
             }
 
             return groupObj;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * 手动离华管理
+     *
+     * @param studentIds :"["1","2"...]"
+     * @param body 修改后的数据项和日志
+     * @return
+     */
+    @RequestMapping(value = "/leaveChina/{studentIds}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
+    public String putStudentLeaveChina(@PathVariable(value = "studentIds") String studentIds, @RequestBody String body) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonBody jbosy = new ObjectMapper().readValue(body, JsonBody.class);
+            //Json转成对象 包含修改后的信息
+            SchoolRoll schoolRoll = mapper.readValue(jbosy.getValue(), SchoolRoll.class);
+            if (studentIds == null || studentIds.equals(""))
+                return null;
+            if (schoolRoll == null)
+                return null;
+
+            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
+            List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
+
+            studentService.leaveChina(studentIds, schoolRoll, operationLogs);
+
+            return null;
         } catch (Exception e) {
             e.printStackTrace();
             return null;

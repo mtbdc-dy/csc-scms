@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.service.student;
 
+import gov.gwssi.csc.scms.dao.BaseDAO;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.FilterObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilter;
@@ -298,7 +299,7 @@ public class StudentService extends BaseService {
         }
         return des;
     }
-    @SuppressWarnings("unchecked")
+    @Transactional
     public Object updateGroupByName(String studentId, String groupName, Object groupObj, List<OperationLog> operationLogs) throws Exception {
         //记录日志
         operationLogService.saveOperationLog(operationLogs);
@@ -337,4 +338,26 @@ public class StudentService extends BaseService {
 
         return null;
     }
+
+    @Transactional
+    public void leaveChina(String studentIds, SchoolRoll schoolRoll, List<OperationLog> operationLogs) throws Exception {
+        //记录日志
+        operationLogService.saveOperationLog(operationLogs);
+        //studentIds转为('1','2'...)
+        StringBuffer sbIds = new StringBuffer();
+        sbIds.append("(");
+        String ids [] = studentIds.split(",");
+        for(int i=0; i<ids.length; i++){
+            sbIds.append("'").append(ids[i]).append("',");
+        }
+        sbIds.deleteCharAt(sbIds.length() - 1);
+        sbIds.append(")");
+        String leavaReason = null==schoolRoll.getLeaveReason()?"":schoolRoll.getLeaveReason();
+        String sql = " update SCMS_SCHOOLROLL set LEAVECHINA = '1'," +
+                " LEAVEREASON = '"+leavaReason+"', LEAVEDATE = to_date('"+schoolRoll.getLeaveDate()+"','yyyy-mm-dd') " +
+                " where studentid in "+sbIds;
+        System.out.println(sql);
+        getBaseDao().updateBySql(sql);
+    }
+
 }
