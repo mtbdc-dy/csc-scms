@@ -66,30 +66,7 @@ public class AbnormalController {
 //        }
     }
 
-    //学校用户在前台点击新增申请，返回需要申请的学生信息列表
-//    @RequestMapping(value = "/add", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-//    public List<AddStudentResultObject> getAddStudentsByConditions(@RequestParam(value = "filter") String filter, @RequestParam(value = "filter") String userId) {
-//        try {
-//            StudentFilterObject sfo = null;
-//            sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);
-//
-//            User user = userService.getUserByUserId(userId);
-//            if (user == null) {
-//                throw new RuntimeException("no such user valid with userId:" + userId);
-//            }
-//
-//            //按照分页（默认）要求，返回列表内容
-//            List<AddStudentResultObject> studentResultObjects = abnormalService.getAddStudentsByFilter(sfo, user);
-//            return studentResultObjects;
-//        } catch (UnsupportedEncodingException uee) {
-//            uee.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (NoSuchUserException e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
+
 
     //保存新增的异动申请
 
