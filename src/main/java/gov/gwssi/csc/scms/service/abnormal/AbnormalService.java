@@ -64,52 +64,13 @@ public class AbnormalService extends BaseService {
 
         String tempSql = " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll, Abnormal abnormal " +
                 "where student.id = basicInfo.student  " +
-                "and student.id = schoolRoll.student and student.id = abnormal.student ";
+                "and student.id = schoolRoll.student and student.id = abnormal.studentId ";
         sb.append(tempSql);
 
         sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter(user));
         return sb.toString();
     }
-    //获取学校用户异动申请新增申请的学生列表
-    public List<AddStudentResultObject> getAddStudentsByFilter(FilterObject filterObject, User user) {
-        List<AddStudentResultObject> addStudentResultObjectsList;
-        int startPosition, pageSize;
 
-        String sql = getSqlByAddStudentBody(filterObject, user);
-        System.out.println(sql);
-        if (sql == null) {
-            return null;
-        }
-
-        try {
-            startPosition = Integer.parseInt(filterObject.getOffSet());
-            pageSize = Integer.parseInt(filterObject.getPageSize());
-        } catch (NumberFormatException ne) {
-            ne.printStackTrace();
-            startPosition =FilterObject.OFFSETDEFULT;
-            pageSize =FilterObject.PAGESIZEDEFULT;
-        }
-
-        addStudentResultObjectsList = super.getBaseDao().getObjectListByHQL(sql, AddStudentResultObject.class, startPosition, pageSize);
-        return addStudentResultObjectsList;
-    }
-    //获取新增异动申请学生列表对应的字段数据
-    private String getSqlByAddStudentBody(FilterObject filterObject, User user) {
-        if (filterObject == null)
-            return null;
-
-        StringBuilder sb = new StringBuilder();
-
-        sb.append(AddStudentResultObject.getResultObject());
-
-        String tempSql = " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll  " +
-                "where student.id = basicInfo.student " +
-                "and student.id = schoolRoll.student ";
-        sb.append(tempSql);
-
-        sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter(user));
-        return sb.toString();
-    }
     //保存新增的异动申请
     @Transactional
     public Abnormal saveAbnormal(Abnormal abnormal, List<OperationLog> operationLogs) {
