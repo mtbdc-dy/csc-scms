@@ -97,7 +97,7 @@ public class BaseDAO {
         JdbcTemplate jdbcTemplate =getJdbcTemplate();
         String callName = "{ call " + name + " (\'"; // call存储过程名
         for (int i = 0; i < list.size()-1; i++) { // 取参数的问号
-            callName = callName + list.get(i)+"\',\' ";
+            callName = callName + list.get(i)+"\',\'";
 //            System.out.println(callName);
         }
         callName = callName +list.get(list.size()-1)+ "\') }";
