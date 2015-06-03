@@ -33,5 +33,9 @@ public class TicketDAO extends BaseDAO {
         studentList = super.queryListBySql(stringBuilder.toString());
         return studentList;
     }
+    public void doSt(String name, List list){
+        super.doStatement(name,list);
+
+    }
 
 }

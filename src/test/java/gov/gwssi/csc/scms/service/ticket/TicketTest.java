@@ -13,6 +13,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +26,14 @@ public class TicketTest extends UnitTestBase {
         List<TicketResultObject> studentList = ticketDAO.getStudentList(null);
         Assert.assertNotNull(studentList);
         System.out.println("list size::" + studentList.size());
+    }
+    @Test
+    public void doStTest(){
+        TicketDAO ticketDAO = super.getBean("ticketDAO");
+        String name = "p_scms_airticket";
+        List list = new ArrayList();
+        list.add("cbf");
+        ticketDAO.doStatement(name,list);
     }
     @Test
     public void getTicketListTest() throws JsonProcessingException{

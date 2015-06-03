@@ -86,7 +86,25 @@ public class BaseDAO {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         return jdbcTemplate;
     }
+    /**
+     * add by lzs 20150603
+     * 调用存储过程
+     * name 存储名
+     * list 参数列表 可以是单个，或者多个
+     */
 
+    public void doStatement(String name, List list) {
+        JdbcTemplate jdbcTemplate =getJdbcTemplate();
+        String callName = "{ call " + name + " (\'"; // call存储过程名
+        for (int i = 0; i < list.size()-1; i++) { // 取参数的问号
+            callName = callName + list.get(i)+"\',\' ";
+//            System.out.println(callName);
+        }
+        callName = callName +list.get(list.size()-1)+ "\') }";
+
+        jdbcTemplate.execute(callName);
+
+    }
     public String getIdBySequence(String sequenceName) {
         String sql = "select f_scms_gen_id('" + sequenceName + "') from dual ";
         EntityManager em = null;
