@@ -93,7 +93,7 @@ public class Ticket {
      *修改人
      */
     @Column(name = "updateBy",length=20)
-    private String userName;
+    private String updateBy;
 
     /**
      *修改时间
@@ -213,12 +213,12 @@ public class Ticket {
         this.created = created;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUpdateBy() {
+        return updateBy;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUpdateBy(String updateBy) {
+        this.updateBy = updateBy;
     }
 
     public Date getUpdated() {
