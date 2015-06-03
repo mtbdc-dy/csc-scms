@@ -67,7 +67,7 @@ public class SchoolRoll {
     /**
      * 经费办法
      */
-    private String appropriations;
+    private String appropriation;
     /**
      * 汉补省市
      */
@@ -282,12 +282,12 @@ public class SchoolRoll {
         this.certificateNO = certificateNO;
     }
 
-    public String getAppropriations() {
-        return appropriations;
+    public String getAppropriation() {
+        return appropriation;
     }
 
-    public void setAppropriations(String appropriations) {
-        this.appropriations = appropriations;
+    public void setAppropriation(String appropriation) {
+        this.appropriation = appropriation;
     }
 
     public String getCramProvince() {
