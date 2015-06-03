@@ -48,28 +48,28 @@ public class AbnormalServiceTest  extends UnitTestBase {
             System.out.println("no date display");
         }
     }
-     @Test
-     public void getAllStudentTest() {
-         AbnormalService abnormalService = getBean("abnormalService");
-         String body = "{\"cscId\" : \"1\" ," +
-                 "\"offSet\" : \"0\" , \"pageSize\" : \"2\"}";
-         StudentFilterObject studentResultObject;
-         List<AddStudentResultObject> list1 = null;
-         try {
-             studentResultObject=new ObjectMapper().readValue(body, StudentFilterObject.class);
-             list1 =  abnormalService.getAddStudentsByFilter(studentResultObject, null);
-         } catch (IOException e) {
-             e.printStackTrace();
-         }
-         Assert.assertNotNull(list1);
-         System.out.println("list size::" + list1.size());
-         for (AddStudentResultObject sro : list1) {
-             System.out.println("==============================");
-             System.out.println("studentId::" + sro.getStudentId());
-             System.out.println("CscId::" + sro.getCscId());
-
-         }
-     }
+//     @Test
+//     public void getAllStudentTest() {
+//         AbnormalService abnormalService = getBean("abnormalService");
+//         String body = "{\"cscId\" : \"1\" ," +
+//                 "\"offSet\" : \"0\" , \"pageSize\" : \"2\"}";
+//         StudentFilterObject studentResultObject;
+//         List<AddStudentResultObject> list1 = null;
+//         try {
+//             studentResultObject=new ObjectMapper().readValue(body, StudentFilterObject.class);
+//             list1 =  abnormalService.getAddStudentsByFilter(studentResultObject, null);
+//         } catch (IOException e) {
+//             e.printStackTrace();
+//         }
+//         Assert.assertNotNull(list1);
+//         System.out.println("list size::" + list1.size());
+//         for (AddStudentResultObject sro : list1) {
+//             System.out.println("==============================");
+//             System.out.println("studentId::" + sro.getStudentId());
+//             System.out.println("CscId::" + sro.getCscId());
+//
+//         }
+//     }
      @Test
      public void saveAbnormalTest() {
          AbnormalService abnormalService = getBean("abnormalService");
