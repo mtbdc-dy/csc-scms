@@ -4,49 +4,314 @@ import java.util.Date;
 
 /**
  * Created by lzs on 2015/6/1.
- * »úÆ±¹ÜÀíĞÅÏ¢ÁĞ±í½á¹ûÀà
+ * æœºç¥¨ç®¡ç†ä¿¡æ¯åˆ—è¡¨ç»“æœç±»
  */
 public class TicketResultObject  extends ResultObject{
     /**
-     * Ñ§ÉúID
+     * ID
      */
     private String id;
+    /**
+     * ID
+     */
+    private String studentId;
     /**
      * CSCID
      */
     private String cscId;
     /**
-     * »¤ÕÕĞÕÃû
+     * æŠ¤ç…§å§“å
      */
     private String passportName;
     /**
-     * ĞÔ±ğ
+     * æ€§åˆ«
      */
     private String gender;
     /**
-     * ³öÉúÈÕÆÚ
+     * å‡ºç”Ÿæ—¥æœŸ
      */
     private Date birthday;
 
     /**
-     * Ñ§¼®ĞÅÏ¢
-     * Ö¤¼şºÅÂë
+     * å­¦ç±ä¿¡æ¯
+     * è¯ä»¶å·ç 
      */
     private String certificateNO;
+
     /**
-     * Ñ§¼®ĞÅÏ¢
-     * Ñ§ÉúÀà±ğ
-     */
-    private String studentType;
-    /**
-     * ¹ú¼®
+     * å›½ç±
      */
     private String country;
 
     /**
-     * Ñ§¼®ĞÅÏ¢
-     * ±¨µ½×´Ì¬£¨0Î´´¦Àí 1±¨µ½ 2·ÅÆúÀ´»ª£©
+     *æœºç¥¨ç±»å‹ 0å¾€è¿” 1å›å›½
      */
-    private String registerState;
 
+    private String type;
+    /**
+     *èˆªçº¿
+     */
+
+    private String airLine;
+    /**
+     *æœºç¥¨å·ç 
+     */
+    private String ticketNo;
+    /**
+     *ç”³è¯·ä¹˜æœºæ—¥æœŸ
+     */
+    private Date applyDate;
+    /**
+     *ä¹˜æœºæ—¥æœŸ
+     */
+    private Date flightDate;
+    /**
+     *ç¦»å¢ƒåŸå¸‚
+     */
+    private String leaveCity;
+    /**
+     *æœºç¥¨ä»·æ ¼ï¼ˆå…ƒï¼‰
+     */
+    private long price;
+    /**
+     *è®¢ç¥¨çŠ¶æ€ï¼š
+     * å·²æäº¤ï¼ˆåŒæœªå¯¼å‡ºï¼‰ã€æœªæäº¤ã€å·²å¯¼å‡ºã€
+     * åŸºé‡‘å§”å·²ä¿®æ”¹<æŒ‡æœªé€šè¿‡æ­£å¸¸è®¢ç¥¨æµç¨‹ï¼Œç”±åŸºé‡‘å§”ç›´æ¥é€šè¿‡å­¦ç±ä¿¡æ¯ä¿®æ”¹å®Œæˆ>
+     *     æˆ–å·²åé¦ˆ<å¯¼å…¥èˆªç©ºå…¬å¸åé¦ˆä¿¡æ¯>
+     */
+    private String state;
+
+    /**
+     *å¤‡æ³¨
+     */
+    private String remark;
+
+    /**
+     *åˆ›å»ºäºº
+     */
+    private String createBy;
+
+    /**
+     *åˆ›å»ºæ—¶é—´
+     */
+    private Date created;
+    /**
+     *ä¿®æ”¹äºº
+     */
+    private String updateBy;
+
+    /**
+     *ä¿®æ”¹æ—¶é—´
+     */
+    private Date updated;
+
+    public TicketResultObject(String id, String studentId,String cscId, String passportName, String gender,
+                              Date birthday, String certificateNO, String country, String type,
+                              String airLine, String ticketNo, Date applyDate, Date flightDate,
+                              String leaveCity, long price, String state, String remark,
+                              String createBy, Date created, String updateBy, Date updated) {
+        this.id = id;
+        this.studentId = studentId;
+        this.cscId = cscId;
+        this.passportName = passportName;
+        this.gender = gender;
+        this.birthday = birthday;
+        this.certificateNO = certificateNO;
+        this.country = country;
+        this.type = type;
+        this.airLine = airLine;
+        this.ticketNo = ticketNo;
+        this.applyDate = applyDate;
+        this.flightDate = flightDate;
+        this.leaveCity = leaveCity;
+        this.price = price;
+        this.state = state;
+        this.remark = remark;
+        this.createBy = createBy;
+        this.created = created;
+        this.updateBy = updateBy;
+        this.updated = updated;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
+    }
+
+    public String getCscId() {
+        return cscId;
+    }
+
+    public void setCscId(String cscId) {
+        this.cscId = cscId;
+    }
+
+    public String getPassportName() {
+        return passportName;
+    }
+
+    public void setPassportName(String passportName) {
+        this.passportName = passportName;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getCertificateNO() {
+        return certificateNO;
+    }
+
+    public void setCertificateNO(String certificateNO) {
+        this.certificateNO = certificateNO;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getAirLine() {
+        return airLine;
+    }
+
+    public void setAirLine(String airLine) {
+        this.airLine = airLine;
+    }
+
+    public String getTicketNo() {
+        return ticketNo;
+    }
+
+    public void setTicketNo(String ticketNo) {
+        this.ticketNo = ticketNo;
+    }
+
+    public Date getApplyDate() {
+        return applyDate;
+    }
+
+    public void setApplyDate(Date applyDate) {
+        this.applyDate = applyDate;
+    }
+
+    public Date getFlightDate() {
+        return flightDate;
+    }
+
+    public void setFlightDate(Date flightDate) {
+        this.flightDate = flightDate;
+    }
+
+    public String getLeaveCity() {
+        return leaveCity;
+    }
+
+    public void setLeaveCity(String leaveCity) {
+        this.leaveCity = leaveCity;
+    }
+
+    public long getPrice() {
+        return price;
+    }
+
+    public void setPrice(long price) {
+        this.price = price;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public String getUpdateBy() {
+        return updateBy;
+    }
+
+    public void setUpdateBy(String updateBy) {
+        this.updateBy = updateBy;
+    }
+
+    public Date getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(Date updated) {
+        this.updated = updated;
+    }
+    public static String getResultObject() {
+        /**
+         * String id, String cscId, String passportName, String gender,
+         Date birthday, String certificateNO, String country, String type,
+         String airLine, String ticketNo, Date applyDate, Date flightDate,
+         String leaveCity, long price, String state, String remark,
+         String createBy, Date created, String userName, Date updated
+         */
+        String resultSql = "select new gov.gwssi.csc.scms.domain.query.TicketResultObject(ticket.id,student.id, student.cscId, basicInfo.passportName,basicInfo.gender, " +
+                "basicInfo.birthday,schoolRoll.certificateNO,basicInfo.country,ticket.type,ticket.airLine,ticket.ticketNo," +
+                "  ticket.applyDate,ticket.flightDate,ticket.leaveCity,ticket.price,ticket.state,ticket.remark," +
+                "ticket.createBy,ticket.created,ticket.updateBy,ticket.updated) ";
+        return resultSql;
+    }
 }
