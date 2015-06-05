@@ -1,0 +1,25 @@
+package gov.gwssi.csc.scms.utils;
+
+import com.auth0.jwt.JWTVerifier;
+
+import java.util.Map;
+
+/**
+ * Created by Lei on 2015/6/5.
+ */
+public class JWTUtil {
+
+    private static String TOKEN_SECRET = "We need Wang Zhenghua to save the world!";
+
+    public static Map<String, Object> decode(String secretStr) {
+        try {
+            byte[] secret = TOKEN_SECRET.getBytes();
+            Map<String, Object> decodedPayload =
+                    new JWTVerifier(secret).verify(secretStr);
+            return decodedPayload;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+}

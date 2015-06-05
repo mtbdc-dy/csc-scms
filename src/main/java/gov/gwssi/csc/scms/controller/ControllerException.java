@@ -10,7 +10,7 @@ import java.util.Arrays;
  * 处理全局controller异常
  */
 @ControllerAdvice(annotations = RestController.class)
-public class ControllerExcettion {
+public class ControllerException {
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
