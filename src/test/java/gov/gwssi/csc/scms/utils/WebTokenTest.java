@@ -9,13 +9,13 @@ import java.util.Map;
  */
 public class WebTokenTest {
 
-
     @Test
-    public void tokenTest() {
-        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ";
+    public void tokenTest () {
+        String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJyb290IiwiZW1haWwiOiJ5bmguMkBvdXRsb29rLmNvbSIsInBpY3R1cmUiOiIvYXBpL3VzZXJzL3VuZGVmaW5lZC9waWN0dXJlIiwiaWF0IjoxNDMzNzQyNjk5LCJleHAiOjE0NDE1MTg2OTl9._Ec-OjrF1sXCEjapDzx6B5e8Mb9Jn-rXsrLZb199pgI";
 
-        Map map = JWTUtil.decode(token);
-
-        System.out.println("name:" + map.get("name"));
+        Map<String, Object> map = JWTUtil.decode(token);
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            System.out.println(entry.getKey() + " :: " + entry.getValue());
+        }
     }
 }
