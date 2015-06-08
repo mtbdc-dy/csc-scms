@@ -215,7 +215,7 @@ public class UserController {
         if (map == null)
             throw new RequestHeaderError("can not read the header message!");
 
-        Object userId = map.get("name");
+        Object userId = map.get("userId");
         if (userId == null)
             throw new RequestHeaderError("can not read the invalid message!");
 
