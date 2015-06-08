@@ -116,7 +116,7 @@ public static final String LEAVEDATA_STUDENT_CONDITION = " and sysdate >= TO_DAT
 
     }
 
-    private String getUserFilter(User user) {
+    public String getUserFilter(User user) {
         //用户类别：1基金委；2学校；
         String userType = user.getUserType();
 
