@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -34,24 +35,37 @@ public class TicketService extends BaseService {
     private OperationLogService operationLogService;
     @Autowired
     private TicketDAO ticketDAO;
-    public List<TicketResultObject> getTicketListByFilter(FilterObject filterObject,User user) {
+    //生成机票管理清单
+    public List<TicketResultObject> getTicketList(User user) {
         List ticketList;
+        List listParameter = new ArrayList();
         List<TicketResultObject> ticketResultObjectList;
-        TicketResultObject ticketResultObject = null;
         Ticket ticket = new Ticket();
-        ticketList = ticketDAO.getStudentList(user);
-        for(int i=0;i<ticketList.size();i++){
-            //ticketResultObject = (TicketResultObject) ticketList.get(i);
-            HashMap hashMap = (HashMap) ticketList.get(i);
-            ticket.setState("1");
-           // ticket.setId(getBaseDao().getIdBySequence("SEQ_AIRTICKET"));
-            //ticket.setStudentId(ticketResultObject.getId());
-            ticket.setStudentId((String) hashMap.get("ID"));
-            ticket.setType((String) hashMap.get("TRAVELTYPE"));
-            Timestamp ts = new Timestamp(System.currentTimeMillis());
-            ticket.setCreated(ts);
-            saveTicket(ticket, null);
+        listParameter.add(user.getUserId());
+        ticketDAO.doSt("p_scms_airticket",listParameter);//调用存储生成当年需要预定的机票记录
+        int startPosition, pageSize;
+
+        String sql = getSql(user);
+        if (sql == null) {
+            return null;
         }
+
+
+            startPosition =FilterObject.OFFSETDEFULT;
+            pageSize =FilterObject.PAGESIZEDEFULT;
+
+
+        ticketResultObjectList = super.getBaseDao().getObjectListByHQL(sql, TicketResultObject.class, startPosition, pageSize);
+        return ticketResultObjectList;
+
+    }
+    //查询获取机票管理列表
+    public List<TicketResultObject> getTicketListByFilter(FilterObject filterObject,User user) {
+
+        List<TicketResultObject> ticketResultObjectList;
+
+
+
         int startPosition, pageSize;
 
         String sql = getSqlByBody(filterObject, user);
@@ -73,6 +87,20 @@ public class TicketService extends BaseService {
 
 
     }
+    //获取当前用户下的机票管理对应的字段数据 不加查询条件的sql
+    private String getSql(User user) {
+        StringBuilder sb = new StringBuilder();
+        StudentFilterObject filterObject = new StudentFilterObject();
+        sb.append(TicketResultObject.getResultObject());
+
+        String tempSql = " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll,Ticket ticket " +
+                "where student.id = basicInfo.student  " +
+                "and student.id = schoolRoll.student   and student.id = ticket.studentId";
+        sb.append(tempSql);
+
+        sb.append(new StudentFilter((StudentFilterObject) filterObject).getUserFilter(user));
+        return sb.toString();
+    }
     //获取机票管理列表对应的字段数据
     private String getSqlByBody(FilterObject filterObject, User user) {
         if (filterObject == null)
@@ -90,13 +118,12 @@ public class TicketService extends BaseService {
         sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter(user));
         return sb.toString();
     }
-    //保存机票管理记录
+    //保存机票管理修改后的值
     @Transactional
-    public void saveTicket(Ticket ticket, List<OperationLog> operationLogs) {
+    public Ticket saveTicket(Ticket ticket, List<OperationLog> operationLogs) {
         //记录日志
         operationLogService.saveOperationLog(operationLogs);
-        ticket.setId(getBaseDao().getIdBySequence("SEQ_AIRTICKET"));
-         ticketRepository.save(ticket);
+        return ticketRepository.save(ticket);
     }
 
 
