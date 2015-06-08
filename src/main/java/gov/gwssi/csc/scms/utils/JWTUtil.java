@@ -13,6 +13,9 @@ public class JWTUtil {
 
     public static Map<String, Object> decode(String secretStr) {
         try {
+            if(secretStr.startsWith("Bearer ")){
+                secretStr = secretStr.substring(7).trim();
+            }
             byte[] secret = TOKEN_SECRET.getBytes();
             Map<String, Object> decodedPayload =
                     new JWTVerifier(secret).verify(secretStr);
