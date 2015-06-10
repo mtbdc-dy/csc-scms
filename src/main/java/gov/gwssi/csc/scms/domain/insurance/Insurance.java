@@ -1,12 +1,9 @@
 package gov.gwssi.csc.scms.domain.insurance;
 
-import gov.gwssi.csc.scms.domain.student.Grade;
 import gov.gwssi.csc.scms.domain.student.Student;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Wang Rui on 2015/4/16.
@@ -43,6 +40,11 @@ public class Insurance {
      */
     @Column(name = "createBy",length=20)
     private String createBy;
+    /**
+     *年度
+     */
+    @Column(name = "year",length=4)
+    private long year;
 
     /**
      *创建时间
@@ -131,5 +133,13 @@ public class Insurance {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public long getYear() {
+        return year;
+    }
+
+    public void setYear(long year) {
+        this.year = year;
     }
 }

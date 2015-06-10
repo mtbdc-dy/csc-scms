@@ -34,10 +34,10 @@ public class UserController {
     @Autowired
     private MenuService menuService;
 
-    private static final String HEADER_USER = "user";
+    private static final String HEADER_AUTHORIZATION = "Authorization";
 
     @RequestMapping(value = "/node", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public List<Node> getNodeTree(@RequestHeader(value = HEADER_USER) String header) {
+    public List<Node> getNodeTree(@RequestHeader(value = HEADER_AUTHORIZATION) String header) {
         try {
             getRootUser(header);
 
@@ -49,7 +49,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/node", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
-    public Node putNode(@RequestHeader(value = HEADER_USER) String header, @RequestBody String nodeStr) {
+    public Node putNode(@RequestHeader(value = HEADER_AUTHORIZATION) String header, @RequestBody String nodeStr) {
         try {
             User user = getRootUser(header);
 
@@ -63,7 +63,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/node", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
-    public Node addNode(@RequestHeader(value = HEADER_USER) String header, @RequestBody String nodeStr) {
+    public Node addNode(@RequestHeader(value = HEADER_AUTHORIZATION) String header, @RequestBody String nodeStr) {
         try {
             User user = getRootUser(header);
 
@@ -77,7 +77,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/node/{nodeId}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
-    public Node deleteNode(@RequestHeader(value = HEADER_USER) String header, @PathVariable String nodeId) {
+    public Node deleteNode(@RequestHeader(value = HEADER_AUTHORIZATION) String header, @PathVariable String nodeId) {
         try {
             User user = getRootUser(header);
 
@@ -89,7 +89,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/menu", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public List<Menu> getMenuTree(@RequestHeader(value = HEADER_USER) String header) {
+    public List<Menu> getMenuTree(@RequestHeader(value = HEADER_AUTHORIZATION) String header) {
         try {
             getRootUser(header);
 
@@ -101,7 +101,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/role", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public List<Role> getRole(@RequestHeader(value = HEADER_USER) String header) {
+    public List<Role> getRole(@RequestHeader(value = HEADER_AUTHORIZATION) String header) {
         try {
             getRootUser(header);
 
@@ -113,7 +113,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/role", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
-    public Role putRole(@RequestHeader(value = HEADER_USER) String header, @RequestBody String roleStr) {
+    public Role putRole(@RequestHeader(value = HEADER_AUTHORIZATION) String header, @RequestBody String roleStr) {
         try {
             User user = getRootUser(header);
 
@@ -126,7 +126,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/role", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
-    public Role addRole(@RequestHeader(value = HEADER_USER) String header, @RequestBody String roleStr) {
+    public Role addRole(@RequestHeader(value = HEADER_AUTHORIZATION) String header, @RequestBody String roleStr) {
         try {
             User user = getRootUser(header);
 
@@ -139,7 +139,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/role/{roleId}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
-    public Role deleteRole(@RequestHeader(value = HEADER_USER) String header, @PathVariable String roleId) {
+    public Role deleteRole(@RequestHeader(value = HEADER_AUTHORIZATION) String header, @PathVariable String roleId) {
         try {
             User user = getRootUser(header);
 
@@ -151,7 +151,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/user/{nodeId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public List<User> getUsers(@RequestHeader(value = HEADER_USER) String header, @PathVariable String nodeId) {
+    public List<User> getUsers(@RequestHeader(value = HEADER_AUTHORIZATION) String header, @PathVariable String nodeId) {
         try {
             getRootUser(header);
 
@@ -163,7 +163,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/user", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
-    public User putUser(@RequestHeader(value = HEADER_USER) String header, @RequestBody String UserStr) {
+    public User putUser(@RequestHeader(value = HEADER_AUTHORIZATION) String header, @RequestBody String UserStr) {
         try {
             User user = getRootUser(header);
 
@@ -176,7 +176,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/user", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
-    public User addUser(@RequestHeader(value = HEADER_USER) String header, @RequestBody String userStr) {
+    public User addUser(@RequestHeader(value = HEADER_AUTHORIZATION) String header, @RequestBody String userStr) {
         try {
             User user = getRootUser(header);
 
@@ -189,7 +189,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/user/{userId}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
-    public void deleteUser(@RequestHeader(value = HEADER_USER) String header, @PathVariable String userId) {
+    public void deleteUser(@RequestHeader(value = HEADER_AUTHORIZATION) String header, @PathVariable String userId) {
         try {
             User user = getRootUser(header);
 
@@ -215,7 +215,7 @@ public class UserController {
         if (map == null)
             throw new RequestHeaderError("can not read the header message!");
 
-        Object userId = map.get("name");
+        Object userId = map.get("userId");
         if (userId == null)
             throw new RequestHeaderError("can not read the invalid message!");
 

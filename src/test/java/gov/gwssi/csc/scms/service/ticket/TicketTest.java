@@ -28,6 +28,14 @@ public class TicketTest extends UnitTestBase {
         System.out.println("list size::" + studentList.size());
     }
     @Test
+    public void getTicketListTest(){
+        TicketService ticketService = super.getBean("ticketService");
+        List<TicketResultObject> ticketResultObjectList = ticketService.getTicketList(null);
+        Assert.assertNotNull(ticketResultObjectList);
+        System.out.println("list size::" + ticketResultObjectList.size());
+
+    }
+    @Test
     public void doStTest(){
         TicketDAO ticketDAO = super.getBean("ticketDAO");
         String name = "p_scms_airticket";
@@ -36,7 +44,7 @@ public class TicketTest extends UnitTestBase {
         ticketDAO.doStatement(name,list);
     }
     @Test
-    public void getTicketListTest() throws JsonProcessingException{
+    public void getTicketListByFilterTest() throws JsonProcessingException{
         TicketService ticketService = super.getBean("ticketService");
         String body = "{\"cscId\" : \"11\" ," +
                 "\"offSet\" : \"0\" , \"pageSize\" : \"2\"}";
