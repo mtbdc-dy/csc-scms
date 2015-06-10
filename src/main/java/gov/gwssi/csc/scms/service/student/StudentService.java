@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -353,8 +354,12 @@ public class StudentService extends BaseService {
         sbIds.deleteCharAt(sbIds.length() - 1);
         sbIds.append(")");
         String leavaReason = null==schoolRoll.getLeaveReason()?"":schoolRoll.getLeaveReason();
-        String sql = " update SCMS_SCHOOLROLL set LEAVECHINA = '1'," +
-                " LEAVEREASON = '"+leavaReason+"', LEAVEDATE = to_date('"+schoolRoll.getLeaveDate()+"','yyyy-mm-dd') " +
+//        Date date=new Date(schoolRoll.getLeaveDate()+"");
+        SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd");
+        String leaveDate = sdf.format(schoolRoll.getLeaveDate());
+        String sql = " update SCMS_SCHOOLROLL set LEAVECHINA = 'BA0002'," +
+                " LEAVEREASON = '"+leavaReason+"', LEAVEDATE = to_date('"+leaveDate+"','yyyy-mm-dd')"+
+               // "LEAVEDATE = to_timestamp('"+schoolRoll.getLeaveDate()+"','yyyy-mm-dd hh24:mi:ss:ff') " +
                 " where studentid in "+sbIds;
         System.out.println(sql);
         getBaseDao().updateBySql(sql);

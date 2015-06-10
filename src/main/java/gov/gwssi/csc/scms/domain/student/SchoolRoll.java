@@ -375,7 +375,7 @@ public class SchoolRoll {
     }
 
     public void setLeaveReason(String leaveReason) {
-        leaveReason = leaveReason;
+        this.leaveReason = leaveReason;
     }
 
     public String getAcademicCertificateNO() {
