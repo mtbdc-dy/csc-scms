@@ -38,7 +38,7 @@ public class TicketController {
         List<TicketResultObject> ticketResultObjectList = ticketService.getTicketList(null);
         return ticketResultObjectList;
     }
-    //学校用户在前台点击机票管理菜单后，返回列表
+    //学校用户在前台点击查询，返回列表
             @RequestMapping(value = "/select",method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
             public List<TicketResultObject> getTicketsByConditions(@RequestParam(value = "filter") String filter, @RequestParam(value = "userId") String userId) {
                 try {
@@ -66,7 +66,7 @@ public class TicketController {
 //        }
     }
     //修改机票管理
-    @RequestMapping(value = "/select",method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
+    @RequestMapping(value = "/save",method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public Ticket modTicket(@RequestBody String ticketJson) {
         try {
             ObjectMapper mapper = new ObjectMapper();
