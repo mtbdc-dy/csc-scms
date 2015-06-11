@@ -9,6 +9,8 @@ import java.util.Map;
  */
 public class JWTUtil {
 
+    public static final String HEADER_AUTHORIZATION = "Authorization";
+
     private static String TOKEN_SECRET = "We need Wang Zhenghua to save the world!";
 
     public static Map<String, Object> decode(String secretStr) {

@@ -34,7 +34,7 @@ public class UserController {
     @Autowired
     private MenuService menuService;
 
-    private static final String HEADER_AUTHORIZATION = "Authorization";
+    private static final String HEADER_AUTHORIZATION = JWTUtil.HEADER_AUTHORIZATION;
 
     @RequestMapping(value = "/node", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<Node> getNodeTree(@RequestHeader(value = HEADER_AUTHORIZATION) String header) {

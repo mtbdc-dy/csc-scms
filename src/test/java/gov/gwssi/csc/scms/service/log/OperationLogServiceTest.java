@@ -2,10 +2,15 @@ package gov.gwssi.csc.scms.service.log;
 
 import gov.gwssi.csc.scms.base.UnitTestBase;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
+import gov.gwssi.csc.scms.domain.user.User;
+import gov.gwssi.csc.scms.service.user.UserService;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,6 +23,24 @@ public class OperationLogServiceTest extends UnitTestBase {
         OperationLogService operationLogService = getBean("operationLogService");
         List<OperationLog> list = operationLogService.saveOperationLog(getList());
         Assert.assertNotNull(list);
+    }
+
+    @Test
+    public void queryByAllcondition() throws NoSupportedUserException, ParseException {
+        OperationLogService operationLogService = getBean("operationLogService");
+        UserService userService = getBean("userService");
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        User user = userService.getUserByUserIdAndEnable("TsingHua", User.ENABLE);
+        List<OperationLog> logs = operationLogService.doQueryWithAllCondition(user,
+                sdf.parse("2015-06-01 00:00:00"), sdf.parse("2015-06-15 23:59:59"), "1", "1");
+
+        Assert.assertNotNull(logs);
+        System.out.println("user message:"+user.getNode().getNodeId());
+        for (OperationLog log : logs) {
+            System.out.println(log.getId() + "::" + log.getMenu());
+        }
     }
 
     private List<OperationLog> getList() {

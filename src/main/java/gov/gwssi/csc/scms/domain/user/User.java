@@ -18,6 +18,10 @@ public class User implements Serializable {
 
     public final static String UNENABLE = "0";
 
+    public final static String CSC_USER = "1";
+
+    public final static String UNIVERSITY_USER = "2";
+
     @Id
     private String id;
     /**
