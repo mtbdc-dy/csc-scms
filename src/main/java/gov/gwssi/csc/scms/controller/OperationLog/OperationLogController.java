@@ -10,10 +10,7 @@ import gov.gwssi.csc.scms.service.user.NoSuchUserException;
 import gov.gwssi.csc.scms.service.user.UserService;
 import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,7 +35,7 @@ public class OperationLogController {
 
     private static final String HEADER_AUTHORIZATION = JWTUtil.HEADER_AUTHORIZATION;
 
-    @RequestMapping("/query/{startTime}/{endTime}/{menuId}/{optType}")
+    @RequestMapping(value = "/query/{startTime}/{endTime}/{menuId}/{optType}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<OperationLog> queryLog(@PathVariable("startTime") String startTime,
                                        @PathVariable("endTime") String endTime,
                                        @PathVariable("menuId") String menuId,
@@ -58,7 +55,7 @@ public class OperationLogController {
         if (map == null)
             throw new RequestHeaderError("can not read the header message!");
 
-        Object userId = map.get("user");
+        Object userId = map.get("userId");
         if (userId == null)
             throw new RequestHeaderError("can not read the invalid message!");
 
@@ -70,7 +67,7 @@ public class OperationLogController {
     }
 
     private List<OperationLog> doQuery(User user, String startTime, String endTime, String menuId, String optType) throws ParseException, LogQueryException, NoSupportedUserException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
         if (isNull(startTime))
             throw new LogQueryException("start time can not be null!");
