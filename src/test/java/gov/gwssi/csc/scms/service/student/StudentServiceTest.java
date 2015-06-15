@@ -177,7 +177,7 @@ public class StudentServiceTest extends UnitTestBase {
         List<OperationLog> list = new ArrayList<OperationLog>();
 
         OperationLog op1 = new OperationLog();
-        op1.setMenu("在校生管理");
+        op1.setModule("在校生管理");
         op1.setTableEN("basicInfo");
         //op1.setColunmEN("passportName");
         op1.setBefore("beForeName");
@@ -186,7 +186,7 @@ public class StudentServiceTest extends UnitTestBase {
         list.add(op1);
 
         OperationLog op2 = new OperationLog();
-        op2.setMenu("离校生管理");
+        op2.setModule("离校生管理");
         op2.setTableEN("relatedAddress");
         //op2.setColunmEN("personName");
         op2.setBefore("beForeAddress");

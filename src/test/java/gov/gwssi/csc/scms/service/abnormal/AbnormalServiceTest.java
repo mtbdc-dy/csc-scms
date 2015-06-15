@@ -115,14 +115,14 @@ public class AbnormalServiceTest  extends UnitTestBase {
          List<OperationLog> list = new ArrayList<OperationLog>();
 
          OperationLog op1 = new OperationLog();
-         op1.setMenu("在校生管理");
+         op1.setModule("在校生管理");
          op1.setTableEN("basicInfo");
          //op1.setColunmEN("passportName");
          op1.setBefore("beForeName");
          op1.setAfter("afterName");
          op1.setStudentId("1");
          op1.setOptType("1");
-         op1.setMenuId("1");
+         op1.setModuleId("1");
          op1.setNodeId("2");
          list.add(op1);
 

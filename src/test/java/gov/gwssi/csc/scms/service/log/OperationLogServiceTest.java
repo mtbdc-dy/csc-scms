@@ -1,5 +1,8 @@
 package gov.gwssi.csc.scms.service.log;
 
+import com.auth0.jwt.internal.com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.base.UnitTestBase;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.user.User;
@@ -10,7 +13,6 @@ import org.junit.Test;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,17 +39,38 @@ public class OperationLogServiceTest extends UnitTestBase {
                 sdf.parse("2015-06-01 00:00:00"), sdf.parse("2015-06-15 23:59:59"), "1", "1");
 
         Assert.assertNotNull(logs);
-        System.out.println("user message:"+user.getNode().getNodeId());
+        System.out.println("user message:" + user.getNode().getNodeId());
         for (OperationLog log : logs) {
-            System.out.println(log.getId() + "::" + log.getMenu());
+            System.out.println(log.getId() + "::" + log.getModule());
         }
+    }
+
+    @Test
+    public void queryByDatecondition() throws NoSupportedUserException, ParseException, JsonProcessingException {
+        OperationLogService operationLogService = getBean("operationLogService");
+        UserService userService = getBean("userService");
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        User user = userService.getUserByUserIdAndEnable("root", User.ENABLE);
+        List<OperationLog> logs = operationLogService.doQueryWithOnlyTime(user,
+                sdf.parse("2015-06-01 00:00:00"), sdf.parse("2015-06-15 23:59:59"));
+
+        Assert.assertNotNull(logs);
+        System.out.println("user message:" + user.getNode().getNodeId());
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        String logStr = mapper.writeValueAsString(logs);
+
+        System.out.println(logStr);
     }
 
     private List<OperationLog> getList() {
         List<OperationLog> list = new ArrayList<OperationLog>();
 
         OperationLog op1 = new OperationLog();
-        op1.setMenu("在校生管理");
+        op1.setModule("在校生管理");
         op1.setTableEN("basicInfo");
         //op1.setColunmEN("passportName");
         op1.setBefore("beForeName");
@@ -56,7 +79,7 @@ public class OperationLogServiceTest extends UnitTestBase {
         list.add(op1);
 
         OperationLog op2 = new OperationLog();
-        op2.setMenu("离校生管理");
+        op2.setModule("离校生管理");
         op2.setTableEN("relatedAddress");
         // op2.setColunmEN("personName");
         op2.setBefore("beForeAddress");

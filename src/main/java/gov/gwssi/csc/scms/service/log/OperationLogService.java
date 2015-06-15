@@ -52,9 +52,9 @@ public class OperationLogService extends BaseService {
 
     public List<OperationLog> doQueryWithMenuId(User user, Date startDate, Date endDate, String menuId) throws NoSupportedUserException {
         if (User.CSC_USER.equals(user.getUserType())) {
-            return operationLogRepository.findByCreateDBetweenAndMenuId(startDate, endDate, menuId);
+            return operationLogRepository.findByCreateDBetweenAndModuleId(startDate, endDate, menuId);
         } else if (User.UNIVERSITY_USER.equals(user.getUserType())) {
-            return operationLogRepository.findByNodeIdAndCreateDBetweenAndMenuId(user.getNode().getNodeId(), startDate, endDate, menuId);
+            return operationLogRepository.findByNodeIdAndCreateDBetweenAndModuleId(user.getNode().getNodeId(), startDate, endDate, menuId);
         } else {
             throw new NoSupportedUserException("log query not support current user!");
         }
@@ -62,9 +62,9 @@ public class OperationLogService extends BaseService {
 
     public List<OperationLog> doQueryWithAllCondition(User user, Date startDate, Date endDate, String menuId, String optType) throws NoSupportedUserException {
         if (User.CSC_USER.equals(user.getUserType())) {
-            return operationLogRepository.findByCreateDBetweenAndMenuIdAndOptType(startDate, endDate, menuId, optType);
+            return operationLogRepository.findByCreateDBetweenAndModuleIdAndOptType(startDate, endDate, menuId, optType);
         } else if (User.UNIVERSITY_USER.equals(user.getUserType())) {
-            return operationLogRepository.findByNodeIdAndCreateDBetweenAndMenuIdAndOptType(user.getNode().getNodeId(), startDate, endDate, menuId, optType);
+            return operationLogRepository.findByNodeIdAndCreateDBetweenAndModuleIdAndOptType(user.getNode().getNodeId(), startDate, endDate, menuId, optType);
         } else {
             throw new NoSupportedUserException("log query not support current user!");
         }

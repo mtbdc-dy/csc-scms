@@ -22,14 +22,13 @@ public class OperationLog {
      */
     private String optType;
     /**
-     * 菜单Id
+     * 业务模块代码
      */
-    private String menuId;
+    private String moduleId;
     /**
-     * 菜单名称：
-     * 报道，注册，在校生学籍管理，自动任务
+     * 业务模块
      */
-    private String menu;
+    private String module;
     /**
      * 学生id
      */
@@ -91,20 +90,20 @@ public class OperationLog {
         this.optType = optType;
     }
 
-    public String getMenuId() {
-        return menuId;
+    public String getModuleId() {
+        return moduleId;
     }
 
-    public void setMenuId(String menuId) {
-        this.menuId = menuId;
+    public void setModuleId(String moduleId) {
+        this.moduleId = moduleId;
     }
 
-    public String getMenu() {
-        return menu;
+    public String getModule() {
+        return module;
     }
 
-    public void setMenu(String menu) {
-        this.menu = menu;
+    public void setModule(String module) {
+        this.module = module;
     }
 
     public String getStudentId() {
