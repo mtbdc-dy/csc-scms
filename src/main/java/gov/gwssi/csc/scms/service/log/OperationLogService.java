@@ -50,21 +50,21 @@ public class OperationLogService extends BaseService {
         }
     }
 
-    public List<OperationLog> doQueryWithMenuId(User user, Date startDate, Date endDate, String menuId) throws NoSupportedUserException {
+    public List<OperationLog> doQueryWithModuleId(User user, Date startDate, Date endDate, String moduleId) throws NoSupportedUserException {
         if (User.CSC_USER.equals(user.getUserType())) {
-            return operationLogRepository.findByCreateDBetweenAndModuleId(startDate, endDate, menuId);
+            return operationLogRepository.findByCreateDBetweenAndModuleId(startDate, endDate, moduleId);
         } else if (User.UNIVERSITY_USER.equals(user.getUserType())) {
-            return operationLogRepository.findByNodeIdAndCreateDBetweenAndModuleId(user.getNode().getNodeId(), startDate, endDate, menuId);
+            return operationLogRepository.findByNodeIdAndCreateDBetweenAndModuleId(user.getNode().getNodeId(), startDate, endDate, moduleId);
         } else {
             throw new NoSupportedUserException("log query not support current user!");
         }
     }
 
-    public List<OperationLog> doQueryWithAllCondition(User user, Date startDate, Date endDate, String menuId, String optType) throws NoSupportedUserException {
+    public List<OperationLog> doQueryWithAllCondition(User user, Date startDate, Date endDate, String moduleId, String optType) throws NoSupportedUserException {
         if (User.CSC_USER.equals(user.getUserType())) {
-            return operationLogRepository.findByCreateDBetweenAndModuleIdAndOptType(startDate, endDate, menuId, optType);
+            return operationLogRepository.findByCreateDBetweenAndModuleIdAndOptType(startDate, endDate, moduleId, optType);
         } else if (User.UNIVERSITY_USER.equals(user.getUserType())) {
-            return operationLogRepository.findByNodeIdAndCreateDBetweenAndModuleIdAndOptType(user.getNode().getNodeId(), startDate, endDate, menuId, optType);
+            return operationLogRepository.findByNodeIdAndCreateDBetweenAndModuleIdAndOptType(user.getNode().getNodeId(), startDate, endDate, moduleId, optType);
         } else {
             throw new NoSupportedUserException("log query not support current user!");
         }

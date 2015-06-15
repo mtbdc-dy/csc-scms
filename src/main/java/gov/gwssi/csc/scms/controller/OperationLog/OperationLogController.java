@@ -35,15 +35,15 @@ public class OperationLogController {
 
     private static final String HEADER_AUTHORIZATION = JWTUtil.HEADER_AUTHORIZATION;
 
-    @RequestMapping(value = "/query/{startTime}/{endTime}/{menuId}/{optType}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public List<OperationLog> queryLog(@PathVariable("startTime") String startTime,
-                                       @PathVariable("endTime") String endTime,
-                                       @PathVariable("menuId") String menuId,
-                                       @PathVariable("optType") String optType,
+    @RequestMapping(value = "/query", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public List<OperationLog> queryLog(@RequestParam("beginTime") String beginTime,
+                                       @RequestParam("endTime") String endTime,
+                                       @RequestParam(value = "moduleId", required = false) String moduleId,
+                                       @RequestParam(value = "optType", required = false) String optType,
                                        @RequestHeader(value = HEADER_AUTHORIZATION) String header) {
         try {
             User user = getUserByHeader(header);
-            return doQuery(user, startTime, endTime, menuId, optType);
+            return doQuery(user, beginTime, endTime, moduleId, optType);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -66,24 +66,24 @@ public class OperationLogController {
         return user;
     }
 
-    private List<OperationLog> doQuery(User user, String startTime, String endTime, String menuId, String optType) throws ParseException, LogQueryException, NoSupportedUserException {
+    private List<OperationLog> doQuery(User user, String beginTime, String endTime, String moduleId, String optType) throws ParseException, LogQueryException, NoSupportedUserException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
-        if (isNull(startTime))
+        if (isNull(beginTime))
             throw new LogQueryException("start time can not be null!");
 
         if (isNull(endTime))
             throw new LogQueryException("end time can not be null!");
 
-        Date startDate = sdf.parse(startTime);
+        Date startDate = sdf.parse(beginTime);
         Date endDate = sdf.parse(endTime);
-        if (isNull(menuId) && isNull(optType)) {
+        if (isNull(moduleId) && isNull(optType)) {
             return doQueryWithOnlyTime(user, startDate, endDate);
-        } else if (isNotNull(menuId) && isNotNull(optType)) {
-            return doQueryWithAllCondition(user, startDate, endDate, menuId, optType);
+        } else if (isNotNull(moduleId) && isNotNull(optType)) {
+            return doQueryWithAllCondition(user, startDate, endDate, moduleId, optType);
         } else {
             if (isNull(optType)) {
-                return doQueryWithMenuId(user, startDate, endDate, menuId);
+                return doQueryWithModuleId(user, startDate, endDate, moduleId);
             } else {
                 return doQueryWithOptType(user, startDate, endDate, optType);
             }
@@ -94,12 +94,12 @@ public class OperationLogController {
         return operationLogService.doQueryWithOptType(user, startDate, endDate, optType);
     }
 
-    private List<OperationLog> doQueryWithMenuId(User user, Date startDate, Date endDate, String menuId) throws NoSupportedUserException {
-        return operationLogService.doQueryWithMenuId(user, startDate, endDate, menuId);
+    private List<OperationLog> doQueryWithModuleId(User user, Date startDate, Date endDate, String moduleId) throws NoSupportedUserException {
+        return operationLogService.doQueryWithModuleId(user, startDate, endDate, moduleId);
     }
 
-    private List<OperationLog> doQueryWithAllCondition(User user, Date startDate, Date endDate, String businessModule, String optType) throws NoSupportedUserException {
-        return operationLogService.doQueryWithAllCondition(user, startDate, endDate, businessModule, optType);
+    private List<OperationLog> doQueryWithAllCondition(User user, Date startDate, Date endDate, String moduleId, String optType) throws NoSupportedUserException {
+        return operationLogService.doQueryWithAllCondition(user, startDate, endDate, moduleId, optType);
     }
 
     private List<OperationLog> doQueryWithOnlyTime(User user, Date startDate, Date endDate) throws NoSupportedUserException {
@@ -107,11 +107,11 @@ public class OperationLogController {
     }
 
     private boolean isNull(String str) {
-        return ("null".equalsIgnoreCase(str));
+        return ("null".equalsIgnoreCase(str) || str == null);
     }
 
     private boolean isNotNull(String str) {
-        return !("null".equalsIgnoreCase(str));
+        return !("null".equalsIgnoreCase(str) || str == null);
     }
 
 }
