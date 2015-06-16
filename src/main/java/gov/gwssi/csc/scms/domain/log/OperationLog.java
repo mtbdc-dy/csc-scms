@@ -34,6 +34,14 @@ public class OperationLog {
      */
     private String studentId;
     /**
+     * cscId
+     */
+    private String cscId;
+    /**
+     * 护照姓名
+     */
+    private String passportName;
+    /**
      * 修改前内容
      */
     private String before;
@@ -112,6 +120,22 @@ public class OperationLog {
 
     public void setStudentId(String studentId) {
         this.studentId = studentId;
+    }
+
+    public String getCscId() {
+        return cscId;
+    }
+
+    public void setCscId(String cscId) {
+        this.cscId = cscId;
+    }
+
+    public String getPassportName() {
+        return passportName;
+    }
+
+    public void setPassportName(String passportName) {
+        this.passportName = passportName;
     }
 
     public String getBefore() {

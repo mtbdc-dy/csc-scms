@@ -1,6 +1,5 @@
 package gov.gwssi.csc.scms.service.log;
 
-import com.auth0.jwt.internal.com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.base.UnitTestBase;
