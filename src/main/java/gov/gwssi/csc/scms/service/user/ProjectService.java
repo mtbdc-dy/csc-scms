@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * Created by Lei on 2015/5/5.
- * 预留功能，暂时未使用
+ * 棰勭暀鍔熻兘锛屾殏鏃舵湭浣跨敤
  */
 @Service("projectService")
 public class ProjectService extends BaseService {

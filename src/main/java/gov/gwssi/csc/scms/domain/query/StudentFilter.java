@@ -95,6 +95,8 @@ public static final String LEAVEDATA_STUDENT_CONDITION = " and sysdate >= TO_DAT
 //                   sb.append();
                }else if("ticket".equals(str[0])){//机票管理时间区间段 当年1月1号至8月31号
                    sb.append(LEAVEDATA_STUDENT_CONDITION);
+               }else if("leavechina".equals(str[0])){//离华管理 默认条件未离华leaveChina !='BA0002'
+                   sb.append(" and schoolRoll.leaveChina !='BA0002'");
                }
             }
         }
