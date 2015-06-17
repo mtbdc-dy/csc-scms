@@ -3,6 +3,7 @@ package gov.gwssi.csc.scms.controller.student;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.controller.JsonBody;
+import gov.gwssi.csc.scms.controller.RequestHeaderError;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.StudentResultObject;
@@ -52,13 +53,13 @@ public class StudentController {
             return studentResultObjects;
         } catch (UnsupportedEncodingException uee) {
             uee.printStackTrace();
-            return null;
+            throw new RuntimeException(uee);
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         } catch (NoSuchUserException e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
@@ -69,7 +70,7 @@ public class StudentController {
             return student;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
@@ -90,7 +91,7 @@ public class StudentController {
             return student;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
@@ -102,7 +103,7 @@ public class StudentController {
             return student;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
@@ -112,7 +113,7 @@ public class StudentController {
             return studentService.getGroupByStudentId(id, group);
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
@@ -135,7 +136,7 @@ public class StudentController {
             //Json转成对象 包含修改后的信息
             Object groupObj = updateStudentGroup(group, jbosy.getValue());
             if (groupObj == null)
-                return null;
+                throw new NoSuchStudentException("cannot find the student for update" );
 
             JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
             List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
@@ -148,7 +149,7 @@ public class StudentController {
             return groupObj;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
@@ -167,9 +168,9 @@ public class StudentController {
             //Json转成对象 包含修改后的信息
             SchoolRoll schoolRoll = mapper.readValue(jbosy.getValue(), SchoolRoll.class);
             if (studentIds == null || studentIds.equals(""))
-                return null;
+                throw new RequestHeaderError("no student is selected!");
             if (schoolRoll == null)
-                return null;
+                throw new NoSuchStudentException("cannot find the student for update" );
 
             JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
             List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
@@ -179,7 +180,7 @@ public class StudentController {
             return null;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
