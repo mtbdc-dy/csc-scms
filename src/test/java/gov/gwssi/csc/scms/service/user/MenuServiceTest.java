@@ -1,5 +1,7 @@
 package gov.gwssi.csc.scms.service.user;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.base.UnitTestBase;
 import gov.gwssi.csc.scms.domain.user.Menu;
 import gov.gwssi.csc.scms.domain.user.Node;
@@ -45,15 +47,21 @@ public class MenuServiceTest extends UnitTestBase {
     }
 
     @Test
-    public void getMenuTreeByRole() {
-        Role role = roleService.getRoleByRoleIdAndEnable("1", Role.ENABLE);
-        Assert.assertNotNull(role);
-        List<Menu> menus = menuService.getMenuByRole(role);
-        Assert.assertNotNull(menus);
+    public void getMenuTreeByRole() throws JsonProcessingException {
+//        Role role = roleService.getRoleByRoleIdAndEnable("1", Role.ENABLE);
+//        Assert.assertNotNull(role);
+//        List<Menu> menus = menuService.getMenuByRole(role);
+//        Assert.assertNotNull(menus);
 
-        System.out.println("menus size: " + menus.size());
-        printMenuTree(menus, "");
+        List<Menu> menus = menuService.getMenuTree();
 
+//        System.out.println("menus size: " + menus.size());
+//        printMenuTree(menus, "");
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        String menuTree = mapper.writeValueAsString(menus);
+        System.out.println(menuTree);
     }
 
     private void printMenuTree(Menu root, String path) {
