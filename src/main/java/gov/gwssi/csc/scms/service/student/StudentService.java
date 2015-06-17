@@ -300,6 +300,7 @@ public class StudentService extends BaseService {
         }
         return des;
     }
+
     @Transactional
     public Object updateGroupByName(String studentId, String groupName, Object groupObj, List<OperationLog> operationLogs) throws Exception {
         //记录日志
