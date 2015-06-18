@@ -39,11 +39,14 @@ public class MenuServiceTest extends UnitTestBase {
     }
 
     @Test
-    public void showTree() {
+    public void showTree() throws JsonProcessingException {
         List<Menu> menus = menuService.getMenuTree();
 
-        System.out.println("menus size :: " + menus.size());
-        printMenuTree(menus, "");
+//        System.out.println("menus size :: " + menus.size());
+//        printMenuTree(menus, "");
+
+        String menuStr = new ObjectMapper().writeValueAsString(menus);
+        System.out.println(menuStr);
     }
 
     @Test
