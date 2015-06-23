@@ -37,7 +37,7 @@ public class StudentController {
      * 学籍信息管理相关操作，获取学生列表
      * 请求信息为Json格式对应的StudentFilterObject类
      */
-    @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;")
     public List<StudentResultObject> getStudentsByConditions(
             @RequestParam(value = "filter") String filter, @RequestParam(value = "userId") String userId) {
         try {
@@ -147,6 +147,35 @@ public class StudentController {
             }
 
             return groupObj;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 新生老生注册功能
+     *
+     * @param studentId
+     * @param mode 区分是注册 还是 放弃来华
+     * @param body 修改后的数据项和日志
+     * @return
+     */
+    @RequestMapping(value = "/register/{studentId}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
+    public String putStudentRegister(@PathVariable(value = "studentId") String studentId,
+                                     @RequestParam(value = "mode") String mode, @RequestBody String body) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonBody jbosy = new ObjectMapper().readValue(body, JsonBody.class);
+            //Json转成对象 包含修改后的信息
+            //SchoolRoll schoolRoll = mapper.readValue(jbosy.getValue(), SchoolRoll.class);
+            if (studentId == null || studentId.equals(""))
+                throw new RequestHeaderError("no student is selected!");
+            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
+            List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
+            studentService.registerorAbandon(mode, studentId, operationLogs);
+
+            return null;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);

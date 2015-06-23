@@ -13,6 +13,8 @@ import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.service.abnormal.AbnormalService;
+import gov.gwssi.csc.scms.service.abnormal.NoSuchAbnormalException;
+import gov.gwssi.csc.scms.service.student.NoSuchStudentException;
 import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.user.NoSuchUserException;
 import gov.gwssi.csc.scms.service.user.UserService;
@@ -45,13 +47,13 @@ public class AbnormalController {
             StudentFilterObject sfo = null;
             sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);
 
-//            User user = userService.getUserByUserId(userId);
-//            if (user == null) {
-//                throw new NoSuchUserException(userId);
-//            }
+           // User user = userService.getUserByUserId(userId);
+            User user = userService.getUserByUserIdAndEnable(userId, User.ENABLE);
+            if (user == null)
+                throw new NoSuchUserException(userId);
 
             //按照分页（默认）要求，返回列表内容
-            List<AbnormalResultObject> abnormalResultObjects = abnormalService.getAbnormalsByFilter(sfo, null);
+            List<AbnormalResultObject> abnormalResultObjects = abnormalService.getAbnormalsByFilter(sfo, user);
             return abnormalResultObjects;
         } catch (UnsupportedEncodingException uee) {
             uee.printStackTrace();
@@ -60,18 +62,19 @@ public class AbnormalController {
             e.printStackTrace();
             return null;
         }
-//        catch (NoSuchUserException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
+        catch (NoSuchUserException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 
 
     //保存新增的异动申请
 
-    @RequestMapping( method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
-    public  Abnormal putAbnormal(@RequestBody String abnormalJson) {
+    @RequestMapping(value = "/{studentId}",  method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
+    public  AbnormalResultObject putAbnormal(@PathVariable(value = "studentId") String studentId,
+                                             @RequestBody String abnormalJson) {
         try {
             ObjectMapper mapper = new ObjectMapper();
 
@@ -79,17 +82,19 @@ public class AbnormalController {
 
             Abnormal abnormal = mapper.readValue(jbosy.getValue(), Abnormal.class);
 
-            if (abnormal == null)
-                return null;
+            if (abnormal == null) {
+                throw new NoSuchAbnormalException("cannot generate the abnormal" );
+            }
+            abnormal.setStudentId(studentId);
 
             JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
             List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
-
-                abnormal = abnormalService.saveAbnormal(abnormal, operationLogs);
-            return abnormal;
+            String id = abnormalService.saveAbnormal(abnormal, operationLogs);
+            AbnormalResultObject  abnormalResult = abnormalService.getAbnormalAndStu(id);
+            return abnormalResult;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
     //修改新增的异动申请

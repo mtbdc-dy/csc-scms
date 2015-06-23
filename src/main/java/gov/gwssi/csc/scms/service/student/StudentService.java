@@ -335,6 +335,25 @@ public class StudentService extends BaseService {
     }
 
     @Transactional
+    public void registerorAbandon(String mode, String studentId, List<OperationLog> operationLogs) throws Exception {
+        //记录日志
+        operationLogService.saveOperationLog(operationLogs);
+        String sql = null;
+        if("register".equals(mode)){
+            sql = " update SCMS_SCHOOLROLL set registed = 'AX0002'," +
+                    " registerState = 'AW0001', registerYear = extract(year from sysdate)"+
+                    " where studentid = '"+studentId +"'";
+        }
+        if("abandon".equals(mode)){
+            sql = " update SCMS_SCHOOLROLL set registerState = 'AW0003'" +
+                    " where studentid = '"+studentId +"'";
+        }
+        System.out.println(sql);
+        getBaseDao().updateBySql(sql);
+    }
+
+
+    @Transactional
     public void leaveChina(String studentIds, SchoolRoll schoolRoll, List<OperationLog> operationLogs) throws Exception {
         //记录日志
         operationLogService.saveOperationLog(operationLogs);

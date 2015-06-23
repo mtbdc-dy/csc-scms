@@ -19,7 +19,9 @@ public class StudentFilterObject extends FilterObject {
     private String projectType = null;//项目类别
     private String projectName = null;//项目名称
     private String registerState = null;//报到状态 0未处理 1报到 2放弃来华
-
+    private String abnormalState = null;//异动处理状态
+    private String abnormalDateBegin = null;//异动申请起始日期
+    private String abnormalDateEnd = null;//异动申请终止日期
     /**
      * 隐藏查询条件
      */
@@ -28,7 +30,7 @@ public class StudentFilterObject extends FilterObject {
     private String travelType = null;//国际旅费
     private String annual = null; //年度
     private String studentType = null;//学生类别
-    private String appropriations = null;//经费办法
+    private String appropriation = null;//经费办法
     private String teachLanguage = null;//授课语言
     private String schoolRollState = null;//学籍状态
     private String arrivalDateBegin = null;//来华时间起始时间
@@ -53,16 +55,18 @@ public class StudentFilterObject extends FilterObject {
         conditions = addCondition(conditions, "basicInfo", "country", "String", getCountry());
         conditions = addCondition(conditions, "basicInfo", "projectType", "String", getProjectType());
         conditions = addCondition(conditions, "basicInfo", "projectName", "String", getProjectName());
-        conditions = addCondition(conditions, "basicInfo", "planted", "String", getPlanned());
+        conditions = addCondition(conditions, "basicInfo", "planned", "String", getPlanned());
         conditions = addCondition(conditions, "basicInfo", "dispatch", "String", getDispatch());
-        conditions = addCondition(conditions, "basicInfo", "travleType", "String", getTravelType());
+        conditions = addCondition(conditions, "basicInfo", "travelType", "String", getTravelType());
         conditions = addCondition(conditions, "basicInfo", "annual", "String", getAnnual());
+        conditions = addCondition(conditions, "abnormal", "state", "String", getAbnormalState());
+        conditions = addCondition(conditions, "abnormal", "applyTime", "date", getAbnormalDateBegin(), getAbnormalDateEnd());
 
         conditions = addCondition(conditions, "schoolRoll", "registerState", "String", getRegisterState());
         conditions = addCondition(conditions, "schoolRoll", "studentType", "String", getStudentType());
-        conditions = addCondition(conditions, "schoolRoll", "appropriations", "String", getAppropriations());
+        conditions = addCondition(conditions, "schoolRoll", "appropriation", "String", getAppropriation());
         conditions = addCondition(conditions, "schoolRoll", "teachLanguage", "String", getTeachLanguage());
-        conditions = addCondition(conditions, "schoolRoll", "schoolrollstate", "String", getSchoolRollState());
+        conditions = addCondition(conditions, "schoolRoll", "state", "String", getSchoolRollState());
         conditions = addCondition(conditions, "schoolRoll", "arrivalDate", "date", getArrivalDateBegin(), getArrivalDateEnd());
         conditions = addCondition(conditions, "schoolRoll", "leaveDate", "date", getLeaveDateBegin(), getLeaveDateEnd());
         conditions = addCondition(conditions, "schoolRoll", "cramDateBegin", "date", getCramDateBeginBegin(), getCramDateBeginEnd());
@@ -133,6 +137,30 @@ public class StudentFilterObject extends FilterObject {
         this.registerState = registerState;
     }
 
+    public String getAbnormalState() {
+        return abnormalState;
+    }
+
+    public void setAbnormalState(String abnormalState) {
+        this.abnormalState = abnormalState;
+    }
+
+    public String getAbnormalDateBegin() {
+        return abnormalDateBegin;
+    }
+
+    public void setAbnormalDateBegin(String abnormalDateBegin) {
+        this.abnormalDateBegin = abnormalDateBegin;
+    }
+
+    public String getAbnormalDateEnd() {
+        return abnormalDateEnd;
+    }
+
+    public void setAbnormalDateEnd(String abnormalDateEnd) {
+        this.abnormalDateEnd = abnormalDateEnd;
+    }
+
     public String getPlanned() {
         return planned;
     }
@@ -173,12 +201,12 @@ public class StudentFilterObject extends FilterObject {
         this.studentType = studentType;
     }
 
-    public String getAppropriations() {
-        return appropriations;
+    public String getAppropriation() {
+        return appropriation;
     }
 
-    public void setAppropriations(String appropriations) {
-        this.appropriations = appropriations;
+    public void setAppropriation(String appropriation) {
+        this.appropriation = appropriation;
     }
 
     public String getTeachLanguage() {

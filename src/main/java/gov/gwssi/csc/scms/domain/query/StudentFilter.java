@@ -9,9 +9,9 @@ import java.util.List;
  * Created by Murray on 2015/4/2.
  */
 public class StudentFilter implements Filter {
-    //新生注册条件 是否报到为“否”
+    //新生注册条件 是否报到不为“是” 且报到状态不为“报到”
     public static final String UNREGISTERED_STUDENT_CONDITION
-            = " and schoolRoll.registed != 'AX0002'";
+            = " and schoolRoll.registed != 'AX0002' and schoolRoll.registerState !='AW0001'";
     //新生注册条件
     /*春季，即1.1（当年）<系统时间<6.30（当年）：
       1.1（当年）<汉补开始时间<6.30（当年），取汉补院校（或）
@@ -40,9 +40,9 @@ public class StudentFilter implements Filter {
         "    TO_DATE(extract(year from sysdate) || '-07-01','yyyy-mm-dd') and" +
         " cast(schoolRoll.majorStartDate as date) <=" +
         "    TO_DATE(extract(year from sysdate) || '-12-31','yyyy-mm-dd')))))");
-    //在校生条件 是否报到为“是”，是否离华为“否” wangrui
+    //在校生条件 是否报到为“是”，是否离华不为“是” 且报到年度不为当年 wangrui
     public static final String INTERNAL_STUDENT_CONDITION
-            = " and schoolRoll.registed = '1' and schoolRoll.leaveChina='0' ";
+            = " and schoolRoll.registed = 'AX0002' and schoolRoll.leaveChina!='BA0002' and REGISTERYEAR <>extract(year from sysdate) ";
 //离华时间 离华时间为当年1月1日-8月31日之间
 public static final String LEAVEDATA_STUDENT_CONDITION = " and sysdate >= TO_DATE(extract(year from sysdate) || '-01-01','yyyy-mm-dd') and sysdate <= TO_DATE(extract(year from sysdate) || '-08-31','yyyy-mm-dd') ";
     private StudentFilterObject filterObject;
