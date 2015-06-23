@@ -1,6 +1,5 @@
 package gov.gwssi.csc.scms.service.student;
 
-import gov.gwssi.csc.scms.dao.BaseDAO;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.FilterObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilter;
@@ -17,12 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by Murray on 4/5/2015.
@@ -83,7 +79,7 @@ public class StudentService extends BaseService {
         int startPosition, pageSize;
 
         String sql = getSqlByBody(filterObject, user);
-        System.out.println("getStudentSql==="+sql);
+        System.out.println("getStudentSql===" + sql);
         if (sql == null) {
             return null;
         }
@@ -107,8 +103,7 @@ public class StudentService extends BaseService {
             return 0;
         }
 
-        int count = super.getBaseDao().getCountObjectByHQL(sql);
-        return count;
+        return super.getBaseDao().getCountObjectByHQL(sql);
     }
 
     private String getCountSqlByBody(FilterObject filterObject, User user) {
@@ -116,31 +111,29 @@ public class StudentService extends BaseService {
             return null;
         }
 
-        StringBuilder sb = new StringBuilder();
         String tempSql = "select count(*) " +
                 "from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll " +
                 "where student.basicInfo = basicInfo.student " +
                 "and student.schoolRoll = schoolRoll.student ";
-        sb.append(tempSql);
 
-        sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter(user));
-        return sb.toString();
+        tempSql += new StudentFilter((StudentFilterObject) filterObject).getFilter(user);
+        return tempSql;
     }
 
     private String getSqlByBody(FilterObject filterObject, User user) {
         if (filterObject == null)
             return null;
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(StudentResultObject.getResultObject());
+        //获取查询结果集
+        String sqlStr = StudentResultObject.getResultObject();
 
-        String tempSql = " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll " +
+        //添加查询实体
+        sqlStr += " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll " +
                 "where student.id = basicInfo.student " +
                 "and student.id = schoolRoll.student ";
-        sb.append(tempSql);
 
-        sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter(user));
-        return sb.toString();
+        //添加查询条件，并返回完整SQL语句
+        return sqlStr + new StudentFilter((StudentFilterObject) filterObject).getFilter(user);
     }
 
     @Transactional
@@ -274,22 +267,22 @@ public class StudentService extends BaseService {
         return null;
     }
 
-    public Object transObj (Object des, Object src) throws Exception{
+    public Object transObj(Object des, Object src) throws Exception {
         try {
-            Field[] srcfields=src.getClass().getDeclaredFields();//需要其中属性值的obj
-            for(Field field:srcfields){ //遍历需要修改的所有属性
-                Field f =des.getClass().getDeclaredField(field.getName());
+            Field[] srcfields = src.getClass().getDeclaredFields();//需要其中属性值的obj
+            for (Field field : srcfields) { //遍历需要修改的所有属性
+                Field f = des.getClass().getDeclaredField(field.getName());
                 field.setAccessible(true);
                 Object value = field.get(src);
-                System.out.println("===value====="+value);
-                if(value!=null){
+                System.out.println("===value=====" + value);
+                if (value != null) {
                     if (f.getType().equals(String.class)) {
                         f.setAccessible(true);
-                        f.set(des,value);
+                        f.set(des, value);
                     } else if (!f.getType().equals(String.class) && !f.getType().equals(Date.class)) {
                         Integer integer = (Integer) value;
                         f.setAccessible(true);
-                        f.set(des,integer);
+                        f.set(des, integer);
                     }
                 }
 
@@ -306,35 +299,35 @@ public class StudentService extends BaseService {
         //记录日志
         operationLogService.saveOperationLog(operationLogs);
         Object des = getGroupByStudentId(studentId, groupName);
-        System.out.println("obj==============="+des);
+        System.out.println("obj===============" + des);
         if ("basicInfo".equalsIgnoreCase(groupName)) {
-            BasicInfo basicInfo = (BasicInfo)transObj(des, groupObj);
-            basicInfo = basicInfoService.updateBasicInfo((BasicInfo) basicInfo);
+            BasicInfo basicInfo = (BasicInfo) transObj(des, groupObj);
+            basicInfo = basicInfoService.updateBasicInfo(basicInfo);
             return setNullByField(basicInfo, "student", BasicInfo.class);
         }
         if ("schoolRoll".equalsIgnoreCase(groupName)) {
-            SchoolRoll schoolRoll = (SchoolRoll)transObj(des, groupObj);
-            schoolRoll = schoolRollService.updateSchoolRoll((SchoolRoll) schoolRoll);
+            SchoolRoll schoolRoll = (SchoolRoll) transObj(des, groupObj);
+            schoolRoll = schoolRollService.updateSchoolRoll(schoolRoll);
             return setNullByField(schoolRoll, "student", SchoolRoll.class);
         }
         if ("registrationInfo".equalsIgnoreCase(groupName)) {
-            RegistrationInfo registrationInfo = (RegistrationInfo)transObj(des, groupObj);
-            registrationInfo = registrationInfoService.updateRegistrationInfo((RegistrationInfo) registrationInfo);
+            RegistrationInfo registrationInfo = (RegistrationInfo) transObj(des, groupObj);
+            registrationInfo = registrationInfoService.updateRegistrationInfo(registrationInfo);
             return setNullByField(registrationInfo, "student", RegistrationInfo.class);
         }
         if ("profilesHistory".equalsIgnoreCase(groupName)) {
-            ProfilesHistory profilesHistory = (ProfilesHistory)transObj(des, groupObj);
-            profilesHistory = profilesHistoryService.updateProfilesHistory((ProfilesHistory) profilesHistory);
+            ProfilesHistory profilesHistory = (ProfilesHistory) transObj(des, groupObj);
+            profilesHistory = profilesHistoryService.updateProfilesHistory(profilesHistory);
             return setNullByField(profilesHistory, "student", ProfilesHistory.class);
         }
         if ("discuss".equalsIgnoreCase(groupName)) {
-            Discuss discuss = (Discuss)transObj(des, groupObj);
-            discuss = discussService.updateDiscuss((Discuss) discuss);
+            Discuss discuss = (Discuss) transObj(des, groupObj);
+            discuss = discussService.updateDiscuss(discuss);
             return setNullByField(discuss, "student", Discuss.class);
         }
         if ("schoolfellow".equalsIgnoreCase(groupName)) {
-            Schoolfellow schoolfellow = (Schoolfellow)transObj(des, groupObj);
-            schoolfellow = schoolfellowService.updateSchoolfellow((Schoolfellow) schoolfellow);
+            Schoolfellow schoolfellow = (Schoolfellow) transObj(des, groupObj);
+            schoolfellow = schoolfellowService.updateSchoolfellow(schoolfellow);
             return setNullByField(schoolfellow, "student", Schoolfellow.class);
         }
 
@@ -346,22 +339,22 @@ public class StudentService extends BaseService {
         //记录日志
         operationLogService.saveOperationLog(operationLogs);
         //studentIds转为('1','2'...)
-        StringBuffer sbIds = new StringBuffer();
-        sbIds.append("(");
-        String ids [] = studentIds.split(",");
-        for(int i=0; i<ids.length; i++){
-            sbIds.append("'").append(ids[i]).append("',");
+        StringBuilder sbIds = new StringBuilder("(");
+
+        String ids[] = studentIds.split(",");
+        for (String id : ids) {
+            sbIds.append("'").append(id).append("',");
         }
-        sbIds.deleteCharAt(sbIds.length() - 1);
-        sbIds.append(")");
-        String leavaReason = null==schoolRoll.getLeaveReason()?"":schoolRoll.getLeaveReason();
+        sbIds.setCharAt(sbIds.length() - 1, ')');
+
+        String leavaReason = null == schoolRoll.getLeaveReason() ? "" : schoolRoll.getLeaveReason();
 //        Date date=new Date(schoolRoll.getLeaveDate()+"");
-        SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String leaveDate = sdf.format(schoolRoll.getLeaveDate());
         String sql = " update SCMS_SCHOOLROLL set LEAVECHINA = 'BA0002'," +
-                " LEAVEREASON = '"+leavaReason+"', LEAVEDATE = to_date('"+leaveDate+"','yyyy-mm-dd')"+
-               // "LEAVEDATE = to_timestamp('"+schoolRoll.getLeaveDate()+"','yyyy-mm-dd hh24:mi:ss:ff') " +
-                " where studentid in "+sbIds;
+                " LEAVEREASON = '" + leavaReason + "', LEAVEDATE = to_date('" + leaveDate + "','yyyy-mm-dd')" +
+                // "LEAVEDATE = to_timestamp('"+schoolRoll.getLeaveDate()+"','yyyy-mm-dd hh24:mi:ss:ff') " +
+                " where studentid in " + sbIds;
         System.out.println(sql);
         getBaseDao().updateBySql(sql);
     }
