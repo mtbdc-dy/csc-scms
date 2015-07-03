@@ -104,6 +104,10 @@ public class TicketResultObject  extends ResultObject{
      *修改时间
      */
     private Date updated;
+    /**
+     *能否修改
+     */
+    private boolean mod;
 
     public TicketResultObject(String id, String studentId,String cscId, String passportName, String gender,
                               Date birthday, String certificateNO, String country, String type,
@@ -131,6 +135,7 @@ public class TicketResultObject  extends ResultObject{
         this.created = created;
         this.updateBy = updateBy;
         this.updated = updated;
+        this.mod = true;
     }
 
     public String getId() {
@@ -300,6 +305,15 @@ public class TicketResultObject  extends ResultObject{
     public void setUpdated(Date updated) {
         this.updated = updated;
     }
+
+    public boolean isMod() {
+        return mod;
+    }
+
+    public void setMod(boolean mod) {
+        this.mod = mod;
+    }
+
     public static String getResultObject() {
         /**
          * String id, String cscId, String passportName, String gender,

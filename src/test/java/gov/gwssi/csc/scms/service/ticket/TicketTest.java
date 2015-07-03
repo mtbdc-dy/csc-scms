@@ -4,15 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.base.UnitTestBase;
 import gov.gwssi.csc.scms.dao.ticket.TicketDAO;
-import gov.gwssi.csc.scms.domain.query.FilterObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.TicketResultObject;
-import gov.gwssi.csc.scms.domain.student.Student;
-import gov.gwssi.csc.scms.domain.ticket.Ticket;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +39,13 @@ public class TicketTest extends UnitTestBase {
         String name = "p_scms_airticket";
         List list = new ArrayList();
         list.add("cbf");
-        ticketDAO.doStatement(name,list);
+        ticketDAO.doStatement(name, list);
+    }
+    @Test
+    public void timeTest(){
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        System.out.println("ts=="+ts);
+
     }
     @Test
     public void getTicketListByFilterTest() throws JsonProcessingException{

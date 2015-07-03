@@ -1,4 +1,4 @@
-package gov.gwssi.csc.scms.service.ticket;
+package gov.gwssi.csc.scms.service.insurance;
 
 import gov.gwssi.csc.scms.dao.ticket.TicketDAO;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
@@ -10,7 +10,6 @@ import gov.gwssi.csc.scms.domain.ticket.Ticket;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.ticket.TicketRepository;
 import gov.gwssi.csc.scms.service.BaseService;
-import gov.gwssi.csc.scms.service.log.OperationLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -21,15 +20,14 @@ import java.util.List;
 
 /**
  * Created by lzs on 2015/5/29.
- * 机票管理服务类
+ * 保险服务类
  */
-@Service("ticketService")
-public class TicketService extends BaseService {
+@Service("insuranceService")
+public class InsuranceService extends BaseService {
     @Autowired
     @Qualifier("ticketRepository")
     private TicketRepository ticketRepository;
-    @Autowired
-    private OperationLogService operationLogService;
+
     @Autowired
     private TicketDAO ticketDAO;
     //生成机票管理清单
@@ -59,7 +57,7 @@ public class TicketService extends BaseService {
     //查询获取机票管理列表
     public List<TicketResultObject> getTicketListByFilter(FilterObject filterObject,User user) {
 
-        List<TicketResultObject> ticketResultObjectList,ticketResultObjectNewList = null;
+        List<TicketResultObject> ticketResultObjectList;
 
 
 
@@ -80,15 +78,7 @@ public class TicketService extends BaseService {
         }
 
         ticketResultObjectList = super.getBaseDao().getObjectListByHQL(sql, TicketResultObject.class, startPosition, pageSize);
-
-        if(ticketResultObjectList.size()>0){
-           for(int i = 0;i<ticketResultObjectList.size();i++){
-               TicketResultObject ticketResultObject = ticketResultObjectList.get(i);
-               ticketResultObject.setMod(true);
-               ticketResultObjectNewList.add(ticketResultObject);
-           }
-       }
-        return ticketResultObjectNewList;
+        return ticketResultObjectList;
 
 
     }
@@ -124,11 +114,11 @@ public class TicketService extends BaseService {
         return sb.toString();
     }
     //保存机票管理修改后的值
-    @Transactional
-    public Ticket saveTicket(Ticket ticket, List<OperationLog> operationLogs) {
-        //记录日志
-        operationLogService.saveOperationLog(operationLogs);
-        return ticketRepository.save(ticket);
+        @Transactional
+        public Ticket saveTicket(Ticket ticket, List<OperationLog> operationLogs) {
+            //记录日志
+
+            return ticketRepository.save(ticket);
     }
 
 
