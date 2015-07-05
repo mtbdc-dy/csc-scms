@@ -72,6 +72,17 @@ public class Scholarship {
      */
     @Column(name = "SCHOOLSTA",length=1)
     private String schoolSta;
+    /**
+     *学校评审提交日期
+     */
+    @Column(name = "SCHOOLDATE")
+    private Date schoolDate;
+
+    /**
+     *基金委批复日期
+     */
+    @Column(name = "CSCDATE")
+    private Date cscDate;
 
     public String getId() {
         return id;
@@ -159,5 +170,21 @@ public class Scholarship {
 
     public void setSchoolSta(String schoolSta) {
         this.schoolSta = schoolSta;
+    }
+
+    public Date getSchoolDate() {
+        return schoolDate;
+    }
+
+    public void setSchoolDate(Date schoolDate) {
+        this.schoolDate = schoolDate;
+    }
+
+    public Date getCscDate() {
+        return cscDate;
+    }
+
+    public void setCscDate(Date cscDate) {
+        this.cscDate = cscDate;
     }
 }

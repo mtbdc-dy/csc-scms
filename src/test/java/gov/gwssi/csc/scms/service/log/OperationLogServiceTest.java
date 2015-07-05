@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.base.UnitTestBase;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.user.User;
+import gov.gwssi.csc.scms.service.user.NoSuchUserException;
 import gov.gwssi.csc.scms.service.user.UserService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,7 +28,7 @@ public class OperationLogServiceTest extends UnitTestBase {
     }
 
     @Test
-    public void queryByAllcondition() throws NoSupportedUserException, ParseException {
+    public void queryByAllcondition() throws NoSupportedUserException, ParseException, NoSuchUserException {
         OperationLogService operationLogService = getBean("operationLogService");
         UserService userService = getBean("userService");
 
@@ -45,7 +46,7 @@ public class OperationLogServiceTest extends UnitTestBase {
     }
 
     @Test
-    public void queryByDatecondition() throws NoSupportedUserException, ParseException, JsonProcessingException {
+    public void queryByDatecondition() throws NoSupportedUserException, ParseException, JsonProcessingException, NoSuchUserException {
         OperationLogService operationLogService = getBean("operationLogService");
         UserService userService = getBean("userService");
 

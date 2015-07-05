@@ -29,6 +29,7 @@ public class MenuService extends BaseService {
 
     public List<Menu> getMenuTree() {
         List<Menu> root = menuRepository.findMenuByMenuType(Menu.ROOT_LEVEL);
+
         return setParentNull(root);
     }
 

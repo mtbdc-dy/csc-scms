@@ -1,8 +1,11 @@
 package gov.gwssi.csc.scms.service.student;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.base.UnitTestBase;
+import gov.gwssi.csc.scms.controller.JsonBody;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.StudentResultObject;
@@ -91,9 +94,9 @@ public class StudentServiceTest extends UnitTestBase {
     }
 
     @Test
-    public void getStudentByIdTest() {
+    public void getStudentByIdTest() throws Exception {
         StudentService studentService = getBean("studentService");
-        Student student = studentService.getStudentById("2015050900000000044");
+        Student student = studentService.getStudentById("2015061600000000341");
         Assert.assertNotNull(student);
 
         ObjectMapper mp = new ObjectMapper();
@@ -114,6 +117,63 @@ public class StudentServiceTest extends UnitTestBase {
         stu.getBasicInfo().setChineseName("小红");
         Student stu1 = studentService.saveStudent(stu, null);
         Assert.assertNotNull(stu1);
+    }
+
+    @Test
+    public void updateGroupByName() throws Exception {
+        StudentService studentService = getBean("studentService");
+        String id="2";
+        String body = "{\"value\":\"{\\\"registerState\\\":\\\"123\\\"}\",\"user\":\"11111111\",\"log\":\"[]\"}";
+        String group = "shoolRoll";
+        ObjectMapper mapper = new ObjectMapper();
+        JsonBody jbosy = new ObjectMapper().readValue(body, JsonBody.class);
+        //Json转成对象 包含修改后的信息
+        Object groupObj = updateStudentGroup(group, jbosy.getValue());
+
+        JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
+        List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
+        groupObj = studentService.updateGroupByName(id, group, groupObj, operationLogs);
+    }
+
+    private Object updateStudentGroup(String group, String body) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        Object groupObject = null;
+
+        if ("basicInfo".equalsIgnoreCase(group)) {
+            groupObject = mapper.readValue(body, BasicInfo.class);
+        }
+        if ("schoolRoll".equalsIgnoreCase(group)) {
+            groupObject = mapper.readValue(body, SchoolRoll.class);
+        }
+        if ("registrationInfo".equalsIgnoreCase(group)) {
+            groupObject = mapper.readValue(body, RegistrationInfo.class);
+        }
+        if ("profilesHistory".equalsIgnoreCase(group)) {
+            groupObject = mapper.readValue(body, ProfilesHistory.class);
+        }
+        if ("discuss".equalsIgnoreCase(group)) {
+            groupObject = mapper.readValue(body, Discuss.class);
+        }
+        if ("schoolfellow".equalsIgnoreCase(group)) {
+            groupObject = mapper.readValue(body, Schoolfellow.class);
+        }
+        if ("accident".equalsIgnoreCase(group)) {
+            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, Accident.class);
+            groupObject = mapper.readValue(body, javaType);
+        }
+        if ("relatedAddress".equalsIgnoreCase(group)) {
+            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, RelatedAddress.class);
+            groupObject = mapper.readValue(body, javaType);
+        }
+        if ("grade".equalsIgnoreCase(group)) {
+            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, Grade.class);
+            groupObject = mapper.readValue(body, javaType);
+        }
+        if ("gradeAttachment".equalsIgnoreCase(group)) {
+            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, GradeAttachment.class);
+            groupObject = mapper.readValue(body, javaType);
+        }
+        return groupObject;
     }
 
     private Student getStudentInTest() {

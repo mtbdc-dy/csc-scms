@@ -34,14 +34,18 @@ public class RegStatisticsController {
 
     private static final String HEADER_AUTHORIZATION = JWTUtil.HEADER_AUTHORIZATION;
 
-    @RequestMapping(value = "/query", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public List<RegStatistics> getRegStatistics(@RequestParam(value = "province", required = false) String province,
-                                       @RequestParam(value = "university", required = false) String university,
+    @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
+    public List<RegStatistics> getRegStatistics(@RequestParam("type") String type,
+                                        @RequestParam("province") String province,
+                                       @RequestParam("university") String university,
                                        @RequestParam("arrivalDateBegin") String arrivalDateBegin,
-                                       @RequestParam("arrivalDateEnd") String arrivalDateEnd,
-                                       @RequestHeader(value = HEADER_AUTHORIZATION) String header) {
+                                       @RequestParam("arrivalDateEnd") String arrivalDateEnd) {
         try {
-            return regStatisticsService.getRegStatistics(province, university, arrivalDateBegin, arrivalDateEnd);
+            province = null == province||"null".equals(province)?"":province;
+            university = null == university||"null".equals(university)?"":university;
+            arrivalDateBegin = null == arrivalDateBegin||"null".equals(arrivalDateBegin)?"":arrivalDateBegin.replace("-","");
+            arrivalDateEnd = null == arrivalDateEnd||"null".equals(arrivalDateEnd)?"":arrivalDateEnd.replace("-","");
+            return regStatisticsService.getRegStatistics(type, province, university, arrivalDateBegin, arrivalDateEnd);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);

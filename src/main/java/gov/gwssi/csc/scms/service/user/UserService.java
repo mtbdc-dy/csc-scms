@@ -1,11 +1,13 @@
 package gov.gwssi.csc.scms.service.user;
 
+import gov.gwssi.csc.scms.controller.RequestHeaderError;
 import gov.gwssi.csc.scms.domain.user.Node;
 import gov.gwssi.csc.scms.domain.user.Project;
 import gov.gwssi.csc.scms.domain.user.Role;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.user.UserRepository;
 import gov.gwssi.csc.scms.service.BaseService;
+import gov.gwssi.csc.scms.utils.JWTUtil;
 import gov.gwssi.csc.scms.utils.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Murray on 15/5/2.
@@ -42,14 +45,26 @@ public class UserService extends BaseService {
         return userRepository.findUserByIdAndEnable(id, enable);
     }
 
-    public User getUserByUserIdAndEnable(String userId, String enable) {
+    public User getUserByUserIdAndEnable(String userId, String enable) throws NoSuchUserException{
         return userRepository.findUserByUserIdAndEnable(userId, enable);
     }
 
-    public User checkRootUser(String id) throws NoSuchUserException, UserIdentityError {
-        User user = getUserByIdAndEnable(id, User.ENABLE);
+    public User getRootUser(String header) throws RequestHeaderError, UserIdentityError, NoSuchUserException {
+        Map map = JWTUtil.decode(header);
+        if (map == null)
+            throw new RequestHeaderError("can not read the header message!");
+
+        Object userId = map.get("userId");
+        if (userId == null)
+            throw new RequestHeaderError("can not read the invalid message!");
+
+        return checkRootUser(String.valueOf(userId));
+    }
+
+    public User checkRootUser(String userId) throws NoSuchUserException, UserIdentityError {
+        User user = getUserByUserIdAndEnable(userId, User.ENABLE);
         if (user == null)
-            throw new NoSuchUserException("can not find the enable root user:" + id);
+            throw new NoSuchUserException("can not find the enable root user:" + userId);
 
         if (!Role.ROOT_IDENTITY.equals(user.getRole().getIdentity())) {
             throw new UserIdentityError("not root user!");
@@ -129,13 +144,11 @@ public class UserService extends BaseService {
         return userRepository.findUserByUserId(userId) != null;
     }
 
-    public User userLogin(String userId, String password) throws NoSuchUserException {
-        password = MD5Util.MD5(password);
-        User user = userRepository.findUserByUserIdAndPasswordAndEnable(userId, password, User.ENABLE);
-        initUser(user);
-
+    public User userLogin(String userId) throws NoSuchUserException {
+        User user = userRepository.findUserByUserIdAndEnable(userId, User.ENABLE);
         if (user == null)
             throw new NoSuchUserException();
+        initUser(user);
         return user;
     }
 

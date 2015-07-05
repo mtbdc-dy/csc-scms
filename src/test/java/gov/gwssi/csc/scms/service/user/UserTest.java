@@ -25,7 +25,7 @@ public class UserTest extends UnitTestBase {
     }
 
     @Test
-    public void userProjectsTest() {
+    public void userProjectsTest() throws NoSuchUserException {
         UserService userService = getBean(UserService.class);
 
         User user = userService.getUserByUserIdAndEnable("123", User.ENABLE);

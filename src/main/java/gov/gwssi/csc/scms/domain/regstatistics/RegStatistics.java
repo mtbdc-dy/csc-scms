@@ -7,11 +7,13 @@ import javax.persistence.Table;
 /**
  * Created by Wang Rui on 2015/6/22.
  */
+
 @Entity
 @Table(name = "SCMS_STATS_REGISTER")
 public class RegStatistics {
     @Id
     private String id;
+    private String sameId;
     private String no;
     private String province;
     private String university;
@@ -26,6 +28,14 @@ public class RegStatistics {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getSameId() {
+        return sameId;
+    }
+
+    public void setSameId(String sameId) {
+        this.sameId = sameId;
     }
 
     public String getNo() {
@@ -82,5 +92,11 @@ public class RegStatistics {
 
     public void setUnhandledNum(Integer unhandledNum) {
         this.unhandledNum = unhandledNum;
+    }
+
+    public static String getResultObject() {
+        String resultSql = "select new gov.gwssi.csc.scms.domain.regstatistics.RegStatistics(" +
+                "rs.id, rs.sameId, rs.no, rs.province, rs.university, rs.totalNum, rs.registeredNum, rs.giveUpNum, rs.unhandledNum) ";
+        return resultSql;
     }
 }

@@ -53,8 +53,11 @@ public class StudentService extends BaseService {
     @Autowired
     private OperationLogService operationLogService;
 
-    public Student getStudentById(String id) {
+    public Student getStudentById(String id) throws Exception{
         Student student = studentRepository.findOne(id);
+        if(null == student){
+            throw new Exception("can not find the student" );
+        }
         setNullByField(student.getBasicInfo(), "student", BasicInfo.class);
         setNullByField(student.getSchoolfellow(), "student", Schoolfellow.class);
         setNullByField(student.getDiscuss(), "student", Discuss.class);
@@ -210,7 +213,7 @@ public class StudentService extends BaseService {
         return null;
     }
 
-    public Student deleteStudentById(String studentId, List<OperationLog> operationLogs) {
+    public Student deleteStudentById(String studentId, List<OperationLog> operationLogs) throws Exception{
         Student student = getStudentById(studentId);
         if (student == null)
             return null;

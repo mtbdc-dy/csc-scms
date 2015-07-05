@@ -48,6 +48,9 @@ public class FilterController {
         } catch (UserIdBeingUsedException e) {
             e.printStackTrace();
             return 0;
+        } catch (NoSuchUserException e) {
+            e.printStackTrace();
+            return 0;
         }
     }
 

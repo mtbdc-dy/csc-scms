@@ -21,30 +21,30 @@ public class StudentFilter implements Filter {
      7.1（当年）<专业开始时间<12.31（当年），取专业院校
     */
     public static final StringBuffer FRESH_STUDENT_CONDITION = new StringBuffer(" and ((sysdate >= TO_DATE(extract(year from sysdate) || '-01-01','yyyy-mm-dd') and" +
-        " sysdate < TO_DATE(extract(year from sysdate) || '-06-30','yyyy-mm-dd') and" +
+        " sysdate < TO_DATE(extract(year from sysdate) || '-07-01','yyyy-mm-dd') and" +
         " ((schoolRoll.cramDateBegin >=" +
         "    TO_DATE(extract(year from sysdate) || '-01-01','yyyy-mm-dd') and" +
         " schoolRoll.cramDateBegin <" +
-        "    TO_DATE(extract(year from sysdate) || '-06-30','yyyy-mm-dd')) or" +
+        "    TO_DATE(extract(year from sysdate) || '-07-01','yyyy-mm-dd')) or" +
         " (schoolRoll.majorStartDate >=" +
         "    TO_DATE(extract(year from sysdate) || '-01-01','yyyy-mm-dd') and" +
         " schoolRoll.majorStartDate <" +
-        "    TO_DATE(extract(year from sysdate) || '-06-30','yyyy-mm-dd')))) or" +
-        " (sysdate > TO_DATE(extract(year from sysdate) || '-07-01','yyyy-mm-dd') and" +
-        " sysdate <= TO_DATE(extract(year from sysdate) || '-12-31','yyyy-mm-dd') and" +
-        " ((cast(schoolRoll.cramDateBegin as date) >" +
+        "    TO_DATE(extract(year from sysdate) || '-07-01','yyyy-mm-dd')))) or" +
+        " (sysdate >= TO_DATE(extract(year from sysdate) || '-07-01','yyyy-mm-dd') and" +
+        " sysdate <= add_months(trunc(sysdate,'yyyy'),12) and" +
+        " ((cast(schoolRoll.cramDateBegin as date) >=" +
         "    TO_DATE(extract(year from sysdate) || '-07-01','yyyy-mm-dd') and" +
         " cast(schoolRoll.cramDateBegin as date) <=" +
-        "    TO_DATE(extract(year from sysdate) || '-12-31','yyyy-mm-dd')) or" +
-        " (cast(schoolRoll.majorStartDate as date) >" +
+        "    add_months(trunc(sysdate,'yyyy'),12)) or" +
+        " (cast(schoolRoll.majorStartDate as date) >=" +
         "    TO_DATE(extract(year from sysdate) || '-07-01','yyyy-mm-dd') and" +
         " cast(schoolRoll.majorStartDate as date) <=" +
-        "    TO_DATE(extract(year from sysdate) || '-12-31','yyyy-mm-dd')))))");
+        "    add_months(trunc(sysdate,'yyyy'),12)))))");
     //在校生条件 是否报到为“是”，是否离华不为“是” 且报到年度不为当年 wangrui
     public static final String INTERNAL_STUDENT_CONDITION
             = " and schoolRoll.registed = 'AX0002' and schoolRoll.leaveChina!='BA0002' and REGISTERYEAR <>extract(year from sysdate) ";
 //离华时间 离华时间为当年1月1日-8月31日之间
-public static final String LEAVEDATA_STUDENT_CONDITION = " and sysdate >= TO_DATE(extract(year from sysdate) || '-01-01','yyyy-mm-dd') and sysdate <= TO_DATE(extract(year from sysdate) || '-08-31','yyyy-mm-dd') ";
+public static final String LEAVEDATA_STUDENT_CONDITION = " and sysdate >= TO_DATE(extract(year from sysdate) || '-01-01','yyyy-mm-dd') and sysdate < TO_DATE(extract(year from sysdate) || '-09-01','yyyy-mm-dd') ";
     private StudentFilterObject filterObject;
 
     private List<FilterCell> conditions;

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.controller.JsonBody;
+import gov.gwssi.csc.scms.controller.RequestHeaderError;
 import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.AbnormalResultObject;
@@ -17,7 +18,9 @@ import gov.gwssi.csc.scms.service.abnormal.NoSuchAbnormalException;
 import gov.gwssi.csc.scms.service.student.NoSuchStudentException;
 import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.user.NoSuchUserException;
+import gov.gwssi.csc.scms.service.user.UserIdentityError;
 import gov.gwssi.csc.scms.service.user.UserService;
+import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,14 +44,15 @@ public class AbnormalController {
     private UserService userService;
 
     //学校用户在前台点击异动申请菜单后，返回异动申请列表
-    @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public List<AbnormalResultObject> getAbnormalsByConditions(@RequestParam(value = "filter") String filter, @RequestParam(value = "userId") String userId) {
+    @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
+    public List<AbnormalResultObject> getAbnormalsByConditions(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
+            @RequestParam(value = "filter") String filter, @RequestParam(value = "userId") String userId) {
         try {
             StudentFilterObject sfo = null;
             sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);
 
-           // User user = userService.getUserByUserId(userId);
-            User user = userService.getUserByUserIdAndEnable(userId, User.ENABLE);
+//            User user = userService.getUserByUserIdAndEnable(userId, User.ENABLE);
+            User user = userService.getRootUser(header);
             if (user == null)
                 throw new NoSuchUserException(userId);
 
@@ -57,14 +61,20 @@ public class AbnormalController {
             return abnormalResultObjects;
         } catch (UnsupportedEncodingException uee) {
             uee.printStackTrace();
-            return null;
+            throw new RuntimeException(uee);
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
         catch (NoSuchUserException e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
+        } catch (UserIdentityError userIdentityError) {
+            userIdentityError.printStackTrace();
+            throw new RuntimeException(userIdentityError);
+        } catch (RequestHeaderError requestHeaderError) {
+            requestHeaderError.printStackTrace();
+            throw new RuntimeException(requestHeaderError);
         }
     }
 
@@ -99,36 +109,44 @@ public class AbnormalController {
     }
     //修改新增的异动申请
     @RequestMapping(method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
-    public Abnormal modAbnormal(@RequestBody String abnormalJson) {
+    public AbnormalResultObject modAbnormal(@RequestBody String abnormalJson) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             boolean rv = true;
             JsonBody jbosy = new ObjectMapper().readValue(abnormalJson, JsonBody.class);
             Abnormal abnormal = mapper.readValue(jbosy.getValue(), Abnormal.class);
             if (abnormal == null) {
-                return null;
+                throw new NoSuchAbnormalException("cannot generate the abnormal" );
             } else {
             JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
             List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
             abnormal = abnormalService.updateAbnormal(abnormal, null);
-             return abnormal;
+            //修改成功后返回 修改的该条异动信息 包含学生信息
+            AbnormalResultObject  abnormalResult = abnormalService.getAbnormalAndStu(abnormal.getId());
+            return abnormalResult;
 
         }
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
     //删除异动申请
-            @RequestMapping(value = "/{id}",method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
-            public  Abnormal deleteAbnormal(@PathVariable String id) {
+            @RequestMapping(value = "/{id}/{log}",method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
+            public  Abnormal deleteAbnormal(@PathVariable("id") String id, @PathVariable("log") String log) {
                 try {
-            List<OperationLog> operationLogs = null;
+                    ObjectMapper mapper = new ObjectMapper();
+                    JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
+//                    JsonBody jbosy = new ObjectMapper().readValue(log, JsonBody.class);
+                    List<OperationLog> operationLogs  = mapper.readValue(log, javaType);
                     Abnormal abnormal =  abnormalService.deleteAbnormalById(id, operationLogs);
-                   return abnormal;
+                    if (abnormal == null) {
+                        throw new NoSuchAbnormalException("cannot delete the abnormal" );
+                    }
+                    return abnormal;
                 } catch (Exception e) {
                     e.printStackTrace();
-                    return null;
+                    throw new RuntimeException(e);
         }
     }
 

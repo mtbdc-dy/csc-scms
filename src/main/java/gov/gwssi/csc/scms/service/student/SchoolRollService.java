@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.service.student;
 
 import gov.gwssi.csc.scms.domain.student.SchoolRoll;
+import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.repository.student.SchoolRollRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,15 @@ public class SchoolRollService extends BaseService {
     private SchoolRollRepository schoolRollRepository;
 
     public SchoolRoll getSchoolRollById(String id) {
+        SchoolRoll schoolRoll1 = schoolRollRepository.findOne(id);
         return schoolRollRepository.findOne(id);
     }
 
     public SchoolRoll updateSchoolRoll(SchoolRoll schoolRoll) {
-        schoolRoll.setStudent(getSchoolRollById(schoolRoll.getId()).getStudent());
+        String id = schoolRoll.getId();
+        SchoolRoll sr = getSchoolRollById(schoolRoll.getId());
+        Student student = sr.getStudent();
+       // schoolRoll.setStudent(student);
         return schoolRollRepository.save(schoolRoll);
     }
 

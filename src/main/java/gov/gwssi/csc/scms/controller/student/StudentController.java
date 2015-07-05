@@ -37,13 +37,13 @@ public class StudentController {
      * 学籍信息管理相关操作，获取学生列表
      * 请求信息为Json格式对应的StudentFilterObject类
      */
-    @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;")
+    @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
     public List<StudentResultObject> getStudentsByConditions(
             @RequestParam(value = "filter") String filter, @RequestParam(value = "userId") String userId) {
         try {
             StudentFilterObject sfo = null;
             sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);
-
+            //User user = userService.getUserByUserIdAndEnable(userId, User.ENABLE);
             User user = userService.getUserByUserIdAndEnable(userId, User.ENABLE);
             if (user == null)
                 throw new NoSuchUserException(userId);
@@ -63,7 +63,7 @@ public class StudentController {
         }
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
     public Student getStudentById(@PathVariable(value = "id") String id) {
         try {
             Student student = studentService.getStudentById(id);
@@ -107,7 +107,7 @@ public class StudentController {
         }
     }
 
-    @RequestMapping(value = "/{id}/{group}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    @RequestMapping(value = "/{id}/{group}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
     public Object getStudentGroupById(@PathVariable(value = "id") String id, @PathVariable("group") String group) {
         try {
             return studentService.getGroupByStudentId(id, group);
