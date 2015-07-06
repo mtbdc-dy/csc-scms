@@ -1,13 +1,10 @@
 package gov.gwssi.csc.scms.domain.ticket;
 
-import gov.gwssi.csc.scms.domain.scholarship.ScholarshipDetail;
-import gov.gwssi.csc.scms.domain.student.Student;
-
-import javax.persistence.*;
-import java.math.BigDecimal;
-import java.util.ArrayList;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Wang Rui on 2015/4/16.
@@ -43,6 +40,11 @@ public class Ticket {
      */
     @Column(name = "ticketNo",length=100)
     private String ticketNo;
+    /**
+     *护照有效期
+     */
+    @Column(name = "validdate",length=6)
+    private Date validdate;
     /**
      *申请乘机日期
      */
@@ -100,6 +102,14 @@ public class Ticket {
      */
     @Column(name = "updated")
     private Date updated;
+
+    public Date getValiddate() {
+        return validdate;
+    }
+
+    public void setValiddate(Date validdate) {
+        this.validdate = validdate;
+    }
 
     public String getId() {
         return id;
