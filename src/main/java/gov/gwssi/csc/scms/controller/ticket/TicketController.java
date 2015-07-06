@@ -58,10 +58,10 @@ public class TicketController {
             return ticketResultObjects;
         } catch (UnsupportedEncodingException uee) {
             uee.printStackTrace();
-            return null;
+                    throw new RuntimeException(uee);
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
+                    throw new RuntimeException(e);
         }
 //        catch (NoSuchUserException e) {
 //            e.printStackTrace();
@@ -100,7 +100,7 @@ public class TicketController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
     //学校用户提交机票管理
@@ -135,7 +135,7 @@ public class TicketController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
     }

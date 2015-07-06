@@ -135,7 +135,7 @@ public class TicketResultObject  extends ResultObject{
         this.created = created;
         this.updateBy = updateBy;
         this.updated = updated;
-        this.mod = true;
+
     }
 
     public String getId() {
