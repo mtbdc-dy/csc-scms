@@ -58,13 +58,15 @@ public class RoleService extends BaseService {
 
     public Role saveRole(Role role) {
         return initMenu(roleRepository.save(role));
+//        roleRepository.save(role)
     }
 
     public Role updateRole(Role role, User user) throws NoSuchRoleException {
         Role role1 = getRoleByRoleId(role.getRoleId());
         if (role1 == null)
             throw new NoSuchRoleException("can not find the role with a roleId:" + role.getRoleId());
-        getRealMenu(role);
+        getRealMenu(role);//malei
+
         return doUpdateRole(role, user);
     }
 
@@ -89,18 +91,40 @@ public class RoleService extends BaseService {
     private Role doUpdateRole(Role role, User user) {
         role.setUpdateBy(user.getUserId());
         role.setUpdateDate(new Date());
+//        return saveRole(role);malei
+
         return saveRole(role);
     }
 
     private void getRealMenu(Role role) {
         List<Menu> menus = role.getMenus();
-        List<String> menuIds = new ArrayList<String>(menus.size());
-        for (int index = 0; index < menus.size(); index++) {
-            menuIds.set(index, menus.get(index).getMenuId());
+        List<String> menuIds = new ArrayList<String>();
+        for (Menu menu: menus) {
+            menuIds.add(menu.getMenuId());
+            if(menu.getMenuId().length()>2){
+                for(int i=0; i<menu.getMenuId().length()/2-1; i++ ){
+                    menuIds.add(menu.getMenuId().substring(0,i*2+2));
+                }
+            }
         }
         menus = menuService.getMenusByIds(menuIds);
         role.setMenus(menus);
     }
+//601020
+//    private List<String> zouqi(String menuId) {
+//        List<String> result;
+//
+//        if (menuId.length() > 2){
+//            menuId.substring(0, menuId.length() - 3);
+//        } else {
+//            result.add(menuId);
+//        }
+//        return zouqi(menuId);
+//    }
+//601020
+//6010
+//60
 }
+
 
 

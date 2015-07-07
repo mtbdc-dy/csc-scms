@@ -11,7 +11,9 @@ import gov.gwssi.csc.scms.domain.student.*;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.user.NoSuchUserException;
 import gov.gwssi.csc.scms.service.student.*;
+import gov.gwssi.csc.scms.service.user.UserIdentityError;
 import gov.gwssi.csc.scms.service.user.UserService;
+import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,15 +40,15 @@ public class StudentController {
      * 请求信息为Json格式对应的StudentFilterObject类
      */
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
-    public List<StudentResultObject> getStudentsByConditions(
-            @RequestParam(value = "filter") String filter, @RequestParam(value = "userId") String userId) {
+    public List<StudentResultObject> getStudentsByConditions(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
+            @RequestParam(value = "filter") String filter) {
         try {
             StudentFilterObject sfo = null;
             sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);
-            //User user = userService.getUserByUserIdAndEnable(userId, User.ENABLE);
-            User user = userService.getUserByUserIdAndEnable(userId, User.ENABLE);
-            if (user == null)
-                throw new NoSuchUserException(userId);
+//            User user = userService.getUserByUserIdAndEnable(userId, User.ENABLE);
+            User user = userService.getUserByJWT(header);
+//            if (user == null)
+//                throw new NoSuchUserException(userId);
 
             //按照分页（默认）要求，返回列表内容
             List<StudentResultObject> studentResultObjects = studentService.getStudentsByFilter(sfo, user);
@@ -60,6 +62,12 @@ public class StudentController {
         } catch (NoSuchUserException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
+        } catch (UserIdentityError userIdentityError) {
+            userIdentityError.printStackTrace();
+            throw new RuntimeException(userIdentityError);
+        } catch (RequestHeaderError requestHeaderError) {
+            requestHeaderError.printStackTrace();
+            throw new RuntimeException(requestHeaderError);
         }
     }
 

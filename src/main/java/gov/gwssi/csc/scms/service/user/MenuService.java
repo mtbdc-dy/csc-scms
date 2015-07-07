@@ -44,7 +44,11 @@ public class MenuService extends BaseService {
     }
 
     public List<Menu> getMenuByRole(Role role) {
-        List<Menu> root = menuRepository.findMenuByRoleAndMenuType(role, Menu.ROOT_LEVEL);
+//        List<Menu> root = menuRepository.findMenuByRoleAndMenuType(role, Menu.ROOT_LEVEL);
+        String sql = "select * from PUB_MENU where menuid in" +
+                " (select menuid from PUB_ROLE_MENU where roleid = '"+role.getRoleId()+"')" +
+                " and menutype = '1'";
+        List<Menu> root = getBaseDao().queryTListBySql(sql,Menu.class);
         root = getChildrenMenuByRole(root, role);
         return root;
     }

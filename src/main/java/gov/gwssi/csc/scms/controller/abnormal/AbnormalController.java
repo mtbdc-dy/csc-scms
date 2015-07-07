@@ -46,15 +46,15 @@ public class AbnormalController {
     //学校用户在前台点击异动申请菜单后，返回异动申请列表
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
     public List<AbnormalResultObject> getAbnormalsByConditions(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
-            @RequestParam(value = "filter") String filter, @RequestParam(value = "userId") String userId) {
+            @RequestParam(value = "filter") String filter) {
         try {
             StudentFilterObject sfo = null;
             sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);
 
 //            User user = userService.getUserByUserIdAndEnable(userId, User.ENABLE);
-            User user = userService.getRootUser(header);
-            if (user == null)
-                throw new NoSuchUserException(userId);
+            User user = userService.getUserByJWT(header);
+//            if (user == null)
+//                throw new NoSuchUserException(userId);
 
             //按照分页（默认）要求，返回列表内容
             List<AbnormalResultObject> abnormalResultObjects = abnormalService.getAbnormalsByFilter(sfo, user);

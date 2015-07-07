@@ -49,7 +49,7 @@ public class UserService extends BaseService {
         return userRepository.findUserByUserIdAndEnable(userId, enable);
     }
 
-    public User getRootUser(String header) throws RequestHeaderError, UserIdentityError, NoSuchUserException {
+    public User getUserByJWT(String header) throws RequestHeaderError, UserIdentityError, NoSuchUserException {
         Map map = JWTUtil.decode(header);
         if (map == null)
             throw new RequestHeaderError("can not read the header message!");
@@ -57,26 +57,43 @@ public class UserService extends BaseService {
         Object userId = map.get("userId");
         if (userId == null)
             throw new RequestHeaderError("can not read the invalid message!");
-
-        return checkRootUser(String.valueOf(userId));
+        User user = getUserByUserIdAndEnable(String.valueOf(userId), User.ENABLE);
+        if (user == null)
+            throw new NoSuchUserException("can not find the enable root user");
+        return user;
     }
 
-    public User checkRootUser(String userId) throws NoSuchUserException, UserIdentityError {
-        User user = getUserByUserIdAndEnable(userId, User.ENABLE);
-        if (user == null)
-            throw new NoSuchUserException("can not find the enable root user:" + userId);
+    public User getRootUser(String header) throws RequestHeaderError, UserIdentityError, NoSuchUserException {
+//        Map map = JWTUtil.decode(header);
+//        if (map == null)
+//            throw new RequestHeaderError("can not read the header message!");
+//
+//        Object userId = map.get("userId");
+//        if (userId == null)
+//            throw new RequestHeaderError("can not read the invalid message!");
+        User user = getUserByJWT(header);
+        if (checkRootUser(user)){
 
+        }
+
+        return user;
+    }
+
+    public boolean checkRootUser(User user) throws NoSuchUserException, UserIdentityError {
+//        User user = getUserByUserIdAndEnable(userId, User.ENABLE);
+        if (user == null)
+            throw new NoSuchUserException("can not find the enable root user");
         if (!Role.ROOT_IDENTITY.equals(user.getRole().getIdentity())) {
             throw new UserIdentityError("not root user!");
         }
-        return user;
+        return true;
     }
 
     public User addUser(User user, User loginUser) throws UserIdBeingUsedException, NoSuchRoleException, NoSuchNodeException {
         if (userExists(user.getUserId()))
             throw new UserIdBeingUsedException("this username for new user is used :" + user.getUserId());
         user.setId(getBaseDao().getIdBySequence("seq_user"));
-        user.setPassword(MD5Util.MD5(user.getPassword()));
+        user.setPassword(user.getPassword());
         user.setCreateBy(loginUser.getUserId());
         user.setCreateDate(new Date());
         user.setEnable(User.ENABLE);
