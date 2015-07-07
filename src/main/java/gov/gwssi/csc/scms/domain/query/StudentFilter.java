@@ -55,13 +55,30 @@ public static final String LEAVEDATA_STUDENT_CONDITION = " and sysdate >= TO_DAT
             conditions = filterObject.getConditions();
     }
 
-    private String getConditionFilter(List<FilterCell> condition) {
+    private String getConditionFilter(List<FilterCell> condition,String modleType,String userTpye) {
 
         StringBuilder sb = new StringBuilder();
 
         for (FilterCell fc : condition) {
             String str[] = fc.getValue().split(",");
+if(fc.getType().indexOf("String")==-1&&"ticket".equals(modleType)){
 
+        if("2".equals(userTpye)){//1 基金委用户 2学校用户
+
+                sb.append(" and ").append("ticket").append(".").append("state").append(" in (");
+                sb.append("'AT0001','AT0002','AT0005','AT0003','AT0003')");
+
+        }else if("1".equals(userTpye)){
+
+                sb.append(" and ").append("ticket").append(".").append("state").append(" in (");
+                sb.append("'AT0002','AT0005','AT0003','AT0003')");
+
+        }
+//                        if(str[]){
+//
+//                        }
+
+}
             if ("String".equalsIgnoreCase(fc.getType())) {
                 if (str.length > 1) {
                     sb.append(" and ").append(fc.getTableName()).append(".").append(fc.getColumnName()).append(" in (");
@@ -69,8 +86,30 @@ public static final String LEAVEDATA_STUDENT_CONDITION = " and sysdate >= TO_DAT
                         sb.append("'").append(parm).append("',");
                     }
                     sb.setCharAt(sb.length(), ')');
-                } else {
-                    sb.append(" and ").append(fc.getTableName()).append(".").append(fc.getColumnName()).append(" = '").append(str[0]).append("' ");
+                }else {
+                    if("ticket".equals(modleType)){
+                        if("2".equals(userTpye)){
+
+
+                        if(!"ticket".equals(fc.getTableName())){
+                            sb.append(" and ").append("ticket").append(".").append("state").append(" in (");
+                            sb.append("'AT0001','AT0002','AT0005','AT0003','AT0004')");
+                        }else{
+                            if("AT0006".equals(fc.getValue())){
+                                sb.append(" and ").append("ticket").append(".").append("state").append(" in (");
+                                sb.append("'AT0002','AT0005')");
+                            }
+                        }
+                        }else if("1".equals(userTpye)){
+                            if(!"ticket".equals(fc.getTableName())){
+                                sb.append(" and ").append("ticket").append(".").append("state").append(" in (");
+                                sb.append("'AT0002','AT0005','AT0003','AT0004')");
+                            }
+                        }
+
+                    }else{
+                        sb.append(" and ").append(fc.getTableName()).append(".").append(fc.getColumnName()).append(" = '").append(str[0]).append("' ");
+                        }
                 }
             }
             if ("Date".equalsIgnoreCase(fc.getType())) {
@@ -83,9 +122,9 @@ public static final String LEAVEDATA_STUDENT_CONDITION = " and sysdate >= TO_DAT
             }
             //单独处理mode字段-参数待定
             if ("mode".equalsIgnoreCase(fc.getType())) {
-               if("".equals(str[0])){
+                if ("".equals(str[0])) {
 
-               }else if("abnormal".equals(str[0])){
+                }else if("abnormal".equals(str[0])){
                    //sb.append(" and ").append(fc.getTableName()).append(".").append(fc.getColumnName()).append(" = '").append(str[0]).append("' ");
                }else if("freshregister".equals(str[0])){//新生注册 日期条件和报到状态为“否”
                    sb.append(UNREGISTERED_STUDENT_CONDITION); //是否报到!=“是”
@@ -103,14 +142,14 @@ public static final String LEAVEDATA_STUDENT_CONDITION = " and sysdate >= TO_DAT
         return sb.toString();
     }
 
-    public String getFilter(User user) {
+    public String getFilter(User user,String modleType,String userTpye) {
         if (conditions == null || conditions.isEmpty()) {
             return "";
         }
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append(getConditionFilter(conditions));
+        sb.append(getConditionFilter(conditions,modleType,userTpye));
 
         sb.append(getUserFilter(user));
 
