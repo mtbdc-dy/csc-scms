@@ -41,6 +41,24 @@ echo Hack JPA End
 @REM Hack JPA END
 ```
 
+如果是UNIX系统中则修改`startWeblogic.sh`
+
+```
+# Hack JPA begin
+echo Hack JPA begin
+
+WLS_MODULES="/Users/wangzishi/Oracle/Middleware/modules"
+export WLS_MODULES
+
+PRE_CLASSPATH="${WLS_MODULES}\hibernate-jpa-2.1-api-1.0.0.Final.jar"
+export PRE_CLASSPATH
+
+echo PRE_CLASSPATH=${PRE_CLASSPATH}
+
+echo Hack JPA End
+# Hack JPA END
+```
+
 - 重启`Weblogic`，搞定，收工。
 
 最后，希望还在继续奋斗在Weblogic11g上各种坑的同胞们尽早脱离苦海o(*￣▽￣*)ブ
