@@ -130,6 +130,7 @@ public static final String LEAVEDATA_STUDENT_CONDITION = " and sysdate >= TO_DAT
                 return "";
             if (projects.size() == 1) {
                 sb.append(" and schoolRoll.studentType = '").append(projects.get(0).getProjectId()).append("\' ");
+                return sb.toString();
             } else {
                 StringBuilder tempRight = new StringBuilder();
                 tempRight.append('(');

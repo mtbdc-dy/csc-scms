@@ -3,13 +3,16 @@ package gov.gwssi.csc.scms.controller.ticket;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.controller.JsonBody;
+import gov.gwssi.csc.scms.controller.RequestHeaderError;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.TicketResultObject;
 import gov.gwssi.csc.scms.domain.ticket.Ticket;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.ticket.TicketService;
 import gov.gwssi.csc.scms.service.user.NoSuchUserException;
+import gov.gwssi.csc.scms.service.user.UserIdentityError;
 import gov.gwssi.csc.scms.service.user.UserService;
+import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,26 +36,32 @@ public class TicketController {
     private TicketService ticketService;
     //学校用户在前台点击生成机票管理列表，返回列表
     @RequestMapping(value = "/new",method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public List<TicketResultObject> getTickets(@RequestParam(value = "userId") String userId) throws NoSuchUserException {
-         User user = userService.getUserByUserIdAndEnable("123", "1");
-            if (user == null) {
-                throw new NoSuchUserException(userId);
-            }
+    public List<TicketResultObject> getTickets(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
+        User user = null;
+        try {
+            user = userService.getUserByJWT(header);
+        } catch (RequestHeaderError requestHeaderError) {
+            requestHeaderError.printStackTrace();
+        } catch (UserIdentityError userIdentityError) {
+            userIdentityError.printStackTrace();
+        }
         List<TicketResultObject> ticketResultObjectList = ticketService.getTicketList(user);
         return ticketResultObjectList;
     }
     //学校用户在前台点击查询，返回列表
             @RequestMapping(value = "/select",method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-            public List<TicketResultObject> getTicketsByConditions(@RequestParam(value = "filter") String filter, @RequestParam(value = "userId") String userId) throws NoSuchUserException {
+            public List<TicketResultObject> getTicketsByConditions(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
+                                                                   @RequestParam(value = "filter") String filter, @RequestParam(value = "userId") String userId) throws NoSuchUserException {
                 try {
             StudentFilterObject sfo = null;
             sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);
 
-            User user = userService.getUserByUserIdAndEnable("123", User.ENABLE);
-            if (user == null) {
-                throw new NoSuchUserException(userId);
-            }
-
+//            User user = userService.getUserByUserIdAndEnable(userId, User.ENABLE);
+//            if (user == null) {
+//                throw new NoSuchUserException(userId);
+//            }
+                    User user = userService.getUserByJWT(header);
+                    String userid = user.getUserId();
             //按照分页（默认）要求，返回列表内容
             List<TicketResultObject> ticketResultObjects = ticketService.getTicketListByFilter(sfo,user);
             return ticketResultObjects;
@@ -62,7 +71,13 @@ public class TicketController {
         } catch (IOException e) {
             e.printStackTrace();
                     throw new RuntimeException(e);
-        }
+        } catch (UserIdentityError userIdentityError) {
+                    userIdentityError.printStackTrace();
+                    throw new RuntimeException(userIdentityError);
+                } catch (RequestHeaderError requestHeaderError) {
+                    requestHeaderError.printStackTrace();
+                    throw new RuntimeException(requestHeaderError);
+                }
 //        catch (NoSuchUserException e) {
 //            e.printStackTrace();
 //            return null;
@@ -70,7 +85,7 @@ public class TicketController {
     }
     //修改机票管理
     @RequestMapping(value = "/save",method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
-    public List<Ticket> modTicket(@RequestBody String ticketJson, @RequestParam(value = "userId") String userId) {
+    public List<Ticket> modTicket(@RequestBody String ticketJson,@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) {
         try {
             ObjectMapper mapper = new ObjectMapper();
 
@@ -80,7 +95,7 @@ public class TicketController {
             List<Ticket> newTickets = new ArrayList<Ticket>();
             Ticket ticket = new Ticket();
             Timestamp ts = new Timestamp(System.currentTimeMillis());
-
+            User user = userService.getUserByJWT(header);
             //Ticket ticket = mapper.readValue(jbosy.getValue(), Ticket.class);
             if (tickets.size()==0) {
                 return null;
@@ -89,7 +104,7 @@ public class TicketController {
               //  List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
                 for(int i = 0;i<tickets.size();i++){
                     ticket = tickets.get(i);
-                    ticket.setUpdateBy(userId);
+                    ticket.setUpdateBy(user.getUserId());
                     ticket.setUpdated(ts);
                     Ticket hqTicket = ticketService.saveTicket(ticket, null);
                     newTickets.add(hqTicket);
@@ -105,7 +120,7 @@ public class TicketController {
     }
     //学校用户提交机票管理
     @RequestMapping(value = "/sub",method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
-    public List<Ticket> subTicket(@RequestBody String ticketJson, @RequestParam(value = "userId") String userId) {
+    public List<Ticket> subTicket(@RequestBody String ticketJson,@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) {
         try {
             ObjectMapper mapper = new ObjectMapper();
 
@@ -115,6 +130,7 @@ public class TicketController {
             List<Ticket> newTickets = new ArrayList<Ticket>();
             //Ticket ticket = mapper.readValue(jbosy.getValue(), Ticket.class);
             Ticket ticket = new Ticket();
+            User user = userService.getUserByJWT(header);
             Timestamp ts = new Timestamp(System.currentTimeMillis());
             if (tickets.size()==0) {
                 return null;
@@ -123,9 +139,9 @@ public class TicketController {
                 //  List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
                 for(int i = 0;i<tickets.size();i++){
                     ticket = tickets.get(i);
-                    ticket.setUpdateBy(userId);
+                    ticket.setUpdateBy(user.getUserId());
                     ticket.setUpdated(ts);
-                    ticket.setState("1");//订票状态待修改成对应的代码值
+                    ticket.setState("AT0002");//订票状态待修改成对应的代码值
                     Ticket hqTicket = ticketService.saveTicket(ticket, null);
                     newTickets.add(hqTicket);
                 }

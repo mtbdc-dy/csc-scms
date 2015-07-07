@@ -62,6 +62,10 @@ public class TicketResultObject  extends ResultObject{
      */
     private Date applyDate;
     /**
+     *护照有效日期
+     */
+    private Date validdate;
+    /**
      *乘机日期
      */
     private Date flightDate;
@@ -113,7 +117,7 @@ public class TicketResultObject  extends ResultObject{
                               Date birthday, String certificateNO, String country, String type,
                               String airLine, String ticketNo, Date applyDate, Date flightDate,
                               String leaveCity, long price, String state, String remark,
-                              String createBy, Date created, String updateBy, Date updated) {
+                              String createBy, Date created, String updateBy, Date updated,Date validdate) {
         this.id = id;
         this.studentId = studentId;
         this.cscId = cscId;
@@ -135,7 +139,15 @@ public class TicketResultObject  extends ResultObject{
         this.created = created;
         this.updateBy = updateBy;
         this.updated = updated;
+        this.validdate = validdate;
+    }
 
+    public Date getValiddate() {
+        return validdate;
+    }
+
+    public void setValiddate(Date validdate) {
+        this.validdate = validdate;
     }
 
     public String getId() {
@@ -325,7 +337,7 @@ public class TicketResultObject  extends ResultObject{
         String resultSql = "select new gov.gwssi.csc.scms.domain.query.TicketResultObject(ticket.id,student.id, student.cscId, basicInfo.passportName,basicInfo.gender, " +
                 "basicInfo.birthday,schoolRoll.certificateNO,basicInfo.country,ticket.type,ticket.airLine,ticket.ticketNo," +
                 "  ticket.applyDate,ticket.flightDate,ticket.leaveCity,ticket.price,ticket.state,ticket.remark," +
-                "ticket.createBy,ticket.created,ticket.updateBy,ticket.updated) ";
+                "ticket.createBy,ticket.created,ticket.updateBy,ticket.updated,ticket.validdate) ";
         return resultSql;
     }
 }

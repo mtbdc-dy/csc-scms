@@ -53,6 +53,10 @@ public class TicketService extends BaseService {
 
 
         ticketResultObjectList = super.getBaseDao().getObjectListByHQL(sql, TicketResultObject.class, startPosition, pageSize);
+        for(int i = 0;i<ticketResultObjectList.size();i++){
+            TicketResultObject ticketResultObject = ticketResultObjectList.get(i);
+            System.out.println("价格==="+ticketResultObject.getPrice());
+        }
         return ticketResultObjectList;
 
     }
