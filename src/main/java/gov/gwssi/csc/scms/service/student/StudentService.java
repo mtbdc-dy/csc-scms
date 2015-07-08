@@ -119,7 +119,7 @@ public class StudentService extends BaseService {
                 "where student.basicInfo = basicInfo.student " +
                 "and student.schoolRoll = schoolRoll.student ";
 
-        tempSql += new StudentFilter((StudentFilterObject) filterObject).getFilter(user);
+       // tempSql += new StudentFilter((StudentFilterObject) filterObject).getFilter(user);
         return tempSql;
     }
 
@@ -136,7 +136,7 @@ public class StudentService extends BaseService {
                 "and student.id = schoolRoll.student ";
 
         //添加查询条件，并返回完整SQL语句
-        return sqlStr + new StudentFilter((StudentFilterObject) filterObject).getFilter(user);
+        return sqlStr + new StudentFilter((StudentFilterObject) filterObject).getFilter(user,"","");
     }
 
     @Transactional

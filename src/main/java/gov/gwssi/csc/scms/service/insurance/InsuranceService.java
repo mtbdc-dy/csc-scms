@@ -110,7 +110,7 @@ public class InsuranceService extends BaseService {
                 "and student.id = schoolRoll.student   and student.id = ticket.studentId";
         sb.append(tempSql);
 
-        sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter(user));
+        sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter(user,"",""));
         return sb.toString();
     }
     //保存机票管理修改后的值

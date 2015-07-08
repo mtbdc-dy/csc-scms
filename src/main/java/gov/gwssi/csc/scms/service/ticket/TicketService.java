@@ -70,6 +70,7 @@ public class TicketService extends BaseService {
         int startPosition, pageSize;
 
         String sql = getSqlByBody(filterObject, user);
+        System.out.println("sql=="+sql);
         if (sql == null) {
             return null;
         }
@@ -114,7 +115,7 @@ public class TicketService extends BaseService {
     private String getSqlByBody(FilterObject filterObject, User user) {
         if (filterObject == null)
             return null;
-
+String userType = user.getUserType();
         StringBuilder sb = new StringBuilder();
 
         sb.append(TicketResultObject.getResultObject());
@@ -124,7 +125,7 @@ public class TicketService extends BaseService {
                 "and student.id = schoolRoll.student   and student.id = ticket.studentId";
         sb.append(tempSql);
 
-        sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter(user));
+        sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter(user,"ticket",userType));
         return sb.toString();
     }
     //保存机票管理修改后的值

@@ -7,5 +7,5 @@ import gov.gwssi.csc.scms.domain.user.User;
  */
 public interface Filter {
 
-    String getFilter(User user);
+    String getFilter(User user,String modleType,String userTpye);
 }
