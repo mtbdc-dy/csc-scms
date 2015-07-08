@@ -62,9 +62,6 @@ public class AbnormalController {
         } catch (UnsupportedEncodingException uee) {
             uee.printStackTrace();
             throw new RuntimeException(uee);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
         }
         catch (NoSuchUserException e) {
             e.printStackTrace();
@@ -75,6 +72,9 @@ public class AbnormalController {
         } catch (RequestHeaderError requestHeaderError) {
             requestHeaderError.printStackTrace();
             throw new RuntimeException(requestHeaderError);
+        }catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 

@@ -83,10 +83,6 @@ public class AbnormalService extends BaseService {
         if ("1".equals(userType)) {
             sb.append(" and abnormal.state !='AS0001'");//状态不为 未提交
         }
-        if ("2".equals(userType)) {
-            sb.append(" and schoolRoll.currentUniversity = '").append(user.getNode().getNodeId()).append("' ");
-            return sb.toString();
-        }
         return sb.toString();
     }
 
