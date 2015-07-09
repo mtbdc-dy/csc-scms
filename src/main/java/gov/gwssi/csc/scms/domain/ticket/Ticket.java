@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -63,8 +64,8 @@ public class Ticket {
     /**
      *机票价格（元）
      */
-    @Column(name = "price",length=16)
-    private long price;
+    @Column(name = "price",length=18)
+    private BigDecimal price;
     /**
      *订票状态：
      * 已提交（同未导出）、未提交、已导出、
@@ -183,11 +184,11 @@ public class Ticket {
         this.leaveCity = leaveCity;
     }
 
-    public long getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(long price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

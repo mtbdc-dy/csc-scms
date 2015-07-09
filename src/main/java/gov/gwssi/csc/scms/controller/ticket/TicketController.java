@@ -51,7 +51,7 @@ public class TicketController {
     //学校用户在前台点击查询，返回列表
             @RequestMapping(value = "/select",method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
             public List<TicketResultObject> getTicketsByConditions(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
-                                                                   @RequestParam(value = "filter") String filter, @RequestParam(value = "userId") String userId) throws NoSuchUserException {
+                                                                   @RequestParam(value = "filter") String filter) throws NoSuchUserException {
                 try {
             StudentFilterObject sfo = null;
             sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);

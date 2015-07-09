@@ -58,27 +58,32 @@ public static final String LEAVEDATA_STUDENT_CONDITION = " and sysdate >= TO_DAT
     private String getConditionFilter(List<FilterCell> condition,String modleType,String userTpye) {
 
         StringBuilder sb = new StringBuilder();
-
+int count = 0;
+        for(FilterCell fc : condition){
+            if("String".equalsIgnoreCase(fc.getType())){
+                count++;
+            }
+        }
         for (FilterCell fc : condition) {
             String str[] = fc.getValue().split(",");
-if(fc.getType().indexOf("String")==-1&&"ticket".equals(modleType)){
-
-        if("2".equals(userTpye)){//1 基金委用户 2学校用户
-
-                sb.append(" and ").append("ticket").append(".").append("state").append(" in (");
-                sb.append("'AT0001','AT0002','AT0005','AT0003','AT0003')");
-
-        }else if("1".equals(userTpye)){
-
-                sb.append(" and ").append("ticket").append(".").append("state").append(" in (");
-                sb.append("'AT0002','AT0005','AT0003','AT0003')");
-
-        }
-//                        if(str[]){
+//if(fc.getType().indexOf("String")==-1&&"ticket".equals(modleType)){
 //
-//                        }
-
-}
+//        if("2".equals(userTpye)){//1 基金委用户 2学校用户
+//
+//                sb.append(" and ").append("ticket").append(".").append("state").append(" in (");
+//                sb.append("'AT0001','AT0002','AT0005','AT0003','AT0003')");
+//
+//        }else if("1".equals(userTpye)){
+//
+//                sb.append(" and ").append("ticket").append(".").append("state").append(" in (");
+//                sb.append("'AT0002','AT0005','AT0003','AT0003')");
+//
+//        }
+////                        if(str[]){
+////
+////                        }
+//
+//}
             if ("String".equalsIgnoreCase(fc.getType())) {
                 if (str.length > 1) {
                     sb.append(" and ").append(fc.getTableName()).append(".").append(fc.getColumnName()).append(" in (");
@@ -91,27 +96,32 @@ if(fc.getType().indexOf("String")==-1&&"ticket".equals(modleType)){
                         if("2".equals(userTpye)){
 
 
-                        if(!"ticket".equals(fc.getTableName())){
-                            sb.append(" and ").append("ticket").append(".").append("state").append(" in (");
-                            sb.append("'AT0001','AT0002','AT0005','AT0003','AT0004')");
-                        }else{
+//                        if(!"ticket".equals(fc.getTableName())){
+//                            sb.append(" and ").append("ticket").append(".").append("state").append(" in (");
+//                            sb.append("'AT0001','AT0002','AT0005','AT0003','AT0004')");
+//                        }else{
                             if("AT0006".equals(fc.getValue())){
                                 sb.append(" and ").append("ticket").append(".").append("state").append(" in (");
                                 sb.append("'AT0002','AT0005')");
+                            }else{
+                                sb.append(" and ").append(fc.getTableName()).append(".").append(fc.getColumnName()).append(" = '").append(str[0]).append("' ");
+
                             }
-                        }
+//                        }
                         }else if("1".equals(userTpye)){
-                            if(!"ticket".equals(fc.getTableName())){
-                                sb.append(" and ").append("ticket").append(".").append("state").append(" in (");
-                                sb.append("'AT0002','AT0005','AT0003','AT0004')");
-                            }
+//                            if(!"ticket".equals(fc.getTableName())){
+//                                sb.append(" and ").append("ticket").append(".").append("state").append(" in (");
+//                                sb.append("'AT0002','AT0005','AT0003','AT0004')");
+//                            }
+                            sb.append(" and ").append(fc.getTableName()).append(".").append(fc.getColumnName()).append(" = '").append(str[0]).append("' ");
+
                         }
 
                     }else{
                         sb.append(" and ").append(fc.getTableName()).append(".").append(fc.getColumnName()).append(" = '").append(str[0]).append("' ");
                         }
                 }
-            }
+            }else
             if ("Date".equalsIgnoreCase(fc.getType())) {
                 if (str.length > 1) {
                     sb.append(" and to_char(").append(fc.getTableName()).append(".").append(fc.getColumnName()).append(",'yyyy-mm-dd hh24:mi:ss') between ");
@@ -121,7 +131,7 @@ if(fc.getType().indexOf("String")==-1&&"ticket".equals(modleType)){
                 }
             }
             //单独处理mode字段-参数待定
-            if ("mode".equalsIgnoreCase(fc.getType())) {
+            else if ("mode".equalsIgnoreCase(fc.getType())) {
                 if ("".equals(str[0])) {
 
                 }else if("abnormal".equals(str[0])){
@@ -134,6 +144,24 @@ if(fc.getType().indexOf("String")==-1&&"ticket".equals(modleType)){
 //                   sb.append();
                }else if("ticket".equals(str[0])){//机票管理时间区间段 当年1月1号至8月31号
                    sb.append(LEAVEDATA_STUDENT_CONDITION);
+                    if(count==0&&"ticket".equals(modleType)){
+
+                        if("2".equals(userTpye)){//1 基金委用户 2学校用户
+
+                            sb.append(" and ").append("ticket").append(".").append("state").append(" in (");
+                            sb.append("'AT0001','AT0002','AT0005','AT0003','AT0004')");
+
+                        }else if("1".equals(userTpye)){
+
+                            sb.append(" and ").append("ticket").append(".").append("state").append(" in (");
+                            sb.append("'AT0002','AT0005','AT0003','AT0004')");
+
+                        }
+//                        if(str[]){
+//
+//                        }
+
+                    }
                }else if("leavechina".equals(str[0])){//离华管理 默认条件未离华leaveChina !='BA0002'
                    sb.append(" and schoolRoll.leaveChina !='BA0002'");
                }
