@@ -168,7 +168,7 @@ if(fc.getType().indexOf("String")==-1&&"ticket".equals(modleType)){
             if (projects.size() == 0)
                 return "";
             if (projects.size() == 1) {
-                sb.append(" and schoolRoll.studentType = '").append(projects.get(0).getProjectId()).append("\' ");
+                sb.append(" and basicInfo.projectName = '").append(projects.get(0).getProjectId()).append("\' ");
                 return sb.toString();
             } else {
                 StringBuilder tempRight = new StringBuilder();
@@ -178,7 +178,7 @@ if(fc.getType().indexOf("String")==-1&&"ticket".equals(modleType)){
                 }
                 tempRight.setCharAt(tempRight.length() - 1, ')');
 
-                sb.append(" and schoolRoll.studentType in ").append(tempRight);
+                sb.append(" and basicInfo.projectName in ").append(tempRight);
 
                 return sb.toString();
             }

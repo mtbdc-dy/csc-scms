@@ -82,21 +82,21 @@ public class StudentController {
         }
     }
 
+    /**
+     *根据日志修改学生数据项
+     * @param logJson 日志对象 从日志中获取修改的表和数据项
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
-    public Student putStudent(@PathVariable(value = "id") String id, @RequestBody String studentJson) {
+    public String putStudent(@PathVariable(value = "id") String id, @RequestParam(value = "dbType") String dbType, @RequestBody String logJson) {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            JsonBody jbosy = new ObjectMapper().readValue(studentJson, JsonBody.class);
-
-            Student student = mapper.readValue(jbosy.getValue(), Student.class);
+            OperationLog operationLog = new ObjectMapper().readValue(logJson, OperationLog.class);
+            Student student = studentService.getStudentById(id);
             if (student == null)
                 return null;
 
-            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
-            List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
-
-            student = studentService.saveStudent(student, operationLogs);
-            return student;
+            String after = studentService.saveStudent(dbType,operationLog);
+            return "{\"after\":\""+after+"\"}";
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
