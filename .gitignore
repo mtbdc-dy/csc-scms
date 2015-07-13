@@ -1,4 +1,4 @@
-﻿#忽略路径
+#忽略路径
 out
 g
 build
@@ -14,3 +14,4 @@ bin
 *.iml
 *.class
 build.gradle
+*.war

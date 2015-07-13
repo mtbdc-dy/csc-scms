@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.domain.query;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -76,7 +77,7 @@ public class TicketResultObject  extends ResultObject{
     /**
      *机票价格（元）
      */
-    private long price;
+    private BigDecimal price;
     /**
      *订票状态：
      * 已提交（同未导出）、未提交、已导出、
@@ -116,7 +117,7 @@ public class TicketResultObject  extends ResultObject{
     public TicketResultObject(String id, String studentId,String cscId, String passportName, String gender,
                               Date birthday, String certificateNO, String country, String type,
                               String airLine, String ticketNo, Date applyDate, Date flightDate,
-                              String leaveCity, long price, String state, String remark,
+                              String leaveCity, BigDecimal price, String state, String remark,
                               String createBy, Date created, String updateBy, Date updated,Date validdate) {
         this.id = id;
         this.studentId = studentId;
@@ -262,11 +263,11 @@ public class TicketResultObject  extends ResultObject{
         this.leaveCity = leaveCity;
     }
 
-    public long getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(long price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
