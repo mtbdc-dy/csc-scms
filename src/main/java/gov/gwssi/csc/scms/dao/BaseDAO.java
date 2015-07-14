@@ -234,7 +234,7 @@ public class BaseDAO {
 
 
     /**
-     * 调用存储过程procedure p_scms_d_Statistics(avc_configid in varchar2,avc_result out varchar2)
+     *  调用存储过程procedure p_scms_d_Statistics(avc_configid in varchar2,avc_result out varchar2)
      */
     public String invokeProcedureByProcedureName(String in,String procedureName){
         EntityManager em = null;
