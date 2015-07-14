@@ -7,9 +7,14 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 /**
+<<<<<<< HEAD
  * Created by WangZishi on 4/1/2015.
  * <p/>
  * 配置测试Context
+=======
+ * Created by WangZishi on 3/23/2015.
+ *
+>>>>>>> remotes/origin/native_Hibernate
  */
 //@EnableWebMvc
 @ComponentScan(
