@@ -20,6 +20,6 @@ public class RegionDictServiceTest extends UnitTestBase {
         String jsonData = JsonMapper.getInstance().toJson(list);
         System.out.println(jsonData);
         // 测试获取资源--大洲以及国别
-//        regionDictService.getRegionDictTreeByLevel("2");
+        regionDictService.getRegionDictTreeByLevel("2");
     }
 }
