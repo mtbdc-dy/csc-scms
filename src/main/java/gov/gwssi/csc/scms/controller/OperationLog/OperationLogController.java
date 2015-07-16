@@ -107,7 +107,7 @@ public class OperationLogController {
     }
 
     private boolean isNull(String str) {
-        return ("null".equalsIgnoreCase(str) || str == null);
+        return ("null".equalsIgnoreCase(str) || str == null|| "".equals(str));
     }
 
     private boolean isNotNull(String str) {
