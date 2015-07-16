@@ -44,4 +44,15 @@ public class CodeMainTenanceController {
 
         return allCodeList;
     }
+    //返回代码详细列表
+    @RequestMapping(value = "/detail",method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
+    public String getDetailCode(@RequestParam(value = "id") String id,@RequestParam(value = "tableName") String tableName
+            ,@RequestParam(value = "flag") String flag) {
+        //按照分页（默认）要求，返回列表内容
+        String detailCodeList = null;
+
+        detailCodeList = codeMainTenanceService.findDetailCode(id, tableName, flag);
+
+        return detailCodeList;
+    }
 }

@@ -19,4 +19,12 @@ public class CodeMainTenanceTest extends UnitTestBase {
         Assert.assertNotNull(allCodeList);
         System.out.println(allCodeList.size());
     }
+    @Test
+    public void getDetailCodeTest() {
+        CodeMainTenanceService codeMainTenanceService = getBean("codeMainTenanceService");
+        String allCodeList = null;
+        allCodeList = codeMainTenanceService.findDetailCode("15","","0");
+        Assert.assertNotNull(allCodeList);
+        System.out.println(allCodeList);
+    }
 }

@@ -18,6 +18,9 @@ public class CodeMainTenanceService extends BaseService {
     public List findAllCode(String tableName,String chinaName){
         return codeMainTenanceDAO.getAllCodeList(tableName,chinaName);
     }
+    public String findDetailCode(String id,String tableName,String flag){
+        return codeMainTenanceDAO.getDetailCodeList(id, tableName, flag);
+    }
 
 }
 
