@@ -16,7 +16,7 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("api/codeTable")
+@RequestMapping("/api/codeTable")
 public class SubjectDictController {
     @Autowired
     private SubjectDictService subjectDictService;
