@@ -1,5 +1,8 @@
 package gov.gwssi.csc.scms.controller.codemaintenance;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.gwssi.csc.scms.controller.JsonBody;
+import gov.gwssi.csc.scms.domain.query.CodeDetailResult;
 import gov.gwssi.csc.scms.service.codemaintenance.CodeMainTenanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -46,13 +49,33 @@ public class CodeMainTenanceController {
     }
     //返回代码详细列表
     @RequestMapping(value = "/detail",method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
-    public String getDetailCode(@RequestParam(value = "id") String id,@RequestParam(value = "tableName") String tableName
-            ,@RequestParam(value = "flag") String flag) {
+    public List getDetailCode(@RequestParam(value = "seq") String seq) {
         //按照分页（默认）要求，返回列表内容
-        String detailCodeList = null;
+        List detailCodeList = null;
 
-        detailCodeList = codeMainTenanceService.findDetailCode(id, tableName, flag);
+        detailCodeList = codeMainTenanceService.findDetailCode(seq, "", "");
 
         return detailCodeList;
+    }
+    // 保存修改的代码
+        @RequestMapping(value = "/save",method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
+        public CodeDetailResult saveDetailCode(@RequestBody String codeJson) {
+            //按照分页（默认）要求，返回列表内容
+            String detailCodeList = null;
+            CodeDetailResult codeDetailResult = null;
+            try {
+
+
+            ObjectMapper mapper = new ObjectMapper();
+               // mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            boolean rv = true;
+            JsonBody jbosy = new ObjectMapper().readValue(codeJson, JsonBody.class);
+           codeDetailResult = mapper.readValue(jbosy.getValue(), CodeDetailResult.class);
+                codeDetailResult=  codeMainTenanceService.saveCode(codeDetailResult);
+            }catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+        return codeDetailResult;
     }
 }
