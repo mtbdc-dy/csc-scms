@@ -2,9 +2,6 @@ package gov.gwssi.csc.scms.dao.ticket;
 
 import gov.gwssi.csc.scms.dao.BaseDAO;
 import gov.gwssi.csc.scms.domain.query.StudentFilter;
-import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
-import gov.gwssi.csc.scms.domain.query.TicketResultObject;
-import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.domain.user.User;
 import org.springframework.stereotype.Service;
 
@@ -34,8 +31,9 @@ public class TicketDAO extends BaseDAO {
         return studentList;
     }
     public void doSt(String name, List list){
-        super.doStatement(name,list);
-
+       // super.doStatement(name,list);
+       String str =  super.doStatementForRtn(name,list);
+System.out.println("str  ="+str);
     }
 
 }

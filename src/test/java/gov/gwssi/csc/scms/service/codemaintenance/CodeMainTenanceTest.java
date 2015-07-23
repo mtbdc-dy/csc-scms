@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * Created by think on 2015/7/13.
- * ´úÂëÎ¬»¤²âÊÔÀà
+ * ï¿½ï¿½ï¿½ï¿½Î¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
  */
 public class CodeMainTenanceTest extends UnitTestBase {
     @Test
@@ -23,7 +23,7 @@ public class CodeMainTenanceTest extends UnitTestBase {
     public void getDetailCodeTest() {
         CodeMainTenanceService codeMainTenanceService = getBean("codeMainTenanceService");
         String allCodeList = null;
-        allCodeList = codeMainTenanceService.findDetailCode("15","","0");
+       // allCodeList = codeMainTenanceService.findDetailCode("15","","0");
         Assert.assertNotNull(allCodeList);
         System.out.println(allCodeList);
     }
