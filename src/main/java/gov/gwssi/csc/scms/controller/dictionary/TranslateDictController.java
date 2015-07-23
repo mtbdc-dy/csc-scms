@@ -1,9 +1,9 @@
 package gov.gwssi.csc.scms.controller.dictionary;
 
-import gov.gwssi.csc.scms.domain.dictionary.DictTreeJson;
 import gov.gwssi.csc.scms.domain.dictionary.TranslateDictJson;
 import gov.gwssi.csc.scms.service.dictionary.TranslateDictService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,7 +16,7 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("api/codeTable")
+@RequestMapping("api/codeTable/")
 public class TranslateDictController {
 
     @Autowired
@@ -40,9 +40,33 @@ public class TranslateDictController {
     private final String TRANSLATE_XTPQTJ = "R";
     private final String TRANSLATE_XTYX = "S";
     private final String TRANSLATE_XTSF = "Y";
+    private final String TRANSLATE_BG = "BG";
+
+    @RequestMapping(value = "/{codeTableName}", method = RequestMethod.GET, headers = {"Accept=application/json;"})
+    public List<TranslateDictJson> getCodeTable(@PathVariable String codeTableName) {
+        System.out.println("TranslateDictController.getCodeTable");
+        System.out.println("codeTableName = [" + codeTableName + "]");
+
+        List<TranslateDictJson> list;
+
+        try {
+
+            list = translateDictService.getTranslateDictByClassEn(codeTableName);
+            System.out.println("list = " + list);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            throw new RuntimeException(e);
+
+        }
+
+        return list;
+    }
+
 
     // 获取资源-系统经费标准
-    @RequestMapping(value="xtjfbz",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
+    @RequestMapping(value = "xtjfbz", method = RequestMethod.GET, headers = "Accept=application/json")
     public List<TranslateDictJson> getXtgfbz(){
         List<TranslateDictJson> list = null;
         try{
@@ -268,6 +292,19 @@ public class TranslateDictController {
         List<TranslateDictJson> list = null;
         try{
             list = translateDictService.getTranslateDictByClassId(TRANSLATE_XTSF);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return list;
+    }
+
+    // 获取资源-业务模块
+    @RequestMapping(value="businessModule",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
+    public List<TranslateDictJson> getBusinessModule(){
+        List<TranslateDictJson> list = null;
+        try{
+            list = translateDictService.getTranslateDictByClassId(TRANSLATE_BG);
         }catch (Exception e){
             e.printStackTrace();
             throw new RuntimeException(e);

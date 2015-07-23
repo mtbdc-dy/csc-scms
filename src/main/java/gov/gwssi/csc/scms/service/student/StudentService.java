@@ -10,6 +10,7 @@ import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.student.StudentRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.service.log.OperationLogService;
+import gov.gwssi.csc.scms.utils.TablesAndColumnsMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -17,8 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Murray on 4/5/2015.
@@ -167,6 +167,31 @@ public class StudentService extends BaseService {
             schoolfellowService.saveSchoolfellow(student.getSchoolfellow());
         return studentRepository.save(student);
     }
+
+    @Transactional
+    public String saveStudent(String dbType, OperationLog operationLog) throws Exception {
+        //记录日志
+        List<OperationLog> operationLogs = new ArrayList<OperationLog>();
+        operationLogs.add(operationLog);
+        operationLogService.saveOperationLog(operationLogs);
+        Map tableMap = TablesAndColumnsMap.tableMap;
+        String sql = " update "+tableMap.get(operationLog.getTableEN())+" set "+operationLog.getColumnEN()+" = ";
+        //判断数据类型
+        if(dbType.equals("number")){
+            sql+=operationLog.getAfter();
+        }else if(dbType.equals("string")){
+            sql+="'"+operationLog.getAfter()+"'";
+        }else if(dbType.equals("date")){
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String after = operationLog.getAfter().substring(0,10);
+            sql+="to_date('" + after + "','yyyy-mm-dd')" ;
+        }
+        sql+= " where studentid ='" + operationLog.getStudentId()+"'";
+        System.out.println(sql);
+        getBaseDao().updateBySql(sql);
+        return operationLog.getAfter().toString();
+    }
+
 
     @SuppressWarnings("unchecked")
     public Object getGroupByStudentId(String studentId, String groupName) {

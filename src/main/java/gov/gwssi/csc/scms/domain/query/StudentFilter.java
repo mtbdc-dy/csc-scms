@@ -196,7 +196,7 @@ int count = 0;
             if (projects.size() == 0)
                 return "";
             if (projects.size() == 1) {
-                sb.append(" and schoolRoll.studentType = '").append(projects.get(0).getProjectId()).append("\' ");
+                sb.append(" and basicInfo.projectName = '").append(projects.get(0).getProjectId()).append("\' ");
                 return sb.toString();
             } else {
                 StringBuilder tempRight = new StringBuilder();
@@ -206,7 +206,7 @@ int count = 0;
                 }
                 tempRight.setCharAt(tempRight.length() - 1, ')');
 
-                sb.append(" and schoolRoll.studentType in ").append(tempRight);
+                sb.append(" and basicInfo.projectName in ").append(tempRight);
 
                 return sb.toString();
             }

@@ -9,9 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
+import javax.persistence.*;
 import javax.sql.DataSource;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
@@ -234,5 +232,31 @@ public class BaseDAO {
         }
     }
 
+
+    /**
+     *  调用存储过程procedure p_scms_d_Statistics(avc_configid in varchar2,avc_result out varchar2)
+     */
+    public String invokeProcedureByProcedureName(String in,String procedureName){
+        EntityManager em = null;
+        em = entityManagerFactory.createEntityManager();
+        try{
+            StoredProcedureQuery storedProcedureQuery = em.createStoredProcedureQuery(procedureName);
+
+            storedProcedureQuery.registerStoredProcedureParameter("avc_configid",String.class,ParameterMode.IN);
+            storedProcedureQuery.registerStoredProcedureParameter("avc_result",String.class, ParameterMode.OUT);
+
+            storedProcedureQuery.setParameter("avc_conigid",in);
+            boolean execute = storedProcedureQuery.execute();
+
+            String result = (String)storedProcedureQuery.getOutputParameterValue("avc_result");
+
+            return result;
+
+        }finally {
+            if(em != null){
+                em.close();
+            }
+        }
+    }
 
 }

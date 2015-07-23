@@ -5,6 +5,7 @@ import java.util.List;
 
 /**
  * Created by WangZhenghua on 2015/5/29.
+ * 动态查询统计返回初始化tables列表数据结构
  */
 public class TablesJson {
     private String code;
