@@ -1,10 +1,9 @@
 package gov.gwssi.csc.scms;
 
 import gov.gwssi.csc.scms.configuration.DatabaseConfig;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.*;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 /**
  * Created by WangZishi on 4/1/2015.
@@ -29,7 +28,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
                 "gov.gwssi.csc.scms.domain.dictionary",
                 "gov.gwssi.csc.scms.service.statistics",
                 "gov.gwssi.csc.scms.repository.statistics",
-                "gov.gwssi.csc.scms.domain.statistics"
+                "gov.gwssi.csc.scms.domain.statistics",
+                "gov.gwssi.csc.scms.service.warning"
         }
 )
 @Import(DatabaseConfig.class)

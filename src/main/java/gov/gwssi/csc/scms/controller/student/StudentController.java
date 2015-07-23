@@ -9,8 +9,9 @@ import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.StudentResultObject;
 import gov.gwssi.csc.scms.domain.student.*;
 import gov.gwssi.csc.scms.domain.user.User;
+import gov.gwssi.csc.scms.service.student.NoSuchStudentException;
+import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.user.NoSuchUserException;
-import gov.gwssi.csc.scms.service.student.*;
 import gov.gwssi.csc.scms.service.user.UserIdentityError;
 import gov.gwssi.csc.scms.service.user.UserService;
 import gov.gwssi.csc.scms.utils.JWTUtil;
@@ -46,6 +47,7 @@ public class StudentController {
             StudentFilterObject sfo = null;
             sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);
 //            User user = userService.getUserByUserIdAndEnable(userId, User.ENABLE);
+
             User user = userService.getUserByJWT(header);
 //            if (user == null)
 //                throw new NoSuchUserException(userId);
