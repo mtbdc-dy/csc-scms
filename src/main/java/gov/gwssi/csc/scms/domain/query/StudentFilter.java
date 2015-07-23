@@ -179,7 +179,7 @@ int count = 0;
 
         sb.append(getConditionFilter(conditions,modleType,userTpye));
 
-        sb.append(getUserFilter(user));
+       // sb.append(getUserFilter(user));
 
         return sb.toString();
 
