@@ -4,6 +4,7 @@ import gov.gwssi.csc.scms.dao.BaseDAO;
 import gov.gwssi.csc.scms.domain.statistics.TablesJson;
 import gov.gwssi.csc.scms.domain.statistics.ValueObject;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,7 @@ public class TablesDAO  extends BaseDAO {
         List<TablesJson> totalTablesJson = new ArrayList<TablesJson>();
 
         // 获取所有tables
-        List<TablesJson> dimTableList = getAllDimTable();
+        List<Map> dimTableList = getAllDimTable();
 
         // 遍历dimTableList,进行转义
         for(int i=0;i<dimTableList.size();i++){
@@ -46,11 +47,11 @@ public class TablesDAO  extends BaseDAO {
 
             List<TablesJson> children = new ArrayList<TablesJson>();
 
-            List<TablesJson> childList = getDimColumnByTableEn(tableEn);
+            List<Map> childList = getDimColumnByTableEn(tableEn);
 
             for(int j=0;j<childList.size();j++){
 
-                map = (Map)childList.get(j);
+                map = childList.get(j);
 
                 TablesJson childTableJson = new TablesJson();
 
@@ -80,21 +81,15 @@ public class TablesDAO  extends BaseDAO {
     }
 
     // 获取所有可配置的DIM_TABLE列表
-    public List<TablesJson> getAllDimTable(){
-        List<TablesJson> dimTableList = null;
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("SELECT TABLEEN,TABLECH,TABLETYPE FROM DIM_TABLE");
-        dimTableList = super.queryListBySql(stringBuilder.toString());
-        return dimTableList;
+    public List<Map> getAllDimTable() {
+        return super.queryListBySql("SELECT TABLEEN,TABLECH,TABLETYPE FROM DIM_TABLE");
     }
 
     // 根据表名获取可配置的字段列表
-    public List<TablesJson> getDimColumnByTableEn(String tableEn){
-        List<TablesJson> dimColumnList = null;
+    public List<Map> getDimColumnByTableEn(String tableEn) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("SELECT TABLEEN,TABLECH,COLUMNEN,COLUMNCH,DATATYPE,REFERENCETABLEEN,REFERENCETABLECH,REFERENCECOLUMNEN,REFERENCECOLUMNCH FROM DIM_COLUMN WHERE TABLEEN='" + tableEn + "'");
-        dimColumnList = super.queryListBySql(stringBuilder.toString());
-        return dimColumnList;
+        return super.queryListBySql(stringBuilder.toString());
     }
 
 

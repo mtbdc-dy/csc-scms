@@ -9,12 +9,12 @@ import java.util.List;
  * 抽象代码表的树形数据结构
  */
 public class DictTreeJson implements Serializable {
+
+    public List<DictTreeJson> children = new ArrayList<DictTreeJson>();
     private String code;
     private String codePid;
     private String value;
     private boolean valid;
-
-    public List<DictTreeJson> children = new ArrayList<DictTreeJson>();
 
     public static List<DictTreeJson> formatTree(List<DictTreeJson> list){
         DictTreeJson root = new DictTreeJson();

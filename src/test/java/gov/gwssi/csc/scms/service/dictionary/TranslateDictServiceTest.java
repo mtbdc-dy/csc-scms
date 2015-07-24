@@ -12,5 +12,6 @@ public class TranslateDictServiceTest  extends UnitTestBase {
     public void getTranslateDict() throws  NoSuchDictTreeException{
         TranslateDictService translateDictService = getBean("translateDictService");
         translateDictService.getTranslateDictByClassId("B");
+        System.out.println();
     }
 }

@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.domain.statistics.*;
 import gov.gwssi.csc.scms.service.statistics.DStatisticsHandlerService;
-import gov.gwssi.csc.scms.service.statistics.DimColumnService;
 import gov.gwssi.csc.scms.service.statistics.DimTableService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.io.IOException;
 import java.util.List;
 

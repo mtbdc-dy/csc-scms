@@ -6,14 +6,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 /**
-<<<<<<< HEAD
  * Created by WangZishi on 4/1/2015.
  * <p/>
  * 配置测试Context
-=======
- * Created by WangZishi on 3/23/2015.
- *
->>>>>>> remotes/origin/native_Hibernate
  */
 //@EnableWebMvc
 @ComponentScan(
@@ -34,7 +29,8 @@ import org.springframework.context.annotation.Import;
                 "gov.gwssi.csc.scms.service.statistics",
                 "gov.gwssi.csc.scms.repository.statistics",
                 "gov.gwssi.csc.scms.service.codemaintenance",
-                "gov.gwssi.csc.scms.domain.statistics"
+                "gov.gwssi.csc.scms.domain.statistics",
+                "gov.gwssi.csc.scms.dao.dictionary"
         }
 )
 @Import(DatabaseConfig.class)

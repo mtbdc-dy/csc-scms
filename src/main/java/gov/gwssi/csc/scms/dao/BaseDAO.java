@@ -1,12 +1,11 @@
 package gov.gwssi.csc.scms.dao;
 
-import gov.gwssi.csc.scms.domain.regstatistics.RegStatistics;
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.Transformers;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
@@ -32,7 +31,7 @@ public class BaseDAO {
     /**
      * 查询的结果是List<Map>
      */
-    public List queryListBySql(String sql) {
+    public List<Map> queryListBySql(String sql) {
         List<Map> objectList;
         EntityManager em = null;
 

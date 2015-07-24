@@ -1,7 +1,6 @@
 package gov.gwssi.csc.scms.controller.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.gwssi.csc.scms.controller.RequestHeaderError;
 import gov.gwssi.csc.scms.domain.user.Menu;
 import gov.gwssi.csc.scms.domain.user.Node;
 import gov.gwssi.csc.scms.domain.user.Role;
@@ -11,8 +10,8 @@ import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Lei on 2015/5/8.
@@ -22,19 +21,15 @@ import java.util.Map;
 @RequestMapping(value = "/user")
 public class UserController {
 
+    private static final String HEADER_AUTHORIZATION = JWTUtil.HEADER_AUTHORIZATION;
     @Autowired
     private UserService userService;
-
     @Autowired
     private RoleService roleService;
-
     @Autowired
     private NodeService nodeService;
-
     @Autowired
     private MenuService menuService;
-
-    private static final String HEADER_AUTHORIZATION = JWTUtil.HEADER_AUTHORIZATION;
 
     @RequestMapping(value = "/node", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<Node> getNodeTree(@RequestHeader(value = HEADER_AUTHORIZATION) String header) {
@@ -199,11 +194,17 @@ public class UserController {
             throw new RuntimeException(e);
         }
     }
-    //    GET /login/{userid} USER JSONobject
+
+    //    GET /login/{userId} USER JSONObject
     @RequestMapping(value = "/login/{userId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public User login(@PathVariable(value = "userId") String userId) {
         try {
-            return userService.userLogin(userId);
+            Date a = new Date();
+            User user = userService.userLogin(userId);
+            Date b = new Date();
+            long c = b.getTime() - a.getTime();
+            System.out.println("time for login one User = " + c + "ms");
+            return user;
         } catch (NoSuchUserException e) {
             e.printStackTrace();
             return null;
