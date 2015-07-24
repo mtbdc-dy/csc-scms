@@ -14,5 +14,8 @@ public class TablesAndColumnsMap {
         tableMap.put("basicInfo","SCMS_BASIC_INFO");
         tableMap.put("discuss","SCMS_DISCUSS");
         tableMap.put("schoolRoll","SCMS_SCHOOLROLL");
+        tableMap.put("profilesHistory","SCMS_PROFILES_HISTORY");
+        tableMap.put("schoolfellow","SCMS_SCHOOL_FELLOW");
+        tableMap.put("registrationInfo","SCMS_REGISTRATION_INFO");
     }
 }
