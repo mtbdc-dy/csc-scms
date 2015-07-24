@@ -1,7 +1,5 @@
 package gov.gwssi.csc.scms.utils;
 
-import com.auth0.jwt.JWTVerifier;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,5 +13,9 @@ public class TablesAndColumnsMap {
     static {
         tableMap.put("basicInfo","SCMS_BASIC_INFO");
         tableMap.put("discuss","SCMS_DISCUSS");
+        tableMap.put("schoolRoll","SCMS_SCHOOLROLL");
+        tableMap.put("profilesHistory","SCMS_PROFILES_HISTORY");
+        tableMap.put("schoolfellow","SCMS_SCHOOL_FELLOW");
+        tableMap.put("registrationInfo","SCMS_REGISTRATION_INFO");
     }
 }

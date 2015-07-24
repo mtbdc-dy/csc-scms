@@ -30,7 +30,8 @@ import org.springframework.context.annotation.Import;
                 "gov.gwssi.csc.scms.repository.statistics",
                 "gov.gwssi.csc.scms.service.codemaintenance",
                 "gov.gwssi.csc.scms.domain.statistics",
-                "gov.gwssi.csc.scms.dao.dictionary"
+                "gov.gwssi.csc.scms.dao.dictionary",
+                "gov.gwssi.csc.scms.service.warning"
         }
 )
 @Import(DatabaseConfig.class)

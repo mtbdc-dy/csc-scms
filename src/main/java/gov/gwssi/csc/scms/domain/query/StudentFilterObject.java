@@ -23,6 +23,7 @@ public class StudentFilterObject extends FilterObject {
     private String abnormalDateBegin = null;//异动申请起始日期
     private String abnormalDateEnd = null;//异动申请终止日期
     private String ticketState = null;//异动处理状态
+    private String insuranceState = null;//保险订购状态 add by gc
     /**
      * 隐藏查询条件
      */
@@ -75,6 +76,7 @@ public class StudentFilterObject extends FilterObject {
         conditions = addCondition(conditions, "schoolRoll", "majorStartDate", "date", getMajorStartDateBegin(), getMajorStartDateEnd());
         conditions = addCondition(conditions, "schoolRoll", "planLeaveDate", "date", getPlanLeaveDateBegin(), getPlanLeaveDateEnd());
         conditions = addCondition(conditions, "ticket", "state", "String", getTicketState());
+        conditions = addCondition(conditions, "Insurance", "preSta", "String", getInsuranceState());
 
         conditions = addCondition(conditions, "student", "cscId", "String", getCscId());
         //将mode字段添加到条件中
@@ -89,6 +91,14 @@ public class StudentFilterObject extends FilterObject {
 
     public void setTicketState(String ticketState) {
         this.ticketState = ticketState;
+    }
+
+    public String getInsuranceState() {
+        return insuranceState;
+    }
+
+    public void setInsuranceState(String insuranceState) {
+        this.insuranceState = insuranceState;
     }
 
     public String getCscId() {

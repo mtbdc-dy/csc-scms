@@ -1,8 +1,9 @@
 package gov.gwssi.csc.scms.domain.warning;
 
-import gov.gwssi.csc.scms.domain.student.Student;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
 
 /**
@@ -12,9 +13,10 @@ import java.util.Date;
 @Table(name = "SCMS_WARNING")
 public class Warning {
     @Id
+    @Column(name = "id")
 //    @SequenceGenerator(name = "SCMS_WARNING_ID",sequenceName = "SCMS_WARNING_SEQ",allocationSize = 1)
 //    @GeneratedValue(generator = "SCMS_WARNING_ID",strategy = GenerationType.SEQUENCE)
-    private String id;
+    private String warningId;
 
 
     /**
@@ -68,24 +70,17 @@ public class Warning {
     /**
      * 学生
      */
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "STUDENTID")
-    private Student student;
+//    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    @JoinColumn(name = "STUDENTID")
+//    private Student student;
+    private String studentId;
 
-    public Student getStudent() {
-        return student;
+    public String getStudentId() {
+        return studentId;
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
     }
 
     public String getAddReason() {
@@ -153,4 +148,11 @@ public class Warning {
     }
 
 
+    public String getWarningId() {
+        return warningId;
+    }
+
+    public void setWarningId(String warningId) {
+        this.warningId = warningId;
+    }
 }

@@ -15,9 +15,10 @@ public class Insurance {
 
     private String id;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "studentid")
-    private Student student;
+  //  @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+   // @JoinColumn(name = "studentid")
+    private String studentId;
+
     /**
      *保险种类 0预定 1正式
      */
@@ -63,6 +64,8 @@ public class Insurance {
     @Column(name = "updated")
     private Date updated;
 
+
+
     public String getId() {
         return id;
     }
@@ -71,12 +74,12 @@ public class Insurance {
         this.id = id;
     }
 
-    public Student getStudent() {
-        return student;
+    public String getStudentId() {
+        return studentId;
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
     }
 
     public String getInsurSta() {
