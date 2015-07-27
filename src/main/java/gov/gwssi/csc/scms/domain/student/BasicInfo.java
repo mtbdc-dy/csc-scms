@@ -48,6 +48,10 @@ public class BasicInfo {
      */
     private String planned;
     /**
+     * 留学项目属性
+     */
+    private String projectAttr;
+    /**
      * 留学项目类别
      */
     private String projectType;
@@ -240,4 +244,11 @@ public class BasicInfo {
         this.student = student;
     }
 
+    public String getProjectAttr() {
+        return projectAttr;
+    }
+
+    public void setProjectAttr(String projectAttr) {
+        this.projectAttr = projectAttr;
+    }
 }

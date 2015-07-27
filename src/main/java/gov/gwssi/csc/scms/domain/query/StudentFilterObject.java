@@ -6,24 +6,26 @@ import java.util.List;
 /**
  * 学生列表查询实体类
  * Created by Murray on 2015/4/2.
+ * Reformate by Wang Zishi on 2015/7/27.
  */
 public class StudentFilterObject extends FilterObject {
 
     /**
      * 主要查询条件
      */
-    private String cscId = null;//SCS登记号
-    private String passportName = null;//护照名称
-    private String continent = null;//洲别
-    private String country = null;//国籍
-    private String projectType = null;//项目类别
-    private String projectName = null;//项目名称
-    private String registerState = null;//报到状态 0未处理 1报到 2放弃来华
-    private String abnormalState = null;//异动处理状态
-    private String abnormalDateBegin = null;//异动申请起始日期
-    private String abnormalDateEnd = null;//异动申请终止日期
-    private String ticketState = null;//异动处理状态
-    private String insuranceState = null;//保险订购状态 add by gc
+    private String cscId = null;           // CSC登记号
+    private String passportName = null;    // 护照名称
+    private String continent = null;       // 洲别
+    private String country = null;         // 国籍
+    private String projectAttr = null;     // 项目属性
+    private String projectType = null;     // 项目类别
+    private String projectName = null;     // 项目名称
+    private String registerState = null;   // 报到状态 0未处理 1报到 2放弃来华
+    private String abnormalState = null;   // 异动处理状态
+    private String abnormalDateBegin = null; // 异动申请起始日期
+    private String abnormalDateEnd = null; // 异动申请终止日期
+    private String ticketState = null;     // 异动处理状态
+    private String insuranceState = null;  // 保险订购状态 add by gc
     /**
      * 隐藏查询条件
      */
@@ -55,6 +57,7 @@ public class StudentFilterObject extends FilterObject {
         conditions = addCondition(conditions, "basicInfo", "passportName", "String", getPassportName());
         conditions = addCondition(conditions, "basicInfo", "continent", "String", getContinent());
         conditions = addCondition(conditions, "basicInfo", "country", "String", getCountry());
+        conditions = addCondition(conditions, "basicInfo", "projectAttr", "String", getProjectAttr());
         conditions = addCondition(conditions, "basicInfo", "projectType", "String", getProjectType());
         conditions = addCondition(conditions, "basicInfo", "projectName", "String", getProjectName());
         conditions = addCondition(conditions, "basicInfo", "planned", "String", getPlanned());
@@ -347,5 +350,13 @@ public class StudentFilterObject extends FilterObject {
 
     public void setMode(String mode) {
         this.mode = mode;
+    }
+
+    public String getProjectAttr() {
+        return projectAttr;
+    }
+
+    public void setProjectAttr(String projectAttr) {
+        this.projectAttr = projectAttr;
     }
 }
