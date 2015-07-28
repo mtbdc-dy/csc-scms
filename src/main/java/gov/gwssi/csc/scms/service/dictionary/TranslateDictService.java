@@ -131,6 +131,22 @@ public class TranslateDictService {
         return jsonList;
     }
 
+    public List<DictTreeJson> getProvinces() throws NoSuchDictTreeException {
+        List<DictTreeJson> jsonList = codeTableDAO.getCodeTableByLevel(CodeTableDAO.UNIVERSITIES, CodeTableDAO.UNIVERSITIES_LEVEL_ONE);
+        if (jsonList == null) {
+            throw new NoSuchDictTreeException("");
+        }
+        return jsonList;
+    }
+
+    public List<DictTreeJson> getUniversities() throws NoSuchDictTreeException {
+        List<DictTreeJson> jsonList = codeTableDAO.getCodeTableByLevel(CodeTableDAO.UNIVERSITIES, CodeTableDAO.UNIVERSITIES_LEVEL_TWO);
+        if (jsonList == null) {
+            throw new NoSuchDictTreeException("");
+        }
+        return jsonList;
+    }
+
 //    public list<DictTreeJson> getProjectsWithTypeAndName
 
 
