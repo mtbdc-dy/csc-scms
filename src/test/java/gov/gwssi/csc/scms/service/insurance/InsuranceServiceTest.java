@@ -41,7 +41,7 @@ public class InsuranceServiceTest extends UnitTestBase {
     }
 
     @Test
-    public void testGetInsuranceList() throws Exception {//µã»÷¡°Éú³É±£µ¥ÐÅÏ¢¡±
+    public void testGetInsuranceList() throws Exception {//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É±ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½
         InsuranceService insuranceService = super.getBean("insuranceService");
         List<InsuranceResultObject> inResultObjectList = insuranceService.getInsuranceList(null);
         Assert.assertNotNull(inResultObjectList);
@@ -52,8 +52,7 @@ public class InsuranceServiceTest extends UnitTestBase {
     @Test
     public void testGetInsuranceListByFilter() throws Exception {
         InsuranceService insuranceService = super.getBean("insuranceService");
-        String body = "{\"cscId\" : \"11\" ," +
-                "\"offSet\" : \"0\" , \"pageSize\" : \"2\"}";
+        String body = "{\"offSet\" : \"0\" , \"pageSize\" : \"2\"}";
         StudentFilterObject ticketResultObject;
         List<InsuranceResultObject> list1 = null;
         try {
