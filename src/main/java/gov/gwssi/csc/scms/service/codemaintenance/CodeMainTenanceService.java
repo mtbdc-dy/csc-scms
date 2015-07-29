@@ -27,6 +27,15 @@ public class CodeMainTenanceService extends BaseService {
     public CodeDetailResult saveCode(CodeDetailResult codeDetailResult){
         return codeMainTenanceDAO.saveCode(codeDetailResult);
     }
-
+    @Transactional
+    public String saveNewCode(CodeDetailResult codeDetailResult,String type){
+        return codeMainTenanceDAO.saveNewCode(codeDetailResult,type);
+    }
+    public CodeDetailResult selectCode(CodeDetailResult codeDetailResult,String zdz){
+        return codeMainTenanceDAO.selectCode(codeDetailResult, zdz);
+    }
+    public CodeDetailResult selectCode(CodeDetailResult codeDetailResult){
+        return codeMainTenanceDAO.selectCode(codeDetailResult);
+    }
 }
 
