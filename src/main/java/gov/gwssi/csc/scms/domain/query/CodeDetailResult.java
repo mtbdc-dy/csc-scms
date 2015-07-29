@@ -5,7 +5,7 @@ import java.util.Date;
 
 /**
  * Created by lzs on 2015/7/17.
- * //
+ * //迫不得已 全用大写了
  */
 public class CodeDetailResult implements Serializable {
     /**
@@ -30,20 +30,33 @@ public class CodeDetailResult implements Serializable {
     private String FULLNAME;
 
     /**
-     * 秀改时间
+     * 修改时间
      */
     private Date UPDATED;
-
+    /**
+     * 父节点
+     */
+    private String PARENTID;
     public CodeDetailResult() {
     }
 
-    public CodeDetailResult(String ID, String ENABLED,String NAME,  String FULLNAME, String TABLEEN, Date UPDATED) {
+    public CodeDetailResult(String ID, String NAME, String ENABLED, String TABLEEN, String FULLNAME, Date UPDATED) {
         this.ID = ID;
         this.NAME = NAME;
         this.ENABLED = ENABLED;
         this.TABLEEN = TABLEEN;
         this.FULLNAME = FULLNAME;
         this.UPDATED = UPDATED;
+    }
+
+    public CodeDetailResult(String ID, String ENABLED,String NAME,  String FULLNAME, String TABLEEN, Date UPDATED,String PARENTID) {
+        this.ID = ID;
+        this.NAME = NAME;
+        this.ENABLED = ENABLED;
+        this.TABLEEN = TABLEEN;
+        this.FULLNAME = FULLNAME;
+        this.UPDATED = UPDATED;
+        this.PARENTID = PARENTID;
     }
 
     public String getID() {
@@ -92,5 +105,13 @@ public class CodeDetailResult implements Serializable {
 
     public void setUPDATED(Date UPDATED) {
         this.UPDATED = UPDATED;
+    }
+
+    public String getPARENTID() {
+        return PARENTID;
+    }
+
+    public void setPARENTID(String PARENTID) {
+        this.PARENTID = PARENTID;
     }
 }

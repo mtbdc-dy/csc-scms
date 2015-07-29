@@ -31,18 +31,38 @@ public class TranslateDictController {
 
         try {
             if ("continents".equals(codeTableName)) {
+
                 list = translateDictService.getContinentsWithCountries();
+
             } else if ("projects".equals(codeTableName)) {
+
                 list = translateDictService.getProjectsWithTypeAndName();
+
+            } else if ("provincesOnly".equals(codeTableName)) {
+
+                list = translateDictService.getProvinces();
+
+            } else if ("provincesUniversities".equals(codeTableName)) {
+
+                list = translateDictService.getUniversities();
+
             } else if ("subjects".equals(codeTableName)) {
+
                 list = translateDictService.getSubjectsWithLeveThree();
+
             } else if ("abnormalReasons".equals(codeTableName)) {
+
                 list = translateDictService.getAbnormalReasonsWithType();
+
             } else if ("tables".equals(codeTableName)) {
+
                 // TODO.
                 list = null;
+
             } else {
+
                 list = translateDictService.getTranslateDictByClassEn(codeTableName);
+
             }
 
 

@@ -43,7 +43,7 @@ public class CodeMainTenanceController {
                 e.printStackTrace();
             }
         }
-        allCodeList = codeMainTenanceService.findAllCode(tableName,chinaName);
+        allCodeList = codeMainTenanceService.findAllCode(tableName, chinaName);
 
         return allCodeList;
     }
@@ -72,10 +72,36 @@ public class CodeMainTenanceController {
             JsonBody jbosy = new ObjectMapper().readValue(codeJson, JsonBody.class);
            codeDetailResult = mapper.readValue(jbosy.getValue(), CodeDetailResult.class);
                 codeDetailResult=  codeMainTenanceService.saveCode(codeDetailResult);
+                codeDetailResult = codeMainTenanceService.selectCode(codeDetailResult);
             }catch (Exception e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
+        return codeDetailResult;
+    }
+    // 保存新增的代码
+    @RequestMapping(value = "/new",method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
+    public CodeDetailResult saveNewDetailCode(@RequestParam(value = "type") String type,@RequestParam(value = "flag") String flag,
+                                              @RequestParam(value = "dim") String dim,@RequestBody String codeJson) {
+        //按照分页（默认）要求，返回列表内容
+        String detailCodeList = null;
+        CodeDetailResult codeDetailResult = null;
+        try {
+
+
+            ObjectMapper mapper = new ObjectMapper();
+            // mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            boolean rv = true;
+            JsonBody jbosy = new ObjectMapper().readValue(codeJson, JsonBody.class);
+            codeDetailResult = mapper.readValue(jbosy.getValue(), CodeDetailResult.class);
+            codeDetailResult.setTABLEEN(dim);
+
+            String zdz=  codeMainTenanceService.saveNewCode(codeDetailResult,type);
+            codeDetailResult = codeMainTenanceService.selectCode(codeDetailResult,zdz);
+        }catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
         return codeDetailResult;
     }
 }
