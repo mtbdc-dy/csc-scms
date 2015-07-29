@@ -1,9 +1,10 @@
 package gov.gwssi.csc.scms.domain.scholarship;
 
-import javax.persistence.*;
-import java.util.ArrayList;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Wang Rui on 2015/4/14.
@@ -27,9 +28,6 @@ public class Scholarship {
      */
     @Column(name = "school",length=6)
     private String school;
-
-
-
 
     /**
      *合格人数

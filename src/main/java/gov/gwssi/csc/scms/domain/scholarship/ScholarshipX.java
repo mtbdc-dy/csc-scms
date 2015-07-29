@@ -1,9 +1,10 @@
 package gov.gwssi.csc.scms.domain.scholarship;
 
-import javax.persistence.*;
-import java.util.ArrayList;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Wang Rui on 2015/4/14.
@@ -34,6 +35,14 @@ public class ScholarshipX {
     private Date startTime;
     @Column
     private Date endTime;
+    @Column
+    private Long qualNum;
+    @Column
+    private Long unQualNum;
+    @Column
+    private String schoolSta;
+    @Column
+    private String cscSta;
     @Column
     private String cscrresult_lastyear;
 
@@ -104,6 +113,37 @@ public class ScholarshipX {
 //     */
 //    @Column(name = "CSCDATE")
 //    private Date cscDate;
+    public Long getQualNum() {
+        return qualNum;
+    }
+
+    public void setQualNum(Long qualNum) {
+        this.qualNum = qualNum;
+    }
+
+    public Long getUnQualNum() {
+        return unQualNum;
+    }
+
+    public void setUnQualNum(Long unQualNum) {
+        this.unQualNum = unQualNum;
+    }
+
+    public String getSchoolSta() {
+        return schoolSta;
+    }
+
+    public void setSchoolSta(String schoolSta) {
+        this.schoolSta = schoolSta;
+    }
+
+    public String getCscSta() {
+        return cscSta;
+    }
+
+    public void setCscSta(String cscSta) {
+        this.cscSta = cscSta;
+    }
 
     public String getId() {
         return id;

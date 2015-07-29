@@ -26,6 +26,9 @@ public class StudentFilterObject extends FilterObject {
     private String abnormalDateEnd = null; // 异动申请终止日期
     private String ticketState = null;     // 异动处理状态
     private String insuranceState = null;  // 保险订购状态 add by gc
+    private String schReview = null;  // 奖学金评审结果 add by gc
+    private String schResult = null;  // 奖学金处理结果 add by gc
+
     /**
      * 隐藏查询条件
      */
@@ -80,12 +83,30 @@ public class StudentFilterObject extends FilterObject {
         conditions = addCondition(conditions, "schoolRoll", "planLeaveDate", "date", getPlanLeaveDateBegin(), getPlanLeaveDateEnd());
         conditions = addCondition(conditions, "ticket", "state", "String", getTicketState());
         conditions = addCondition(conditions, "Insurance", "preSta", "String", getInsuranceState());
+        conditions = addCondition(conditions, "ScholarshipX", "schReview", "String", getSchReview());
+        conditions = addCondition(conditions, "ScholarshipX", "schResult", "String", getSchResult());
 
         conditions = addCondition(conditions, "student", "cscId", "String", getCscId());
         //将mode字段添加到条件中
         conditions = addCondition(conditions, "", "", "mode", getMode());
 
         return conditions;
+    }
+
+    public String getSchReview() {
+        return schReview;
+    }
+
+    public void setSchReview(String schReview) {
+        this.schReview = schReview;
+    }
+
+    public String getSchResult() {
+        return schResult;
+    }
+
+    public void setSchResult(String schResult) {
+        this.schResult = schResult;
     }
 
     public String getTicketState() {

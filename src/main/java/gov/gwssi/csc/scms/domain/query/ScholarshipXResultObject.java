@@ -95,11 +95,12 @@ public class ScholarshipXResultObject extends ResultObject{
 
     private Long unQualNum;
 
-    public ScholarshipXResultObject(String id, String scholarshipId,String cscId, String passportName, String gender,
-                                    Date birthday,  String schReview, String schResult,Long year,//Long qualNum,Long unQualNum,
-                                    String reason,Date startTime,Date endTime, String cscrresult_lastyear//, String schoolSta,String cscSta
+    public ScholarshipXResultObject(String id, String studentId, String scholarshipId, String cscId, String passportName, String gender,
+                                    Date birthday, String schReview, String schResult, Long year, Long qualNum, Long unQualNum,
+                                    String reason, Date startTime, Date endTime, String cscrresult_lastyear, String schoolSta, String cscSta
     ) {
         this.id = id;
+        this.studentId = studentId;
         this.scholarshipId=scholarshipId;
         this.cscId = cscId;
         this.passportName = passportName;
@@ -108,14 +109,25 @@ public class ScholarshipXResultObject extends ResultObject{
         this.schReview = schReview;
         this.schResult = schResult;
         this.year=year;
-       // this.qualNum=qualNum;
-       // this.unQualNum=unQualNum;
+        this.qualNum = qualNum;
+        this.unQualNum = unQualNum;
         this.reason = reason;
         this.startTime = startTime;
         this.endTime = endTime;
         this.cscrresult_lastyear = cscrresult_lastyear;
-     //   this.schoolSta = schoolSta;
-     //   this.cscSta=cscSta;
+        this.schoolSta = schoolSta;
+        this.cscSta = cscSta;
+    }
+
+    public static String getResultObject() {
+
+        String resultSql = "select new gov.gwssi.csc.scms.domain.query.ScholarshipXResultObject(" +
+                "ScholarshipX.id,ScholarshipX.studentId,ScholarshipX.scholarshipId, student.cscId, basicInfo.passportName,basicInfo.gender," +
+                "basicInfo.birthday,ScholarshipX.schReview,ScholarshipX.schResult," +
+                "ScholarshipX.year,ScholarshipX.qualNum,ScholarshipX.unQualNum," +
+                "ScholarshipX.reason,ScholarshipX.startTime," +
+                "ScholarshipX.endTime,ScholarshipX.cscrresult_lastyear,ScholarshipX.schoolSta,ScholarshipX.cscSta)";
+        return resultSql;
     }
 
     public Long getYear() {
@@ -206,7 +218,6 @@ public class ScholarshipXResultObject extends ResultObject{
         this.birthday = birthday;
     }
 
-
     public String getSchReview() {
         return schReview;
     }
@@ -261,14 +272,5 @@ public class ScholarshipXResultObject extends ResultObject{
 
     public void setSchoolSta(String schoolSta) {
         this.schoolSta = schoolSta;
-    }
-
-    public static String getResultObject() {
-
-        String resultSql = "select new gov.gwssi.csc.scms.domain.query.ScholarshipXResultObject(" +
-                "ScholarshipX.id,ScholarshipX.scholarshipId, student.cscId, basicInfo.passportName,basicInfo.gender," +
-                "basicInfo.birthday,ScholarshipX.schReview,ScholarshipX.schResult,ScholarshipX.year,ScholarshipX.reason,ScholarshipX.startTime," +
-                "ScholarshipX.endTime,ScholarshipX.cscrresult_lastyear)" ;
-        return resultSql;
     }
 }
