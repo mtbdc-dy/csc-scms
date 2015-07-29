@@ -5,7 +5,6 @@ import gov.gwssi.csc.scms.domain.statistics.DConfig;
 import gov.gwssi.csc.scms.domain.statistics.TablesJson;
 import gov.gwssi.csc.scms.service.dictionary.NoSuchDictTreeException;
 import gov.gwssi.csc.scms.service.dictionary.util.JsonMapper;
-import junit.framework.Assert;
 import org.junit.Test;
 
 import java.util.List;

@@ -162,10 +162,19 @@ public class UserService extends BaseService {
     }
 
     public User userLogin(String userId) throws NoSuchUserException {
-        User user = userRepository.findUserByUserIdAndEnable(userId, User.ENABLE);
+        Date a = new Date();
+        User user = userRepository.findUserByUserId(userId);
+        Date b = new Date();
         if (user == null)
             throw new NoSuchUserException();
         initUser(user);
+        Date c = new Date();
+        long findUser = b.getTime() - a.getTime();
+        long initUser = c.getTime() - b.getTime();
+
+        System.out.println("findUser = " + findUser + "ms");
+        System.out.println("initUser = " + initUser + "ms");
+
         return user;
     }
 

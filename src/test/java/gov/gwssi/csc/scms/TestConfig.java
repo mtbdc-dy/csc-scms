@@ -29,7 +29,9 @@ import org.springframework.context.annotation.Import;
                 "gov.gwssi.csc.scms.service.statistics",
                 "gov.gwssi.csc.scms.repository.statistics",
                 "gov.gwssi.csc.scms.domain.statistics",
-                "gov.gwssi.csc.scms.service.warning"
+                "gov.gwssi.csc.scms.service.warning",
+                "gov.gwssi.csc.scms.service.insurance",
+                "gov.gwssi.csc.scms.service.scholarship"
         }
 )
 @Import(DatabaseConfig.class)
