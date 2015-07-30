@@ -52,6 +52,15 @@ public class ScholarshipXResultObject extends ResultObject{
      * 处理结果
      */
     private String schResult;
+    /**
+     * 评审结果
+     */
+    private String cscReview;
+
+    /**
+     * 处理结果
+     */
+    private String cscResult;
 
     /**
      * 处理原因
@@ -96,7 +105,7 @@ public class ScholarshipXResultObject extends ResultObject{
     private Long unQualNum;
 
     public ScholarshipXResultObject(String id, String studentId, String scholarshipId, String cscId, String passportName, String gender,
-                                    Date birthday, String schReview, String schResult, Long year, Long qualNum, Long unQualNum,
+                                    Date birthday, String schReview, String schResult,String cscReview, String cscResult, Long year, Long qualNum, Long unQualNum,
                                     String reason, Date startTime, Date endTime, String cscrresult_lastyear, String schoolSta, String cscSta
     ) {
         this.id = id;
@@ -108,6 +117,8 @@ public class ScholarshipXResultObject extends ResultObject{
         this.birthday = birthday;
         this.schReview = schReview;
         this.schResult = schResult;
+        this.cscReview = cscReview;
+        this.cscResult = cscResult;
         this.year=year;
         this.qualNum = qualNum;
         this.unQualNum = unQualNum;
@@ -123,7 +134,7 @@ public class ScholarshipXResultObject extends ResultObject{
 
         String resultSql = "select new gov.gwssi.csc.scms.domain.query.ScholarshipXResultObject(" +
                 "ScholarshipX.id,ScholarshipX.studentId,ScholarshipX.scholarshipId, student.cscId, basicInfo.passportName,basicInfo.gender," +
-                "basicInfo.birthday,ScholarshipX.schReview,ScholarshipX.schResult," +
+                "basicInfo.birthday,ScholarshipX.schReview,ScholarshipX.schResult,ScholarshipX.cscReview,ScholarshipX.cscResult," +
                 "ScholarshipX.year,ScholarshipX.qualNum,ScholarshipX.unQualNum," +
                 "ScholarshipX.reason,ScholarshipX.startTime," +
                 "ScholarshipX.endTime,ScholarshipX.cscrresult_lastyear,ScholarshipX.schoolSta,ScholarshipX.cscSta)";

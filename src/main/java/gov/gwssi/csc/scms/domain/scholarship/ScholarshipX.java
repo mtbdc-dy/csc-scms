@@ -28,7 +28,7 @@ public class ScholarshipX {
     @Column
     private String schResult;
     @Column
-    private String cscrResult;
+    private String cscResult;
     @Column
     private String reason;
     @Column
@@ -197,12 +197,12 @@ public class ScholarshipX {
         this.schResult = schResult;
     }
 
-    public String getCscrResult() {
-        return cscrResult;
+    public String getCscResult() {
+        return cscResult;
     }
 
-    public void setCscrResult(String cscrResult) {
-        this.cscrResult = cscrResult;
+    public void setCscResult(String cscResult) {
+        this.cscResult = cscResult;
     }
 
     public String getReason() {
