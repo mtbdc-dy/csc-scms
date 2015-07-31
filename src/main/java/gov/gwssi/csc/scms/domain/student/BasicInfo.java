@@ -86,6 +86,10 @@ public class BasicInfo {
     @Column(name = "UPDATED")
     private Date updateDate;
     /**
+     * 标注
+     */
+    private String remark;
+    /**
      * 学生
      */
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -250,5 +254,13 @@ public class BasicInfo {
 
     public void setProjectAttr(String projectAttr) {
         this.projectAttr = projectAttr;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }
