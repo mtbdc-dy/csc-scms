@@ -23,6 +23,9 @@ public class CodeMainTenanceService extends BaseService {
     public List findDetailCode(String id,String tableName,String flag){
         return codeMainTenanceDAO.getDetailCodeList(id, tableName, flag);
     }
+    public List getParentCode(String type){
+        return codeMainTenanceDAO.getParentCode(type);
+    }
     @Transactional
     public CodeDetailResult saveCode(CodeDetailResult codeDetailResult){
         return codeMainTenanceDAO.saveCode(codeDetailResult);
