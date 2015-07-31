@@ -65,18 +65,31 @@ public class ScholarshipXResultObject extends ResultObject{
     /**
      * 处理原因
      */
-    private String reason;
+    private String schReason;
 
     /**
      * 不合格时间起
      */
-    private Date startTime;
+    private Date schStartTime;
 
     /**
      * 不合格时间止
      */
-    private Date endTime;
+    private Date schEndTime;
+    /**
+     * 处理原因
+     */
+    private String cscReason;
 
+    /**
+     * 不合格时间起
+     */
+    private Date cscStartTime;
+
+    /**
+     * 不合格时间止
+     */
+    private Date cscEndTime;
     /**
      * 上年评审结果
      */
@@ -106,7 +119,7 @@ public class ScholarshipXResultObject extends ResultObject{
 
     public ScholarshipXResultObject(String id, String studentId, String scholarshipId, String cscId, String passportName, String gender,
                                     Date birthday, String schReview, String schResult,String cscReview, String cscResult, Long year, Long qualNum, Long unQualNum,
-                                    String reason, Date startTime, Date endTime, String cscrresult_lastyear, String schoolSta, String cscSta
+                                    String schReason, Date schStartTime, Date schEndTime, String cscReason, Date cscStartTime, Date cscEndTime, String cscrresult_lastyear, String schoolSta, String cscSta
     ) {
         this.id = id;
         this.studentId = studentId;
@@ -122,9 +135,12 @@ public class ScholarshipXResultObject extends ResultObject{
         this.year=year;
         this.qualNum = qualNum;
         this.unQualNum = unQualNum;
-        this.reason = reason;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.schReason = schReason;
+        this.schStartTime = schStartTime;
+        this.schEndTime = schEndTime;
+        this.cscReason = cscReason;
+        this.cscStartTime = cscStartTime;
+        this.cscEndTime = cscEndTime;
         this.cscrresult_lastyear = cscrresult_lastyear;
         this.schoolSta = schoolSta;
         this.cscSta = cscSta;
@@ -136,8 +152,9 @@ public class ScholarshipXResultObject extends ResultObject{
                 "ScholarshipX.id,ScholarshipX.studentId,ScholarshipX.scholarshipId, student.cscId, basicInfo.passportName,basicInfo.gender," +
                 "basicInfo.birthday,ScholarshipX.schReview,ScholarshipX.schResult,ScholarshipX.cscReview,ScholarshipX.cscResult," +
                 "ScholarshipX.year,ScholarshipX.qualNum,ScholarshipX.unQualNum," +
-                "ScholarshipX.reason,ScholarshipX.startTime," +
-                "ScholarshipX.endTime,ScholarshipX.cscrresult_lastyear,ScholarshipX.schoolSta,ScholarshipX.cscSta)";
+                "ScholarshipX.schReason,ScholarshipX.schStartTime,ScholarshipX.schEndTime," +
+                "ScholarshipX.cscReason,ScholarshipX.cscStartTime,ScholarshipX.cscEndTime," +
+                "ScholarshipX.cscrresult_lastyear,ScholarshipX.schoolSta,ScholarshipX.cscSta)";
         return resultSql;
     }
 
@@ -245,29 +262,7 @@ public class ScholarshipXResultObject extends ResultObject{
         this.schResult = schResult;
     }
 
-    public String getReason() {
-        return reason;
-    }
 
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
-
-    public Date getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
-    }
-
-    public Date getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
-    }
 
     public String getCscrresult_lastyear() {
         return cscrresult_lastyear;

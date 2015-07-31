@@ -264,6 +264,7 @@ public class ScholarshipXController {
             List<ScholarshipDetail> ScholarshipDetails = mapper.readValue(jbosy.getValue(), javaType);
             List<ScholarshipXResultObject> scholarshipXResultObjects = new ArrayList<ScholarshipXResultObject>();
             ScholarshipDetail scholarshipDetail;
+            Timestamp ts = new Timestamp(System.currentTimeMillis());
             if (ScholarshipDetails.size() == 0) {
                 return null;
             } else {
@@ -286,8 +287,10 @@ public class ScholarshipXController {
                 Scholarship scholarship = scholarshipXService.findScholarshipOne(ScholarshipDetails.get(0).getScholarship().getId());
                 scholarship.setQualNum((long) qualNum);
                 scholarship.setUnQualNum((long) unqualNum);
-                //对主表的状态进行更新
+                //对主表的状态进行更新，学校提交状态，和学校提交时间
                 scholarship.setSchoolSta("1");//已提交
+                scholarship.setSchoolDate(ts);//评审提交时间
+                scholarship.setCscSta("0");//设置默认的基金委提交状态为“未提交”
                 scholarshipXService.saveScholarship(scholarship, null);
                 for (int i = 0; i < ScholarshipDetails.size(); i++) {
                     scholarshipDetail = ScholarshipDetails.get(i);

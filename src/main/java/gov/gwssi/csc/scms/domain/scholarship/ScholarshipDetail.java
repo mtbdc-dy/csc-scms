@@ -36,26 +36,35 @@ public class ScholarshipDetail {
     /**
      *处理结果（基金委） 0中止 1取消 2 继续 3 恢复
      */
-    @Column(name = "cscRresult", length = 1)
-    private String cscRresult;//处理结果（基金委）
+    private String cscResult;//处理结果（基金委）
+    /**
+     * 学校处理原因
+     */
+    private String schReason;//处理原因
 
     /**
-     *处理原因
+     * 学校不合格时间起
      */
-    @Column(name = "reason", length = 300)
-    private String reason;//处理原因
+    private Date schStartTime;//不合格时间起
 
     /**
-     *不合格时间起
+     * 学校不合格时间止
      */
-    @Column(name = "startTime")
-    private Date startTime;//不合格时间起
+    private Date schEndTime;//不合格时间止
+    /**
+     *基金委处理原因
+     */
+    private String cscReason;//处理原因
 
     /**
-     *不合格时间止
+     *基金委不合格时间起
      */
-    @Column(name = "endTime")
-    private Date endTime;//不合格时间止
+    private Date cscStartTime;//不合格时间起
+
+    /**
+     *基金委不合格时间止
+     */
+    private Date cscEndTime;//不合格时间止
 
     /**
      * 主表id
@@ -112,36 +121,68 @@ public class ScholarshipDetail {
         this.cscReview = cscReview;
     }
 
-    public String getCscRresult() {
-        return cscRresult;
+    public String getCscrResult() {
+        return cscResult;
     }
 
-    public void setCscRresult(String cscRresult) {
-        this.cscRresult = cscRresult;
+    public void setCscrResult(String cscrResult) {
+        this.cscResult = cscrResult;
     }
 
-    public String getReason() {
-        return reason;
+    public String getCscResult() {
+        return cscResult;
     }
 
-    public void setReason(String reason) {
-        this.reason = reason;
+    public void setCscResult(String cscResult) {
+        this.cscResult = cscResult;
     }
 
-    public Date getStartTime() {
-        return startTime;
+    public String getSchReason() {
+        return schReason;
     }
 
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
+    public void setSchReason(String schReason) {
+        this.schReason = schReason;
     }
 
-    public Date getEndTime() {
-        return endTime;
+    public Date getSchStartTime() {
+        return schStartTime;
     }
 
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
+    public void setSchStartTime(Date schStartTime) {
+        this.schStartTime = schStartTime;
+    }
+
+    public Date getSchEndTime() {
+        return schEndTime;
+    }
+
+    public void setSchEndTime(Date schEndTime) {
+        this.schEndTime = schEndTime;
+    }
+
+    public String getCscReason() {
+        return cscReason;
+    }
+
+    public void setCscReason(String cscReason) {
+        this.cscReason = cscReason;
+    }
+
+    public Date getCscStartTime() {
+        return cscStartTime;
+    }
+
+    public void setCscStartTime(Date cscStartTime) {
+        this.cscStartTime = cscStartTime;
+    }
+
+    public Date getCscEndTime() {
+        return cscEndTime;
+    }
+
+    public void setCscEndTime(Date cscEndTime) {
+        this.cscEndTime = cscEndTime;
     }
 
     public Scholarship getScholarship() {
