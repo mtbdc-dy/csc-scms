@@ -28,13 +28,19 @@ public class ScholarshipX {
     @Column
     private String schResult;
     @Column
-    private String cscrResult;
+    private String cscResult;
     @Column
-    private String reason;
+    private String schReason;
     @Column
-    private Date startTime;
+    private Date schStartTime;
     @Column
-    private Date endTime;
+    private Date schEndTime;
+    @Column
+    private String cscReason;
+    @Column
+    private Date cscStartTime;
+    @Column
+    private Date cscEndTime;
     @Column
     private Long qualNum;
     @Column
@@ -179,6 +185,7 @@ public class ScholarshipX {
     }
 
 
+
     public String getScholarshipId() {
         return scholarshipId;
     }
@@ -197,22 +204,6 @@ public class ScholarshipX {
         this.schResult = schResult;
     }
 
-    public String getCscrResult() {
-        return cscrResult;
-    }
-
-    public void setCscrResult(String cscrResult) {
-        this.cscrResult = cscrResult;
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
-
 
     public String getSchReview() {
         return schReview;
@@ -222,20 +213,60 @@ public class ScholarshipX {
         this.schReview = schReview;
     }
 
-    public Date getStartTime() {
-        return startTime;
+    public String getCscResult() {
+        return cscResult;
     }
 
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
+    public void setCscResult(String cscResult) {
+        this.cscResult = cscResult;
     }
 
-    public Date getEndTime() {
-        return endTime;
+    public String getSchReason() {
+        return schReason;
     }
 
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
+    public void setSchReason(String schReason) {
+        this.schReason = schReason;
+    }
+
+    public Date getSchStartTime() {
+        return schStartTime;
+    }
+
+    public void setSchStartTime(Date schStartTime) {
+        this.schStartTime = schStartTime;
+    }
+
+    public Date getSchEndTime() {
+        return schEndTime;
+    }
+
+    public void setSchEndTime(Date schEndTime) {
+        this.schEndTime = schEndTime;
+    }
+
+    public String getCscReason() {
+        return cscReason;
+    }
+
+    public void setCscReason(String cscReason) {
+        this.cscReason = cscReason;
+    }
+
+    public Date getCscStartTime() {
+        return cscStartTime;
+    }
+
+    public void setCscStartTime(Date cscStartTime) {
+        this.cscStartTime = cscStartTime;
+    }
+
+    public Date getCscEndTime() {
+        return cscEndTime;
+    }
+
+    public void setCscEndTime(Date cscEndTime) {
+        this.cscEndTime = cscEndTime;
     }
 
     public String getCscrresult_lastyear() {

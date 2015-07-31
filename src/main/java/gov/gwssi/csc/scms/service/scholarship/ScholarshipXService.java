@@ -64,7 +64,7 @@ public class ScholarshipXService extends BaseService {
         return ScholarshipXResultObjectList;
 
     }
-    //查询获取机票管理列表
+    //查询获取奖学金管理列表
     public List<ScholarshipXResultObject> getScholarshipXListByFilter(FilterObject filterObject,User user) {
 
         List<ScholarshipXResultObject> ScholarshipXResultObjectList;
@@ -93,12 +93,14 @@ public class ScholarshipXService extends BaseService {
     private String getSql(User user) {
         StringBuilder sb = new StringBuilder();
         Timestamp ts = new Timestamp(System.currentTimeMillis());
+        String schoolId=user.getNode().getNodeId();
         int year=ts.getYear()+1900;
         sb.append(ScholarshipXResultObject.getResultObject());
         String tempSql = " from ScholarshipX ScholarshipX,Student student,BasicInfo basicInfo, SchoolRoll schoolRoll" +
                 " where student.id = basicInfo.student " +
                 "and student.id = schoolRoll.student   and student.id = ScholarshipX.studentId and ScholarshipX.year='"+year+"'";//默认进来查询当年的
         sb.append(tempSql);
+        sb.append(" and ScholarshipX.school = '").append(schoolId).append("'");
         return sb.toString();
     }
     //获取奖学金评审列表对应的字段数据
@@ -106,11 +108,13 @@ public class ScholarshipXService extends BaseService {
         if (filterObject == null)
             return null;
         StringBuilder sb = new StringBuilder();
+        String schoolId=user.getNode().getNodeId();
         sb.append(ScholarshipXResultObject.getResultObject());
         String tempSql = " from ScholarshipX ScholarshipX, Student student,BasicInfo basicInfo, SchoolRoll schoolRoll " +
                 " where student.id = basicInfo.student " +
                 "and student.id = schoolRoll.student   and student.id = ScholarshipX.studentId ";
         sb.append(tempSql);
+        sb.append(" and ScholarshipX.school = '").append(schoolId).append("'");
         sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter(user, "ScholarshipX", ""));
         return sb.toString();
     }
@@ -151,15 +155,15 @@ public class ScholarshipXService extends BaseService {
     public Iterable<ScholarshipX> findScholarshipXAll() {//找到所有视图记录
         return scholarshipXRepository.findAll();
     }
-//    //保存新增的保险记录
-//    @Transactional
-//    public String saveScholarshipX(ScholarshipX scholarshipX, List<OperationLog> operationLogs) {
-//        //记录日志
-//        operationLogService.saveOperationLog(operationLogs);
-//        scholarshipX.setId(getBaseDao().getIdBySequence("SEQ_INSURANCE"));
-//        scholarshipXRepository.save(scholarshipX);
-//        return scholarshipX.getId();
-//    }
+    //保存新增的奖学金详细记录
+    @Transactional
+    public String savenewScholarshipDetail(ScholarshipDetail scholarshipDetail, List<OperationLog> operationLogs) {
+        //记录日志
+        operationLogService.saveOperationLog(operationLogs);
+        scholarshipDetail.setId(getBaseDao().getIdBySequence("seq_scholarship_detail"));
+        scholarshipDetailRepository.save(scholarshipDetail);
+        return scholarshipDetail.getId();
+    }
 // 根据id查询scholarshipXAndStu
 public ScholarshipXResultObject getScholarshipXAndStu(String id) throws Exception {
     //返回界面包含学生信息 根据保险id查出
@@ -175,13 +179,33 @@ public ScholarshipXResultObject getScholarshipXAndStu(String id) throws Exceptio
     List<ScholarshipXResultObject> scholarshipXList = super.getBaseDao().getObjectListByHQL(sb.toString(), ScholarshipXResultObject.class, 0, 1);
     ScholarshipXResultObject scholarshipXResultObject = null;
     if (null == scholarshipXList || scholarshipXList.size() == 0) {
-        throw new NoSuchAbnormalException("cannot find the scholarshipX, please refresh the page!");
+        return null;
     } else {
         scholarshipXResultObject = scholarshipXList.get(0);
     }
     return scholarshipXResultObject;
 }
-
+    // 根据studentId查询上scholarshipXAndStu
+    public ScholarshipXResultObject getScholarshipXAndStuBy(String studentId) throws Exception {
+        //返回界面包含学生信息 根据保险id查出
+        StringBuilder sb = new StringBuilder();
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        int year = ts.getYear() + 1900;
+        sb.append(ScholarshipXResultObject.getResultObject());
+        String tempSql = " from ScholarshipX ScholarshipX,Student student,BasicInfo basicInfo, SchoolRoll schoolRoll" +
+                " where student.id = basicInfo.student " +
+                "and student.id = schoolRoll.student   and student.id = ScholarshipX.studentId and ScholarshipX.year='" + (year-1) + "'";
+        sb.append(tempSql);
+        sb.append(" and ScholarshipX.studentId = '").append(studentId).append("'");
+        List<ScholarshipXResultObject> scholarshipXList = super.getBaseDao().getObjectListByHQL(sb.toString(), ScholarshipXResultObject.class, 0, 1);
+        ScholarshipXResultObject scholarshipXResultObject = null;
+        if (null == scholarshipXList || scholarshipXList.size() == 0) {
+           return null;
+        } else {
+            scholarshipXResultObject = scholarshipXList.get(0);
+        }
+        return scholarshipXResultObject;
+    }
     //删除保险子表记录
     public ScholarshipDetail deleteScholarshipDetailById(String id, List<OperationLog> operationLogs) {
         ScholarshipDetail scholarshipDetail = getScholarshipDetailById(id);

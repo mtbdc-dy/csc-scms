@@ -47,6 +47,16 @@ public class CodeMainTenanceController {
 
         return allCodeList;
     }
+    //获取父节点
+    @RequestMapping(value = "/parentId",method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
+    public List getParentCode(@RequestParam(value = "type") String type) {
+        //按照分页（默认）要求，返回列表内容
+        List detailCodeList = null;
+
+        detailCodeList = codeMainTenanceService.getParentCode(type);
+
+        return detailCodeList;
+    }
     //返回代码详细列表
     @RequestMapping(value = "/detail",method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
     public List getDetailCode(@RequestParam(value = "seq") String seq) {
