@@ -158,6 +158,70 @@ public class ScholarshipXResultObject extends ResultObject{
         return resultSql;
     }
 
+    public String getCscReview() {
+        return cscReview;
+    }
+
+    public void setCscReview(String cscReview) {
+        this.cscReview = cscReview;
+    }
+
+    public String getCscResult() {
+        return cscResult;
+    }
+
+    public void setCscResult(String cscResult) {
+        this.cscResult = cscResult;
+    }
+
+    public String getSchReason() {
+        return schReason;
+    }
+
+    public void setSchReason(String schReason) {
+        this.schReason = schReason;
+    }
+
+    public Date getSchStartTime() {
+        return schStartTime;
+    }
+
+    public void setSchStartTime(Date schStartTime) {
+        this.schStartTime = schStartTime;
+    }
+
+    public Date getSchEndTime() {
+        return schEndTime;
+    }
+
+    public void setSchEndTime(Date schEndTime) {
+        this.schEndTime = schEndTime;
+    }
+
+    public String getCscReason() {
+        return cscReason;
+    }
+
+    public void setCscReason(String cscReason) {
+        this.cscReason = cscReason;
+    }
+
+    public Date getCscStartTime() {
+        return cscStartTime;
+    }
+
+    public void setCscStartTime(Date cscStartTime) {
+        this.cscStartTime = cscStartTime;
+    }
+
+    public Date getCscEndTime() {
+        return cscEndTime;
+    }
+
+    public void setCscEndTime(Date cscEndTime) {
+        this.cscEndTime = cscEndTime;
+    }
+
     public Long getYear() {
         return year;
     }
