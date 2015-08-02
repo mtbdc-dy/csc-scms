@@ -1,6 +1,5 @@
 package gov.gwssi.csc.scms.service.student;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -255,5 +254,14 @@ public class StudentServiceTest extends UnitTestBase {
         list.add(op2);
 
         return list;
+    }
+
+    @Test
+    public void testGetStudentById() throws Exception {
+        StudentService studentService = getBean("studentService");
+        Date a = new Date();
+        Student student = studentService.getStudentById("2015061600000000341");
+        Date b = new Date();
+        System.out.println("costs: " + (b.getTime() - a.getTime()) + "ms.");
     }
 }

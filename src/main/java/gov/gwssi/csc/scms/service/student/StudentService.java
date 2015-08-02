@@ -18,7 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Murray on 4/5/2015.
@@ -53,11 +56,13 @@ public class StudentService extends BaseService {
     @Autowired
     private OperationLogService operationLogService;
 
+
     public Student getStudentById(String id) throws Exception{
         Student student = studentRepository.findOne(id);
         if(null == student){
-            throw new Exception("can not find the student" );
+            throw new Exception("can not find the student with id:" + id);
         }
+
         setNullByField(student.getBasicInfo(), "student", BasicInfo.class);
         setNullByField(student.getSchoolfellow(), "student", Schoolfellow.class);
         setNullByField(student.getDiscuss(), "student", Discuss.class);
