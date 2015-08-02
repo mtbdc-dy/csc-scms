@@ -32,7 +32,7 @@ public class CodeMainTenanceDAO extends BaseDAO {
             stringBuilder.append(" and t.tableen like '%"+tableName+"%'");
         }
         if(!"".equals(chinaName)){
-            stringBuilder.append("  and t.class like '%"+chinaName+"%'");
+            stringBuilder.append("  and t.tablech like '%"+chinaName+"%'");
         }
 
         allCodeList = super.queryListBySql(stringBuilder.toString());
@@ -321,7 +321,7 @@ public class CodeMainTenanceDAO extends BaseDAO {
                     list.add("dim_project");
                     list.add(codeDetailResult.getFULLNAME());
 
-                    super.doStatementForRtn("p_scms_delete_dim",list);
+                  String str =    super.doStatementForRtn("p_scms_delete_dim",list);
                     return codeDetailResult;
                 }
             }else if (CONTINENTS.equals(codeDetailResult.getTABLEEN())){
@@ -339,7 +339,7 @@ public class CodeMainTenanceDAO extends BaseDAO {
                     list.add("dim_region");
                     list.add(codeDetailResult.getFULLNAME());
 
-                    super.doStatementForRtn("p_scms_delete_dim",list);
+                     String str = super.doStatementForRtn("p_scms_delete_dim",list);
                     return codeDetailResult;
                 }
             }else if (SUBJECTS.equals(codeDetailResult.getTABLEEN())){
@@ -357,7 +357,7 @@ public class CodeMainTenanceDAO extends BaseDAO {
                     list.add("dim_subject");
                     list.add(codeDetailResult.getFULLNAME());
 
-                    super.doStatementForRtn("p_scms_delete_dim",list);
+                    String str =  super.doStatementForRtn("p_scms_delete_dim",list);
                     return codeDetailResult;
                 }
             }else if (ABNORMAL.equals(codeDetailResult.getTABLEEN())){
@@ -375,7 +375,7 @@ public class CodeMainTenanceDAO extends BaseDAO {
                     list.add("dim_anml");
                     list.add(codeDetailResult.getFULLNAME());
 
-                    super.doStatementForRtn("p_scms_delete_dim",list);
+                    String str = super.doStatementForRtn("p_scms_delete_dim",list);
                     return codeDetailResult;
                 }
             }else if (UNIVERSITIES.equals(codeDetailResult.getTABLEEN())){
@@ -393,7 +393,7 @@ public class CodeMainTenanceDAO extends BaseDAO {
                     list.add("dim_univ");
                     list.add(codeDetailResult.getFULLNAME());
 
-                    super.doStatementForRtn("p_scms_delete_dim",list);
+                    String str = super.doStatementForRtn("p_scms_delete_dim",list);
                     return codeDetailResult;
                 }
             }else if (TRANSLATE.equals(codeDetailResult.getTABLEEN())){
@@ -409,7 +409,8 @@ public class CodeMainTenanceDAO extends BaseDAO {
                     List list = new ArrayList();
                     list.add(codeDetailResult.getID());
                     list.add("dim_translate");
-                    super.doStatementForRtn("p_scms_delete_dim",list);
+                    list.add(codeDetailResult.getFULLNAME());
+                    String str =  super.doStatementForRtn("p_scms_delete_dim",list);
                     return codeDetailResult;
                 }
 
