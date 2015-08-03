@@ -13,39 +13,39 @@ public class Student {
     @Id
     private String id;
     /**
-     * CSCID
+     * CscID
      */
-    @Column(name = "CSCID", length = 12, unique = true, nullable = true)
+    @Column(name = "CscId", length = 12, unique = true, nullable = true)
     private String cscId;
     /**
      * 基本信息
      */
     @OneToOne
-    @JoinColumn(name = "BASICINFO", unique = true, nullable = false)
+    @JoinColumn(name = "BasicInfo", unique = true, nullable = false)
     private BasicInfo basicInfo;
     /**
      * 来华前概况
      */
     @OneToOne
-    @JoinColumn(name = "PROFILESHISTORY")
+    @JoinColumn(name = "ProfilesHistory")
     private ProfilesHistory profilesHistory;
     /**
      * 注册信息
      */
     @OneToOne
-    @JoinColumn(name = "REGISTRATIONINFO", unique = true)
+    @JoinColumn(name = "RegistrationInfo", unique = true)
     private RegistrationInfo registrationInfo;
     /**
      * 商议信息
      */
     @OneToOne
-    @JoinColumn(name = "DISCUSS", unique = true)
+    @JoinColumn(name = "Discuss", unique = true)
     private Discuss discuss;
     /**
      * 学籍信息
      */
     @OneToOne
-    @JoinColumn(name = "SCHOOLROLL", unique = true)
+    @JoinColumn(name = "SchoolRoll", unique = true)
     private SchoolRoll schoolRoll;
     /**
      * 相关地址

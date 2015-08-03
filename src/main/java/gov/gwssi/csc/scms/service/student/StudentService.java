@@ -56,11 +56,13 @@ public class StudentService extends BaseService {
     @Autowired
     private OperationLogService operationLogService;
 
+
     public Student getStudentById(String id) throws Exception{
         Student student = studentRepository.findOne(id);
         if(null == student){
-            throw new Exception("can not find the student" );
+            throw new Exception("can not find the student with id:" + id);
         }
+
         setNullByField(student.getBasicInfo(), "student", BasicInfo.class);
         setNullByField(student.getSchoolfellow(), "student", Schoolfellow.class);
         setNullByField(student.getDiscuss(), "student", Discuss.class);

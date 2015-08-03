@@ -34,7 +34,7 @@ public class TranslateDictController {
 
                 list = translateDictService.getContinentsWithCountries();
 
-            } else if ("projects".equals(codeTableName)) {
+            } else if ("projectAttrs".equals(codeTableName)) {
 
                 list = translateDictService.getProjectsWithTypeAndName();
 
@@ -50,7 +50,7 @@ public class TranslateDictController {
 
                 list = translateDictService.getSubjectsWithLeveThree();
 
-            } else if ("abnormalReasons".equals(codeTableName)) {
+            } else if ("abnormalTypes".equals(codeTableName)) {
 
                 list = translateDictService.getAbnormalReasonsWithType();
 
