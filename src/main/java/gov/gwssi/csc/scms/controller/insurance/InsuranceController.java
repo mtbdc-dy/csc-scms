@@ -4,13 +4,13 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.controller.JsonBody;
 import gov.gwssi.csc.scms.controller.RequestHeaderError;
-import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
-import gov.gwssi.csc.scms.domain.log.OperationLog;
-import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
-import gov.gwssi.csc.scms.domain.query.InsuranceResultObject;
 import gov.gwssi.csc.scms.domain.insurance.Insurance;
+import gov.gwssi.csc.scms.domain.log.OperationLog;
+import gov.gwssi.csc.scms.domain.query.InsuranceResultObject;
+import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.abnormal.NoSuchAbnormalException;
+import gov.gwssi.csc.scms.service.export.ExportService;
 import gov.gwssi.csc.scms.service.insurance.InsuranceService;
 import gov.gwssi.csc.scms.service.user.NoSuchUserException;
 import gov.gwssi.csc.scms.service.user.UserIdentityError;
@@ -18,7 +18,6 @@ import gov.gwssi.csc.scms.service.user.UserService;
 import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import gov.gwssi.csc.scms.service.BaseService;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -34,6 +33,8 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/insurance")
 public class InsuranceController {
+    @Autowired
+    private ExportService exportService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -138,6 +139,22 @@ public class InsuranceController {
             }
 
             return insuranceResultObjectList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    //导出保险信息
+    @RequestMapping(value = "/{ids}/{tablename}/{log}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
+    public void exportInsurance(@PathVariable("ids") String ids, @PathVariable("tablename") String tablename, @PathVariable("log") String log) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
+//                    JsonBody jbosy = new ObjectMapper().readValue(log, JsonBody.class);
+            List<OperationLog> operationLogs = mapper.readValue(log, javaType);
+            exportService.exportByfilter(tablename, ids);
+
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);

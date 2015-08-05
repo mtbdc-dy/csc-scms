@@ -1,34 +1,26 @@
 package gov.gwssi.csc.scms.service.insurance;
 
-import gov.gwssi.csc.scms.base.UnitTestBase;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.gwssi.csc.scms.base.UnitTestBase;
 import gov.gwssi.csc.scms.dao.insurance.InsuranceDAO;
 import gov.gwssi.csc.scms.dao.ticket.TicketDAO;
-import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.InsuranceResultObject;
-import gov.gwssi.csc.scms.domain.query.TicketResultObject;
-import gov.gwssi.csc.scms.domain.ticket.Ticket;
-import gov.gwssi.csc.scms.service.ticket.TicketService;
-import junit.framework.TestCase;
+import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
-import org.junit.Assert;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by chen on 2015/7/17.
  */
 public class InsuranceServiceTest extends UnitTestBase {
+
+    private InsuranceDAO insuranceDAO;
+    private TicketDAO ticketDAO;
 
     @Before
     public void setUp() throws Exception {
@@ -64,8 +56,15 @@ public class InsuranceServiceTest extends UnitTestBase {
         }
         Assert.assertNotNull(list1);
     }
-    private InsuranceDAO insuranceDAO;
-    private TicketDAO ticketDAO;
+
+    @Test
+    public void testticketDAO() throws Exception {
+
+        List exportList = ticketDAO.getStudentList(null);
+//        List exportList=ticketDAO.getStudentList(null);
+        System.out.println("exportList.size----" + exportList.size());
+    }
+
     @Test
     public void testgetInsuranceAndStu() throws Exception {
         InsuranceService insuranceService = super.getBean("insuranceService");
