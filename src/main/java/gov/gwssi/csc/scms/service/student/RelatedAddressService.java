@@ -55,7 +55,7 @@ public class RelatedAddressService extends BaseService {
     @Transactional
     public RelatedAddress saveAddress(RelatedAddress address, List<OperationLog> operationLogs) throws Exception {
         operationLogService.saveOperationLog(operationLogs);
-        address.setId(getBaseDao().getIdBySequence("SEQ_WARNING"));
+        address.setId(getBaseDao().getIdBySequence("SEQ_RELATED_ADDRESS"));
         return relatedAddressRepository.save(address);
     }
 

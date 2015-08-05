@@ -46,7 +46,7 @@ public class TranslateDictController {
 
                 list = translateDictService.getUniversities();
 
-            } else if ("subjects".equals(codeTableName)) {
+            } else if ("disciplines".equals(codeTableName)) {
 
                 list = translateDictService.getSubjectsWithLeveThree();
 

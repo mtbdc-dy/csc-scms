@@ -4,10 +4,12 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.controller.JsonBody;
 import gov.gwssi.csc.scms.controller.RequestHeaderError;
+import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.TicketResultObject;
 import gov.gwssi.csc.scms.domain.ticket.Ticket;
 import gov.gwssi.csc.scms.domain.user.User;
+import gov.gwssi.csc.scms.service.ticket.NoSuchTicketException;
 import gov.gwssi.csc.scms.service.ticket.TicketService;
 import gov.gwssi.csc.scms.service.user.NoSuchUserException;
 import gov.gwssi.csc.scms.service.user.UserIdentityError;
@@ -149,6 +151,82 @@ public class TicketController {
                 return newTickets;
 
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    @RequestMapping(value = "/{studentId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
+    public Object getStudentGroupById(@PathVariable(value = "studentId") String studentId) {
+        try {
+            return ticketService.getTicketByStudentId(studentId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    //新增机票信息
+    @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
+    public Ticket putTicket(@RequestBody String ticketJson) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+
+            JsonBody jbosy = new ObjectMapper().readValue(ticketJson, JsonBody.class);
+
+            Ticket ticket = mapper.readValue(jbosy.getValue(), Ticket.class);
+
+            if (ticket == null) {
+                throw new NoSuchTicketException("cannot generate the ticket");
+            }
+            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
+            List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
+
+            ticket = ticketService.addTicket(ticket, operationLogs);
+            return ticket;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    //删除机票信息
+    @RequestMapping(value = "/{ticketId}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
+    public Ticket deleteAccident(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header, @PathVariable(value = "ticketId") String ticketId) {
+        try {
+            User user = userService.getUserByJWT(header);
+            Ticket ticket = ticketService.deleteTicketById(user, ticketId);
+            if (ticket == null) {
+                throw new NoSuchTicketException("cannot delete the accident");
+            }
+            return ticket;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    //修改
+    @RequestMapping(method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
+    public Ticket editTicket(@RequestBody String ticketJson) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+
+            JsonBody jbosy = new ObjectMapper().readValue(ticketJson, JsonBody.class);
+
+            Ticket ticket = mapper.readValue(jbosy.getValue(), Ticket.class);
+
+            if (ticket == null) {
+                throw new NoSuchTicketException("cannot edit the ticket");
+            }
+            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
+            List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
+
+            ticket = ticketService.saveTicket(ticket, operationLogs);
+            return ticket;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
