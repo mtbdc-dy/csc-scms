@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.service.student;
 
+import gov.gwssi.csc.scms.dao.BaseDAO;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.student.RelatedAddress;
 import gov.gwssi.csc.scms.domain.student.Student;
@@ -25,6 +26,8 @@ public class RelatedAddressService extends BaseService {
     @Autowired
     @Qualifier("relatedAddressRepository")
     private RelatedAddressRepository relatedAddressRepository;
+    @Autowired
+    private BaseDAO baseDAO;
 
     public RelatedAddress getRelatedAddressById(String id) {
         return relatedAddressRepository.findOne(id);
@@ -74,7 +77,7 @@ public class RelatedAddressService extends BaseService {
         operationLog.setStudentId(student.getId());
         operationLog.setCscId(student.getCscId());
         operationLog.setPassportName(student.getBasicInfo().getPassportName());
-        String addressJsonStr = "{\"id\":\"" + address.getId() + "\",\"type\":\"" + address.getType() + "\",\"nature\":\"" + address.getNature() + "\",\"addressOrName\":\"" + address.getAddressOrName()
+        String addressJsonStr = "{\"id\":\"" + address.getId() + "\",\"type\":\"" + baseDAO.getNameCHByTranslateId(address.getType()) + "\",\"nature\":\"" + address.getNature() + "\",\"addressOrName\":\"" + address.getAddressOrName()
                 + "\",\"phone\":\"" + address.getPhone() + "\",\"fax\":\"" + address.getFax() + "\",\"email\":\"" + address.getEmail() + "\",\"remark\":\"" + address.getRemark() + "\",\"createBy\":" + address.getCreateBy()
                 + "\",\"createDate\":\"" + address.getCreateDate() + "\",\"updateBy\":\"" + address.getUpdateBy() + "\",\"updateDate\":\"" + address.getUpdateDate() + "\"}";
         operationLog.setBefore(addressJsonStr);

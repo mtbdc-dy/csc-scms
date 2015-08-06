@@ -11,10 +11,10 @@ import java.util.Date;
 public class Grade {
     @Id
     private String id;
-    /**
-     * studentID
-     */
-    private String studentId;
+//    /**
+//     * studentID
+//     */
+//    private String studentId;
     /**
      * 年度
      */
@@ -64,13 +64,13 @@ public class Grade {
         this.id = id;
     }
 
-    public String getStudentId() {
-        return studentId;
-    }
-
-    public void setStudentId(String studentId) {
-        this.studentId = studentId;
-    }
+//    public String getStudentId() {
+//        return studentId;
+//    }
+//
+//    public void setStudentId(String studentId) {
+//        this.studentId = studentId;
+//    }
 
     public Integer getAnnual() {
         return annual;
