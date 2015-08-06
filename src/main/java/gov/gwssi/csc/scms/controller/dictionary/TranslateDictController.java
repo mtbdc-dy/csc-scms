@@ -16,7 +16,7 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("/code-table")
+@RequestMapping("/code-tables")
 public class TranslateDictController {
 
     @Autowired
