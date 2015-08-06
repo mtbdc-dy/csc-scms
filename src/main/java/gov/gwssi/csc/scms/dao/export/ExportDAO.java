@@ -3,6 +3,7 @@ package gov.gwssi.csc.scms.dao.export;
 import gov.gwssi.csc.scms.dao.BaseDAO;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -34,10 +35,57 @@ public class ExportDAO extends BaseDAO {
         return seachList;
     }
 
+    //获取动态标题行的行数
+    public Integer getHeadarrayInt(String tableName) {
+        List seachList = null;
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("SELECT count(distinct title) sl from SCMS_INI_EXPORT  ");
+        stringBuilder.append(" where SCMS_INI_EXPORT.subtable='0' and SCMS_INI_EXPORT.title in('97','98','99')  ");
+        stringBuilder.append(" and SCMS_INI_EXPORT.tablename = '").append(tableName).append("' ");//根据表名找到配置
+        seachList = super.queryListBySql(stringBuilder.toString());
+        HashMap map = (HashMap) seachList.get(0);
+        int headarrayint = Integer.parseInt(map.get("SL").toString());
+        return headarrayint;
+    }
+
+    //获取动态标题行97的LIST
+    public List getHeadarrayList97(String tableName) {
+        List seachList = null;
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("SELECT * from SCMS_INI_EXPORT  ");
+        stringBuilder.append(" where SCMS_INI_EXPORT.subtable='0' and SCMS_INI_EXPORT.title in('97')  ");
+        stringBuilder.append(" and SCMS_INI_EXPORT.tablename = '").append(tableName).append("' ");//根据表名找到配置
+        stringBuilder.append("  order by seq");
+        seachList = super.queryListBySql(stringBuilder.toString());
+        return seachList;
+    }
+
+    //获取动态标题行98的LIST
+    public List getHeadarrayList98(String tableName) {
+        List seachList = null;
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("SELECT * from SCMS_INI_EXPORT  ");
+        stringBuilder.append(" where SCMS_INI_EXPORT.subtable='0' and SCMS_INI_EXPORT.title in('98')  ");
+        stringBuilder.append(" and SCMS_INI_EXPORT.tablename = '").append(tableName).append("' ");//根据表名找到配置
+        stringBuilder.append("  order by seq");
+        seachList = super.queryListBySql(stringBuilder.toString());
+        return seachList;
+    }
+
     //根据传入sql 查询数据库，得到结果list
     public List getListbysql(String sql) {
         List resurtList = super.queryListBySql(sql.toString());
         return resurtList;
     }
 
+    //获取动态标题行的需要合并行和列的LIST
+    public List getMergeList(String tableName) {
+        List seachList = null;
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("SELECT * from SCMS_INI_EXPORT  ");
+        stringBuilder.append(" where SCMS_INI_EXPORT.subtable='0' and (MERGELINE is not null or MERGECOLUMN is not null)   ");
+        stringBuilder.append(" and SCMS_INI_EXPORT.tablename = '").append(tableName).append("' ");//根据表名找到配置
+        seachList = super.queryListBySql(stringBuilder.toString());
+        return seachList;
+    }
 }

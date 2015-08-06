@@ -24,30 +24,103 @@ public class ExportService extends BaseService {
     private ExportDAO exportDAO;
 
     public void exportByfilter(String tablename, String ids) {
+        String id[] = ids.split(",");
+        String idins = "";
+        for (int i = 0; i < id.length; i++) {
+            idins = idins + "'" + id[i] + "',";
+        }
         List exportList = exportDAO.getExportList(tablename);
         List seachList = exportDAO.getSeachList(tablename);//除标题行外
+        List headarrayList97 = exportDAO.getHeadarrayList97(tablename);//所有97标题行
+        List headarrayList98 = exportDAO.getHeadarrayList98(tablename);//所有97标题行
+        List mergeList = exportDAO.getMergeList(tablename);//需要合并的标题
         String sql = "select ";//查询语句
-        String headArray[][] = new String[1][seachList.size()];
-        String headArray1[][] = new String[1][seachList.size()];
+        int headarrayint = exportDAO.getHeadarrayInt(tablename);//动态标题行数
+        String headArray[][] = new String[headarrayint][seachList.size()];//需要显示的标题行
+        String headArray1[][] = new String[1][seachList.size()];//查询的字段，英文，和数据库对应
         String titleExcel = "";//excel标题
         int columnLength[] = new int[seachList.size()];//字段显示宽度
+        int mergeArray[][];
+        if (mergeList.size() > 0) {//存在需要合并的行或者列
+            mergeArray = new int[mergeList.size()][4];
+        } else {
+            mergeArray = null;
+        }
+        if (headarrayint == 2) {//98,99
+            for (int i = 0; i < mergeList.size(); i++) {//标题行合并，构造合并数组mergeArray
+                HashMap map = (HashMap) mergeList.get(i);
+                int zb = Integer.parseInt(map.get("SEQ").toString());
+                int mergec = 1;
+                int mergel = 1;
+                if (map.get("MERGECOLUMN") != null) {
+                    mergec = Integer.parseInt(map.get("MERGECOLUMN").toString());
+                } else if (map.get("MERGELINE") != null) {
+                    mergel = Integer.parseInt(map.get("MERGELINE").toString());
+                }
+                int[] temp = {0, zb, mergel - 1, zb + mergec - 1};
+                mergeArray[i] = temp;
+            }
+            for (int i = 0; i < headarrayList98.size(); i++) {//TITLE=98,构造标题行数组headArray
+                HashMap map = (HashMap) headarrayList98.get(i);
+                if (map.get("COLCH") != null) {
+                    headArray[0][i] = map.get("COLCH").toString();
+                } else {
+                    headArray[0][i] = "";
+                }
+            }
+        } else if (headarrayint == 3) {
+            for (int i = 0; i < mergeList.size(); i++) {//构造合并数组mergeArray
+                HashMap map = (HashMap) mergeList.get(i);
+                int zb = Integer.parseInt(map.get("SEQ").toString());
+                int mergec = 1;
+                int mergel = 1;
+                if (map.get("MERGECOLUMN") != null) {
+                    mergec = Integer.parseInt(map.get("MERGECOLUMN").toString());
+                }
+                if (map.get("MERGELINE") != null) {
+                    mergel = Integer.parseInt(map.get("MERGELINE").toString());
+                }
+                if (map.get("TITLE").toString().equals("97")) {
+                    int[] temp = {0, zb, mergel - 1, zb + mergec - 1};
+                    mergeArray[i] = temp;
+                }
+                if (map.get("TITLE").toString().equals("98")) {
+                    int[] temp = {1, zb, 1 + mergel - 1, zb + mergec - 1};
+                    mergeArray[i] = temp;
+
+                }
+            }
+
+            for (int i = 0; i < headarrayList97.size(); i++) {//TITLE=97,构造标题行数组headArray
+                HashMap map = (HashMap) headarrayList97.get(i);
+                if (map.get("COLCH") != null) {
+                    headArray[0][i] = map.get("COLCH").toString();
+                } else {
+                    headArray[0][i] = "";
+                }
+            }
+            for (int i = 0; i < headarrayList98.size(); i++) {//TITLE=98,构造标题行数组headArray
+                HashMap map = (HashMap) headarrayList98.get(i);
+                if (map.get("COLCH") != null) {
+                    headArray[1][i] = map.get("COLCH").toString();
+                } else {
+                    headArray[1][i] = "";
+                }
+            }
+        }
+
         for (int i = 0; i < exportList.size(); i++) {//全部配置信息
             HashMap map = (HashMap) exportList.get(i);
             if ((map.get("TITLE").toString()).equals("0")) {//excel大标题
                 titleExcel = map.get("COLCH").toString();
             }
         }
-        for (int i = 0; i < seachList.size(); i++) {//非标题行
+        for (int i = 0; i < seachList.size(); i++) {//title=99
             HashMap map = (HashMap) seachList.get(i);
-            headArray[0][i] = map.get("COLCH").toString();
+            headArray[headarrayint - 1][i] = map.get("COLCH").toString();//TITLE=99,构造标题行数组headArray
             headArray1[0][i] = map.get("COLEN").toString();
             columnLength[i] = Integer.parseInt(map.get("WIDTH").toString());
             sql += map.get("COLEN").toString() + ',';
-        }
-        String id[] = ids.split(",");//前台结果集条件
-        String idins = "";
-        for (int i = 0; i < id.length; i++) {
-            idins = idins + "'" + id[i] + "',";
         }
         sql = sql.substring(0, sql.length() - 1) + " from " + tablename + " where 1=1 ";
         sql = sql + " and id in(" + idins.substring(0, idins.length() - 1) + ")";
@@ -67,11 +140,11 @@ public class ExportService extends BaseService {
             recordList.add(result);
         }
 
-        String hjh[] = null;
-        int mergeArray[][] = null;
-        //导出excel
-        ExcelExportUtil es = new ExcelExportUtil();
+        String hjh[] = null;// {"合计","3","5","6","7","8","9","10"};
 
+
+//导出excel
+        ExcelExportUtil es = new ExcelExportUtil();
         short excelAlginArray[] = {HSSFCellStyle.ALIGN_RIGHT, HSSFCellStyle.ALIGN_RIGHT, HSSFCellStyle.ALIGN_RIGHT, HSSFCellStyle.ALIGN_RIGHT, HSSFCellStyle.ALIGN_CENTER, HSSFCellStyle.ALIGN_CENTER, HSSFCellStyle.ALIGN_CENTER, HSSFCellStyle.ALIGN_CENTER};
         String dir = "C:/jjw";
         String dirTmp = "C:/jjw/tmp";
@@ -81,6 +154,7 @@ public class ExportService extends BaseService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
 
