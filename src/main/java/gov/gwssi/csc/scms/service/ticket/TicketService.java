@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.service.ticket;
 
+import gov.gwssi.csc.scms.dao.BaseDAO;
 import gov.gwssi.csc.scms.dao.ticket.TicketDAO;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.FilterObject;
@@ -36,6 +37,9 @@ public class TicketService extends BaseService {
     private StudentService studentService;
     @Autowired
     private TicketDAO ticketDAO;
+
+    @Autowired
+    private BaseDAO baseDAO;
     //生成机票管理清单
     public List<TicketResultObject> getTicketList(User user) {
         List ticketList;
@@ -176,7 +180,7 @@ public class TicketService extends BaseService {
             operationLog.setStudentId(student.getId());
             operationLog.setCscId(student.getCscId());
             operationLog.setPassportName(student.getBasicInfo().getPassportName());
-            String ticketJsonStr = "{\"id\":\"" + ticket.getId() + "\",\"studentId\":\"" + ticket.getStudentId() + "\",\"type\":\"" + ticket.getType() + "\",\"airLine\":\"" + ticket.getAirLine()
+            String ticketJsonStr = "{\"id\":\"" + ticket.getId() + "\",\"studentId\":\"" + ticket.getStudentId() + "\",\"type\":\"" + baseDAO.getNameCHByTranslateId(ticket.getType()) + "\",\"airLine\":\"" + ticket.getAirLine()
                     + "\",\"ticketNo\":\"" + ticket.getTicketNo() + "\",\"validdate\":\"" + ticket.getValiddate() + "\",\"applyDate\":\"" + ticket.getApplyDate() + "\",\"flightDate\":\"" + ticket.getFlightDate() + "\",\"leaveCity\":" + ticket.getLeaveCity()
                     + "\",\"price\":\"" + ticket.getPrice() + "\",\"state\":\"" + ticket.getState() + "\",\"remark\":\"" + ticket.getRemark() + "\",\"createBy\":\"" + ticket.getCreateBy() + "\",\"created\":\"" + ticket.getCreated()
                     + "\",\"updateBy\":\"" + ticket.getUpdateBy() + "\",\"updated\":\"" + ticket.getUpdated() + "\"}";

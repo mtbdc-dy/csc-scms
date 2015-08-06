@@ -211,6 +211,25 @@ public class BaseDAO {
     }
 
     /**
+     * 根据TranslateId查询dim_translate表得到中文名称
+     */
+    public String getNameCHByTranslateId(String translateId) {
+        System.out.println(translateId);
+        String sql = "select NAMECH from DIM_TRANSLATE where TRANSLATEID='" + translateId + "'";
+        EntityManager em = null;
+        try {
+            em = entityManagerFactory.createEntityManager();
+            Query query = em.createNativeQuery(sql);
+            return String.valueOf(query.getSingleResult());
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+
+    }
+
+    /**
      * 执行sql修改
      */
     public int updateBySql(String sql) {
