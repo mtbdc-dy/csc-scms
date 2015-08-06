@@ -1,6 +1,5 @@
 package gov.gwssi.csc.scms.controller.abnormal;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.controller.JsonBody;
@@ -8,14 +7,10 @@ import gov.gwssi.csc.scms.controller.RequestHeaderError;
 import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.AbnormalResultObject;
-import gov.gwssi.csc.scms.domain.query.AddStudentResultObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
-import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.domain.user.User;
-import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.service.abnormal.AbnormalService;
 import gov.gwssi.csc.scms.service.abnormal.NoSuchAbnormalException;
-import gov.gwssi.csc.scms.service.student.NoSuchStudentException;
 import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.user.NoSuchUserException;
 import gov.gwssi.csc.scms.service.user.UserIdentityError;
@@ -24,7 +19,6 @@ import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
@@ -99,7 +93,7 @@ public class AbnormalController {
 
             JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
             List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
-            String id = abnormalService.saveAbnormal(abnormal, operationLogs);
+            String id = abnormalService.saveAbnormal(abnormal, null);
             AbnormalResultObject  abnormalResult = abnormalService.getAbnormalAndStu(id);
             return abnormalResult;
         } catch (Exception e) {
@@ -113,6 +107,7 @@ public class AbnormalController {
         try {
             ObjectMapper mapper = new ObjectMapper();
             boolean rv = true;
+            System.out.println("abnormalJson="+abnormalJson);
             JsonBody jbosy = new ObjectMapper().readValue(abnormalJson, JsonBody.class);
             Abnormal abnormal = mapper.readValue(jbosy.getValue(), Abnormal.class);
             if (abnormal == null) {

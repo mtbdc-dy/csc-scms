@@ -90,6 +90,25 @@ public class StudentFilter implements Filter {
 
                         }
 
+                    }else if ("abnormal".equals(modleType)) {
+                        if ("2".equals(userTpye)) {//2 学校用户 1基金委
+
+                            if ("AS0002".equals(fc.getValue())) {
+                                sb.append(" and ").append("abnormal").append(".").append("state").append(" in (");
+                                sb.append("'AS0006','AS0007','AS0008')");
+                            }else if ("AS0004".equals(fc.getValue())) {
+                                sb.append(" and ").append("abnormal").append(".").append("state").append(" in (");
+                                sb.append("'AS0005'')");
+                            } else {
+                                sb.append(" and ").append(fc.getTableName()).append(".").append(fc.getColumnName()).append(" = '").append(str[0]).append("' ");
+
+                            }
+                        } else if ("1".equals(userTpye)) {
+
+                            sb.append(" and ").append(fc.getTableName()).append(".").append(fc.getColumnName()).append(" = '").append(str[0]).append("' ");
+
+                        }
+
                     } else {
                         sb.append(" and ").append(fc.getTableName()).append(".").append(fc.getColumnName()).append(" = '").append(str[0]).append("' ");
                     }
