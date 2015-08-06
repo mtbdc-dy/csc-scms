@@ -40,7 +40,7 @@ public class ExportDAO extends BaseDAO {
         List seachList = null;
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("SELECT count(distinct title) sl from SCMS_INI_EXPORT  ");
-        stringBuilder.append(" where SCMS_INI_EXPORT.subtable='0' and SCMS_INI_EXPORT.title in('97','98','99')  ");
+        stringBuilder.append(" where SCMS_INI_EXPORT.subtable='0'   and to_number(title)>98   ");
         stringBuilder.append(" and SCMS_INI_EXPORT.tablename = '").append(tableName).append("' ");//根据表名找到配置
         seachList = super.queryListBySql(stringBuilder.toString());
         HashMap map = (HashMap) seachList.get(0);
@@ -48,29 +48,29 @@ public class ExportDAO extends BaseDAO {
         return headarrayint;
     }
 
-    //获取动态标题行97的LIST
-    public List getHeadarrayList97(String tableName) {
+    //获取动态标题行,确定行数
+    public List getHeadarray(String tableName) {
         List seachList = null;
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("SELECT * from SCMS_INI_EXPORT  ");
-        stringBuilder.append(" where SCMS_INI_EXPORT.subtable='0' and SCMS_INI_EXPORT.title in('97')  ");
+        stringBuilder.append("SELECT distinct title from SCMS_INI_EXPORT  ");
+        stringBuilder.append(" where SCMS_INI_EXPORT.subtable='0' and to_number(title)>99  ");
         stringBuilder.append(" and SCMS_INI_EXPORT.tablename = '").append(tableName).append("' ");//根据表名找到配置
-        stringBuilder.append("  order by seq");
         seachList = super.queryListBySql(stringBuilder.toString());
         return seachList;
     }
 
-    //获取动态标题行98的LIST
-    public List getHeadarrayList98(String tableName) {
+    //获取动态标题行
+    public List getHeadarrayList(String tableName) {//获取动态标题行所有的list
         List seachList = null;
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("SELECT * from SCMS_INI_EXPORT  ");
-        stringBuilder.append(" where SCMS_INI_EXPORT.subtable='0' and SCMS_INI_EXPORT.title in('98')  ");
+        stringBuilder.append(" where SCMS_INI_EXPORT.subtable='0' and to_number(title)>99  ");
         stringBuilder.append(" and SCMS_INI_EXPORT.tablename = '").append(tableName).append("' ");//根据表名找到配置
-        stringBuilder.append("  order by seq");
+        stringBuilder.append("  order by title,seq ");
         seachList = super.queryListBySql(stringBuilder.toString());
         return seachList;
     }
+
 
     //根据传入sql 查询数据库，得到结果list
     public List getListbysql(String sql) {

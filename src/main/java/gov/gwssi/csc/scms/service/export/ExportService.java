@@ -31,8 +31,8 @@ public class ExportService extends BaseService {
         }
         List exportList = exportDAO.getExportList(tablename);
         List seachList = exportDAO.getSeachList(tablename);//除标题行外
-        List headarrayList97 = exportDAO.getHeadarrayList97(tablename);//所有97标题行
-        List headarrayList98 = exportDAO.getHeadarrayList98(tablename);//所有97标题行
+        List headarrayList = exportDAO.getHeadarrayList(tablename);//所有标题行
+
         List mergeList = exportDAO.getMergeList(tablename);//需要合并的标题
         String sql = "select ";//查询语句
         int headarrayint = exportDAO.getHeadarrayInt(tablename);//动态标题行数
@@ -46,31 +46,11 @@ public class ExportService extends BaseService {
         } else {
             mergeArray = null;
         }
-        if (headarrayint == 2) {//98,99
-            for (int i = 0; i < mergeList.size(); i++) {//标题行合并，构造合并数组mergeArray
-                HashMap map = (HashMap) mergeList.get(i);
-                int zb = Integer.parseInt(map.get("SEQ").toString());
-                int mergec = 1;
-                int mergel = 1;
-                if (map.get("MERGECOLUMN") != null) {
-                    mergec = Integer.parseInt(map.get("MERGECOLUMN").toString());
-                } else if (map.get("MERGELINE") != null) {
-                    mergel = Integer.parseInt(map.get("MERGELINE").toString());
-                }
-                int[] temp = {0, zb, mergel - 1, zb + mergec - 1};
-                mergeArray[i] = temp;
-            }
-            for (int i = 0; i < headarrayList98.size(); i++) {//TITLE=98,构造标题行数组headArray
-                HashMap map = (HashMap) headarrayList98.get(i);
-                if (map.get("COLCH") != null) {
-                    headArray[0][i] = map.get("COLCH").toString();
-                } else {
-                    headArray[0][i] = "";
-                }
-            }
-        } else if (headarrayint == 3) {
+        ///------
+        if (headarrayint > 1) {//多于一行标题，需要进行多行标题和合并行列的处理
             for (int i = 0; i < mergeList.size(); i++) {//构造合并数组mergeArray
                 HashMap map = (HashMap) mergeList.get(i);
+                int title = Integer.parseInt(map.get("TITLE").toString());//所处的标题行的位置，从100开始
                 int zb = Integer.parseInt(map.get("SEQ").toString());
                 int mergec = 1;
                 int mergel = 1;
@@ -80,34 +60,21 @@ public class ExportService extends BaseService {
                 if (map.get("MERGELINE") != null) {
                     mergel = Integer.parseInt(map.get("MERGELINE").toString());
                 }
-                if (map.get("TITLE").toString().equals("97")) {
-                    int[] temp = {0, zb, mergel - 1, zb + mergec - 1};
-                    mergeArray[i] = temp;
-                }
-                if (map.get("TITLE").toString().equals("98")) {
-                    int[] temp = {1, zb, 1 + mergel - 1, zb + mergec - 1};
-                    mergeArray[i] = temp;
-
-                }
+                int[] temp = {title - 100, zb, title - 100 + mergel - 1, zb + mergec - 1};
+                mergeArray[i] = temp;
             }
-
-            for (int i = 0; i < headarrayList97.size(); i++) {//TITLE=97,构造标题行数组headArray
-                HashMap map = (HashMap) headarrayList97.get(i);
-                if (map.get("COLCH") != null) {
-                    headArray[0][i] = map.get("COLCH").toString();
-                } else {
-                    headArray[0][i] = "";
-                }
-            }
-            for (int i = 0; i < headarrayList98.size(); i++) {//TITLE=98,构造标题行数组headArray
-                HashMap map = (HashMap) headarrayList98.get(i);
-                if (map.get("COLCH") != null) {
-                    headArray[1][i] = map.get("COLCH").toString();
-                } else {
-                    headArray[1][i] = "";
+            for (int i = 0; i < headarrayint - 1; i++) {//需要构造的标题行循环
+                for (int j = i * seachList.size(); j < (i + 1) * seachList.size(); j++) {//在最大列数中循环，即，title=99，的个数，得到一行标题
+                    HashMap map = (HashMap) headarrayList.get(j);
+                    if (map.get("COLCH") != null) {
+                        headArray[i][j - i * seachList.size()] = map.get("COLCH").toString();
+                    } else {
+                        headArray[i][j - i * seachList.size()] = "";
+                    }
                 }
             }
         }
+//------
 
         for (int i = 0; i < exportList.size(); i++) {//全部配置信息
             HashMap map = (HashMap) exportList.get(i);
