@@ -7,6 +7,7 @@ import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +24,7 @@ public class ExportService extends BaseService {
     @Autowired
     private ExportDAO exportDAO;
 
-    public void exportByfilter(String tablename, String ids) {
+    public void exportByfilter(String tablename, String ids,OutputStream outputStream) {
         String id[] = ids.split(",");
         String idins = "";
         for (int i = 0; i < id.length; i++) {
@@ -117,7 +118,7 @@ public class ExportService extends BaseService {
         String dirTmp = "C:/jjw/tmp";
         int maxJlsl = 1000;//一个excel中显示的最多纪录数，超过时，分多个进行导出，并压缩打包
         try {
-            es.writeExcel(titleExcel, recordList, hjh, headArray, mergeArray, columnLength, excelAlginArray, dir, dirTmp, maxJlsl);
+            es.writeExcel(titleExcel, recordList, hjh, headArray, mergeArray, columnLength, excelAlginArray, dir, dirTmp, maxJlsl,outputStream);
         } catch (Exception e) {
             e.printStackTrace();
         }

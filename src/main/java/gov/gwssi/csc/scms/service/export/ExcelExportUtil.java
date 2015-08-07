@@ -4,10 +4,7 @@ import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.hssf.util.Region;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -71,7 +68,7 @@ public class ExcelExportUtil {
     @SuppressWarnings({"rawtypes", "unchecked"})
     public String writeExcel(String title, List<String[]> recordList, String[] hjh, String[][] headArray,
                              int[][] mergeArray, int[] columnLength, short[] alginArray, String dir,
-                             String dirTmp, int maxJlsl) throws Exception {
+                             String dirTmp, int maxJlsl,OutputStream outputStream) throws Exception {
 
         //记录总数
         int zsl = 0;
@@ -100,8 +97,8 @@ public class ExcelExportUtil {
             //生成Wb
             HSSFWorkbook wb = new HSSFWorkbook();
             wb = this.createDynamicWb(wb, title, 1, recordList, hjh, headArray, mergeArray, columnLength, alginArray);
-
             dir = this.writeFile(wb, dir);
+            wb.write(outputStream);
         } else {//数据量超出最大数据量
 
             //生成的文件列表
@@ -130,6 +127,70 @@ public class ExcelExportUtil {
             dir = this.zipFile(dirTmp, dir, fileList);
         }
         return dir;
+    }
+
+    public OutputStream writeExcelOut(String title, List<String[]> recordList, String[] hjh, String[][] headArray,
+                             int[][] mergeArray, int[] columnLength, short[] alginArray, String dir,
+                             String dirTmp, int maxJlsl) throws Exception {
+        OutputStream outputStream = null;
+
+        //记录总数
+        int zsl = 0;
+        //单个文件最大记录数
+        int max = 20000;
+        if (recordList != null) {
+            zsl = recordList.size();
+        }
+        if (maxJlsl > 0) {
+            max = maxJlsl;
+        }
+
+        //导出文档个数
+        int excelNum = zsl / max;
+        if (zsl % max > 0) {
+            excelNum += 1;
+        }
+
+        //没有数据时导出空文档
+        if (excelNum == 0) {
+            excelNum = 1;
+        }
+
+        if (excelNum == 1) {//数据量未超出最大数据量
+
+            //生成Wb
+            HSSFWorkbook wb = new HSSFWorkbook();
+            wb = this.createDynamicWb(wb, title, 1, recordList, hjh, headArray, mergeArray, columnLength, alginArray);
+            wb.write(outputStream);
+            dir = this.writeFile(wb, dir);
+        } else {//数据量超出最大数据量
+
+            //生成的文件列表
+            List fileList = new ArrayList();
+            for (int i = 1; i <= excelNum; i++) {
+                int start = (i - 1) * max;
+                int last = i * max;
+                if (i == excelNum) {
+                    //最后一页
+                    last = recordList.size();
+                }
+
+                //获取导出数据
+                List tmpList = new ArrayList();
+                for (int j = start; j < last; j++) {
+                    tmpList.add(recordList.get(j));
+                }
+
+                //生成Wb
+                HSSFWorkbook wb = new HSSFWorkbook();
+                wb = this.createDynamicWb(wb, title, 1, tmpList, hjh, headArray, mergeArray, columnLength, alginArray);
+                String file = this.writeFile(wb, dirTmp);
+                fileList.add(file);
+            }
+            //压缩生成的excle文件
+            dir = this.zipFile(dirTmp, dir, fileList);
+        }
+        return outputStream;
     }
 
     /**
@@ -375,6 +436,7 @@ public class ExcelExportUtil {
                 this.makeDir(dir);
                 fileOut = new FileOutputStream(dir);
                 wb.write(fileOut);
+
             } else {
                 //log.info("ExcelExportUtil-->writeFile-->导出文件路径：" + dir + "不存在!");
             }
