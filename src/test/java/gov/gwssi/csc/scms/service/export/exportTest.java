@@ -34,7 +34,7 @@ public class exportTest extends UnitTestBase {
         InsuranceService insuranceService = super.getBean("insuranceService");
         String tablename = "v_scholarship_lastyear";
         String ids = "2015073000000000032,2015073000000000033,2015073000000000034";
-        exportService.exportByfilter(tablename, ids);
+       // exportService.exportByfilter(tablename, ids);
 
     }
 
@@ -190,7 +190,7 @@ public class exportTest extends UnitTestBase {
         String dir = "C:/jjw";
         String dirTmp = "C:/jjw/tmp";
         int maxJlsl = 1000;//一个excel中显示的最多纪录数，超过时，分多个进行导出，并压缩打包
-        es.writeExcel(titleExcel, recordList, hjh, headArray, mergeArray, columnLength, excelAlginArray, dir, dirTmp, maxJlsl);
+        //es.writeExcel(titleExcel, recordList, hjh, headArray, mergeArray, columnLength, excelAlginArray, dir, dirTmp, maxJlsl);
 
     }
 
@@ -233,7 +233,7 @@ public class exportTest extends UnitTestBase {
         String dir = "C:/jjw";
         String dirTmp = "C:/jjw/tmp";
         int maxJlsl = 1000;//一个excel中显示的最多纪录数，超过时，分多个进行导出，并压缩打包
-        es.writeExcel(titleExcel, recordList, hjh, headArray, mergeArray, columnLength, excelAlginArray, dir, dirTmp, maxJlsl);
+       // es.writeExcel(titleExcel, recordList, hjh, headArray, mergeArray, columnLength, excelAlginArray, dir, dirTmp, maxJlsl);
         //System.out.println("list size::" + inResultObjectList.size());
 
     }
