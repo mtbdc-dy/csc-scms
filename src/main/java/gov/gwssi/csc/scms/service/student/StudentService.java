@@ -197,7 +197,6 @@ public class StudentService extends BaseService {
         return operationLog.getAfter().toString();
     }
 
-
     @SuppressWarnings("unchecked")
     public Object getGroupByStudentId(String studentId, String groupName) {
         if ("basicInfo".equalsIgnoreCase(groupName)) {
@@ -384,7 +383,6 @@ public class StudentService extends BaseService {
         System.out.println(sql);
         getBaseDao().updateBySql(sql);
     }
-
 
     @Transactional
     public void leaveChina(String studentIds, SchoolRoll schoolRoll, List<OperationLog> operationLogs) throws Exception {

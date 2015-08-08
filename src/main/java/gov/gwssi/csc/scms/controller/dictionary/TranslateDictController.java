@@ -56,7 +56,7 @@ public class TranslateDictController {
 
             } else if ("tables".equals(codeTableName)) {
 
-                // TODO.
+                // TODO. 动态查询时所需要的代码表
                 list = null;
 
             } else {
