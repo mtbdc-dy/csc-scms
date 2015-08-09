@@ -24,7 +24,8 @@ public class StudentsService extends StudentSpecs {
 
     public Page<Student> getStudentsByFilter(Filter filter) {
 
-        return studentRepository.findAll(where(genderIsLike("AA0001")), new PageRequest(0, 20));
+        return studentRepository.findAll(where(filterIsLike(filter)), new PageRequest(0, 20));
+
     }
 
 }

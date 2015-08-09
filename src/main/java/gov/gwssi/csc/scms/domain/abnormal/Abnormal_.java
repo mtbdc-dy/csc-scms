@@ -1,5 +1,7 @@
 package gov.gwssi.csc.scms.domain.abnormal;
 
+import gov.gwssi.csc.scms.domain.student.Student;
+
 import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
@@ -25,6 +27,7 @@ public abstract class Abnormal_ {
     public static volatile SingularAttribute<Abnormal, String> reasonTypeId;
     public static volatile SingularAttribute<Abnormal, String> applyUserId;
     public static volatile SingularAttribute<Abnormal, Date> updated;
+    public static volatile SingularAttribute<Abnormal, Student> student;
     public static volatile SingularAttribute<Abnormal, String> studentId;
     public static volatile SingularAttribute<Abnormal, Date> approTime;
     public static volatile SingularAttribute<Abnormal, String> applyUserName;

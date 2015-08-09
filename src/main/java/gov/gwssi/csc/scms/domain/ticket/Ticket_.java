@@ -1,5 +1,7 @@
 package gov.gwssi.csc.scms.domain.ticket;
 
+import gov.gwssi.csc.scms.domain.student.Student;
+
 import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
@@ -24,6 +26,7 @@ public abstract class Ticket_ {
     public static volatile SingularAttribute<Ticket, BigDecimal> price;
     public static volatile SingularAttribute<Ticket, Date> updated;
     public static volatile SingularAttribute<Ticket, Date> created;
+    public static volatile SingularAttribute<Ticket, Student> student;
     public static volatile SingularAttribute<Ticket, String> studentId;
     public static volatile SingularAttribute<Ticket, Date> validdate;
     public static volatile SingularAttribute<Ticket, Date> flightDate;

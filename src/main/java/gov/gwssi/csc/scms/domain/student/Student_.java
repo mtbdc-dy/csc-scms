@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.domain.student;
 
 import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
+import gov.gwssi.csc.scms.domain.ticket.Ticket;
 
 import javax.annotation.Generated;
 import javax.persistence.metamodel.ListAttribute;
@@ -24,6 +25,7 @@ public abstract class Student_ {
     public static volatile ListAttribute<Student, Grade> Grades;
     public static volatile ListAttribute<Student, GradeAttachment> gradeAttachment;
     public static volatile ListAttribute<Student, Abnormal> abnormals;
+    public static volatile ListAttribute<Student, Ticket> tickets;
 
 }
 

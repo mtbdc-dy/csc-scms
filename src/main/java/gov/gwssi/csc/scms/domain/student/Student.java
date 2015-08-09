@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.domain.student;
 
 import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
+import gov.gwssi.csc.scms.domain.ticket.Ticket;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -81,6 +82,9 @@ public class Student {
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
     private List<Abnormal> abnormals;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
+    private List<Ticket> tickets;
 
     public String getId() {
         return id;
@@ -188,5 +192,13 @@ public class Student {
 
     public void setAbnormals(List<Abnormal> abnormals) {
         this.abnormals = abnormals;
+    }
+
+    public List<Ticket> getTickets() {
+        return tickets;
+    }
+
+    public void setTickets(List<Ticket> tickets) {
+        this.tickets = tickets;
     }
 }

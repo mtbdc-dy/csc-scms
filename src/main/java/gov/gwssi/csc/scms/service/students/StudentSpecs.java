@@ -4,6 +4,8 @@ import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
 import gov.gwssi.csc.scms.domain.abnormal.Abnormal_;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.student.*;
+import gov.gwssi.csc.scms.domain.ticket.Ticket;
+import gov.gwssi.csc.scms.domain.ticket.Ticket_;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
@@ -21,6 +23,9 @@ public class StudentSpecs {
             public Predicate toPredicate(Root<Student> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
                 Predicate predicate = builder.conjunction();
                 predicate.getExpressions().add(builder.like(root.get(Student_.cscId), "%" + cscId + "%"));
+
+//                List<Expression<Boolean>> expressions = predicate.getExpressions();
+//                expressions.add(builder.like(root.get(Student_.cscId), "%" + cscId + "%"));
 
                 return predicate;
             }
@@ -57,8 +62,10 @@ public class StudentSpecs {
                 Predicate predicate = cb.conjunction();
 
                 Join<Student, BasicInfo> basicInfo = student.join(Student_.basicInfo);
-                ListJoin<Student, Abnormal> abnormals = student.join(Student_.abnormals);
                 Join<Student, SchoolRoll> schoolRoll = student.join(Student_.schoolRoll);
+                ListJoin<Student, Abnormal> abnormals = student.join(Student_.abnormals);
+                ListJoin<Student, Ticket> tickets = student.join(Student_.tickets);
+
                 /**学生主表部分*/
                 if (filter.getCscId() != null) {
                     predicate.getExpressions().add(cb.like(student.get(Student_.cscId), filter.getCscId()));
@@ -98,22 +105,84 @@ public class StudentSpecs {
                 if (filter.getRegisterState() != null) {
                     predicate.getExpressions().add(cb.like(schoolRoll.get(SchoolRoll_.registerState), filter.getRegisterState()));
                 }
-//                if (filter.getStudentType() != null){predicate.getExpressions().add(cb.like());}
-//                if (filter.getAppropriation() != null){predicate.getExpressions().add(cb.like());}
-//                if (filter.getTeachLanguage() != null){predicate.getExpressions().add(cb.like());}
-//                if (filter.getSchoolRollState() != null){predicate.getExpressions().add(cb.like());}
-//                if (filter.getArrivalDateBegin() != null){predicate.getExpressions().add(cb.like());}
-//                if (filter.getArrivalDateEnd() != null){predicate.getExpressions().add(cb.like());}
-//                if (filter.getLeaveDateBegin() != null){predicate.getExpressions().add(cb.like());}
-//                if (filter.getLeaveDateEnd() != null){predicate.getExpressions().add(cb.like());}
-//                if (filter.getCramDateBeginBegin() != null){predicate.getExpressions().add(cb.like());}
-//                if (filter.getCramDateBeginEnd() != null){predicate.getExpressions().add(cb.like());}
-//                if (filter.getCramDateEndBegin() != null){predicate.getExpressions().add(cb.like());}
-//                if (filter.getCramDateEndEnd() != null){predicate.getExpressions().add(cb.like());}
-//                if (filter.getMajorStartDateBegin() != null){predicate.getExpressions().add(cb.like());}
-//                if (filter.getMajorStartDateEnd() != null){predicate.getExpressions().add(cb.like());}
-//                if (filter.getPlanLeaveDateBegin() != null){predicate.getExpressions().add(cb.like());}
-//                if (filter.getPlanLeaveDateEnd() != null){predicate.getExpressions().add(cb.like());}
+                if (filter.getStudentType() != null) {
+                    predicate.getExpressions().add(cb.like(schoolRoll.get(SchoolRoll_.studentType), filter.getStudentType()));
+                }
+                if (filter.getAppropriation() != null) {
+                    predicate.getExpressions().add(cb.like(schoolRoll.get(SchoolRoll_.appropriation), filter.getAppropriation()));
+                }
+                if (filter.getTeachLanguage() != null) {
+                    predicate.getExpressions().add(cb.like(schoolRoll.get(SchoolRoll_.teachLanguage), filter.getTeachLanguage()));
+                }
+                if (filter.getSchoolRollState() != null) {
+                    predicate.getExpressions().add(cb.like(schoolRoll.get(SchoolRoll_.state), filter.getSchoolRollState()));
+                }
+                if (filter.getArrivalDateBegin() != null && filter.getArrivalDateEnd() != null) {
+                    Date begin = filter.getArrivalDateBegin();
+                    Date end = filter.getArrivalDateEnd();
+                    predicate.getExpressions().add(cb.between(schoolRoll.get(SchoolRoll_.arrivalDate), begin, end));
+                } else if (filter.getArrivalDateBegin() != null) {
+                    Date begin = filter.getArrivalDateBegin();
+                    predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.arrivalDate), begin));
+                } else if (filter.getArrivalDateEnd() != null) {
+                    Date end = filter.getArrivalDateEnd();
+                    predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.arrivalDate), end));
+                }
+                if (filter.getLeaveDateBegin() != null && filter.getLeaveDateEnd() != null) {
+                    Date begin = filter.getLeaveDateBegin();
+                    Date end = filter.getLeaveDateEnd();
+                    predicate.getExpressions().add(cb.between(schoolRoll.get(SchoolRoll_.leaveDate), begin, end));
+                } else if (filter.getLeaveDateBegin() != null) {
+                    Date begin = filter.getLeaveDateBegin();
+                    predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.leaveDate), begin));
+                } else if (filter.getLeaveDateEnd() != null) {
+                    Date end = filter.getLeaveDateEnd();
+                    predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.leaveDate), end));
+                }
+                if (filter.getCramDateBeginBegin() != null && filter.getCramDateBeginEnd() != null) {
+                    Date begin = filter.getCramDateBeginBegin();
+                    Date end = filter.getCramDateBeginEnd();
+                    predicate.getExpressions().add(cb.between(schoolRoll.get(SchoolRoll_.cramDateBegin), begin, end));
+                } else if (filter.getCramDateBeginBegin() != null) {
+                    Date begin = filter.getCramDateBeginBegin();
+                    predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateBegin), begin));
+                } else if (filter.getCramDateBeginEnd() != null) {
+                    Date end = filter.getCramDateBeginEnd();
+                    predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateBegin), end));
+                }
+                if (filter.getCramDateEndBegin() != null && filter.getCramDateEndEnd() != null) {
+                    Date begin = filter.getCramDateEndBegin();
+                    Date end = filter.getCramDateEndEnd();
+                    predicate.getExpressions().add(cb.between(schoolRoll.get(SchoolRoll_.cramDateEnd), begin, end));
+                } else if (filter.getCramDateEndBegin() != null) {
+                    Date begin = filter.getCramDateEndBegin();
+                    predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateEnd), begin));
+                } else if (filter.getCramDateEndEnd() != null) {
+                    Date end = filter.getCramDateEndEnd();
+                    predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateEnd), end));
+                }
+                if (filter.getMajorStartDateBegin() != null && filter.getMajorStartDateEnd() != null) {
+                    Date begin = filter.getMajorStartDateBegin();
+                    Date end = filter.getMajorStartDateEnd();
+                    predicate.getExpressions().add(cb.between(schoolRoll.get(SchoolRoll_.majorStartDate), begin, end));
+                } else if (filter.getMajorStartDateBegin() != null) {
+                    Date begin = filter.getMajorStartDateBegin();
+                    predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), begin));
+                } else if (filter.getMajorStartDateEnd() != null) {
+                    Date end = filter.getMajorStartDateEnd();
+                    predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), end));
+                }
+                if (filter.getPlanLeaveDateBegin() != null && filter.getPlanLeaveDateEnd() != null) {
+                    Date begin = filter.getPlanLeaveDateBegin();
+                    Date end = filter.getPlanLeaveDateEnd();
+                    predicate.getExpressions().add(cb.between(schoolRoll.get(SchoolRoll_.planLeaveDate), begin, end));
+                } else if (filter.getPlanLeaveDateBegin() != null) {
+                    Date begin = filter.getMajorStartDateBegin();
+                    predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), begin));
+                } else if (filter.getPlanLeaveDateEnd() != null) {
+                    Date end = filter.getMajorStartDateEnd();
+                    predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), end));
+                }
                 /**异动部分*/
                 if (filter.getAbnormalState() != null) {
                     predicate.getExpressions().add(cb.like(abnormals.get(Abnormal_.state), filter.getAbnormalState()));
@@ -125,13 +194,18 @@ public class StudentSpecs {
                 } else if (filter.getAbnormalDateBegin() != null) {
                     Date begin = filter.getAbnormalDateBegin();
                     predicate.getExpressions().add(cb.greaterThanOrEqualTo(abnormals.get(Abnormal_.applyTime), begin));
-                } else {
+                } else if (filter.getAbnormalDateEnd() != null) {
                     Date end = filter.getArrivalDateEnd();
                     predicate.getExpressions().add(cb.lessThanOrEqualTo(abnormals.get(Abnormal_.applyTime), end));
                 }
                 /**机票部分*/
-//                if (filter.getTicketState() != null){predicate.getExpressions().add(cb.like());}
-//                if (filter.getInsuranceState() != null){predicate.getExpressions().add(cb.like());}
+                if (filter.getTicketState() != null) {
+                    predicate.getExpressions().add(cb.like(tickets.get(Ticket_.state), filter.getTicketState()));
+                }
+                /**保险部分*/
+//                if (filter.getInsuranceState() != null){
+//                    predicate.getExpressions().add(cb.like(tickets.get(Ticket_.)));
+//                }
                 /**奖学金部分*/
 //                if (filter.getSchReview() != null){predicate.getExpressions().add(cb.like());}
 //                if (filter.getSchResult() != null){predicate.getExpressions().add(cb.like());}
