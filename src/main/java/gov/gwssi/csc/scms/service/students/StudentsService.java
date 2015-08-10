@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import static org.springframework.data.jpa.domain.Specifications.where;
@@ -23,8 +24,9 @@ public class StudentsService extends StudentSpecs {
     private StudentRepository studentRepository;
 
     public Page<Student> getStudentsByFilter(Filter filter) {
-
-        return studentRepository.findAll(where(filterIsLike(filter)), new PageRequest(0, 20));
+        Specification<Student> specA = filterIsLike(filter);
+//        Specification<Student> specB = userIs(user);
+        return studentRepository.findAll(where(specA), new PageRequest(0, 20));
 
     }
 
