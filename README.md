@@ -1,5 +1,5 @@
 # csc-scms
-China Scholarship Counil - Study in China Management System - Service
+China Scholarship Council - Study in China Management System - Service
 
 基金委来华留学生项目-服务端
 
@@ -21,7 +21,7 @@ javax.persistence.OneToOne.orphanRemoval()
 为空而无法启动。
 ## 原因及解决方法
 纠结了几天之后，中间走了不少弯路，重新梳理了一下思路。
-根本原因就是Weblogic 11g会默认优先加载其内置API，所以只让它更够在启动时加载我们需要的API，
+根本原因就是 Weblogic 11g会默认优先加载其内置API，所以只让它更够在启动时加载我们需要的API，
 并且优先级还要是最高。一番查阅之后发现了`PRE_CLASSPATH`这个属性
 ，并解决了这个问题。
 
