@@ -7,6 +7,7 @@ import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +25,7 @@ public class ExportService extends BaseService {
     @Autowired
     private ExportDAO exportDAO;
 
-    public void exportByfilter(String tablename, String ids,OutputStream outputStream) {
+    public byte[] exportByfilter(String tablename, String ids) {
         String id[] = ids.split(",");
         String idins = "";
         for (int i = 0; i < id.length; i++) {
@@ -114,15 +115,22 @@ public class ExportService extends BaseService {
 //导出excel
         ExcelExportUtil es = new ExcelExportUtil();
         short excelAlginArray[] = {HSSFCellStyle.ALIGN_RIGHT, HSSFCellStyle.ALIGN_RIGHT, HSSFCellStyle.ALIGN_RIGHT, HSSFCellStyle.ALIGN_RIGHT, HSSFCellStyle.ALIGN_CENTER, HSSFCellStyle.ALIGN_CENTER, HSSFCellStyle.ALIGN_CENTER, HSSFCellStyle.ALIGN_CENTER};
-        String dir = "C:/jjw";
-        String dirTmp = "C:/jjw/tmp";
+        String dir = "./exports/excel/";
+        String dirTmp = "./exports/tmp";
         int maxJlsl = 1000;//一个excel中显示的最多纪录数，超过时，分多个进行导出，并压缩打包
+        byte[] bytes = new byte[0];
         try {
-            es.writeExcel(titleExcel, recordList, hjh, headArray, mergeArray, columnLength, excelAlginArray, dir, dirTmp, maxJlsl,outputStream);
+            String filePath = es.writeExcel(titleExcel, recordList, hjh, headArray, mergeArray, columnLength, excelAlginArray, dir, dirTmp, maxJlsl);
+            FileInputStream in = new FileInputStream(filePath);
+            int size = in.available();
+            bytes = new byte[size];
+            in.read(bytes);
+            in.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        return bytes;
     }
 
 
