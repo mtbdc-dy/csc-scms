@@ -22,7 +22,7 @@ public class TimeSetController {
     private TimeSetService timeSetService;
     @Autowired
     private UserService userService;
-    //点击查询返回代码维护列表
+    //点击查询返回列表
     @RequestMapping(value = "/newstu",method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
     public List getALLCode(@RequestParam(value = "pro") String pro,@RequestParam(value = "univ") String univ) {
         //按照分页（默认）要求，返回列表内容
@@ -37,7 +37,7 @@ public class TimeSetController {
 
         return proAndUnivList;
     }
-    //点击查询返回代码维护列表
+    //
     @RequestMapping(value = "/newstus",
             method = RequestMethod.PUT,
             headers = {"Accept=application/json; charset=utf-8;", "Cache-Control=no-cache"})
@@ -57,6 +57,46 @@ public class TimeSetController {
             } catch (NoSuchUserException e) {
                 e.printStackTrace();
             }
+
+
+    }
+
+    //老生
+    //点击查询返回列表
+    @RequestMapping(value = "/oldstu",method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
+    public List getALLOld(@RequestParam(value = "pro") String pro,@RequestParam(value = "univ") String univ) {
+        //按照分页（默认）要求，返回列表内容
+        List proAndUnivList = null;
+        if(pro ==null||"null".equals(pro)){
+            pro = "";
+        }
+        if(univ ==null||"null".equals(univ)||"undefined".equals(univ)){
+            univ = "";
+        }
+        proAndUnivList = timeSetService.findOldProAndUniv(pro, univ);
+
+        return proAndUnivList;
+    }
+    //返回列表
+    @RequestMapping(value = "/oldstus",
+            method = RequestMethod.PUT,
+            headers = {"Accept=application/json; charset=utf-8;", "Cache-Control=no-cache"})
+    public void saveOld(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
+                     @RequestParam(value = "ids") String ids,@RequestParam(value = "begin") String begin,@RequestParam(value = "end") String end) {
+
+        System.out.println("ids=" + ids);
+
+        try {
+            User user = userService.getUserByJWT(header);
+            String userName = user.getFullName();
+            timeSetService.setOldTime(userName, begin, end, ids);
+        } catch (RequestHeaderError requestHeaderError) {
+            requestHeaderError.printStackTrace();
+        } catch (UserIdentityError userIdentityError) {
+            userIdentityError.printStackTrace();
+        } catch (NoSuchUserException e) {
+            e.printStackTrace();
+        }
 
 
     }
