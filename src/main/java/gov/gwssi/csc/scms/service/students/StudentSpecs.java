@@ -3,6 +3,10 @@ package gov.gwssi.csc.scms.service.students;
 import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
 import gov.gwssi.csc.scms.domain.abnormal.Abnormal_;
 import gov.gwssi.csc.scms.domain.filter.Filter;
+import gov.gwssi.csc.scms.domain.insurance.Insurance;
+import gov.gwssi.csc.scms.domain.insurance.Insurance_;
+import gov.gwssi.csc.scms.domain.scholarship.ScholarshipX;
+import gov.gwssi.csc.scms.domain.scholarship.ScholarshipX_;
 import gov.gwssi.csc.scms.domain.student.*;
 import gov.gwssi.csc.scms.domain.ticket.Ticket;
 import gov.gwssi.csc.scms.domain.ticket.Ticket_;
@@ -24,9 +28,6 @@ public class StudentSpecs {
             public Predicate toPredicate(Root<Student> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
                 Predicate predicate = builder.conjunction();
                 predicate.getExpressions().add(builder.like(root.get(Student_.cscId), "%" + cscId + "%"));
-
-//                List<Expression<Boolean>> expressions = predicate.getExpressions();
-//                expressions.add(builder.like(root.get(Student_.cscId), "%" + cscId + "%"));
 
                 return predicate;
             }
@@ -99,6 +100,9 @@ public class StudentSpecs {
                         || filter.getAbnormalDateBegin() != null
                         || filter.getAbnormalDateEnd() != null;
                 boolean needTickets = filter.getTicketState() != null;
+                boolean needInsurances = filter.getInsuranceState()!= null;
+                boolean needScholarshipXs = filter.getSchReview()!= null
+                        ||filter.getSchResult()!= null;
 
                 /**学生主表部分*/
                 if (filter.getCscId() != null) {
@@ -249,14 +253,24 @@ public class StudentSpecs {
                     }
                 }
 
-
                 /**保险部分*/
-//                if (filter.getInsuranceState() != null){
-//                    predicate.getExpressions().add(cb.like(tickets.get(Ticket_.)));
-//                }
+                if (needInsurances) {
+                    ListJoin<Student, Insurance> insurances = student.join(Student_.insurances);
+                    if (filter.getInsuranceState() != null) {
+                        predicate.getExpressions().add(cb.like(insurances.get(Insurance_.insurSta), filter.getInsuranceState()));
+                    }
+                }
+
                 /**奖学金部分*/
-//                if (filter.getSchReview() != null){predicate.getExpressions().add(cb.like());}
-//                if (filter.getSchResult() != null){predicate.getExpressions().add(cb.like());}
+                if (needScholarshipXs) {
+                    ListJoin<Student, ScholarshipX> scholarshipXs = student.join(Student_.scholarshipXs);
+                    if (filter.getSchReview() != null) {
+                        predicate.getExpressions().add(cb.like(scholarshipXs.get(ScholarshipX_.schReview), filter.getSchReview()));
+                    }
+                    if (filter.getSchResult() != null) {
+                        predicate.getExpressions().add(cb.like(scholarshipXs.get(ScholarshipX_.schResult), filter.getSchResult()));
+                    }
+                }
 
                 return predicate;
             }

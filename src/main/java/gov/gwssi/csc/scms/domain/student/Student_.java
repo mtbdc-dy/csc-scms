@@ -1,6 +1,8 @@
 package gov.gwssi.csc.scms.domain.student;
 
 import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
+import gov.gwssi.csc.scms.domain.insurance.Insurance;
+import gov.gwssi.csc.scms.domain.scholarship.ScholarshipX;
 import gov.gwssi.csc.scms.domain.ticket.Ticket;
 
 import javax.annotation.Generated;
@@ -26,6 +28,8 @@ public abstract class Student_ {
     public static volatile ListAttribute<Student, GradeAttachment> gradeAttachment;
     public static volatile ListAttribute<Student, Abnormal> abnormals;
     public static volatile ListAttribute<Student, Ticket> tickets;
+    public static volatile ListAttribute<Student, Insurance> insurances;
+    public static volatile ListAttribute<Student, ScholarshipX> scholarshipXs;
 
 }
 

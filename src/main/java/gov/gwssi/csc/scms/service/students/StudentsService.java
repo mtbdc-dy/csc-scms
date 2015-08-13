@@ -27,7 +27,16 @@ public class StudentsService extends StudentSpecs {
         Specification<Student> specA = filterIsLike(filter);
 //        Specification<Student> specB = userIs(user);
         return studentRepository.findAll(where(specA), new PageRequest(0, 20));
-
     }
+    /*
+    * add by gc20150810
+    * 根据page,size参数查询student分页结果对象
+    * */
+    public Page<Student> getStudentsPageByFilter(Filter filter,Integer page,Integer size) {
+        Specification<Student> specA = filterIsLike(filter);
+//        Specification<Student> specB = userIs(user);
+        return studentRepository.findAll(where(specA), new PageRequest(page, size));
+    }
+
 
 }
