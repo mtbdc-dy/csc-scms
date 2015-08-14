@@ -93,7 +93,7 @@ public class AbnormalController {
 
             JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
             List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
-            String id = abnormalService.saveAbnormal(abnormal, null);
+            String id = abnormalService.saveAbnormal(abnormal, operationLogs);
             AbnormalResultObject  abnormalResult = abnormalService.getAbnormalAndStu(id);
             return abnormalResult;
         } catch (Exception e) {
@@ -115,7 +115,7 @@ public class AbnormalController {
             } else {
             JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
             List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
-            abnormal = abnormalService.updateAbnormal(abnormal, null);
+            abnormal = abnormalService.updateAbnormal(abnormal, operationLogs);
             //修改成功后返回 修改的该条异动信息 包含学生信息
             AbnormalResultObject  abnormalResult = abnormalService.getAbnormalAndStu(abnormal.getId());
             return abnormalResult;
