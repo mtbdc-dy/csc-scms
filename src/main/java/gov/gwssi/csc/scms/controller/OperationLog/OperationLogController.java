@@ -36,7 +36,7 @@ public class OperationLogController {
     @RequestMapping(value = "/query", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<OperationLog> queryLog(@RequestParam("beginTime") String beginTime,
                                        @RequestParam("endTime") String endTime,
-                                       @RequestParam(value = "moduleId", required = false) String moduleId,
+                                       @RequestParam(value = "businessModule", required = false) String moduleId,
                                        @RequestParam(value = "optType", required = false) String optType,
                                        @RequestHeader(value = HEADER_AUTHORIZATION) String header) {
         try {
