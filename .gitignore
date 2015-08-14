@@ -1,7 +1,7 @@
 #忽略路径
 out
 g
-build
+build/
 gradle
 bin
 
