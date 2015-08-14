@@ -1,39 +1,34 @@
 package gov.gwssi.csc.scms.base;
 
+import gov.gwssi.csc.scms.TestConfig;
 import org.junit.After;
 import org.junit.Before;
 import org.springframework.beans.BeansException;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.util.StringUtils;
+import org.springframework.context.annotation
+        .AnnotationConfigApplicationContext;
+
+import org.springframework.test.context.ContextConfiguration;
 
 
 
 /**
- * Created by WangZishi on 3/22/2015.
+ * Created by WangZishi on 4/1/2015.
+ *
  */
-public class UnitTestBase {
+@ContextConfiguration(classes = TestConfig.class)
+public class UnitTestBase{
 
-    private ClassPathXmlApplicationContext context;
-
-    private String springXmlPath;
-
-    public UnitTestBase() {}
-
-    public UnitTestBase(String springXmlPath) {
-        this.springXmlPath = springXmlPath;
-    }
+    private AnnotationConfigApplicationContext context;
 
     @Before
     public void before() {
-        if (StringUtils.isEmpty(springXmlPath)) {
-            springXmlPath = "classpath*:spring-config-*.xml";
-        }
         try {
-            context = new ClassPathXmlApplicationContext(springXmlPath.split("[,\\s]+"));
+            context = new AnnotationConfigApplicationContext(TestConfig.class);
             context.start();
         } catch (BeansException e) {
             e.printStackTrace();
         }
+        System.out.println("context = " + context);
     }
 
     @After

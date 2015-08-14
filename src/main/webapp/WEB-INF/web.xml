@@ -2,34 +2,44 @@
 <web-app xmlns="http://java.sun.com/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="
-            http://java.sun.com/xml/ns/javaee
-            http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-         version="2.5">
+         http://java.sun.com/xml/ns/javaee 
+         http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5" >
+
     <display-name>scms</display-name>
-    <welcome-file-list>
-        <welcome-file>index.jsp</welcome-file>
-    </welcome-file-list>
+    <distributable/>
 
-
-    <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:persistence.xml</param-value>
-    </context-param>
-
-
-    <!-- Processes application requests -->
+    <!-- MVC Servlet - see sample-servlet.xml for specific configuration -->
     <servlet>
         <servlet-name>rest</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
-            <param-name>contextConfigLocation</param-name>
-            <param-value>classpath:rest-servlet.xml</param-value>
+            <param-name>contextClass</param-name>
+            <param-value>
+                org.springframework.web.context.support.AnnotationConfigWebApplicationContext
+            </param-value>
         </init-param>
-        <load-on-startup>1</load-on-startup>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>
+                gov.gwssi.csc.scms.configuration.AppConfig
+            </param-value>
+        </init-param>
     </servlet>
 
     <servlet-mapping>
         <servlet-name>rest</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
+
+    <filter>
+        <filter-name>cors</filter-name>
+        <filter-class>gov.gwssi.csc.scms.configuration.SimpleCORSFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>cors</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
 </web-app>
