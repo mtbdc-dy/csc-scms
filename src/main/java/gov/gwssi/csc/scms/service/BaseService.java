@@ -15,7 +15,7 @@ import java.util.List;
  * Created by WangZishi on 3/23/2015.
  */
 @Service
-public class BaseService {
+public class BaseService { 
     @Autowired
     private ApplicationContext context;
 
