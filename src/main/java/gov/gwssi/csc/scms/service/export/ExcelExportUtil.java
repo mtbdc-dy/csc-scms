@@ -4,10 +4,7 @@ import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.hssf.util.Region;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -100,8 +97,8 @@ public class ExcelExportUtil {
             //生成Wb
             HSSFWorkbook wb = new HSSFWorkbook();
             wb = this.createDynamicWb(wb, title, 1, recordList, hjh, headArray, mergeArray, columnLength, alginArray);
-
             dir = this.writeFile(wb, dir);
+
         } else {//数据量超出最大数据量
 
             //生成的文件列表
@@ -128,9 +125,11 @@ public class ExcelExportUtil {
             }
             //压缩生成的excle文件
             dir = this.zipFile(dirTmp, dir, fileList);
+
         }
         return dir;
     }
+
 
     /**
      * 创建动态表头工作薄
@@ -375,6 +374,7 @@ public class ExcelExportUtil {
                 this.makeDir(dir);
                 fileOut = new FileOutputStream(dir);
                 wb.write(fileOut);
+
             } else {
                 //log.info("ExcelExportUtil-->writeFile-->导出文件路径：" + dir + "不存在!");
             }

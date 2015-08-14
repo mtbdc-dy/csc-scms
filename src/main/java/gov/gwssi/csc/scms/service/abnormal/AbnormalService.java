@@ -69,7 +69,7 @@ public class AbnormalService extends BaseService {
                 "and student.id = schoolRoll.student and student.id = abnormal.studentId ";
         sb.append(tempSql);
 
-        sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter(user,"",""));
+        sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter(user,"abnormal","abnormal"));
         //增加条件 基金委用户 查已提交的
         sb.append(getUserFilter(user));
         return sb.toString();

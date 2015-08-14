@@ -79,4 +79,5 @@ public class OperationLogService extends BaseService {
             throw new NoSupportedUserException("log query not support current user!");
         }
     }
+
 }

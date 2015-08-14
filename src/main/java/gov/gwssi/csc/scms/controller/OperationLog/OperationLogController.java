@@ -27,18 +27,16 @@ import java.util.Map;
 @RequestMapping("/log")
 public class OperationLogController {
 
+    private static final String HEADER_AUTHORIZATION = JWTUtil.HEADER_AUTHORIZATION;
     @Autowired
     private OperationLogService operationLogService;
-
     @Autowired
     private UserService userService;
-
-    private static final String HEADER_AUTHORIZATION = JWTUtil.HEADER_AUTHORIZATION;
 
     @RequestMapping(value = "/query", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<OperationLog> queryLog(@RequestParam("beginTime") String beginTime,
                                        @RequestParam("endTime") String endTime,
-                                       @RequestParam(value = "moduleId", required = false) String moduleId,
+                                       @RequestParam(value = "businessModule", required = false) String moduleId,
                                        @RequestParam(value = "optType", required = false) String optType,
                                        @RequestHeader(value = HEADER_AUTHORIZATION) String header) {
         try {
@@ -112,6 +110,16 @@ public class OperationLogController {
 
     private boolean isNotNull(String str) {
         return !("null".equalsIgnoreCase(str) || str == null);
+    }
+
+    @RequestMapping(value = "/changelog/{studentId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public List<OperationLog> getChangelogsByStudentId(@PathVariable(value = "studentId") String studentId) {
+        try {
+            return operationLogService.getLogByStudentId(studentId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
 }
