@@ -155,5 +155,16 @@ public class InsuranceService extends BaseService {
         insuranceRepository.delete(insurance);
         return insurance;
     }
+    //导出后更新保险导出状态
+    public void updateInsurancePresta(String[] id) {
+        for (int i=0;i<id.length;i++){
+            Insurance insurance = getInsuranceById(id[i]);
+            insurance.setPreSta("AV0002");
+            insuranceRepository.save(insurance);
+        }
+
+
+    }
+
 
     }
