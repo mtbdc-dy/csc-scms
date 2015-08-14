@@ -25,8 +25,7 @@ public class ExportService extends BaseService {
     @Autowired
     private ExportDAO exportDAO;
 
-    public byte[] exportByfilter(String tablename, String ids) {
-        String id[] = ids.split(",");
+    public byte[] exportByfilter(String tablename, String[] id) {
         String idins = "";
         for (int i = 0; i < id.length; i++) {
             idins = idins + "'" + id[i] + "',";

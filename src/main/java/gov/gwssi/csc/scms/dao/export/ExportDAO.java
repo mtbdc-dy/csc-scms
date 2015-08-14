@@ -18,7 +18,7 @@ public class ExportDAO extends BaseDAO {
         stringBuilder.append("SELECT * from SCMS_INI_EXPORT  ");
         stringBuilder.append(" where SCMS_INI_EXPORT.subtable='0' ");
         stringBuilder.append(" and SCMS_INI_EXPORT.tablename = '").append(tableName).append("' ");//根据表名找到配置
-        stringBuilder.append("  order by seq");
+        stringBuilder.append("  order by  to_number(seq)");
         exportList = super.queryListBySql(stringBuilder.toString());
         return exportList;
     }
@@ -30,7 +30,7 @@ public class ExportDAO extends BaseDAO {
         stringBuilder.append("SELECT * from SCMS_INI_EXPORT  ");
         stringBuilder.append(" where SCMS_INI_EXPORT.subtable='0' and SCMS_INI_EXPORT.title='99' ");
         stringBuilder.append(" and SCMS_INI_EXPORT.tablename = '").append(tableName).append("' ");//根据表名找到配置
-        stringBuilder.append("  order by seq");
+        stringBuilder.append("  order by to_number(seq)");
         seachList = super.queryListBySql(stringBuilder.toString());
         return seachList;
     }
@@ -66,7 +66,7 @@ public class ExportDAO extends BaseDAO {
         stringBuilder.append("SELECT * from SCMS_INI_EXPORT  ");
         stringBuilder.append(" where SCMS_INI_EXPORT.subtable='0' and to_number(title)>99  ");
         stringBuilder.append(" and SCMS_INI_EXPORT.tablename = '").append(tableName).append("' ");//根据表名找到配置
-        stringBuilder.append("  order by title,seq ");
+        stringBuilder.append("  order by title, to_number(seq) ");
         seachList = super.queryListBySql(stringBuilder.toString());
         return seachList;
     }

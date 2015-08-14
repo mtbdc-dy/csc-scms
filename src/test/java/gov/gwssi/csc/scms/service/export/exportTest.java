@@ -42,8 +42,8 @@ public class exportTest extends UnitTestBase {
     public void testExportDAO() throws Exception {//查询导出配置信息test  只有一行标题
         ExportDAO exportDAO = getBean("exportDAO");
         InsuranceService insuranceService = super.getBean("insuranceService");
-        String tablename = "v_scholarship_lastyear";
-        String ids = "2015073000000000032,2015073000000000033,2015073000000000034";
+        String tablename = "v_exp_insurance";
+        String ids = "2015072300000000250,2015080300000000254,2015080300000000253,2015080300000000255,2015080300000000251";
         String id[] = ids.split(",");
         String idins = "";
         for (int i = 0; i < id.length; i++) {
@@ -98,8 +98,8 @@ public class exportTest extends UnitTestBase {
         ExportDAO exportDAO = getBean("exportDAO");
         InsuranceService insuranceService = super.getBean("insuranceService");
         String tablename = "v_scholarship_lastyear";
-        String ids = "2015073000000000032,2015073000000000033,2015073000000000034";
-        String id[] = ids.split(",");
+       // String ids = "2015073000000000032,2015073000000000033,2015073000000000034";
+        String[] id = {"2015073000000000032","2015073000000000033","2015073000000000034"};
         String idins = "";
         for (int i = 0; i < id.length; i++) {
             idins = idins + "'" + id[i] + "',";
@@ -190,7 +190,7 @@ public class exportTest extends UnitTestBase {
         String dir = "C:/jjw";
         String dirTmp = "C:/jjw/tmp";
         int maxJlsl = 1000;//一个excel中显示的最多纪录数，超过时，分多个进行导出，并压缩打包
-        //es.writeExcel(titleExcel, recordList, hjh, headArray, mergeArray, columnLength, excelAlginArray, dir, dirTmp, maxJlsl);
+        es.writeExcel(titleExcel, recordList, hjh, headArray, mergeArray, columnLength, excelAlginArray, dir, dirTmp, maxJlsl);
 
     }
 
