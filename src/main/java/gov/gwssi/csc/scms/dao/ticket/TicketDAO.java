@@ -33,7 +33,7 @@ public class TicketDAO extends BaseDAO {
     public void doSt(String name, List list){
        // super.doStatement(name,list);
        String str =  super.doStatementForRtn(name,list);
-System.out.println("str  ="+str);
+//System.out.println("str  ="+str);
     }
 
 }
