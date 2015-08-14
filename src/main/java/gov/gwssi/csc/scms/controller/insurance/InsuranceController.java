@@ -16,14 +16,25 @@ import gov.gwssi.csc.scms.service.user.NoSuchUserException;
 import gov.gwssi.csc.scms.service.user.UserIdentityError;
 import gov.gwssi.csc.scms.service.user.UserService;
 import gov.gwssi.csc.scms.utils.JWTUtil;
+
+//import org.apache.commons.fileupload.FileItem;
+//import org.apache.commons.fileupload.FileUploadException;
+//import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+//import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.net.URLDecoder;
 import java.sql.Timestamp;
@@ -159,7 +170,7 @@ public class InsuranceController {
      * GET /insurance?ids=1,2,3 HTTP/1.1
      * Accept: application/octet-stream
      *
-     * @param ids      需要导出的保险信息ID
+     * @param ids 需要导出的保险信息ID
      */
     @RequestMapping(
             method = RequestMethod.GET,
@@ -180,6 +191,48 @@ public class InsuranceController {
 
         return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
     }
+
+    /**
+     * 导入保险信息
+     * POST /insurance
+     *
+     * @return
+     */
+    @RequestMapping(
+            method = RequestMethod.POST
+    )
+    public ResponseEntity importInsurance(HttpServletRequest request) {
+//        System.out.println("request = " + request);
+        System.out.println(".............................................");
+        boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+        System.out.println("isMultipart = " + isMultipart);
+        if (isMultipart) {
+            DiskFileItemFactory factory = new DiskFileItemFactory();
+
+            File repository = (File)  request.getSession().getServletContext().getAttribute("javax.servlet.context.tempdir");
+            factory.setRepository(repository);
+
+            ServletFileUpload upload = new ServletFileUpload(factory);
+
+            try {
+                List<FileItem> items = upload.parseRequest(request);
+                System.out.println("items = " + items);
+            } catch (FileUploadException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+//    @RequestMapping(
+//            method = RequestMethod.OPTIONS
+//    )
+//    public ResponseEntity options(){
+//        HttpHeaders httpHeaders = new HttpHeaders();
+//        httpHeaders.add("Access-Control-Allow-Origin","*");
+//        httpHeaders.add("Allow", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH");
+//        return new ResponseEntity(httpHeaders, HttpStatus.OK);
+//    }
 
 
 }
