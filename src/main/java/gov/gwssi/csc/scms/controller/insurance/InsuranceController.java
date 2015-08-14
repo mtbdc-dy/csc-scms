@@ -177,6 +177,7 @@ public class InsuranceController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         httpHeaders.setContentDispositionFormData("attachment", fileName);
+        insuranceService.updateInsurancePresta(id);//导出后，根据传入的id数组进行批量更新导出状态
 
         return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
     }
