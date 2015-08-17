@@ -47,7 +47,7 @@ public class ScholarshipServiceTest extends UnitTestBase {
     @Test
     public void testgetScholarshipXListByFilter() throws Exception {
         ScholarshipXService scholarshipXService = super.getBean("scholarshipXService");
-        String body = "{\"schReview\" : \"AV0001\" ," +
+        String body = "{\"year\" : \"2015\" ," +
                 "\"offSet\" : \"0\" , \"pageSize\" : \"2\"}";
         StudentFilterObject ticketResultObject;
         List<ScholarshipXResultObject> list1 = null;

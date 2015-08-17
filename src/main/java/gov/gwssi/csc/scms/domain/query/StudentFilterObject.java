@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.domain.query;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class StudentFilterObject extends FilterObject {
     private String insuranceState = null;  // 保险订购状态 add by gc
     private String schReview = null;  // 奖学金评审结果 add by gc
     private String schResult = null;  // 奖学金处理结果 add by gc
-
+    private String year = null;  // 奖学金评审年度 add by gc
     /**
      * 隐藏查询条件
      */
@@ -85,12 +86,21 @@ public class StudentFilterObject extends FilterObject {
         conditions = addCondition(conditions, "Insurance", "preSta", "String", getInsuranceState());
         conditions = addCondition(conditions, "ScholarshipX", "schReview", "String", getSchReview());
         conditions = addCondition(conditions, "ScholarshipX", "schResult", "String", getSchResult());
-
+        conditions = addCondition(conditions, "ScholarshipX", "year", "String", getYear());
         conditions = addCondition(conditions, "student", "cscId", "String", getCscId());
         //将mode字段添加到条件中
         conditions = addCondition(conditions, "", "", "mode", getMode());
 
         return conditions;
+    }
+
+    public String getYear() {
+
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
     }
 
     public String getSchReview() {
