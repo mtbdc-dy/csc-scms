@@ -43,7 +43,7 @@ import java.util.List;
 
 /**
  * Created by gc on 2015/7/17.
- * 机票管理控制器
+ * 保险管理控制器
  */
 @RestController
 @RequestMapping(value = "/insurance")

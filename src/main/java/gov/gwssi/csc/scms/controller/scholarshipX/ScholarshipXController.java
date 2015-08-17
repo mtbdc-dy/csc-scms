@@ -12,12 +12,17 @@ import gov.gwssi.csc.scms.domain.scholarship.ScholarshipDetail;
 import gov.gwssi.csc.scms.domain.scholarship.ScholarshipX;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.abnormal.NoSuchAbnormalException;
+import gov.gwssi.csc.scms.service.export.ExportService;
 import gov.gwssi.csc.scms.service.scholarship.ScholarshipXService;
 import gov.gwssi.csc.scms.service.user.NoSuchUserException;
 import gov.gwssi.csc.scms.service.user.UserIdentityError;
 import gov.gwssi.csc.scms.service.user.UserService;
 import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -35,6 +40,8 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/scholarshipX")
 public class ScholarshipXController {
+    @Autowired
+    private ExportService exportService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -316,5 +323,30 @@ public class ScholarshipXController {
         }
     }
 
+    /**
+     * 导出奖学金评审信息
+     * GET /scholarshipX?ids=1,2,3 HTTP/1.1
+     * Accept: application/octet-stream
+     *
+     * @param id     需要导出的保险信息ID
+     */
+    @RequestMapping(
+            method = RequestMethod.GET,
+            params = {"id"},
+            headers = "Accept=application/octet-stream")
+    public ResponseEntity<byte[]> exportInsurance(
+            @RequestParam("id") String[] id) throws IOException {
+        byte[] bytes = null;
 
+        String tableName = "v_scholarship_lastyear";
+        bytes = exportService.exportByfilter(tableName, id);
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        httpHeaders.setContentDispositionFormData("attachment", fileName);
+
+        return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
+    }
 }

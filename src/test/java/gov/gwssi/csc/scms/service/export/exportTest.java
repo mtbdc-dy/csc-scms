@@ -31,10 +31,15 @@ public class exportTest extends UnitTestBase {
     @Test
     public void testExportservice() throws Exception {
         ExportService exportService = getBean("exportService");
-        InsuranceService insuranceService = super.getBean("insuranceService");
-        String tablename = "v_scholarship_lastyear";
-        String ids = "2015073000000000032,2015073000000000033,2015073000000000034";
-       // exportService.exportByfilter(tablename, ids);
+        String[] tableName = {"v_sheet1_basic_info" ,
+                "v_sheet2_profiles_history" ,
+                "v_sheet3_registration_info" ,
+                "v_sheet4_discuss" ,
+                "v_sheet5_schoolroll" ,
+                "v_sheet6_related_address"};
+        String ids = "csc000000075,csc000000076,csc000000077";
+        String id[] = ids.split(",");
+        exportService.exportByfilter(tableName, id);
 
     }
 

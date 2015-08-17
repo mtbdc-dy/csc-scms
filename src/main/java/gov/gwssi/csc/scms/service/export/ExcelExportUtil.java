@@ -129,7 +129,192 @@ public class ExcelExportUtil {
         }
         return dir;
     }
+//   生成多个sheet页
+    public String writeExcel(ArrayList titles, ArrayList recordLists, String[] hjh, ArrayList headArrays,
+                             ArrayList mergeArrays, ArrayList columnLengths, short[] alginArray, String dir,
+                             String dirTmp, int maxJlsl) throws Exception {
+            //生成Wb
+            HSSFWorkbook wb = new HSSFWorkbook();
+            wb = this.createDynamicWb(wb, titles, headArrays.size(), recordLists, hjh, headArrays, mergeArrays, columnLengths, alginArray);
+            dir = this.writeFile(wb, dir);
+            return dir;
+    }
 
+    /**
+     * 创建动态表头工作薄，多个sheet页的情况
+     *
+     * @param wb           待导出工作薄
+     * @param titles        标题
+     * @param sheetNum     第几个sheet页，看arraylist的size长度
+     * @param recordLists
+     * @param hjh          // * @param showNameArray
+     * @param mergeArrays
+     * @param columnLengths
+     * @return
+     * @since 1.0
+     */
+    @SuppressWarnings({"deprecation"})
+    private HSSFWorkbook createDynamicWb(HSSFWorkbook wb, ArrayList titles, int sheetNum, ArrayList recordLists,
+                                         String[] hjh, ArrayList headArrays, ArrayList mergeArrays, ArrayList columnLengths, short[] alginArray) {
+       //样式
+        //普通样式
+        HSSFCellStyle style = wb.createCellStyle();
+        style.setBorderBottom(Border);
+        style.setBottomBorderColor(BorderColor);
+        style.setBorderLeft(Border);
+        style.setLeftBorderColor(BorderColor);
+        style.setBorderRight(Border);
+        style.setRightBorderColor(BorderColor);
+        style.setBorderTop(Border);
+        style.setTopBorderColor(BorderColor);
+
+        //表头样式---主标题
+        HSSFCellStyle header_Style = wb.createCellStyle();
+        header_Style.setAlignment(ALIGN_CENTER);
+        HSSFFont font = wb.createFont();
+        font.setBoldweight(Bold);
+        font.setFontHeightInPoints((short) 15);
+        header_Style.setFont(font);
+
+        //表头样式---子标题
+        HSSFCellStyle header_child_Style = wb.createCellStyle();
+        header_child_Style.setAlignment(ALIGN_RIGHT);
+        HSSFFont fontz = wb.createFont();
+        fontz.setFontHeightInPoints((short) 12);
+        header_child_Style.setFont(fontz);
+//
+        //数据区样式
+        HSSFCellStyle body_Style = wb.createCellStyle();
+        body_Style.setBorderBottom(Border);
+        body_Style.setBottomBorderColor(BorderColor);
+        body_Style.setBorderLeft(Border);
+        body_Style.setLeftBorderColor(BorderColor);
+        body_Style.setBorderRight(Border);
+        body_Style.setRightBorderColor(BorderColor);
+        body_Style.setBorderTop(Border);
+        body_Style.setTopBorderColor(BorderColor);
+        body_Style.setAlignment(ALIGN_RIGHT);
+        body_Style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+
+        HSSFCellStyle cs1;
+        HSSFCellStyle cs2;
+        HSSFCellStyle cs3;
+        HSSFCellStyle cs4;
+
+
+        //开始循环写sheet内容
+        for (int i = 0; i<headArrays.size();i++){
+            HSSFSheet sheet = null;
+            HSSFCell cell = null;
+            HSSFRow row = null;
+
+            //当前操作行号
+            int currRowNum = 0;
+
+            //标题所占行数
+            int titleRowNum = 1;
+            //动态表头行数
+            int headRowNum = 0;
+            if (headArrays.get(i)!= null && ((String[][])headArrays.get(i)).length > 0) {
+                headRowNum = ((String[][])headArrays.get(i)).length ;
+            }
+
+            //动态表头列数
+            int headColumnNum = 0;
+            if (columnLengths.get(i) != null && ((int[])columnLengths.get(i)).length  > 0) {
+                headColumnNum = ((int[])columnLengths.get(i)).length ;
+            }
+            //写标题
+            cs1 = header_Style;
+            if(!titles.get(i).equals("")){
+                sheet = wb.createSheet((titles.get(i).toString()));//给sheet页命名,title名作为sheet页名
+            }else{
+                sheet = wb.createSheet(String.valueOf(i));
+            }
+            sheet.setMargin(HSSFSheet.RightMargin, (double) 0.5);
+            HSSFPrintSetup ps = sheet.getPrintSetup();
+            ps.setLandscape(false); // 打印方向，true：横向，false：纵向
+            ps.setPaperSize(HSSFPrintSetup.A4_PAPERSIZE); //纸张
+            ps.setScale((short) 90);
+            for (int j = 0; j < headColumnNum; j++) {
+               sheet.setColumnWidth((short) i, (short) ((int[])columnLengths.get(i))[j]);
+            }
+            //设置大标题
+            row = sheet.createRow((short) 0);
+            cell = row.createCell((short) 0);
+            cell.setCellStyle(cs1);
+            if(!titles.get(i).equals("")){
+                cell.setCellValue((titles.get(i).toString()));//给sheet页命名,title名作为sheet页名
+            }else{
+                cell.setCellValue("");
+            }
+            sheet.addMergedRegion(new Region((short) 0, (short) 0, (short) 0, (short) (((int[])columnLengths.get(i)).length - 1)));
+            //添加完标题行号增加
+            currRowNum = currRowNum + titleRowNum;
+            //写动态表头
+            cs2 = body_Style;
+            HSSFFont fontc = wb.createFont();
+            fontc.setFontHeightInPoints((short) 12);
+            fontc.setBoldweight(Bold);
+            cs2.setFont(fontc);
+            cs2.setAlignment(ALIGN_RIGHT);
+            cs2.setFillBackgroundColor((short) 12);
+            for (int i1 = 0; i1 < headRowNum; i1++) {
+                row = sheet.createRow((short) currRowNum);
+                row.setHeight((short) 400);
+                for (int j1 = 0; j1 < headColumnNum; j1++) {
+                    cell = row.createCell((short) j1);
+                    // cell.setEncoding(Encoding);
+                    cell.setCellStyle(cs2);
+                    cell.setCellValue(String.valueOf(((String[][])headArrays.get(i))[0][j1]));
+                }
+                //行号每次自增1
+                currRowNum++;
+            }
+
+            //合并动态表头
+            if (mergeArrays.size()>0 && ((int[][])mergeArrays.get(i)).length > 0) {
+                for (int i1 = 0; i1 < ((int[][])mergeArrays.get(i)).length; i1++) {
+                    //转换合并数组,行数+titleRowNum，列数不变
+                    int[][] mera=((int[][])mergeArrays.get(i));
+                    sheet.addMergedRegion(new Region( mera[i1][0] + 1, (short) mera[i1][1],
+                            mera[i1][2]+ 1, (short) (mera[i1][3])));
+                }
+            }
+
+
+            //写列表数据
+            if (recordLists != null && ((ArrayList) recordLists.get(i)).size()> 0) {
+                cs3 = body_Style;
+                HSSFFont font1 = wb.createFont();
+                font1.setFontHeightInPoints((short) 11);
+                cs3.setFont(font1);
+
+                for (int i1 = 0; i1 < ((ArrayList) recordLists.get(i)).size(); i1++) {
+                    row = sheet.createRow((short) currRowNum);
+                    String records[] = ((String[])(((ArrayList)recordLists.get(i)).get(i1)));
+
+                    for (int k = 0; k < records.length; k++) {
+                        cell = row.createCell((short) k);
+                        //   cell.setEncoding(Encoding);
+                        cs3 = body_Style;
+                        cs3.setFont(font1);
+                        if (alginArray != null && alginArray.length == records.length) {
+                            cs3.setAlignment(alginArray[k]);
+                        } else {
+                            cs3.setAlignment(ALIGN_CENTER);
+                        }
+
+                        cell.setCellStyle(cs3);
+                        cell.setCellValue(records[k]);
+                    }
+                    currRowNum++;
+                }
+            }
+
+        }
+        return wb;
+    }
 
     /**
      * 创建动态表头工作薄
@@ -194,7 +379,7 @@ public class ExcelExportUtil {
         HSSFFont fontz = wb.createFont();
         fontz.setFontHeightInPoints((short) 12);
         header_child_Style.setFont(fontz);
-//	    
+//
         //数据区样式
         HSSFCellStyle body_Style = wb.createCellStyle();
         body_Style.setBorderBottom(Border);
