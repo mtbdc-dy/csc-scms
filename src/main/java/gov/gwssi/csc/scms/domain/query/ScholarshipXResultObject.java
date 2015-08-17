@@ -86,6 +86,10 @@ public class ScholarshipXResultObject extends ResultObject{
      */
     private Date cscStartTime;
 
+    private Date updated;
+
+    private String updateby;
+
     /**
      * 不合格时间止
      */
@@ -119,6 +123,7 @@ public class ScholarshipXResultObject extends ResultObject{
 
     public ScholarshipXResultObject(String id, String studentId, String scholarshipId, String cscId, String passportName, String gender,
                                     Date birthday, String schReview, String schResult,String cscReview, String cscResult, Long year, Long qualNum, Long unQualNum,
+                                    Date updated,String updateby,
                                     String schReason, Date schStartTime, Date schEndTime, String cscReason, Date cscStartTime, Date cscEndTime, String cscrresult_lastyear, String schoolSta, String cscSta
     ) {
         this.id = id;
@@ -135,6 +140,8 @@ public class ScholarshipXResultObject extends ResultObject{
         this.year=year;
         this.qualNum = qualNum;
         this.unQualNum = unQualNum;
+        this.updated=updated;
+        this.updateby=updateby;
         this.schReason = schReason;
         this.schStartTime = schStartTime;
         this.schEndTime = schEndTime;
@@ -152,10 +159,27 @@ public class ScholarshipXResultObject extends ResultObject{
                 "ScholarshipX.id,ScholarshipX.studentId,ScholarshipX.scholarshipId, student.cscId, basicInfo.passportName,basicInfo.gender," +
                 "basicInfo.birthday,ScholarshipX.schReview,ScholarshipX.schResult,ScholarshipX.cscReview,ScholarshipX.cscResult," +
                 "ScholarshipX.year,ScholarshipX.qualNum,ScholarshipX.unQualNum," +
+                "ScholarshipX.updated,ScholarshipX.updateby," +
                 "ScholarshipX.schReason,ScholarshipX.schStartTime,ScholarshipX.schEndTime," +
                 "ScholarshipX.cscReason,ScholarshipX.cscStartTime,ScholarshipX.cscEndTime," +
                 "ScholarshipX.cscrresult_lastyear,ScholarshipX.schoolSta,ScholarshipX.cscSta)";
         return resultSql;
+    }
+
+    public Date getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(Date updated) {
+        this.updated = updated;
+    }
+
+    public String getUpdateby() {
+        return updateby;
+    }
+
+    public void setUpdateby(String updateby) {
+        this.updateby = updateby;
     }
 
     public String getCscReview() {

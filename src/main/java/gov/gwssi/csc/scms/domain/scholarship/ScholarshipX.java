@@ -48,6 +48,10 @@ public class ScholarshipX {
     @Column
     private Long unQualNum;
     @Column
+    private Date updated;
+    @Column
+    private String  updateby;
+    @Column
     private String schoolSta;
     @Column
     private String cscSta;
@@ -196,7 +200,21 @@ public class ScholarshipX {
         this.scholarshipId = scholarshipId;
     }
 
+    public Date getUpdated() {
+        return updated;
+    }
 
+    public void setUpdated(Date updated) {
+        this.updated = updated;
+    }
+
+    public String getUpdateby() {
+        return updateby;
+    }
+
+    public void setUpdateby(String updateby) {
+        this.updateby = updateby;
+    }
 
     public String getSchResult() {
         return schResult;
