@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.controller.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.gwssi.csc.scms.controller.JsonBody;
 import gov.gwssi.csc.scms.domain.user.Menu;
 import gov.gwssi.csc.scms.domain.user.Node;
 import gov.gwssi.csc.scms.domain.user.Role;
@@ -208,6 +209,29 @@ public class UserController {
         } catch (NoSuchUserException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    @RequestMapping(value = "/{userId}/changePwd", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
+    public void putUserPwd(@PathVariable("userId") String userId, @RequestBody String bodyJson) {
+        try {
+            JsonBody jbosy = new ObjectMapper().readValue(bodyJson, JsonBody.class);
+            String newPwd1 = jbosy.getValue();
+            userService.updateUserPwd(userId, newPwd1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    @RequestMapping(value = "/{userId}/getPwd", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public String getUserPwd(@PathVariable("userId") String userId) {
+        try {
+            String pwd=userService.getUserByUserId(userId).getPassword();
+            return pwd;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
