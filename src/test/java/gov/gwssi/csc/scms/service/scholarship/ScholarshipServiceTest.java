@@ -28,7 +28,14 @@ public class ScholarshipServiceTest extends UnitTestBase {
     }
 
 
+    @Test
+    public void testgetScholarshipXListcscId1() throws Exception {
+        ScholarshipXService scholarshipXService = super.getBean("scholarshipXService");
 
+        List<ScholarshipXResultObject> inResultObjectList = scholarshipXService.getScholarshipXListcscId("csc000000002");
+        Assert.assertNotNull(inResultObjectList);
+        System.out.println("list size::" + inResultObjectList);
+    }
     @Test
     public void testsaveScholarshipDetail() throws Exception {
         ScholarshipXService scholarshipXService = super.getBean("scholarshipXService");

@@ -89,7 +89,17 @@ public class ScholarshipXController {
                 }
 
     }
-
+    //根据detail的id，查询LIST
+    @RequestMapping(value = "/selectH/{cscId}",method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public List<ScholarshipXResultObject> getScholarshipXsById(@PathVariable(value = "cscId") String cscId,@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
+        List<ScholarshipXResultObject> scholarshipXResultObjectList = null;
+        try {
+            scholarshipXResultObjectList = scholarshipXService.getScholarshipXListcscId(cscId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return scholarshipXResultObjectList;
+    }
     //修改奖学金评审管理信息
     @RequestMapping(value = "/save", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public List<ScholarshipXResultObject> modScholarshipXdetail(@RequestBody String scholarshipJson, @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) {
@@ -130,6 +140,9 @@ public class ScholarshipXController {
                 Scholarship scholarship = scholarshipXService.findScholarshipOne(ScholarshipDetails.get(0).getScholarship().getId());
                 scholarship.setQualNum((long) qualNum);
                 scholarship.setUnQualNum((long) unqualNum);
+                scholarship.setUpdated(ts);//同时对主表的更新人和更新时间，进行更新
+                scholarship.setUpdateBy(user.getId());
+
                 scholarshipXService.saveScholarship(scholarship, null);
                 for (int i = 0; i < ScholarshipDetails.size(); i++) {
                     scholarshipDetail = ScholarshipDetails.get(i);
@@ -191,6 +204,8 @@ public class ScholarshipXController {
                  Scholarship scholarship = scholarshipXService.findScholarshipOne(scholarshipDetail.getScholarship().getId());
                  scholarship.setQualNum((long) qualNum);
                  scholarship.setUnQualNum((long) unqualNum);
+                 scholarship.setUpdated(ts);//同时对主表的更新人和更新时间，进行更新
+                 scholarship.setUpdateBy(user.getId());
                  scholarshipXService.saveScholarship(scholarship, null);
                  ScholarshipXResultObject scholarshipXResult = scholarshipXService.getScholarshipXAndStu(scholarshipDetail.getId());
 
@@ -245,6 +260,8 @@ public class ScholarshipXController {
             Scholarship scholarship = scholarshipXService.findScholarshipOne(scholarshipId);
             scholarship.setQualNum((long) qualNum);
             scholarship.setUnQualNum((long) unqualNum);
+            scholarship.setUpdated(ts);//同时对主表的更新人和更新时间，进行更新
+            scholarship.setUpdateBy(user.getId());
             scholarshipXService.saveScholarship(scholarship, null);//对主表进行更新
             Iterable scholarshipXlist1 = scholarshipXService.findScholarshipXAll();
             for (Iterator iter = scholarshipXlist1.iterator(); iter.hasNext(); ) {
@@ -303,6 +320,8 @@ public class ScholarshipXController {
                 Scholarship scholarship = scholarshipXService.findScholarshipOne(scholarshipId);
                 scholarship.setQualNum((long) qualNum);
                 scholarship.setUnQualNum((long) unqualNum);
+                scholarship.setUpdated(ts);//同时对主表的更新人和更新时间，进行更新
+                scholarship.setUpdateBy(user.getId());
                 //对主表的状态进行更新，学校提交状态，和学校提交时间
                 scholarship.setSchoolSta("1");//已提交
                 scholarship.setSchoolDate(ts);//评审提交时间
@@ -349,4 +368,8 @@ public class ScholarshipXController {
 
         return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
     }
+
+
+
+
 }

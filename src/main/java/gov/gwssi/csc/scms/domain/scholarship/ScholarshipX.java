@@ -7,11 +7,11 @@ import javax.persistence.Table;
 import java.util.Date;
 
 /**
- * Created by Wang Rui on 2015/4/14.
+ * Created by gaochen 20150817.
  * 奖学金评审
  */
 @Entity
-@Table(name = "v_scholarship_lastyear")
+@Table(name = "V_SCHOLARSHIP_LASTYEAR")
 public class ScholarshipX {
     @Id
     //@Column(length = 19)
@@ -19,6 +19,8 @@ public class ScholarshipX {
 
     @Column
     private String studentId;
+    @Column
+    private String cscId;
     @Column
     private String scholarshipId;
     @Column
@@ -55,12 +57,12 @@ public class ScholarshipX {
     /**
      *年度
      */
-    @Column(name = "year",length=4)
+    @Column
     private long year;
     /**
      *院校 DIM_UNIVERSITY代码
      */
-    @Column(name = "school",length=6)
+    @Column
     private String school;
 
 
@@ -204,6 +206,13 @@ public class ScholarshipX {
         this.schResult = schResult;
     }
 
+    public String getCscId() {
+        return cscId;
+    }
+
+    public void setCscId(String cscId) {
+        this.cscId = cscId;
+    }
 
     public String getSchReview() {
         return schReview;

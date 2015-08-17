@@ -89,6 +89,36 @@ public class ScholarshipXService extends BaseService {
 
 
     }
+
+    //根据cscId查询奖学金记录
+    public List<ScholarshipXResultObject> getScholarshipXListcscId(String cscId) {
+         List<ScholarshipXResultObject> ScholarshipXResultObjectList;
+       int startPosition, pageSize;
+
+        String sql = getSqlbycscid(cscId);
+        if (sql == null) {
+            return null;
+        }
+        startPosition =FilterObject.OFFSETDEFULT;
+        pageSize =FilterObject.PAGESIZEDEFULT;
+
+        ScholarshipXResultObjectList = super.getBaseDao().getObjectListByHQL(sql, ScholarshipXResultObject.class, startPosition, pageSize);
+        return ScholarshipXResultObjectList;
+
+    }
+    //根据cscId查询奖学金记录
+    private String getSqlbycscid(String cscId) {
+        StringBuilder sb = new StringBuilder();
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        int year=ts.getYear()+1900;
+        sb.append(ScholarshipXResultObject.getResultObject());
+        String tempSql = " from ScholarshipX ScholarshipX,Student student,BasicInfo basicInfo, SchoolRoll schoolRoll" +
+                " where student.id = basicInfo.student " +
+                "and student.id = schoolRoll.student   and student.id = ScholarshipX.studentId and ScholarshipX.year !='"+year+"'";//默认进来查询历史年份的
+        sb.append(tempSql);
+        sb.append(" and ScholarshipX.cscId = '").append(cscId).append("'");
+        return sb.toString();
+    }
     //获取当前用户下的奖学金评审对应的字段数据 不加查询条件的sql
     private String getSql(User user) {
         StringBuilder sb = new StringBuilder();

@@ -63,7 +63,11 @@ public class ExportController {
                 "v_sheet3_registration_info" ,
                 "v_sheet4_discuss" ,
                 "v_sheet5_schoolroll" ,
-                "v_sheet6_related_address"};
+                "v_sheet6_related_address",
+                "v_sheet7_accident",
+                "v_sheet8_airticket",
+                "v_sheet9_grade",
+                "v_sheet10_school_fellow"};
         bytes = exportService.exportByfilter(tableName, id);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = ts.getTime() + ".xls"; // 组装附件名称和格式
