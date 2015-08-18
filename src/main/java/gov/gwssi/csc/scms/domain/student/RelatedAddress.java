@@ -9,7 +9,7 @@ import java.util.Date;
 @Entity
 @Table(name = "SCMS_RELATED_ADDRESS")
 public class RelatedAddress {
-    @Id
+
     private String id;
     /**
      * 类别
@@ -46,7 +46,7 @@ public class RelatedAddress {
     /**
      * 创建时间
      */
-    @Column(name = "CREATED")
+
     private Date createDate;
     /**
      * 修改人
@@ -55,15 +55,15 @@ public class RelatedAddress {
     /**
      * 修改时间
      */
-    @Column(name = "UPDATED")
+
     private Date updateDate;
     /**
      * 学生id
      */
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "STUDENTID")
+
     private Student student;
 
+    @Id
     public String getId() {
         return id;
     }
@@ -136,6 +136,7 @@ public class RelatedAddress {
         this.createBy = createBy;
     }
 
+    @Column(name = "CREATED")
     public Date getCreateDate() {
         return createDate;
     }
@@ -152,6 +153,7 @@ public class RelatedAddress {
         this.updateBy = updateBy;
     }
 
+    @Column(name = "UPDATED")
     public Date getUpdateDate() {
         return updateDate;
     }
@@ -160,6 +162,8 @@ public class RelatedAddress {
         this.updateDate = updateDate;
     }
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "STUDENTID")
     public Student getStudent() {
         return student;
     }

@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.domain.abnormal;
 
 import gov.gwssi.csc.scms.domain.student.Student;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -16,14 +17,13 @@ public class Abnormal {
 //    @GeneratedValue(generator = "SCMS_ABNORMAL_ID",strategy = GenerationType.SEQUENCE)
     private String id;
 
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "studentid"/*,nullable = false*/)
+    private Student student;
     /**
      * STUDENTID
      */
-//    @Column(name = "cscId",length=19)
-//    private String cscId;
-    //@ManyToOne(targetEntity = Student.class, fetch = FetchType.EAGER)
-    //@JoinColumn(name = "studentid")
-    //private Student student;
     private String studentId;
     /**
      *异动原因代码
@@ -337,5 +337,13 @@ public class Abnormal {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
     }
 }

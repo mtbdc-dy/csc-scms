@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * 学生列表查询实体类
  * Created by Murray on 2015/4/2.
- * Reformate by Wang Zishi on 2015/7/27.
+ * Reformat by Wang Zishi on 2015/7/27.
  */
 public class StudentFilterObject extends FilterObject {
 

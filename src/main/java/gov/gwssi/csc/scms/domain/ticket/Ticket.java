@@ -1,9 +1,8 @@
 package gov.gwssi.csc.scms.domain.ticket;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import gov.gwssi.csc.scms.domain.student.Student;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -15,10 +14,14 @@ import java.util.Date;
 @Table(name = "SCMS_AIRTICKET")
 public class Ticket {
     @Id
-
     private String id;
-//    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    @JoinColumn(name = "studentid")
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "studentid"/*,nullable = false*/)
+    private Student student;
+    /**
+     * STUDENTID
+     */
     private  String studentId;
     /**
      *院校 可以不需要 待定
@@ -238,5 +241,13 @@ public class Ticket {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
     }
 }

@@ -26,6 +26,57 @@ public class TranslateDictService {
     @Qualifier("codeTableClassRepository")
     private CodeTableClassRepository codeTableClassRepository;
 
+    public List<DictTreeJson> getCodeTableList(String codeTableName){
+        List<DictTreeJson> list;
+
+        try {
+            if ("continents".equals(codeTableName)) {
+
+                list = getContinentsWithCountries();
+
+            } else if ("projectAttrs".equals(codeTableName)) {
+
+                list = getProjectsWithTypeAndName();
+
+            } else if ("provincesOnly".equals(codeTableName)) {
+
+                list = getProvinces();
+
+            } else if ("provincesUniversities".equals(codeTableName)) {
+
+                list = getUniversities();
+
+            } else if ("disciplines".equals(codeTableName)) {
+
+                list = getSubjectsWithLeveThree();
+
+            } else if ("abnormalTypes".equals(codeTableName)) {
+
+                list = getAbnormalReasonsWithType();
+
+            } else if ("tables".equals(codeTableName)) {
+
+                // TODO. 动态查询时所需要的代码表
+                list = null;
+
+            } else {
+
+                list = getTranslateDictByClassEn(codeTableName);
+
+            }
+
+
+            System.out.println("list = " + list);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            throw new RuntimeException(e);
+
+        }
+        return list;
+    }
+
     // 根据 classEn 获取 classId
     private String getClassIDByClassEn(String classEn) throws Exception {
 
@@ -39,7 +90,7 @@ public class TranslateDictService {
     }
 
     // 根据 classId 获取相应的代码表
-    public List<DictTreeJson> getTranslateDictByClassId(String classId) throws NoSuchDictTreeException {
+    private List<DictTreeJson> getTranslateDictByClassId(String classId) throws NoSuchDictTreeException {
         List<DictTreeJson> list = null;
         list = codeTableDAO.getCodeTable(classId);
         if (list == null) {
@@ -49,7 +100,7 @@ public class TranslateDictService {
     }
 
     // 根据 classEn 获得相应的代码表
-    public List<DictTreeJson> getTranslateDictByClassEn(String classEn) throws Exception {
+    private List<DictTreeJson> getTranslateDictByClassEn(String classEn) throws Exception {
 
         String classId = this.getClassIDByClassEn(classEn);
 
@@ -58,7 +109,7 @@ public class TranslateDictService {
     }
 
     // 获取大洲
-    public List<DictTreeJson> getContinents() throws NoSuchDictTreeException {
+    private List<DictTreeJson> getContinents() throws NoSuchDictTreeException {
         List<DictTreeJson> jsonList = codeTableDAO.getCodeTableByLevel(CodeTableDAO.CONTINENTS, CodeTableDAO.CONTINENTS_LEVEL_ONE);
         if (jsonList == null) {
             throw new NoSuchDictTreeException("can not find continents.");
@@ -67,7 +118,7 @@ public class TranslateDictService {
     }
 
     // 获取大洲以及国别信息
-    public List<DictTreeJson> getContinentsWithCountries() throws NoSuchDictTreeException {
+    private List<DictTreeJson> getContinentsWithCountries() throws NoSuchDictTreeException {
         List<DictTreeJson> jsonList = codeTableDAO.getCodeTableByLevel(CodeTableDAO.CONTINENTS, CodeTableDAO.CONTINENTS_LEVEL_TWO);
         if (jsonList == null) {
             throw new NoSuchDictTreeException("can not find continents with their countries.");
@@ -75,7 +126,7 @@ public class TranslateDictService {
         return jsonList;
     }
 
-    public List<DictTreeJson> getSubjectsWithLeveOne() throws NoSuchDictTreeException {
+    private List<DictTreeJson> getSubjectsWithLeveOne() throws NoSuchDictTreeException {
         List<DictTreeJson> jsonList = codeTableDAO.getCodeTableByLevel(CodeTableDAO.SUBJECTS, CodeTableDAO.SUBJECTS_LEVEL_ONE);
         if (jsonList == null) {
             throw new NoSuchDictTreeException("");
@@ -83,7 +134,7 @@ public class TranslateDictService {
         return jsonList;
     }
 
-    public List<DictTreeJson> getSubjectsWithLeveTwo() throws NoSuchDictTreeException {
+    private List<DictTreeJson> getSubjectsWithLeveTwo() throws NoSuchDictTreeException {
         List<DictTreeJson> jsonList = codeTableDAO.getCodeTableByLevel(CodeTableDAO.SUBJECTS, CodeTableDAO.SUBJECTS_LEVEL_TWO);
         if (jsonList == null) {
             throw new NoSuchDictTreeException("");
@@ -91,7 +142,7 @@ public class TranslateDictService {
         return jsonList;
     }
 
-    public List<DictTreeJson> getSubjectsWithLeveThree() throws NoSuchDictTreeException {
+    private List<DictTreeJson> getSubjectsWithLeveThree() throws NoSuchDictTreeException {
         List<DictTreeJson> jsonList = codeTableDAO.getCodeTableByLevel(CodeTableDAO.SUBJECTS, CodeTableDAO.SUBJECTS_LEVEL_THREE);
         if (jsonList == null) {
             throw new NoSuchDictTreeException("");
@@ -99,7 +150,7 @@ public class TranslateDictService {
         return jsonList;
     }
 
-    public List<DictTreeJson> getProjects() throws NoSuchDictTreeException {
+    private List<DictTreeJson> getProjects() throws NoSuchDictTreeException {
         List<DictTreeJson> jsonList = codeTableDAO.getCodeTableByLevel(CodeTableDAO.PROJECTS, CodeTableDAO.PROJECTS_LEVEL_ONE);
         if (jsonList == null) {
             throw new NoSuchDictTreeException("");
@@ -107,7 +158,7 @@ public class TranslateDictService {
         return jsonList;
     }
 
-    public List<DictTreeJson> getProjectsWithType() throws NoSuchDictTreeException {
+    private List<DictTreeJson> getProjectsWithType() throws NoSuchDictTreeException {
         List<DictTreeJson> jsonList = codeTableDAO.getCodeTableByLevel(CodeTableDAO.PROJECTS, CodeTableDAO.PROJECTS_LEVEL_TWO);
         if (jsonList == null) {
             throw new NoSuchDictTreeException("");
@@ -115,7 +166,7 @@ public class TranslateDictService {
         return jsonList;
     }
 
-    public List<DictTreeJson> getProjectsWithTypeAndName() throws NoSuchDictTreeException {
+    private List<DictTreeJson> getProjectsWithTypeAndName() throws NoSuchDictTreeException {
         List<DictTreeJson> jsonList = codeTableDAO.getCodeTableByLevel(CodeTableDAO.PROJECTS, CodeTableDAO.PROJECTS_LEVEL_THREE);
         if (jsonList == null) {
             throw new NoSuchDictTreeException("");
@@ -123,7 +174,7 @@ public class TranslateDictService {
         return jsonList;
     }
 
-    public List<DictTreeJson> getAbnormalReasonsWithType() throws NoSuchDictTreeException {
+    private List<DictTreeJson> getAbnormalReasonsWithType() throws NoSuchDictTreeException {
         List<DictTreeJson> jsonList = codeTableDAO.getCodeTableByLevel(CodeTableDAO.ABNORMAL, CodeTableDAO.ABNORMAL_LEVEL_TWO);
         if (jsonList == null) {
             throw new NoSuchDictTreeException("");
@@ -131,7 +182,7 @@ public class TranslateDictService {
         return jsonList;
     }
 
-    public List<DictTreeJson> getProvinces() throws NoSuchDictTreeException {
+    private List<DictTreeJson> getProvinces() throws NoSuchDictTreeException {
         List<DictTreeJson> jsonList = codeTableDAO.getCodeTableByLevel(CodeTableDAO.UNIVERSITIES, CodeTableDAO.UNIVERSITIES_LEVEL_ONE);
         if (jsonList == null) {
             throw new NoSuchDictTreeException("");
@@ -139,7 +190,7 @@ public class TranslateDictService {
         return jsonList;
     }
 
-    public List<DictTreeJson> getUniversities() throws NoSuchDictTreeException {
+    private List<DictTreeJson> getUniversities() throws NoSuchDictTreeException {
         List<DictTreeJson> jsonList = codeTableDAO.getCodeTableByLevel(CodeTableDAO.UNIVERSITIES, CodeTableDAO.UNIVERSITIES_LEVEL_TWO);
         if (jsonList == null) {
             throw new NoSuchDictTreeException("");
@@ -147,7 +198,7 @@ public class TranslateDictService {
         return jsonList;
     }
 
-//    public list<DictTreeJson> getProjectsWithTypeAndName
+//    private list<DictTreeJson> getProjectsWithTypeAndName
 
 
 //    // 根据region层次获取相应的大洲以及国别信息
