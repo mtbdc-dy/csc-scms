@@ -37,15 +37,7 @@ public abstract class FilterObject {
 
     protected List<FilterCell> addCondition(List<FilterCell> conditions, String tableName, String filedName, String type, String value) {
         if (isNull(value)){
-            if(filedName.equals("year")){//对评审年度进行特殊处理，为空时，默认为当年
-                Timestamp ts = new Timestamp(System.currentTimeMillis());
-                int year=ts.getYear()+1900;
-                value=String.valueOf(year);
-                conditions.add(new FilterCell(tableName, filedName, type, value));
                 return conditions;
-            }else {
-                return conditions;
-            }
         }else{
 
         conditions.add(new FilterCell(tableName, filedName, type, value));
