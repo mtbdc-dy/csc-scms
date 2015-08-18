@@ -228,7 +228,8 @@ public class UserController {
     public String getUserPwd(@PathVariable("userId") String userId) {
         try {
             String pwd=userService.getUserByUserId(userId).getPassword();
-            return pwd;
+            String pwdJson = "{\"pwd\":\""+pwd+"\"}";
+            return pwdJson;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
