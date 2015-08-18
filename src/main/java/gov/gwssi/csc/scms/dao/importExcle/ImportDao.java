@@ -2,6 +2,7 @@ package gov.gwssi.csc.scms.dao.importExcle;
 
 import gov.gwssi.csc.scms.dao.BaseDAO;
 import gov.gwssi.csc.scms.utils.ExcelPoiTools;
+import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +17,7 @@ import java.util.*;
  * Created by LiZhiSheng on 2015/8/16.
  */
 @Service("importDao")
-public class ImportDao  {
+public class ImportDao extends BaseDAO {
     private static ImportDao manager;
 
     public static ImportDao getInstance(){
@@ -26,16 +27,13 @@ public class ImportDao  {
         return manager;
     }
     @Transactional
-    public Vector<Vector<String>> doExcelImport() throws IOException{
+    public Vector<Vector<String>> doExcelImport(FileItem fileItem) throws IOException{
         Vector<Vector<String>> productData  = new Vector<Vector<String>>();
         List<Map<String,String>> listData = new ArrayList<Map<String, String>>();
         try {
-            productData = ExcelPoiTools.readFile("C:\\234.xls");
+            productData = ExcelPoiTools.readFile(fileItem);
         } catch (IOException e1) {
-
-
-                throw new IOException("Excle文件读取异常");
-
+               throw new IOException("Excle文件读取异常");
         }
         // 获取抬头，检验是否包含非空字段列
         Vector<String> title = (Vector<String>) productData.get(1);
@@ -76,7 +74,7 @@ public class ImportDao  {
         String sql = "update scms_schoolroll t set t.elcregisteno = '"+elcregisteNo+"' " +
                 " where t.studentid = (select t.studentid from scms_schoolroll t, scms_student s" +
                 "  where t.studentid = s.id  and s.cscid = '"+cicNo+"')";
-       // super.updateBySql(sql);
+       super.updateBySql(sql);
     }
     /**
      * 获取一行数据的校验结果

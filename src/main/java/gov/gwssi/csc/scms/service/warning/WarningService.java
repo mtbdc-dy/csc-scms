@@ -64,33 +64,33 @@ public class WarningService extends BaseService {
         if (filterObject == null)
             return null;
 
-        //»ñÈ¡²éÑ¯½á¹û¼¯
+        //è·å–æŸ¥è¯¢ç»“æœé›†
         String sqlStr = WarningResultObject.getResultObject();
 
-        //Ìí¼Ó²éÑ¯ÊµÌå
+        //æ·»åŠ æŸ¥è¯¢å®ä½“
         sqlStr += " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll, Warning warning " +
                 "where student.id = basicInfo.student " +
                 "and student.id = schoolRoll.student " +
                 "and student.id = warning.studentId ";
 
-        //Ìí¼Ó²éÑ¯Ìõ¼ş£¬²¢·µ»ØÍêÕûSQLÓï¾ä
+        //æ·»åŠ æŸ¥è¯¢æ¡ä»¶ï¼Œå¹¶è¿”å›å®Œæ•´SQLè¯­å¥
         return sqlStr + new StudentFilter((StudentFilterObject) filterObject).getFilter(user, "", "");
     }
 
-    //±£´æ
+    //ä¿å­˜
     @Transactional
     public String saveWarning(Warning warning, List<OperationLog> operationLogs) throws Exception {
-        //¼ÇÂ¼ÈÕÖ¾
+        //è®°å½•æ—¥å¿—
         operationLogService.saveOperationLog(operationLogs);
         warning.setWarningId(getBaseDao().getIdBySequence("SEQ_WARNING"));
-        //±£´æĞÂÔöµÄÔ¤¾¯Ãûµ¥ÈËÔ±
+        //ä¿å­˜æ–°å¢çš„é¢„è­¦åå•äººå‘˜
         warningRepository.save(warning);
         return warning.getWarningId();
     }
 
-    // ¸ù¾İid²éÑ¯warningAndStu
+    // æ ¹æ®idæŸ¥è¯¢warningAndStu
     public WarningResultObject getWarningAndStu(String id) throws Exception {
-        //·µ»Ø½çÃæ°üº¬Ñ§ÉúĞÅÏ¢ ¸ù¾İÒì¶¯id²é³ö
+        //è¿”å›ç•Œé¢åŒ…å«å­¦ç”Ÿä¿¡æ¯ æ ¹æ®å¼‚åŠ¨idæŸ¥å‡º
         StringBuilder sb = new StringBuilder();
         sb.append(WarningResultObject.getResultObject());
         String tempSql = " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll, Warning warning " +
@@ -108,12 +108,12 @@ public class WarningService extends BaseService {
         return warningResultObject;
     }
 
-    //É¾³ı
+    //åˆ é™¤
     public Warning deleteWarningById(String id, List<OperationLog> operationLogs) {
         Warning warning = getWarningById(id);
         if (warning == null)
             return null;
-        //¼ÇÂ¼ÈÕÖ¾
+        //è®°å½•æ—¥å¿—
         operationLogService.saveOperationLog(operationLogs);
         warningRepository.delete(warning);
         return warning;

@@ -12,7 +12,7 @@ public class WarningResultObject extends ResultObject {
      */
     private String warningId;
     /**
-     * 学生Id
+     * 瀛︾敓Id
      */
     private String studentId;
     /**
@@ -20,45 +20,45 @@ public class WarningResultObject extends ResultObject {
      */
     private String cscId;
     /**
-     * 性别
+     * 鎬у埆
      */
     private String gender;
     /**
-     * 出生日期
+     * 鍑虹敓鏃ユ湡
      */
     private Date birthday;
     /**
-     * 护照姓名
+     * 鎶ょ収濮撳悕
      */
     private String passportName;
     /**
-     * 学籍信息
-     * 证件号码
+     * 瀛︾睄淇℃伅
+     * 璇佷欢鍙风爜
      */
     private String certificateNO;
     /**
-     * 国籍
+     * 鍥界睄
      */
     private String country;
     /**
-     * 预计毕业时间
+     * 棰勮姣曚笟鏃堕棿
      */
     private Date planLeaveDate;
     /**
-     * 来华日期
+     * 鏉ュ崕鏃ユ湡
      */
     private Date arrivalDate;
     /**
-     * 院校名称
+     * 闄㈡牎鍚嶇О
      */
     private String majorUniversity;
     /**
-     * 操作日期
+     * 鎿嶄綔鏃ユ湡
      */
     private Date addTime;
 
     /**
-     * 操作人员
+     * 鎿嶄綔浜哄憳
      */
     private String addUserName;
 

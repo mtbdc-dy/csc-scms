@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.controller.JsonBody;
 import gov.gwssi.csc.scms.controller.RequestHeaderError;
+import gov.gwssi.csc.scms.dao.importExcle.ImportDao;
 import gov.gwssi.csc.scms.domain.insurance.Insurance;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.InsuranceResultObject;
@@ -40,6 +41,7 @@ import java.net.URLDecoder;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * Created by gc on 2015/7/17.
@@ -54,7 +56,8 @@ public class InsuranceController {
     private UserService userService;
     @Autowired
     private InsuranceService insuranceService;
-
+    @Autowired
+    private ImportDao importDao;
     //用户在前台点击生成机票管理列表，返回列表
     @RequestMapping(value = "/new", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<InsuranceResultObject> getInsurances(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
@@ -201,9 +204,15 @@ public class InsuranceController {
     @RequestMapping(
             method = RequestMethod.POST
     )
-    public ResponseEntity importInsurance(HttpServletRequest request) {
+    public ResponseEntity importInsurance(@RequestParam(value = "filename") String filename,
+            HttpServletRequest request) {
 //        System.out.println("request = " + request);
-        System.out.println(".............................................");
+        try {
+            System.out.println("filename = " + URLDecoder.decode(filename, "utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        System.out.println("InsuranceController.importInsurance");
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
         System.out.println("isMultipart = " + isMultipart);
         if (isMultipart) {
@@ -217,7 +226,12 @@ public class InsuranceController {
             try {
                 List<FileItem> items = upload.parseRequest(request);
                 System.out.println("items = " + items);
+                Vector<Vector<String>> list = importDao.doExcelImport(items.get(0));
+                System.out.println("list = " + list.size());
+                System.out.println("list = " + list);
             } catch (FileUploadException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }

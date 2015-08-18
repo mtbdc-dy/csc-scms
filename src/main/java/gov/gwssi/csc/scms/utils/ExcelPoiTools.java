@@ -7,11 +7,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
 
+import org.apache.commons.fileupload.FileItem;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
@@ -33,7 +35,7 @@ public class ExcelPoiTools {
 
 
 		Vector<Vector<String>> resultVec = new Vector<Vector<String>>();
-		// office2007工作区
+		// office2003工作区
 		Workbook wb = ExcelPoiTools.create(new FileInputStream(fileName));
 		// 获得该工作区的第一个sheet
 		Sheet sheet = wb.getSheetAt(0);
@@ -70,6 +72,61 @@ public class ExcelPoiTools {
 					break;
 				default:
 					break;
+				}
+
+			}
+
+			if (!CollectionUtils.isEmpty(rowVec)) {
+				resultVec.add(rowVec);
+			}
+		}
+		return resultVec;
+	}
+
+	public static Vector<Vector<String>> readFile(FileItem fileItem)
+			throws FileNotFoundException, IOException {
+
+		Vector<Vector<String>> resultVec = new Vector<Vector<String>>();
+		// office2003工作区
+		Workbook wb = ExcelPoiTools.create(fileItem.getInputStream());
+		// 获得该工作区的第一个sheet
+		Sheet sheet = wb.getSheetAt(0);
+		// 总共有多少行,从0开始
+		for (int i = 0; i <= sheet.getLastRowNum(); i++) {
+			// 取得该行
+			Row row = sheet.getRow(i);
+			Vector<String> rowVec = new Vector<String>();
+			for (int j = row.getFirstCellNum(); j < row.getLastCellNum(); j++) {
+				if (row.getCell(j) == null) {
+					rowVec.add("");
+					continue;
+				}
+				switch (row.getCell(j).getCellType()) {
+					case Cell.CELL_TYPE_STRING:
+						rowVec.add(row.getCell(j).getStringCellValue());
+						break;
+					case Cell.CELL_TYPE_NUMERIC:
+						// 单元格为整数，读取后变成1.0，删除.0
+						DecimalFormat df = new DecimalFormat("0");
+						String strCell = df.format(row.getCell(j).getNumericCellValue());
+						//Double num = row.getCell(j).getNumericCellValue();
+						rowVec.add(strCell);
+//						if ((strCell ).endsWith(".0")) {
+//							rowVec.add(strCell.intValue() + "");
+//						} else {
+//							rowVec.add(strCell + "");
+//						}
+						break;
+					case Cell.CELL_TYPE_BOOLEAN:
+						rowVec.add(row.getCell(j).getBooleanCellValue() + "");
+						break;
+					case Cell.CELL_TYPE_BLANK:
+					case Cell.CELL_TYPE_ERROR:
+					case Cell.CELL_TYPE_FORMULA:
+						rowVec.add("");
+						break;
+					default:
+						break;
 				}
 
 			}
