@@ -76,6 +76,14 @@ public class ImportDao extends BaseDAO {
                 "  where t.studentid = s.id  and s.cscid = '"+cicNo+"')";
        super.updateBySql(sql);
     }
+    @Transactional
+    public void saveOpt(String fileName,int sum,String userName){
+        String id = super.getIdBySequence("SEQ_IMPORT_LOG");
+        String sql = "insert into SCMS_IMPORT_LOG t values('"+id+"','"+fileName+"',"+sum+",'1','1','"+userName+"',sysdate)";
+        int m = super.updateBySql(sql);
+        System.out.println(m);
+        System.out.println();
+    }
     /**
      * 获取一行数据的校验结果
      *
