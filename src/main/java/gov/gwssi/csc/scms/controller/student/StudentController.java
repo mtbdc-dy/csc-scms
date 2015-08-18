@@ -79,6 +79,8 @@ public class StudentController {
     public Student getStudentById(@PathVariable(value = "id") String id) {
         try {
             Student student = studentService.getStudentById(id);
+            student.setAbnormals(null);
+            student.setTickets(null);
             return student;
         } catch (Exception e) {
             e.printStackTrace();
