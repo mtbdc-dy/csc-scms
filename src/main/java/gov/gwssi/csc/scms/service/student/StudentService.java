@@ -272,9 +272,7 @@ public class StudentService extends BaseService {
             schoolRoll.setRegisterState("AW0002");
             schoolRollService.updateSchoolRoll(schoolRoll);
         }
-
     }
-
     @SuppressWarnings("unchecked")
     public Object getGroupByStudentId(String studentId, String groupName) {
         if ("basicInfo".equalsIgnoreCase(groupName)) {
@@ -461,7 +459,6 @@ public class StudentService extends BaseService {
         System.out.println(sql);
         getBaseDao().updateBySql(sql);
     }
-
 
     @Transactional
     public void leaveChina(String studentIds, SchoolRoll schoolRoll, List<OperationLog> operationLogs) throws Exception {

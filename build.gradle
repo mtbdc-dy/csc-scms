@@ -45,8 +45,8 @@ dependencies {
     compile 'com.jolbox:bonecp:0.8.0.RELEASE'
 
     compile 'org.hibernate:hibernate-core:4.3.8.Final'
-    // compile 'org.hibernate:hibernate-core:3.6.9.Final'
     compile 'org.hibernate:hibernate-entitymanager:4.3.8.Final'
+    compile 'org.hibernate:hibernate-jpamodelgen:4.3.8.Final'
     compile 'org.slf4j:slf4j-nop:1.7.10'
     compile 'com.auth0:java-jwt:2.1.0'
 
