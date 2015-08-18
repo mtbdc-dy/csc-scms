@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Lei on 2015/5/8.
@@ -225,11 +227,13 @@ public class UserController {
     }
 
     @RequestMapping(value = "/{userId}/getPwd", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public String getUserPwd(@PathVariable("userId") String userId) {
+    public Map<String, String> getUserPwd(@PathVariable("userId") String userId) {
         try {
             String pwd=userService.getUserByUserId(userId).getPassword();
-            String pwdJson = "{\"pwd\":\""+pwd+"\"}";
-            return pwdJson;
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("pwd", pwd);
+//            String pwdJson = "{\"pwd\":\""+pwd+"\"}";
+            return map;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
