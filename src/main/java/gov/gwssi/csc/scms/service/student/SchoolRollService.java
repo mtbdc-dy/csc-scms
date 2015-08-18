@@ -24,9 +24,9 @@ public class SchoolRollService extends BaseService {
     }
 
     public SchoolRoll updateSchoolRoll(SchoolRoll schoolRoll) {
-        String id = schoolRoll.getId();
-        SchoolRoll sr = getSchoolRollById(schoolRoll.getId());
-        Student student = sr.getStudent();
+//        String id = schoolRoll.getId();
+//        SchoolRoll sr = getSchoolRollById(schoolRoll.getId());
+//        Student student = sr.getStudent();
        // schoolRoll.setStudent(student);
         return schoolRollRepository.save(schoolRoll);
     }
