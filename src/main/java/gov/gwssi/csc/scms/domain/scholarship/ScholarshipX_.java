@@ -29,6 +29,8 @@ public abstract class ScholarshipX_ {
     public static volatile SingularAttribute<ScholarshipX, Long> year;
     public static volatile SingularAttribute<ScholarshipX, Date> schStartTime;
     public static volatile SingularAttribute<ScholarshipX, Long> qualNum;
+    public static volatile SingularAttribute<ScholarshipX, Date> updated;
+    public static volatile SingularAttribute<ScholarshipX, String> updateby;
 
 }
 
