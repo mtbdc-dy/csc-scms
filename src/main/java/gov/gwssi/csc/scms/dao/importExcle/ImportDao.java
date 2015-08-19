@@ -34,10 +34,10 @@ public class ImportDao extends BaseDAO {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("SELECT t.FILENAME,t.CNT,t.STATE,t.CREATEBY,t.CREATED from SCMS_IMPORT_LOG t where 1 = 1");
         if(!"".equals(pro)){
-            stringBuilder.append(" and t.CREATED >= '"+pro+"'");
+            stringBuilder.append(" and t.CREATED >= to_date('"+pro+"','yyyy-MM-dd'");
         }
         if(!"".equals(univ)){
-            stringBuilder.append("  and t.univid = '"+univ+"'");
+            stringBuilder.append("  and t.CREATED =< to_date('"+univ+"','yyyy-MM-dd'");
         }
         getList = super.queryListBySql(stringBuilder.toString());
         if (getList != null && getList.size() > 0) {

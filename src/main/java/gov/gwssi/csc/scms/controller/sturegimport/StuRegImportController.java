@@ -35,16 +35,16 @@ public class StuRegImportController {
     private ImportDao importDao;
     //点击查询返回代码维护列表
     @RequestMapping(value = "/stureg",method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
-    public List getALLCode(@RequestParam(value = "begin") String pro,@RequestParam(value = "end") String univ) {
+    public List getALLCode(@RequestParam(value = "begin") String begin,@RequestParam(value = "end") String end) {
         //按照分页（默认）要求，返回列表内容
         List proAndUnivList = null;
-        if(pro ==null||"null".equals(pro)){
-            pro = "";
+        if(begin ==null||"null".equals(begin)){
+            begin = "";
         }
-        if(univ ==null||"null".equals(univ)||"undefined".equals(univ)){
-            univ = "";
+        if(end ==null||"null".equals(end)||"undefined".equals(end)){
+            end = "";
         }
-        proAndUnivList = importDao.getList(pro, univ);
+        proAndUnivList = importDao.getList(begin, end);
         System.out.println();
         return proAndUnivList;
     }
