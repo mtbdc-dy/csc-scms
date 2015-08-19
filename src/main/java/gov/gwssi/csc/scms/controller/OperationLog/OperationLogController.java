@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +76,10 @@ public class OperationLogController {
 
         Date startDate = sdf.parse(beginTime);
         Date endDate = sdf.parse(endTime);
+        Calendar c = Calendar.getInstance();
+             c.setTime(endDate);   //设置日期
+             c.add(Calendar.DATE, 1); //日期加1天
+        endDate = c.getTime();
         if (isNull(moduleId) && isNull(optType)) {
             return doQueryWithOnlyTime(user, startDate, endDate);
         } else if (isNotNull(moduleId) && isNotNull(optType)) {
