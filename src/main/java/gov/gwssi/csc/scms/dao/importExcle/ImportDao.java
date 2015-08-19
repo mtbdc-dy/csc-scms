@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.dao.importExcle;
 
 import gov.gwssi.csc.scms.dao.BaseDAO;
+import gov.gwssi.csc.scms.domain.query.ImportResult;
 import gov.gwssi.csc.scms.utils.ExcelPoiTools;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase;
@@ -25,6 +26,58 @@ public class ImportDao extends BaseDAO {
             manager = new ImportDao();
         }
         return manager;
+    }
+    public List getList(String pro,String univ) {
+        List<Map> getList = null;
+        List<ImportResult> newStudenTimeSettList = new ArrayList<ImportResult>();
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("SELECT t.FILENAME,t.CNT,t.STATE,t.CREATEBY,t.CREATED from SCMS_IMPORT_LOG t where 1 = 1");
+        if(!"".equals(pro)){
+            stringBuilder.append(" and t.CREATED >= '"+pro+"'");
+        }
+        if(!"".equals(univ)){
+            stringBuilder.append("  and t.univid = '"+univ+"'");
+        }
+        getList = super.queryListBySql(stringBuilder.toString());
+        if (getList != null && getList.size() > 0) {
+            for (Map map : getList) {
+                String sumNo = String.valueOf(map.get("CNT"));
+                String fileName = (String) map.get("FILENAME");
+                Date optTime = (Date) map.get("CREATED");
+                String importState = (String) map.get("IMPORTSTATE");
+                String opter = (String) map.get("CREATEBY");
+
+                ImportResult newStuTimeSetResult = new ImportResult();
+
+                boolean sumNoIsEmpty = sumNo == null || sumNo.isEmpty() ;
+                boolean fileNameIsEmpty = fileName == null || fileName.isEmpty();
+                boolean optTimeIsEmpty = optTime == null || optTime.toString().isEmpty();
+                boolean importStateIsEmpty = importState == null || importState.isEmpty();
+                boolean opterIsEmpty = opter == null || opter.isEmpty();
+
+                sumNo = sumNoIsEmpty ? "O" : sumNo;
+                fileName = fileNameIsEmpty ? "" : fileName;
+                optTime = optTimeIsEmpty ? null : optTime;
+                importState = importStateIsEmpty ? "" : importState;
+                opter = opterIsEmpty ? "" : opter;
+
+
+
+                newStuTimeSetResult.setFileName(fileName);
+                newStuTimeSetResult.setImportState("1");
+                newStuTimeSetResult.setOpter(opter);
+                newStuTimeSetResult.setOptTime(optTime);
+                newStuTimeSetResult.setSumNo(sumNo);
+
+
+
+                newStudenTimeSettList.add(newStuTimeSetResult);
+
+            }
+        }
+        // System.out.println("11111");
+        return newStudenTimeSettList;
     }
     @Transactional
     public Vector<Vector<String>> doExcelImport(FileItem fileItem) throws IOException{

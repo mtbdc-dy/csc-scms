@@ -33,6 +33,22 @@ public class StuRegImportController {
     private UserService userService;
     @Autowired
     private ImportDao importDao;
+    //点击查询返回代码维护列表
+    @RequestMapping(value = "/stureg",method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
+    public List getALLCode(@RequestParam(value = "begin") String pro,@RequestParam(value = "end") String univ) {
+        //按照分页（默认）要求，返回列表内容
+        List proAndUnivList = null;
+        if(pro ==null||"null".equals(pro)){
+            pro = "";
+        }
+        if(univ ==null||"null".equals(univ)||"undefined".equals(univ)){
+            univ = "";
+        }
+        proAndUnivList = importDao.getList(pro, univ);
+        System.out.println();
+        return proAndUnivList;
+    }
+    //保存数据到数据库
     @RequestMapping(
             method = RequestMethod.POST,
             headers = "Accept=application/json; charset=utf-8"
@@ -76,7 +92,7 @@ String userName = user.getFullName();
                 Vector<Vector<String>> list = importDao.doExcelImport(items.get(0));
                 System.out.println("list = " + list.size());
                 System.out.println("list = " + list);
-                importDao.saveOpt(fileName, list.size(),userName);
+                importDao.saveOpt(fileName, list.size()-2,userName);
             } catch (FileUploadException e) {
                 e.printStackTrace();
             } catch (IOException e) {
