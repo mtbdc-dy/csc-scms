@@ -151,7 +151,11 @@ public class TicketService extends BaseService {
 
     //根据学生id获取机票信息
     public List<Ticket> getTicketByStudentId(String studentId) {
-        return ticketRepository.findByStudentId(studentId);
+        List<Ticket> tickets = ticketRepository.findByStudentId(studentId);
+        for(int i=0;i<tickets.size();i++){
+            tickets.get(i).setStudent(null);
+        }
+        return tickets;
     }
 
     //增加机票信息
@@ -163,13 +167,13 @@ public class TicketService extends BaseService {
     }
 
     //删除机票信息
-    public Ticket deleteTicketById(User user, String ticketId) {
+    public Ticket deleteTicketById(User user, String ticketId, String studentId) {
         Ticket ticket = getTicketById(ticketId);
         if (ticket == null)
             return null;
 
         try {
-            Student student = studentService.getStudentById(ticket.getStudentId());
+            Student student = studentService.getStudentById(studentId);
             //记录日志
             List<OperationLog> operationLogs = new ArrayList<OperationLog>();
             OperationLog operationLog = new OperationLog();
@@ -180,11 +184,8 @@ public class TicketService extends BaseService {
             operationLog.setStudentId(student.getId());
             operationLog.setCscId(student.getCscId());
             operationLog.setPassportName(student.getBasicInfo().getPassportName());
-            String ticketJsonStr = "{\"id\":\"" + ticket.getId() + "\",\"studentId\":\"" + ticket.getStudentId() + "\",\"type\":\"" + baseDAO.getNameCHByTranslateId(ticket.getType()) + "\",\"airLine\":\"" + ticket.getAirLine()
-                    + "\",\"ticketNo\":\"" + ticket.getTicketNo() + "\",\"validdate\":\"" + ticket.getValiddate() + "\",\"applyDate\":\"" + ticket.getApplyDate() + "\",\"flightDate\":\"" + ticket.getFlightDate() + "\",\"leaveCity\":" + ticket.getLeaveCity()
-                    + "\",\"price\":\"" + ticket.getPrice() + "\",\"state\":\"" + ticket.getState() + "\",\"remark\":\"" + ticket.getRemark() + "\",\"createBy\":\"" + ticket.getCreateBy() + "\",\"created\":\"" + ticket.getCreated()
-                    + "\",\"updateBy\":\"" + ticket.getUpdateBy() + "\",\"updated\":\"" + ticket.getUpdated() + "\"}";
-            operationLog.setBefore(ticketJsonStr);
+            String before = ticket.getValiddate() + "/" + ticket.getApplyDate() + "/" + ticket.getLeaveCity() + "/" + baseDAO.getNameCHByTranslateId(ticket.getType()) + "/" + ticket.getFlightDate() + "/" + ticket.getAirLine() + "/" + ticket.getPrice() + "/" + ticket.getTicketNo();
+            operationLog.setBefore(before);
             operationLog.setAfter("");
             operationLog.setColumnCH("");
             operationLog.setColumnEN("");
@@ -198,6 +199,7 @@ public class TicketService extends BaseService {
             operationLogs.add(operationLog);
             operationLogService.saveOperationLog(operationLogs);
             ticketRepository.delete(ticket);
+            ticket.setStudent(null);
             return ticket;
         } catch (Exception e) {
             e.printStackTrace();
