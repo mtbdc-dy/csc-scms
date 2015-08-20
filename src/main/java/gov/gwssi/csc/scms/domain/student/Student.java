@@ -9,7 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "SCMS_STUDENT")
-public class Student {
+public class Student implements Cloneable {
     /**
      * STUDENT主键ID
      */
@@ -200,5 +200,14 @@ public class Student {
 
     public void setTickets(List<Ticket> tickets) {
         this.tickets = tickets;
+    }
+
+    public Student clone() {
+        try {
+            return (Student) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return new Student();
     }
 }
