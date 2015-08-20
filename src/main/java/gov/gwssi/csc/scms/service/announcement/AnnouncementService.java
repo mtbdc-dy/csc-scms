@@ -26,5 +26,8 @@ public class AnnouncementService extends BaseService {
             return null;
         }
     }
+    public Announcement editAnnouncement(Announcement announcement) {
+        return announcementRepository.save(announcement);
+    }
 
 }

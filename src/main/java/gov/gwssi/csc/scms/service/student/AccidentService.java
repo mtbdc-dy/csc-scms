@@ -77,7 +77,7 @@ public class AccidentService extends BaseService {
 
         operationLog.setOptType("3");
         operationLog.setModule("在校生学籍管理");
-        operationLog.setModuleId("BM003");
+        operationLog.setModuleId("BG003");
         operationLog.setStudentId(student.getId());
         operationLog.setCscId(student.getCscId());
         operationLog.setPassportName(student.getBasicInfo().getPassportName());
