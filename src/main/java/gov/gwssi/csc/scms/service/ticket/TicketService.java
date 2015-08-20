@@ -113,7 +113,7 @@ public class TicketService extends BaseService {
 
         String tempSql = " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll,Ticket ticket " +
                 "where student.id = basicInfo.student  " +
-                "and student.id = schoolRoll.student   and student.id = ticket.studentId";
+                "and student.id = schoolRoll.student   and student.id = ticket.student.id";
         sb.append(tempSql);
 
         sb.append(new StudentFilter((StudentFilterObject) filterObject).getUserFilter(user));
@@ -129,8 +129,8 @@ public class TicketService extends BaseService {
         sb.append(TicketResultObject.getResultObject());
 
         String tempSql = " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll,Ticket ticket " +
-                "where student.id = basicInfo.student  " +
-                "and student.id = schoolRoll.student   and student.id = ticket.studentId";
+                " where student.id = basicInfo.student  " +
+                " and student.id = schoolRoll.student   and student.id = ticket.student.id";
         sb.append(tempSql);
 
         sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter(user, "ticket", userType));

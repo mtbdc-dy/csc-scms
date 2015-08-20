@@ -113,6 +113,9 @@ public class TicketController {
                     ticket = tickets.get(i);
                     ticket.setUpdateBy(user.getUserId());
                     ticket.setUpdated(ts);
+                    Ticket oldTicket = ticketService.getTicketById(ticket.getId());
+                    Student student = oldTicket.getStudent();
+                    ticket.setStudent(student);
                     Ticket hqTicket = ticketService.saveTicket(ticket, null);
                     newTickets.add(hqTicket);
                 }
@@ -149,6 +152,9 @@ public class TicketController {
                     ticket.setUpdateBy(user.getUserId());
                     ticket.setUpdated(ts);
                     ticket.setState("AT0002");//订票状态待修改成对应的代码值
+                    Ticket oldTicket = ticketService.getTicketById(ticket.getId());
+                    Student student = oldTicket.getStudent();
+                    ticket.setStudent(student);
                     Ticket hqTicket = ticketService.saveTicket(ticket, null);
                     newTickets.add(hqTicket);
                 }
