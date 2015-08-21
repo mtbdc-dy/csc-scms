@@ -77,14 +77,12 @@ public class AccidentService extends BaseService {
 
         operationLog.setOptType("3");
         operationLog.setModule("在校生学籍管理");
-        operationLog.setModuleId("BM003");
+        operationLog.setModuleId("BG003");
         operationLog.setStudentId(student.getId());
         operationLog.setCscId(student.getCscId());
         operationLog.setPassportName(student.getBasicInfo().getPassportName());
-        String accidentJsonStr = "{\"id\":\"" + accident.getId() + "\",\"responsibilityType\":\"" + accident.getResponsibilityType() + "\",\"type\":\"" + baseDAO.getNameCHByTranslateId(accident.getType()) + "\",\"reason\":\"" + accident.getReason()
-                + "\",\"happenTime\":\"" + accident.getHappenTime() + "\",\"happenAddress\":\"" + accident.getHappenAddress() + "\",\"state\":\"" + baseDAO.getNameCHByTranslateId(accident.getState()) + "\",\"summary\":\"" + accident.getSummary() + "\",\"createBy\":" + accident.getCreateBy()
-                + "\",\"createDate\":\"" + accident.getCreateDate() + "\",\"updateBy\":\"" + accident.getUpdateBy() + "\",\"updateDate\":\"" + accident.getUpdateDate() + "\"}";
-        operationLog.setBefore(accidentJsonStr);
+        String before = accident.getResponsibilityType() + "/" + baseDAO.getNameCHByTranslateId(accident.getType()) + "/" + accident.getReason() + "/" + accident.getHappenTime() + "/" + accident.getHappenAddress() + "/" + baseDAO.getNameCHByTranslateId(accident.getState()) + "/" + accident.getSummary() + "/" + accident.getCreateDate();
+        operationLog.setBefore(before);
         operationLog.setAfter("");
         operationLog.setColumnCH("");
         operationLog.setColumnEN("");

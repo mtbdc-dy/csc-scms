@@ -2,7 +2,12 @@ package gov.gwssi.csc.scms.controller.student;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.gwssi.csc.scms.service.export.ExportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import gov.gwssi.csc.scms.controller.JsonBody;
@@ -23,6 +28,7 @@ import gov.gwssi.csc.scms.utils.JWTUtil;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -37,6 +43,9 @@ public class StudentController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ExportService exportService;
 
     /**
      * 学籍信息管理相关操作，获取学生列表
@@ -345,5 +354,32 @@ public class StudentController {
             groupObject = mapper.readValue(body, javaType);
         }
         return groupObject;
+    }
+
+    /**
+     * 导出报到注册信息
+     * GET
+     * Accept: application/octet-stream
+     *
+     * @param id
+     */
+    @RequestMapping(
+            method = RequestMethod.GET,
+            params = {"id"},
+            headers = "Accept=application/octet-stream")
+    public ResponseEntity<byte[]> exportSturegister(
+            @RequestParam("id") String[] id) throws IOException {
+        byte[] bytes = null;
+
+        String tableName = "v_exp_register";
+        bytes = exportService.exportByfilter(tableName, id);
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        httpHeaders.setContentDispositionFormData("attachment", fileName);
+
+        return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
     }
 }

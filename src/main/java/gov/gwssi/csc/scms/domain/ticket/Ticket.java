@@ -19,10 +19,10 @@ public class Ticket {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "studentid"/*,nullable = false*/)
     private Student student;
-    /**
-     * STUDENTID
-     */
-    private  String studentId;
+//    /**
+//     * STUDENTID
+//     */
+//    private  String studentId;
     /**
      *院校 可以不需要 待定
      */
@@ -123,13 +123,13 @@ public class Ticket {
         this.id = id;
     }
 
-    public String getStudentId() {
-        return studentId;
-    }
-
-    public void setStudentId(String studentId) {
-        this.studentId = studentId;
-    }
+//    public String getStudentId() {
+//        return studentId;
+//    }
+//
+//    public void setStudentId(String studentId) {
+//        this.studentId = studentId;
+//    }
 
     public String getSchool() {
         return school;

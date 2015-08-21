@@ -73,14 +73,12 @@ public class RelatedAddressService extends BaseService {
 
         operationLog.setOptType("3");
         operationLog.setModule("在校生学籍管理");
-        operationLog.setModuleId("BM003");
+        operationLog.setModuleId("BG003");
         operationLog.setStudentId(student.getId());
         operationLog.setCscId(student.getCscId());
         operationLog.setPassportName(student.getBasicInfo().getPassportName());
-        String addressJsonStr = "{\"id\":\"" + address.getId() + "\",\"type\":\"" + baseDAO.getNameCHByTranslateId(address.getType()) + "\",\"nature\":\"" + address.getNature() + "\",\"addressOrName\":\"" + address.getAddressOrName()
-                + "\",\"phone\":\"" + address.getPhone() + "\",\"fax\":\"" + address.getFax() + "\",\"email\":\"" + address.getEmail() + "\",\"remark\":\"" + address.getRemark() + "\",\"createBy\":" + address.getCreateBy()
-                + "\",\"createDate\":\"" + address.getCreateDate() + "\",\"updateBy\":\"" + address.getUpdateBy() + "\",\"updateDate\":\"" + address.getUpdateDate() + "\"}";
-        operationLog.setBefore(addressJsonStr);
+        String before = baseDAO.getNameCHByTranslateId(address.getType()) + "/" + address.getNature() + "/" + address.getAddressOrName() + "/" + address.getPhone() + "/" + address.getFax() + "/" + address.getEmail() + "/" + address.getRemark();
+        operationLog.setBefore(before);
         operationLog.setAfter("");
         operationLog.setColumnCH("");
         operationLog.setColumnEN("");
