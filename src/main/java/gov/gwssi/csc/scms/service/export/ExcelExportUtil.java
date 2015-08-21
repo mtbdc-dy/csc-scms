@@ -237,7 +237,7 @@ public class ExcelExportUtil {
             ps.setPaperSize(HSSFPrintSetup.A4_PAPERSIZE); //纸张
             ps.setScale((short) 90);
             for (int j = 0; j < headColumnNum; j++) {
-               sheet.setColumnWidth((short) i, (short) ((int[])columnLengths.get(i))[j]);
+               sheet.setColumnWidth((short) j, (short) ((int[])columnLengths.get(i))[j]);
             }
             //设置大标题
             row = sheet.createRow((short) 0);
