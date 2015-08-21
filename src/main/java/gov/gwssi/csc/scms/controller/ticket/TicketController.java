@@ -10,6 +10,7 @@ import gov.gwssi.csc.scms.domain.query.TicketResultObject;
 import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.domain.ticket.Ticket;
 import gov.gwssi.csc.scms.domain.user.User;
+import gov.gwssi.csc.scms.service.export.ExportService;
 import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.ticket.NoSuchTicketException;
 import gov.gwssi.csc.scms.service.ticket.TicketService;
@@ -18,6 +19,10 @@ import gov.gwssi.csc.scms.service.user.UserIdentityError;
 import gov.gwssi.csc.scms.service.user.UserService;
 import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -41,6 +46,10 @@ public class TicketController {
 
     @Autowired
     private StudentService studentService;
+
+    @Autowired
+    private ExportService exportService;
+
     //学校用户在前台点击生成机票管理列表，返回列表
     @RequestMapping(value = "/new",method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<TicketResultObject> getTickets(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
@@ -250,5 +259,32 @@ public class TicketController {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * 导出机票信息
+     * GET
+     * Accept: application/octet-stream
+     *
+     * @param id
+     */
+    @RequestMapping(
+            method = RequestMethod.GET,
+            params = {"id"},
+            headers = "Accept=application/octet-stream")
+    public ResponseEntity<byte[]> exportTickets(
+            @RequestParam("id") String[] id) throws IOException {
+        byte[] bytes = null;
+
+        String tableName = "v_exp_airticket";
+        bytes = exportService.exportByfilter(tableName, id);
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        httpHeaders.setContentDispositionFormData("attachment", fileName);
+
+        return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
     }
     }
