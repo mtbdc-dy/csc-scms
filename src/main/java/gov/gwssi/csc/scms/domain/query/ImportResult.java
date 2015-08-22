@@ -12,6 +12,15 @@ public class ImportResult implements Serializable{
     private String importState;
     private Date optTime;
     private String opter;
+    private  String errorMsg;
+
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
+    }
 
     public String getFileName() {
         return fileName;
