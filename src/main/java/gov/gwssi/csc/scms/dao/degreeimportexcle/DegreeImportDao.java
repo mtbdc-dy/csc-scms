@@ -1,35 +1,35 @@
-package gov.gwssi.csc.scms.dao.importExcle;
+package gov.gwssi.csc.scms.dao.degreeimportexcle;
 
 import gov.gwssi.csc.scms.dao.BaseDAO;
 import gov.gwssi.csc.scms.domain.query.ImportResult;
 import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.utils.ExcelPoiTools;
-import gov.gwssi.csc.scms.utils.TablesAndColumnsMap;
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadBase;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PushbackInputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 /**
  * Created by LiZhiSheng on 2015/8/16.
  */
-@Service("importDao")
-public class ImportDao extends BaseDAO {
+@Service("degreeImportDao")
+public class DegreeImportDao extends BaseDAO {
     @Autowired
     private StudentService studentService;
-    private static ImportDao manager;
+    private static DegreeImportDao manager;
 
-    public static ImportDao getInstance(){
+    public static DegreeImportDao getInstance(){
         if(manager == null){
-            manager = new ImportDao();
+            manager = new DegreeImportDao();
         }
         return manager;
     }
@@ -38,12 +38,12 @@ public class ImportDao extends BaseDAO {
         List<ImportResult> newStudenTimeSettList = new ArrayList<ImportResult>();
 
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("SELECT t.FILENAME,t.CNT,t.STATE,t.CREATEBY,t.CREATED,t.error from SCMS_IMPORT_LOG t where 1 = 1 and t.class = '1'");
+        stringBuilder.append("SELECT t.FILENAME,t.CNT,t.STATE,t.CREATEBY,t.CREATED,t.error from SCMS_IMPORT_LOG t where 1 = 1 and t.class = '2' ");
         if(!"".equals(pro)){
-            stringBuilder.append(" and t.CREATED >= to_date('"+pro+"','yyyy-MM-dd'");
+            stringBuilder.append(" and t.CREATED >= to_date('"+pro+"','yyyy-MM-dd')");
         }
         if(!"".equals(univ)){
-            stringBuilder.append("  and t.CREATED =< to_date('"+univ+"','yyyy-MM-dd'");
+            stringBuilder.append("  and t.CREATED <= to_date('"+univ+"','yyyy-MM-dd')");
         }
         getList = super.queryListBySql(stringBuilder.toString());
         if (getList != null && getList.size() > 0) {
@@ -211,7 +211,7 @@ public class ImportDao extends BaseDAO {
     @Transactional
     public String saveInitFile(String fileName,String userName){
         String id = super.getIdBySequence("SEQ_IMPORT_LOG");
-        String sql = "insert into SCMS_IMPORT_LOG t values('"+id+"','"+fileName+"',0,'2','1','"+userName+"',sysdate,'')";
+        String sql = "insert into SCMS_IMPORT_LOG t values('"+id+"','"+fileName+"',0,'2','2','"+userName+"',sysdate,'')";
         int m = super.updateBySql(sql);
         if(m==1){
             return id;
