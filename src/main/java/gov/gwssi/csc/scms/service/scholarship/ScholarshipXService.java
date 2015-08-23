@@ -64,7 +64,7 @@ public class ScholarshipXService extends BaseService {
         return ScholarshipXResultObjectList;
 
     }
-    //查询获取奖学金管理列表
+    //查询获取奖学金管理列表--学校用户
     public List<ScholarshipXResultObject> getScholarshipXListByFilter(FilterObject filterObject,User user) {
 
         List<ScholarshipXResultObject> ScholarshipXResultObjectList;
@@ -89,7 +89,31 @@ public class ScholarshipXService extends BaseService {
 
 
     }
+    //查询获取奖学金管理列表--基金委用户
+    public List<ScholarshipXResultObject> getScholarshipXListByFilterJ(FilterObject filterObject,User user,String school) {
 
+        List<ScholarshipXResultObject> ScholarshipXResultObjectList;
+        int startPosition, pageSize;
+
+        String sql = getSqlByBodyJ(filterObject, user,school);
+        if (sql == null) {
+            return null;
+        }
+
+        try {
+            startPosition = Integer.parseInt(filterObject.getOffSet());
+            pageSize = Integer.parseInt(filterObject.getPageSize());
+        } catch (NumberFormatException ne) {
+            ne.printStackTrace();
+            startPosition =FilterObject.OFFSETDEFULT;
+            pageSize =FilterObject.PAGESIZEDEFULT;
+        }
+
+        ScholarshipXResultObjectList = super.getBaseDao().getObjectListByHQL(sql, ScholarshipXResultObject.class, startPosition, pageSize);
+        return ScholarshipXResultObjectList;
+
+
+    }
     //根据cscId查询奖学金记录
     public List<ScholarshipXResultObject> getScholarshipXListcscId(String cscId) {
          List<ScholarshipXResultObject> ScholarshipXResultObjectList;
@@ -114,7 +138,7 @@ public class ScholarshipXService extends BaseService {
         sb.append(ScholarshipXResultObject.getResultObject());
         String tempSql = " from ScholarshipX ScholarshipX,Student student,BasicInfo basicInfo, SchoolRoll schoolRoll" +
                 " where student.id = basicInfo.student " +
-                "and student.id = schoolRoll.student   and student.id = ScholarshipX.studentId and ScholarshipX.year !='"+year+"'";//默认进来查询历史年份的
+                "and student.id = schoolRoll.student   and student.id = ScholarshipX.studentId and ScholarshipX.cscSta='1' ";
         sb.append(tempSql);
         sb.append(" and ScholarshipX.cscId = '").append(cscId).append("'");
         return sb.toString();
@@ -133,7 +157,7 @@ public class ScholarshipXService extends BaseService {
         sb.append(" and ScholarshipX.school = '").append(schoolId).append("'");
         return sb.toString();
     }
-    //获取奖学金评审列表对应的字段数据
+    //获取奖学金评审列表对应的字段数据--学校用户
     private String getSqlByBody(FilterObject filterObject, User user) {
         if (filterObject == null)
             return null;
@@ -145,6 +169,21 @@ public class ScholarshipXService extends BaseService {
                 "and student.id = schoolRoll.student   and student.id = ScholarshipX.studentId ";
         sb.append(tempSql);
         sb.append(" and ScholarshipX.school = '").append(schoolId).append("'");
+        sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter(user, "ScholarshipX", ""));
+        return sb.toString();
+    }
+
+    //获取奖学金评审列表对应的字段数据--基金委用户
+    private String getSqlByBodyJ(FilterObject filterObject,  User user,   String school) {
+        if (filterObject == null)
+            return null;
+        StringBuilder sb = new StringBuilder();
+        sb.append(ScholarshipXResultObject.getResultObject());
+        String tempSql = " from ScholarshipX ScholarshipX, Student student,BasicInfo basicInfo, SchoolRoll schoolRoll " +
+                " where student.id = basicInfo.student " +
+                "and student.id = schoolRoll.student   and student.id = ScholarshipX.studentId ";
+        sb.append(tempSql);
+        sb.append(" and ScholarshipX.school = '").append(school).append("'");
         sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter(user, "ScholarshipX", ""));
         return sb.toString();
     }

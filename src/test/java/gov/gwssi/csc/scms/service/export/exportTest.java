@@ -42,6 +42,15 @@ public class exportTest extends UnitTestBase {
         exportService.exportByfilter(tableName, id);
 
     }
+    @Test
+    public void testExportservice1() throws Exception {
+        ExportService exportService = getBean("exportService");
+        String tableName = "v_exp_insurance" ;
+        String ids = "2015072300000000250,2015080300000000254";
+        String id[] = ids.split(",");
+        exportService.exportByfilter(tableName, id);
+
+    }
 
     @Test
     public void testExportDAO() throws Exception {//查询导出配置信息test  只有一行标题
@@ -233,12 +242,12 @@ public class exportTest extends UnitTestBase {
 //导出excel
         ExcelExportUtil es = new ExcelExportUtil();
         String titleExcel = "测试动态表头";
-        int columnLength[] = {3500, 4500, 4500, 4500, 5500, 4500, 4500, 4500};//字段显示宽度
+        int columnLength[] = {500, 1000, 4500, 4500, 5500, 4500, 4500, 4500};//字段显示宽度
         short excelAlginArray[] = {HSSFCellStyle.ALIGN_RIGHT, HSSFCellStyle.ALIGN_RIGHT, HSSFCellStyle.ALIGN_RIGHT, HSSFCellStyle.ALIGN_RIGHT, HSSFCellStyle.ALIGN_CENTER, HSSFCellStyle.ALIGN_CENTER, HSSFCellStyle.ALIGN_CENTER, HSSFCellStyle.ALIGN_CENTER};
         String dir = "C:/jjw";
         String dirTmp = "C:/jjw/tmp";
         int maxJlsl = 1000;//一个excel中显示的最多纪录数，超过时，分多个进行导出，并压缩打包
-       // es.writeExcel(titleExcel, recordList, hjh, headArray, mergeArray, columnLength, excelAlginArray, dir, dirTmp, maxJlsl);
+        es.writeExcel(titleExcel, recordList, hjh, headArray, mergeArray, columnLength, excelAlginArray, dir, dirTmp, maxJlsl);
         //System.out.println("list size::" + inResultObjectList.size());
 
     }
