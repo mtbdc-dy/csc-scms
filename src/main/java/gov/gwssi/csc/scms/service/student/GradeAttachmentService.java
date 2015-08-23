@@ -30,6 +30,11 @@ public class GradeAttachmentService extends BaseService {
         return (List<GradeAttachment>) gradeAttachmentRepository.save(gradeAttachments);
     }
 
+    public GradeAttachment saveGradeAttachment(GradeAttachment gradeAttachment) {
+        gradeAttachment.setId(getBaseDao().getIdBySequence("SEQ_GRADE"));
+        return gradeAttachmentRepository.save(gradeAttachment);
+    }
+
     public GradeAttachment updateGradeAttachment(GradeAttachment gradeAttachment) {
         gradeAttachment.setStudent(getGradeAttachmentById(gradeAttachment.getId()).getStudent());
         return gradeAttachmentRepository.save(gradeAttachment);
@@ -43,6 +48,10 @@ public class GradeAttachmentService extends BaseService {
     }
 
     public List<GradeAttachment> getGradeAttachmentByStudentId(String studentId) {
-        return gradeAttachmentRepository.findByStudentId(studentId);
+        List<GradeAttachment> gradeAttachments = gradeAttachmentRepository.findByStudentId(studentId);
+        for(int i=0;i<gradeAttachments.size();i++){
+            gradeAttachments.get(i).setStudent(null);
+        }
+        return gradeAttachments;
     }
 }
