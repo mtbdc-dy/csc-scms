@@ -59,15 +59,19 @@ public class StudentConverter extends BaseService implements Converter<Student, 
                     if (fieldName.contains(".")){
                         System.out.println("fieldName = " + fieldName);
                         String[] subFieldNames = fieldName.split("\\.");
+                        Map<String, Object> map = new HashMap<String, Object>();
 
                         Field field = Student.class.getDeclaredField(subFieldNames[0]);
                         field.setAccessible(true);
-                        Field subField = field.get(source).getClass().getDeclaredField(subFieldNames[1]);
-                        subField.setAccessible(true);
+                        if(field.get(source) == null){
+                            map.put(subFieldNames[1], "");
+                        } else {
+                            Field subField = field.get(source).getClass().getDeclaredField(subFieldNames[1]);
+                            subField.setAccessible(true);
+                            Object subValue = subField.get(field.get(source));
 
-                        Object subValue = subField.get(field.get(source));
-                        Map<String, Object> map = new HashMap<String, Object>();
-                        map.put(subFieldNames[1], subValue);
+                            map.put(subFieldNames[1], subValue);
+                        }
 
                         if (target.get(subFieldNames[0]) != null) {
                             map.putAll((Map<String, Object>) target.get(subFieldNames[0]));
