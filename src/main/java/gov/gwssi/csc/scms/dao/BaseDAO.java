@@ -39,10 +39,12 @@ public class BaseDAO {
         try {
             em = entityManagerFactory.createEntityManager();
             //创建原生SQL查询QUERY实例
+            em.getTransaction().begin();
             Query query = em.createNativeQuery(sql);
             //list转为List<Map>
             query.unwrap(SQLQuery.class).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
             objectList = query.getResultList();
+            em.getTransaction().commit();
             return objectList;
         } finally {
             if (em != null) {
