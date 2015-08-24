@@ -2,6 +2,7 @@ package gov.gwssi.csc.scms.domain.student;
 
 import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
 import gov.gwssi.csc.scms.domain.ticket.Ticket;
+import gov.gwssi.csc.scms.domain.warning.Warning;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -85,6 +86,20 @@ public class Student implements Cloneable {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
     private List<Ticket> tickets;
+
+    public Warning getWarning() {
+        return warning;
+    }
+
+    public void setWarning(Warning warning) {
+        this.warning = warning;
+    }
+
+    /**
+     * 预警名单
+     */
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "student")
+    private Warning warning;
 
     public String getId() {
         return id;
