@@ -96,12 +96,14 @@ public class DegreeImportDao extends BaseDAO {
             inp = new PushbackInputStream(inp, 8);
         }
         if (!POIFSFileSystem.hasPOIFSHeader(inp)) {
-            stringList.add("对不起，无法解析此Excel版本！");
+            stringList.add("校验结果：");
+            stringList.add("请检验Excel版本，需为excle 97-2003 工作簿（*.xls）！");
             return stringList;
         }
         try {
             productData = ExcelPoiTools.readFile(fileItem);
         } catch (IOException e1) {
+            stringList.add("校验结果：");
             stringList.add("Excle文件读取异常");
             return stringList;
            // throw new IOException("Excle文件读取异常");
@@ -112,24 +114,31 @@ public class DegreeImportDao extends BaseDAO {
 
         // 获取抬头，检验是否包含非空字段列
         Vector<String> title = (Vector<String>) productData.get(1);
-        Map<String, Integer> colNum = getColNum(title);
+        //Map<String, Integer> colNum = getColNum(title);
+        Map<String, String> checkResult = new HashMap<String, String>();
         stringList = getColNum(title,stringList);
+        if(stringList.size()>=2){
+            return stringList;
+        }
+        String checkcscNo = "CSC登记号有空行：";
+        String cscNoIsNull = "CSC登记号不存在：";
+        //String checkElcregisteNo = "学籍电子注册号有空行：";
         /* 数据包装导入 */
         for (int i = 2; i < productData.size(); i++) {
 
             Vector<String> data = (Vector<String>) productData.get(i);
             // 根据列的数目，补足一行数据的个数，如列有10个，一行数据仅有9个，则补足1个空白字段；
-            int last = colNum.size() - data.size();
-            while (last > 0) {
-                data.add("");
-                last--;
-            }
+//            int last = colNum.size() - data.size();
+//            while (last > 0) {
+//                data.add("");
+//                last--;
+//            }
             // 获得各字段对应的字符串 ，校验字符串是否符合标准，
             // 不符合标准的放到failData集合中，不影响后续记录的导入。
             Map<String, String> value = new HashMap<String, String>();
           //  value = getValueAndCheck(data, colNum);
 
-            stringList = getValueAndCheck(data, colNum,stringList,i);
+            checkResult = getValueAndCheck(data, null,stringList,i);
             //listData.add(value);
 
 
@@ -141,14 +150,28 @@ public class DegreeImportDao extends BaseDAO {
 //            }
 //
 //        }
-
+        checkcscNo = checkcscNo+checkResult.get("1");
+        cscNoIsNull = cscNoIsNull+checkResult.get("2");
+        if(!"CSC登记号有空行：".equals(checkcscNo)){
+            stringList.add(checkcscNo);
+        }
+        if(!"CSC登记号不存在：".equals(cscNoIsNull)){
+            stringList.add(cscNoIsNull);
+        }
         if(stringList.size()==0){
 
             stringList.add("成功导入");
             System.out.println(stringList);
             return stringList;
+        }else  if(stringList.size()>15){
+            stringList.clear();
+            stringList.add("校验结果：");
+            stringList.add("错误信息太多");
+            stringList.add("请更正后重新导入！");
+            System.out.println(stringList);
+            return stringList;
         }else{
-            stringList.add("以上是全部错误");
+            stringList.add("<br/>以上是全部错误");
             System.out.println(stringList);
             return stringList;
         }
@@ -189,19 +212,19 @@ public class DegreeImportDao extends BaseDAO {
 
         }
         if(listData.size()==productData.size()-2){
-            for (int i = 0;i<listData.size();i++){
-                Map<String, String> value = listData.get(i);
-                saveDate(value.get("cicNo"),value.get("elcregisteNo"));
-            }
-           return productData;
-        }else{
-            return new Vector<Vector<String>>();
-           // throw new IOException("Excle文件数据错误");
+        for (int i = 0;i<listData.size();i++){
+            Map<String, String> value = listData.get(i);
+            saveDate(value.get("cicNo"),value.get("elcregisteNo"),value.get("degreeNo"));
         }
-
+        return productData;
+    }else{
+        return new Vector<Vector<String>>();
+        // throw new IOException("Excle文件数据错误");
     }
+
+}
     @Transactional
-    public void saveDate(String cicNo,String elcregisteNo){
+    public void saveDate(String cicNo,String elcregisteNo,String degreeNo){
         String sql = "update scms_schoolroll t set t.elcregisteno = '"+elcregisteNo+"' " +
                 " where t.studentid = (select t.studentid from scms_schoolroll t, scms_student s" +
                 "  where t.studentid = s.id  and s.cscid = '"+cicNo+"')";
@@ -259,7 +282,15 @@ for(int m = 0;m<stringList.size();m++){
         Map<String, String> value = new HashMap<String, String>();
 
         String cicNo = (String) data.get(colNum.get("cicNo")).trim();
-        String elcregisteNo = (String) data.get(colNum.get("elcregisteNo")).trim();
+        String degreeNo = "";
+        String elcregisteNo = "";
+        if(data.size()>=2){
+            degreeNo = (String) data.get(1).trim();
+        }
+        if(data.size()>=3){
+            elcregisteNo = (String) data.get(2).trim();
+        }
+        //String elcregisteNo = (String) data.get(colNum.get("elcregisteNo")).trim();
 //        if ("".equals(cicNo)) {
 //            throw new IOException("CSC登记号不能为空");
 //        }
@@ -272,35 +303,48 @@ for(int m = 0;m<stringList.size();m++){
         // 校验通过的记录返回，否则抛出异常，存入failData中
         value.put("cicNo", cicNo);
         value.put("elcregisteNo", elcregisteNo);
-
+        value.put("degreeNo", degreeNo);
         return value;
     }
-    private List<String> getValueAndCheck(Vector<String> data,
+    private Map<String,String>  getValueAndCheck(Vector<String> data,
                                                  Map<String, Integer> colNum,List<String> list,int i) throws IOException,
             UnsupportedEncodingException {
         Map<String, String> value = new HashMap<String, String>();
+        Map<String, String> check = new HashMap<String, String>();
         List<String> stringList = list;
         String cicNo = (String) data.get(0).trim();
-        String elcregisteNo = (String) data.get(1).trim();
+        String degreeNo = "";
+        String elcregisteNo = "";
+        if(data.size()>=2){
+            degreeNo = (String) data.get(1).trim();
+        }
+        if(data.size()>=3){
+           elcregisteNo = (String) data.get(2).trim();
+        }
+
+        String checkcscNo = "";
+        String cscNoIsNull = "";
         Student student = studentService.getStudentByCscId(cicNo);
         if ("".equals(cicNo)) {
-            stringList.add("第"+(i+1)+"行CSC登记号不能为空,");
+            checkcscNo = checkcscNo+"第"+(i+1)+"行,";
         }else{
         if(student==null){
-            stringList.add("第"+(i+1)+"行CSC登记号不存在,");
+            cscNoIsNull = cscNoIsNull +"第"+(i+1)+"行,";
         }
         }
-        if ("".equals(elcregisteNo)) {
-            stringList.add("第"+(i+1)+"行学籍电子注册号不能为空,");
-        }
+//        if ("".equals(elcregisteNo)) {
+//            stringList.add("第"+(i+1)+"行学籍电子注册号不能为空,");
+//        }
 
 
 
         // 校验通过的记录返回，否则抛出异常，存入failData中
+        check.put("1",checkcscNo);
+        check.put("2",cscNoIsNull);
         value.put("cicNo", cicNo);
         value.put("elcregisteNo", elcregisteNo);
-
-        return stringList;
+        value.put("degreeNo", degreeNo);
+        return check;
     }
     private List<String> getColNum(Vector<String> title,List<String> list) throws IOException {
         List<String> stringList = list;
@@ -311,22 +355,26 @@ for(int m = 0;m<stringList.size();m++){
             if (name.matches(".*CSC登记号.*")) {
                 colNum.put("cicNo", i);
             }
-            if (name.matches(".*学籍电子注册号.*")) {
+            if (name.matches(".*学历证书编号.*")) {
                 colNum.put("elcregisteNo", i);
+            }
+            if (name.matches(".*学位证书编号.*")) {
+                colNum.put("degreeNo", i);
             }
 
         }
-        if (CollectionUtils.isEmpty(colNum) || colNum.size() < 2) {
-
+        if (CollectionUtils.isEmpty(colNum) || colNum.size() < 3) {
+            stringList.add("校验结果：");
             stringList.add("导入的数据文件表标题不正确！");
 
         }
         if (colNum.get("cicNo") == null) {
-            stringList.add("导入数据必须包含cic登记号！");
+            stringList.add("校验结果：");
+            stringList.add("导入数据必须包含csc登记号！");
         }
-        if (colNum.get("elcregisteNo") == null) {
-            stringList.add("导入数据必须包含学籍电子注册号！");
-        }
+//        if (colNum.get("elcregisteNo") == null) {
+//            stringList.add("导入数据必须包含学籍电子注册号！");
+//        }
 
         return stringList;
     }
@@ -339,10 +387,12 @@ for(int m = 0;m<stringList.size();m++){
             if (name.matches(".*CSC登记号.*")) {
                 colNum.put("cicNo", i);
             }
-            if (name.matches(".*学籍电子注册号.*")) {
+            if (name.matches(".*学历证书编号.*")) {
                 colNum.put("elcregisteNo", i);
             }
-
+            if (name.matches(".*学位证书编号.*")) {
+                colNum.put("elcregisteNo", i);
+            }
         }
 //        if (CollectionUtils.isEmpty(colNum) || colNum.size() < 2) {
 //

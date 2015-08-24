@@ -97,7 +97,7 @@ public class ImportDao extends BaseDAO {
         }
         if (!POIFSFileSystem.hasPOIFSHeader(inp)) {
             stringList.add("校验结果：");
-            stringList.add("请检验Excel版本，需为'excle 97-2003 工作簿（*.xls）'！");
+            stringList.add("请检验Excel版本，需为excle 97-2003 工作簿（*.xls）！");
             return stringList;
         }
         try {
@@ -114,9 +114,12 @@ public class ImportDao extends BaseDAO {
 
         // 获取抬头，检验是否包含非空字段列
         Vector<String> title = (Vector<String>) productData.get(1);
-        Map<String, Integer> colNum = getColNum(title);
+        //Map<String, Integer> colNum = getColNum(title);
         Map<String, String> checkResult = new HashMap<String, String>();
         stringList = getColNum(title,stringList);
+        if(stringList.size()>=2){
+            return stringList;
+        }
         String checkcscNo = "CSC登记号有空行：";
         String cscNoIsNull = "CSC登记号不存在：";
         String checkElcregisteNo = "学籍电子注册号有空行：";
@@ -126,17 +129,17 @@ public class ImportDao extends BaseDAO {
 
             Vector<String> data = (Vector<String>) productData.get(i);
             // 根据列的数目，补足一行数据的个数，如列有10个，一行数据仅有9个，则补足1个空白字段；
-            int last = colNum.size() - data.size();
-            while (last > 0) {
-                data.add("");
-                last--;
-            }
+//            int last = colNum.size() - data.size();
+//            while (last > 0) {
+//                data.add("");
+//                last--;
+//            }
             // 获得各字段对应的字符串 ，校验字符串是否符合标准，
             // 不符合标准的放到failData集合中，不影响后续记录的导入。
             Map<String, String> value = new HashMap<String, String>();
           //  value = getValueAndCheck(data, colNum);
 
-            checkResult = getValueAndCheck(data, colNum,stringList,i);
+            checkResult = getValueAndCheck(data, null,stringList,i);
             //listData.add(value);
             checkcscNo = checkcscNo+checkResult.get("1");
             cscNoIsNull = cscNoIsNull+checkResult.get("2");
@@ -357,7 +360,7 @@ for(int m = 0;m<stringList.size();m++){
         }
         if (colNum.get("cicNo") == null) {
             stringList.add("校验结果：");
-            stringList.add("导入数据必须包含cic登记号！");
+            stringList.add("导入数据必须包含csc登记号！");
             return stringList;
         }
         if (colNum.get("elcregisteNo") == null) {
