@@ -34,7 +34,7 @@ public class RegStatisticsService extends BaseService {
         listParameter.add(university);
         listParameter.add(arrivalDateBegin);
         listParameter.add(arrivalDateEnd);
-        //返回id 根据id查询 wangrui
+        //杩斿洖id 鏍规嵁id鏌ヨ wangrui
         String sameId = getBaseDao().doStatementForRtn("p_scms_stats_register", listParameter);
         StringBuilder sb = new StringBuilder();
 //        sb.append(RegStatistics.getResultObject());

@@ -7,6 +7,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import javax.sql.DataSource;
@@ -38,10 +39,12 @@ public class BaseDAO {
         try {
             em = entityManagerFactory.createEntityManager();
             //创建原生SQL查询QUERY实例
+            em.getTransaction().begin();
             Query query = em.createNativeQuery(sql);
             //list转为List<Map>
             query.unwrap(SQLQuery.class).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
             objectList = query.getResultList();
+            em.getTransaction().commit();
             return objectList;
         } finally {
             if (em != null) {
@@ -232,16 +235,20 @@ public class BaseDAO {
     /**
      * 执行sql修改
      */
+
     public int updateBySql(String sql) {
         List<Map> objectList;
         EntityManager em = null;
 
         try {
             em = entityManagerFactory.createEntityManager();
-            em.joinTransaction();
+            //em.joinTransaction();
             //创建原生SQL查询QUERY实例
+em.getTransaction().begin();
             Query query = em.createNativeQuery(sql);
             int num = query.executeUpdate();
+            em.getTransaction().commit();
+           // em.flush();
             return num;
         } finally {
             if (em != null) {

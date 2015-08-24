@@ -1,4 +1,4 @@
-package gov.gwssi.csc.scms.service.insurance;
+﻿package gov.gwssi.csc.scms.service.insurance;
 
 import gov.gwssi.csc.scms.dao.insurance.InsuranceDAO;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
@@ -142,6 +142,7 @@ public class InsuranceService extends BaseService {
         }
         return insuranceResultObject;
     }
+
     public Insurance getInsuranceById(String id) {
         return insuranceRepository.findById(id);
     }
@@ -155,6 +156,7 @@ public class InsuranceService extends BaseService {
         insuranceRepository.delete(insurance);
         return insurance;
     }
+
     //导出后更新保险导出状态
     public void updateInsurancePresta(String[] id) {
         for (int i=0;i<id.length;i++){
@@ -167,4 +169,7 @@ public class InsuranceService extends BaseService {
     }
 
 
+   public int getStuInsurance(String studentid,int year) {
+        return insuranceDAO.getStuInsurance(studentid,year);
     }
+   }
