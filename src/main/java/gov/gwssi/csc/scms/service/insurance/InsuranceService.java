@@ -142,6 +142,7 @@ public class InsuranceService extends BaseService {
         }
         return insuranceResultObject;
     }
+
     public Insurance getInsuranceById(String id) {
         return insuranceRepository.findById(id);
     }
@@ -155,5 +156,7 @@ public class InsuranceService extends BaseService {
         insuranceRepository.delete(insurance);
         return insurance;
     }
-
+    public int getStuInsurance(String studentid,int year) {
+        return insuranceDAO.getStuInsurance(studentid,year);
+    }
     }

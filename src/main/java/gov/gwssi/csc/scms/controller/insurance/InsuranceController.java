@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.controller.JsonBody;
 import gov.gwssi.csc.scms.controller.RequestHeaderError;
 import gov.gwssi.csc.scms.dao.importExcle.ImportDao;
+import gov.gwssi.csc.scms.dao.insurance.InsuranceDAO;
 import gov.gwssi.csc.scms.domain.insurance.Insurance;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.InsuranceResultObject;
@@ -39,9 +40,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.net.URLDecoder;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * Created by gc on 2015/7/17.
@@ -57,7 +56,25 @@ public class InsuranceController {
     @Autowired
     private InsuranceService insuranceService;
     @Autowired
-    private ImportDao importDao;
+    private InsuranceDAO importDao;
+    public static Map<String,List> MAP = new HashMap<String, List>();
+    //点击查询返回代码维护列表
+    @RequestMapping(value = "/getkey", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
+    public List getValue(@RequestParam(value = "key") String key) {
+        //按照分页（默认）要求，返回列表内容
+        List proAndUnivList = null;
+        if (key == null || "null".equals(key)) {
+
+            return new ArrayList();
+        }else{
+            //System.out.println("hehe="+MAP.get(key));
+            return MAP.get(key);
+        }
+        //return null;
+
+
+
+    }
     //用户在前台点击生成机票管理列表，返回列表
     @RequestMapping(value = "/new", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<InsuranceResultObject> getInsurances(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
@@ -205,6 +222,7 @@ public class InsuranceController {
             method = RequestMethod.POST
     )
     public ResponseEntity importInsurance(@RequestParam(value = "filename") String filename,
+                                          @RequestParam(value = "key") String key,
             HttpServletRequest request) {
 //        System.out.println("request = " + request);
         try {
@@ -212,9 +230,14 @@ public class InsuranceController {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+        Calendar cale = Calendar.getInstance();
+        cale.setTime(new Date());   // 当前年
+        int year = cale.get(Calendar.YEAR);
+
         System.out.println("InsuranceController.importInsurance");
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
         System.out.println("isMultipart = " + isMultipart);
+        List<String> list1 = new ArrayList<String>();
         if (isMultipart) {
             DiskFileItemFactory factory = new DiskFileItemFactory();
 
@@ -226,16 +249,26 @@ public class InsuranceController {
             try {
                 List<FileItem> items = upload.parseRequest(request);
                 System.out.println("items = " + items);
-                Vector<Vector<String>> list = importDao.doExcelImport(items.get(0));
-                System.out.println("list = " + list.size());
-                System.out.println("list = " + list);
+                 list1 = importDao.check(items.get(0),year);
+                MAP.put(key,list1);
+                if (list1.size() > 0&&!"成功导入".equals(list1.get(0))) {
+                    System.out.println("list1 = " + list1);
+
+                    return new ResponseEntity<List<String>>(list1, HttpStatus.OK);
+                }
+                    Vector<Vector<String>> list = importDao.doExcelImport(items.get(0),year);
+                   // return new ResponseEntity<List<String>>(list1, HttpStatus.OK);
+
+               // Vector<Vector<String>> list = importDao.doExcelImport(items.get(0));
+//                System.out.println("list = " + list.size());
+//                System.out.println("list = " + list);
             } catch (FileUploadException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        return null;
+        return new ResponseEntity<List<String>>(list1, HttpStatus.OK);
     }
 
 //    @RequestMapping(
