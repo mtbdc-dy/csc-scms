@@ -4,6 +4,7 @@ import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
 import gov.gwssi.csc.scms.domain.insurance.Insurance;
 import gov.gwssi.csc.scms.domain.scholarship.ScholarshipX;
 import gov.gwssi.csc.scms.domain.ticket.Ticket;
+import gov.gwssi.csc.scms.domain.warning.Warning;
 
 import javax.annotation.Generated;
 import javax.persistence.metamodel.ListAttribute;
@@ -24,6 +25,7 @@ public abstract class Student_ {
     public static volatile SingularAttribute<Student, ProfilesHistory> profilesHistory;
     public static volatile SingularAttribute<Student, Schoolfellow> schoolfellow;
     public static volatile SingularAttribute<Student, RegistrationInfo> registrationInfo;
+    public static volatile SingularAttribute<Student, Warning> warning;
     public static volatile ListAttribute<Student, Grade> Grades;
     public static volatile ListAttribute<Student, GradeAttachment> gradeAttachment;
     public static volatile ListAttribute<Student, Abnormal> abnormals;

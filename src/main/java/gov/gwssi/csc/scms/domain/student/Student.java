@@ -2,6 +2,7 @@ package gov.gwssi.csc.scms.domain.student;
 
 import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
 import gov.gwssi.csc.scms.domain.ticket.Ticket;
+import gov.gwssi.csc.scms.domain.warning.Warning;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "SCMS_STUDENT")
-public class Student {
+public class Student implements Cloneable {
     /**
      * STUDENT主键ID
      */
@@ -85,6 +86,20 @@ public class Student {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
     private List<Ticket> tickets;
+
+    public Warning getWarning() {
+        return warning;
+    }
+
+    public void setWarning(Warning warning) {
+        this.warning = warning;
+    }
+
+    /**
+     * 预警名单
+     */
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "student")
+    private Warning warning;
 
     public String getId() {
         return id;
@@ -200,5 +215,14 @@ public class Student {
 
     public void setTickets(List<Ticket> tickets) {
         this.tickets = tickets;
+    }
+
+    public Student clone() {
+        try {
+            return (Student) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return new Student();
     }
 }
