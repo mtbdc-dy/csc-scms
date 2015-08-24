@@ -1,20 +1,28 @@
 package gov.gwssi.csc.scms.controller.students;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.query.StudentResultObject;
 import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.service.student.StudentService;
+import gov.gwssi.csc.scms.service.students.StudentConverter;
 import gov.gwssi.csc.scms.service.students.StudentsService;
 import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Converter;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Wang Zishi on 15/8/6.
@@ -96,61 +104,53 @@ public class studentsController {
     /**
      * 返回全部学生字段的所有信息，并将集合根据page、size分页
      * GET /api/students?page=0&size=20
-     *
+     * <p/>
      * edit by gc20150810
-     * @param page   页数
-     * @param size    每页显示条数
-     * @param response http 响应
+     *
+     * @param page       页数
+     * @param size       每页显示条数
+     * @param filterJSON filter查询对象
      */
     @RequestMapping(
             method = RequestMethod.GET,
             headers = {"Accept=application/json"},
-            params = {"page", "size"})
-    public void getStudents(
+            params = {"page", "size", "filter"})
+    public ResponseEntity<Page<Map<String, Object>>> getStudents(
             @RequestParam(value = "page") Integer page,
             @RequestParam(value = "size") Integer size,
-            HttpServletResponse response) {
-
+            @RequestParam(value = "filter") String filterJSON) throws IOException {
         // TODO.. GET /api/students?page=0&size=20
-        System.out.println("page = " + page);
-        System.out.println("size = " + size);
+        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+        Page<Student> studentPage = studentsService.getStudentsPageByFilter(filter, page, size);
+        Page<Map<String, Object>> mapPage = studentPage.map(new StudentConverter());
 
-            Filter filter = new Filter();
-            filter.setCscId("%");
-         studentsService.getStudentsPageByFilter(filter,page,size);
-
-        response.setHeader("X-Total-Count", "200");
-        response.setHeader("Link", "</api/students?page=0&size=20>;rel=\"self\"");
+        return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
     }
 
-//    /**
-//     * 返回全部学生字段的所有信息，并将集合根据偏离值、限定值分页
-//     * GET /api/students?fields=cscId,gender,age&offset=0&limit=20
-//     *
-//     * @param fields   所需要的字段内容
-//     * @param offset   偏离值
-//     * @param limit    限定值
-//     * @param response http 响应
-//     */
-//    @RequestMapping(
-//            method = RequestMethod.GET,
-//            headers = {"Accept=application/json"},
-//            params = {"fields", "offset", "limit"})
-//    public void getStudents(
-//            @RequestParam(value = "fields") String fields,
-//            @RequestParam(value = "offset") Integer offset,
-//            @RequestParam(value = "limit") Integer limit,
-//            HttpServletResponse response) {
-//
-//        // TODO.. GET /api/students?fields=cscId,gender,age&offset=0&limit=20
-//        System.out.println("fields = " + fields);
-//        System.out.println("offset = " + offset);
-//        System.out.println("limit = " + limit);
-//
-//
-//        response.setHeader("X-Total-Count", "200");
-//        response.setHeader("Link", "</api/students?offset=0&limit=20>;rel=\"self\"");
-//    }
+    /**
+     * 返回全部学生字段的所有信息，并将集合根据偏离值、限定值分页
+     * GET /api/students?field=cscId,gender,age&page=0&size=20
+     * @param fields      所需要的字段内容
+     * @param page       页数
+     * @param size       每页显示条数
+     * @param filterJSON filter查询对象
+     */
+    @RequestMapping(
+            method = RequestMethod.GET,
+            headers = {"Accept=application/json"},
+            params = {"field", "page", "size", "filter"})
+    public ResponseEntity<Page<Map<String, Object>>> getStudents(
+            @RequestParam(value = "field") String[] fields,
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size,
+            @RequestParam(value = "filter") String filterJSON) throws IOException {
+        // TODO.. GET /api/students?fields=cscId,gender,age&offset=0&limit=20
+        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+        Page<Student> studentPage = studentsService.getStudentsPageByFilter(filter, page, size);
+        Page<Map<String, Object>> mapPage = studentPage.map(new StudentConverter(fields));
+
+        return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+    }
 //
 //    /**
 //     * 根据学生id返回但个学生的所有信息
