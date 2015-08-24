@@ -1,10 +1,12 @@
 package gov.gwssi.csc.scms.service.warning;
 
+import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.FilterObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilter;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.WarningResultObject;
+import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.domain.warning.Warning;
 import gov.gwssi.csc.scms.repository.warning.WarningRepository;
@@ -12,10 +14,15 @@ import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.service.log.OperationLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static org.springframework.data.jpa.domain.Specifications.where;
 
 /**
  * Created by tianjing on 2015/7/17.
@@ -64,38 +71,38 @@ public class WarningService extends BaseService {
         if (filterObject == null)
             return null;
 
-        //»ñÈ¡²éÑ¯½á¹û¼¯
+        //è·å–æŸ¥è¯¢ç»“æœé›†
         String sqlStr = WarningResultObject.getResultObject();
 
-        //Ìí¼Ó²éÑ¯ÊµÌå
+        //æ·»åŠ æŸ¥è¯¢å®ä½“
         sqlStr += " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll, Warning warning " +
                 "where student.id = basicInfo.student " +
                 "and student.id = schoolRoll.student " +
-                "and student.id = warning.studentId ";
+                "and student.id = warning.student ";
 
-        //Ìí¼Ó²éÑ¯Ìõ¼ş£¬²¢·µ»ØÍêÕûSQLÓï¾ä
+        //æ·»åŠ æŸ¥è¯¢æ¡ä»¶ï¼Œå¹¶è¿”å›å®Œæ•´SQLè¯­å¥
         return sqlStr + new StudentFilter((StudentFilterObject) filterObject).getFilter(user, "", "");
     }
 
-    //±£´æ
+    //ä¿å­˜
     @Transactional
     public String saveWarning(Warning warning, List<OperationLog> operationLogs) throws Exception {
-        //¼ÇÂ¼ÈÕÖ¾
+        //è®°å½•æ—¥å¿—
         operationLogService.saveOperationLog(operationLogs);
         warning.setWarningId(getBaseDao().getIdBySequence("SEQ_WARNING"));
-        //±£´æĞÂÔöµÄÔ¤¾¯Ãûµ¥ÈËÔ±
+        //ä¿å­˜æ–°å¢çš„é¢„è­¦åå•äººå‘˜
         warningRepository.save(warning);
         return warning.getWarningId();
     }
 
-    // ¸ù¾İid²éÑ¯warningAndStu
+    // æ ¹æ®idæŸ¥è¯¢warningAndStu
     public WarningResultObject getWarningAndStu(String id) throws Exception {
-        //·µ»Ø½çÃæ°üº¬Ñ§ÉúĞÅÏ¢ ¸ù¾İÒì¶¯id²é³ö
+        //è¿”å›ç•Œé¢åŒ…å«å­¦ç”Ÿä¿¡æ¯ æ ¹æ®å¼‚åŠ¨idæŸ¥å‡º
         StringBuilder sb = new StringBuilder();
         sb.append(WarningResultObject.getResultObject());
         String tempSql = " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll, Warning warning " +
                 "where student.id = basicInfo.student  " +
-                "and student.id = schoolRoll.student and student.id = warning.studentId ";
+                "and student.id = schoolRoll.student and student.id = warning.student ";
         sb.append(tempSql);
         sb.append(" and warning.warningId = '").append(id).append("'");
         List<WarningResultObject> warningList = super.getBaseDao().getObjectListByHQL(sb.toString(), WarningResultObject.class, 0, 1);
@@ -108,14 +115,22 @@ public class WarningService extends BaseService {
         return warningResultObject;
     }
 
-    //É¾³ı
+    //åˆ é™¤
     public Warning deleteWarningById(String id, List<OperationLog> operationLogs) {
         Warning warning = getWarningById(id);
         if (warning == null)
             return null;
-        //¼ÇÂ¼ÈÕÖ¾
+        //è®°å½•æ—¥å¿—
         operationLogService.saveOperationLog(operationLogs);
         warningRepository.delete(warning);
         return warning;
     }
+
+//    //åˆ†é¡µæŸ¥è¯¢
+//    public Page<Student> getBlacklistStudentsPageByFilter(Filter filter,Integer page,Integer size){
+//        Specification<Student> specA = new WarningSpecs().filterIsLike(filter);
+//        return studentRepository.findAll(where(specA), new PageRequest(page, size));
+//
+//    }
+
 }

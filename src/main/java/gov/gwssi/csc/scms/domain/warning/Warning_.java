@@ -1,5 +1,7 @@
 package gov.gwssi.csc.scms.domain.warning;
 
+import gov.gwssi.csc.scms.domain.student.Student;
+
 import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
@@ -13,7 +15,7 @@ public abstract class Warning_ {
     public static volatile SingularAttribute<Warning, String> addReason;
     public static volatile SingularAttribute<Warning, String> rmUserName;
     public static volatile SingularAttribute<Warning, Date> rmTime;
-    public static volatile SingularAttribute<Warning, String> studentId;
+    public static volatile SingularAttribute<Warning, Student> student;
     public static volatile SingularAttribute<Warning, String> addUserId;
     public static volatile SingularAttribute<Warning, String> rmUserId;
     public static volatile SingularAttribute<Warning, String> rmReason;
