@@ -2,6 +2,7 @@ package gov.gwssi.csc.scms.domain.query;
 
 import org.springframework.util.StringUtils;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -35,10 +36,13 @@ public abstract class FilterObject {
     abstract List getConditions();
 
     protected List<FilterCell> addCondition(List<FilterCell> conditions, String tableName, String filedName, String type, String value) {
-        if (isNull(value))
-            return conditions;
+        if (isNull(value)){
+                return conditions;
+        }else{
+
         conditions.add(new FilterCell(tableName, filedName, type, value));
         return conditions;
+        }
     }
 
     protected List<FilterCell> addCondition(List<FilterCell> conditions, String tableName, String filedName, String type, String value1, String value2) {

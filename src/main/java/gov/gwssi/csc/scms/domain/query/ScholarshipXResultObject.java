@@ -86,6 +86,10 @@ public class ScholarshipXResultObject extends ResultObject{
      */
     private Date cscStartTime;
 
+    private Date updated;
+
+    private String updateby;
+
     /**
      * 不合格时间止
      */
@@ -106,19 +110,28 @@ public class ScholarshipXResultObject extends ResultObject{
      */
     private String cscSta;
     /**
-     *合格人数
+     *合格人数——学校用户
      */
-
-    private Long qualNum;
+    private Long schoolQual;
 
     /**
-     *不合格人数
+     *不合格人数——学校用户
      */
+    private Long schoolUnQual;
+    /**
+     *合格人数--基金委用户
+     */
+    private Long cscQual;
 
-    private Long unQualNum;
+    /**
+     *不合格人数--基金委用户
+     */
+    private Long cscUnQual;
 
     public ScholarshipXResultObject(String id, String studentId, String scholarshipId, String cscId, String passportName, String gender,
-                                    Date birthday, String schReview, String schResult,String cscReview, String cscResult, Long year, Long qualNum, Long unQualNum,
+                                    Date birthday, String schReview, String schResult,String cscReview, String cscResult, Long year,
+                                    Long schoolQual,Long schoolUnQual , Long cscQual, Long cscUnQual,
+                                    Date updated,String updateby,
                                     String schReason, Date schStartTime, Date schEndTime, String cscReason, Date cscStartTime, Date cscEndTime, String cscrresult_lastyear, String schoolSta, String cscSta
     ) {
         this.id = id;
@@ -133,8 +146,12 @@ public class ScholarshipXResultObject extends ResultObject{
         this.cscReview = cscReview;
         this.cscResult = cscResult;
         this.year=year;
-        this.qualNum = qualNum;
-        this.unQualNum = unQualNum;
+        this.schoolQual = schoolQual;
+        this.schoolUnQual=schoolUnQual;
+        this.cscQual = cscQual;
+        this.cscUnQual=cscUnQual;
+        this.updated=updated;
+        this.updateby=updateby;
         this.schReason = schReason;
         this.schStartTime = schStartTime;
         this.schEndTime = schEndTime;
@@ -151,11 +168,28 @@ public class ScholarshipXResultObject extends ResultObject{
         String resultSql = "select new gov.gwssi.csc.scms.domain.query.ScholarshipXResultObject(" +
                 "ScholarshipX.id,ScholarshipX.studentId,ScholarshipX.scholarshipId, student.cscId, basicInfo.passportName,basicInfo.gender," +
                 "basicInfo.birthday,ScholarshipX.schReview,ScholarshipX.schResult,ScholarshipX.cscReview,ScholarshipX.cscResult," +
-                "ScholarshipX.year,ScholarshipX.qualNum,ScholarshipX.unQualNum," +
+                "ScholarshipX.year,ScholarshipX.schoolQual,ScholarshipX.schoolUnQual,ScholarshipX.cscQual,ScholarshipX.cscUnQual," +
+                "ScholarshipX.updated,ScholarshipX.updateby," +
                 "ScholarshipX.schReason,ScholarshipX.schStartTime,ScholarshipX.schEndTime," +
                 "ScholarshipX.cscReason,ScholarshipX.cscStartTime,ScholarshipX.cscEndTime," +
                 "ScholarshipX.cscrresult_lastyear,ScholarshipX.schoolSta,ScholarshipX.cscSta)";
         return resultSql;
+    }
+
+    public Date getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(Date updated) {
+        this.updated = updated;
+    }
+
+    public String getUpdateby() {
+        return updateby;
+    }
+
+    public void setUpdateby(String updateby) {
+        this.updateby = updateby;
     }
 
     public String getCscReview() {
@@ -230,20 +264,36 @@ public class ScholarshipXResultObject extends ResultObject{
         this.year = year;
     }
 
-    public Long getQualNum() {
-        return qualNum;
+    public Long getSchoolQual() {
+        return schoolQual;
     }
 
-    public void setQualNum(Long qualNum) {
-        this.qualNum = qualNum;
+    public void setSchoolQual(Long schoolQual) {
+        this.schoolQual = schoolQual;
     }
 
-    public Long getUnQualNum() {
-        return unQualNum;
+    public Long getSchoolUnQual() {
+        return schoolUnQual;
     }
 
-    public void setUnQualNum(Long unQualNum) {
-        this.unQualNum = unQualNum;
+    public void setSchoolUnQual(Long schoolUnQual) {
+        this.schoolUnQual = schoolUnQual;
+    }
+
+    public Long getCscQual() {
+        return cscQual;
+    }
+
+    public void setCscQual(Long cscQual) {
+        this.cscQual = cscQual;
+    }
+
+    public Long getCscUnQual() {
+        return cscUnQual;
+    }
+
+    public void setCscUnQual(Long cscUnQual) {
+        this.cscUnQual = cscUnQual;
     }
 
     public String getCscSta() {

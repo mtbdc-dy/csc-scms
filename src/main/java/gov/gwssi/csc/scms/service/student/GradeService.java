@@ -77,14 +77,12 @@ public class GradeService extends BaseService {
 
         operationLog.setOptType("3");
         operationLog.setModule("在校生学籍管理");
-        operationLog.setModuleId("BM003");
+        operationLog.setModuleId("BG003");
         operationLog.setStudentId(student.getId());
         operationLog.setCscId(student.getCscId());
         operationLog.setPassportName(student.getBasicInfo().getPassportName());
-        String gradeJsonStr = "\"id\":\"" + grade.getId() + "\",\"annual\":\"" + grade.getAnnual() + "\",\"term\":\"" + baseDAO.getNameCHByTranslateId(grade.getTerm())
-                + "\",\"course\":\"" + grade.getCourse() + "\",\"grade\":\"" + grade.getGrade() + "\",\"createBy\":\"" + grade.getCreateBy() + "\",\"createDate\":\"" + grade.getCreateDate() + "\",\"updateBy\":" + grade.getUpdateBy()
-                + "\",\"updateDate\":\"" + grade.getUpdateDate() + "\"";
-        operationLog.setBefore(gradeJsonStr);
+        String before = grade.getAnnual() + "/" + baseDAO.getNameCHByTranslateId(grade.getTerm()) + "/" + grade.getCourse() + "/" + grade.getGrade();
+        operationLog.setBefore(before);
         operationLog.setAfter("");
         operationLog.setColumnCH("");
         operationLog.setColumnEN("");

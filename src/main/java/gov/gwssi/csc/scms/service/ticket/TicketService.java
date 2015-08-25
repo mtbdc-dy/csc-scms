@@ -113,7 +113,7 @@ public class TicketService extends BaseService {
 
         String tempSql = " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll,Ticket ticket " +
                 "where student.id = basicInfo.student  " +
-                "and student.id = schoolRoll.student   and student.id = ticket.studentId";
+                "and student.id = schoolRoll.student   and student.id = ticket.student.id";
         sb.append(tempSql);
 
         sb.append(new StudentFilter((StudentFilterObject) filterObject).getUserFilter(user));
@@ -129,8 +129,8 @@ public class TicketService extends BaseService {
         sb.append(TicketResultObject.getResultObject());
 
         String tempSql = " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll,Ticket ticket " +
-                "where student.id = basicInfo.student  " +
-                "and student.id = schoolRoll.student   and student.id = ticket.studentId";
+                " where student.id = basicInfo.student  " +
+                " and student.id = schoolRoll.student   and student.id = ticket.student.id";
         sb.append(tempSql);
 
         sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter(user, "ticket", userType));
@@ -151,7 +151,11 @@ public class TicketService extends BaseService {
 
     //根据学生id获取机票信息
     public List<Ticket> getTicketByStudentId(String studentId) {
-        return ticketRepository.findByStudentId(studentId);
+        List<Ticket> tickets = ticketRepository.findByStudentId(studentId);
+        for(int i=0;i<tickets.size();i++){
+            tickets.get(i).setStudent(null);
+        }
+        return tickets;
     }
 
     //增加机票信息
@@ -163,28 +167,25 @@ public class TicketService extends BaseService {
     }
 
     //删除机票信息
-    public Ticket deleteTicketById(User user, String ticketId) {
+    public Ticket deleteTicketById(User user, String ticketId, String studentId) {
         Ticket ticket = getTicketById(ticketId);
         if (ticket == null)
             return null;
 
         try {
-            Student student = studentService.getStudentById(ticket.getStudentId());
+            Student student = studentService.getStudentById(studentId);
             //记录日志
             List<OperationLog> operationLogs = new ArrayList<OperationLog>();
             OperationLog operationLog = new OperationLog();
 
             operationLog.setOptType("3");
             operationLog.setModule("在校生学籍管理");
-            operationLog.setModuleId("BM003");
+            operationLog.setModuleId("BG003");
             operationLog.setStudentId(student.getId());
             operationLog.setCscId(student.getCscId());
             operationLog.setPassportName(student.getBasicInfo().getPassportName());
-            String ticketJsonStr = "{\"id\":\"" + ticket.getId() + "\",\"studentId\":\"" + ticket.getStudentId() + "\",\"type\":\"" + baseDAO.getNameCHByTranslateId(ticket.getType()) + "\",\"airLine\":\"" + ticket.getAirLine()
-                    + "\",\"ticketNo\":\"" + ticket.getTicketNo() + "\",\"validdate\":\"" + ticket.getValiddate() + "\",\"applyDate\":\"" + ticket.getApplyDate() + "\",\"flightDate\":\"" + ticket.getFlightDate() + "\",\"leaveCity\":" + ticket.getLeaveCity()
-                    + "\",\"price\":\"" + ticket.getPrice() + "\",\"state\":\"" + ticket.getState() + "\",\"remark\":\"" + ticket.getRemark() + "\",\"createBy\":\"" + ticket.getCreateBy() + "\",\"created\":\"" + ticket.getCreated()
-                    + "\",\"updateBy\":\"" + ticket.getUpdateBy() + "\",\"updated\":\"" + ticket.getUpdated() + "\"}";
-            operationLog.setBefore(ticketJsonStr);
+            String before = ticket.getValiddate() + "/" + ticket.getApplyDate() + "/" + ticket.getLeaveCity() + "/" + baseDAO.getNameCHByTranslateId(ticket.getType()) + "/" + ticket.getFlightDate() + "/" + ticket.getAirLine() + "/" + ticket.getPrice() + "/" + ticket.getTicketNo();
+            operationLog.setBefore(before);
             operationLog.setAfter("");
             operationLog.setColumnCH("");
             operationLog.setColumnEN("");
@@ -198,6 +199,7 @@ public class TicketService extends BaseService {
             operationLogs.add(operationLog);
             operationLogService.saveOperationLog(operationLogs);
             ticketRepository.delete(ticket);
+            ticket.setStudent(null);
             return ticket;
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.service.warning;
 
+
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.FilterObject;
@@ -17,13 +18,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
+import gov.gwssi.csc.scms.service.log.OperationLogService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
 import static org.springframework.data.jpa.domain.Specifications.where;
-
 /**
  * Created by tianjing on 2015/7/17.
  */
@@ -141,5 +141,4 @@ public class WarningService extends BaseService {
 //        return studentRepository.findAll(where(specA), new PageRequest(page, size));
 //
 //    }
-
 }

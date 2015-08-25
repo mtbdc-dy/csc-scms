@@ -19,7 +19,7 @@ public class Abnormal {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "studentid"/*,nullable = false*/)
+    @JoinColumn(name = "studentid"/*,nullable = false*/,insertable = false, updatable = false)
     private Student student;
     /**
      * STUDENTID

@@ -12,7 +12,6 @@ public abstract class ScholarshipX_ {
     public static volatile SingularAttribute<ScholarshipX, String> schResult;
     public static volatile SingularAttribute<ScholarshipX, String> scholarshipId;
     public static volatile SingularAttribute<ScholarshipX, Date> cscStartTime;
-    public static volatile SingularAttribute<ScholarshipX, Long> unQualNum;
     public static volatile SingularAttribute<ScholarshipX, String> cscrresult_lastyear;
     public static volatile SingularAttribute<ScholarshipX, String> schReason;
     public static volatile SingularAttribute<ScholarshipX, Date> schEndTime;
@@ -28,7 +27,12 @@ public abstract class ScholarshipX_ {
     public static volatile SingularAttribute<ScholarshipX, Date> cscEndTime;
     public static volatile SingularAttribute<ScholarshipX, Long> year;
     public static volatile SingularAttribute<ScholarshipX, Date> schStartTime;
-    public static volatile SingularAttribute<ScholarshipX, Long> qualNum;
+    public static volatile SingularAttribute<ScholarshipX, Long> schoolQual;
+    public static volatile SingularAttribute<ScholarshipX, Long> cscQual;
+    public static volatile SingularAttribute<ScholarshipX, Long> cscUnQual;
+    public static volatile SingularAttribute<ScholarshipX, Long> schoolUnQual;
+    public static volatile SingularAttribute<ScholarshipX, Date> updated;
+    public static volatile SingularAttribute<ScholarshipX, String> updateby;
 
 }
 

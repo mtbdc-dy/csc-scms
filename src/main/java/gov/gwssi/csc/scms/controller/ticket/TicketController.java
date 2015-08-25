@@ -7,8 +7,11 @@ import gov.gwssi.csc.scms.controller.RequestHeaderError;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.TicketResultObject;
+import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.domain.ticket.Ticket;
 import gov.gwssi.csc.scms.domain.user.User;
+import gov.gwssi.csc.scms.service.export.ExportService;
+import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.ticket.NoSuchTicketException;
 import gov.gwssi.csc.scms.service.ticket.TicketService;
 import gov.gwssi.csc.scms.service.user.NoSuchUserException;
@@ -16,6 +19,10 @@ import gov.gwssi.csc.scms.service.user.UserIdentityError;
 import gov.gwssi.csc.scms.service.user.UserService;
 import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -36,6 +43,13 @@ public class TicketController {
     private UserService userService;
     @Autowired
     private TicketService ticketService;
+
+    @Autowired
+    private StudentService studentService;
+
+    @Autowired
+    private ExportService exportService;
+
     //学校用户在前台点击生成机票管理列表，返回列表
     @RequestMapping(value = "/new",method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<TicketResultObject> getTickets(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
@@ -108,6 +122,9 @@ public class TicketController {
                     ticket = tickets.get(i);
                     ticket.setUpdateBy(user.getUserId());
                     ticket.setUpdated(ts);
+                    Ticket oldTicket = ticketService.getTicketById(ticket.getId());
+                    Student student = oldTicket.getStudent();
+                    ticket.setStudent(student);
                     Ticket hqTicket = ticketService.saveTicket(ticket, null);
                     newTickets.add(hqTicket);
                 }
@@ -144,6 +161,9 @@ public class TicketController {
                     ticket.setUpdateBy(user.getUserId());
                     ticket.setUpdated(ts);
                     ticket.setState("AT0002");//订票状态待修改成对应的代码值
+                    Ticket oldTicket = ticketService.getTicketById(ticket.getId());
+                    Student student = oldTicket.getStudent();
+                    ticket.setStudent(student);
                     Ticket hqTicket = ticketService.saveTicket(ticket, null);
                     newTickets.add(hqTicket);
                 }
@@ -170,8 +190,8 @@ public class TicketController {
 
 
     //新增机票信息
-    @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
-    public Ticket putTicket(@RequestBody String ticketJson) {
+    @RequestMapping(value = "/{studentId}", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
+    public Ticket putTicket(@PathVariable(value = "studentId") String studentId, @RequestBody String ticketJson) {
         try {
             ObjectMapper mapper = new ObjectMapper();
 
@@ -182,10 +202,14 @@ public class TicketController {
             if (ticket == null) {
                 throw new NoSuchTicketException("cannot generate the ticket");
             }
+            Student student = studentService.getStudentById(studentId);
+            ticket.setStudent(student);
+
             JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
             List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
 
             ticket = ticketService.addTicket(ticket, operationLogs);
+            ticket.setStudent(null);
             return ticket;
         } catch (Exception e) {
             e.printStackTrace();
@@ -194,11 +218,11 @@ public class TicketController {
     }
 
     //删除机票信息
-    @RequestMapping(value = "/{ticketId}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
-    public Ticket deleteAccident(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header, @PathVariable(value = "ticketId") String ticketId) {
+    @RequestMapping(value = "/{ticketId}/{studentId}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
+    public Ticket deleteAccident(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header, @PathVariable(value = "ticketId") String ticketId, @PathVariable(value = "studentId") String studentId) {
         try {
             User user = userService.getUserByJWT(header);
-            Ticket ticket = ticketService.deleteTicketById(user, ticketId);
+            Ticket ticket = ticketService.deleteTicketById(user, ticketId, studentId);
             if (ticket == null) {
                 throw new NoSuchTicketException("cannot delete the accident");
             }
@@ -210,8 +234,8 @@ public class TicketController {
     }
 
     //修改
-    @RequestMapping(method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
-    public Ticket editTicket(@RequestBody String ticketJson) {
+    @RequestMapping(value = "/{studentId}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
+    public Ticket editTicket(@PathVariable(value = "studentId") String studentId, @RequestBody String ticketJson) {
         try {
             ObjectMapper mapper = new ObjectMapper();
 
@@ -222,14 +246,45 @@ public class TicketController {
             if (ticket == null) {
                 throw new NoSuchTicketException("cannot edit the ticket");
             }
+            Student student = studentService.getStudentById(studentId);
+            ticket.setStudent(student);
+
             JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
             List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
 
             ticket = ticketService.saveTicket(ticket, operationLogs);
+            ticket.setStudent(null);
             return ticket;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * 导出机票信息
+     * GET
+     * Accept: application/octet-stream
+     *
+     * @param id
+     */
+    @RequestMapping(
+            method = RequestMethod.GET,
+            params = {"id"},
+            headers = "Accept=application/octet-stream")
+    public ResponseEntity<byte[]> exportTickets(
+            @RequestParam("id") String[] id) throws IOException {
+        byte[] bytes = null;
+
+        String tableName = "v_exp_airticket";
+        bytes = exportService.exportByfilter(tableName, id);
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        httpHeaders.setContentDispositionFormData("attachment", fileName);
+
+        return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
     }
     }
