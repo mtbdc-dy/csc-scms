@@ -1,8 +1,8 @@
-﻿package gov.gwssi.csc.scms.service.insurance;
+package gov.gwssi.csc.scms.service.insurance;
 
 import gov.gwssi.csc.scms.dao.insurance.InsuranceDAO;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
-import gov.gwssi.csc.scms.domain.query.FilterObject;
+import gov.gwssi.csc.scms.domain.query.FilterObject; 
 import gov.gwssi.csc.scms.domain.query.StudentFilter;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.InsuranceResultObject;
