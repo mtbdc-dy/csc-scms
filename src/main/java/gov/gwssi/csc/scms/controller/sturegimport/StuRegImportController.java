@@ -2,6 +2,7 @@ package gov.gwssi.csc.scms.controller.sturegimport;
 
 import gov.gwssi.csc.scms.controller.RequestHeaderError;
 import gov.gwssi.csc.scms.dao.importExcle.ImportDao;
+import gov.gwssi.csc.scms.dao.importExcle.ImportStuRegDAO;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.user.NoSuchUserException;
 import gov.gwssi.csc.scms.service.user.UserIdentityError;
@@ -32,7 +33,9 @@ public class StuRegImportController {
     @Autowired
     private UserService userService;
     @Autowired
-    private ImportDao importDao;
+   private ImportDao importDao;
+    @Autowired
+    private ImportStuRegDAO importStuRegDao;
 //public static Map<String,List> MAP = new HashMap<String, List>();
     //点击查询返回代码维护列表
     @RequestMapping(value = "/stureg", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
@@ -98,7 +101,7 @@ public class StuRegImportController {
         System.out.println("InsuranceController.importInsurance");
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
         System.out.println("isMultipart = " + isMultipart);
-        String id = importDao.saveInitFile(fileName,userName);
+        String id = importStuRegDao.saveInitFile(fileName,userName);
         if (isMultipart) {
             DiskFileItemFactory factory = new DiskFileItemFactory();
 
@@ -114,17 +117,17 @@ public class StuRegImportController {
             try {
                 List<FileItem> items = upload.parseRequest(request);
                 System.out.println("items = " + items);
-                List<String> list1 = importDao.check(items.get(0));
+                List<String> list1 = importStuRegDao.check(items.get(0));
                 //MAP.put(key,list1);
                 if (list1.size() > 0&&!"成功导入".equals(list1.get(0))) {
                     System.out.println("list1 = " + list1);
-                    importDao.updateFile(id, 0, "0",list1);
+                    importStuRegDao.updateFile(id, 0, "0",list1);
                    //return new ResponseEntity<List<String>>(list1, HttpStatus.OK);
                 }else{
-                    Vector<Vector<String>> list = importDao.doExcelImport(items.get(0));
+                    List<String> list = importStuRegDao.doImport(items.get(0));
                     System.out.println("list = " + list.size());
                     System.out.println("list = " + list);
-                    importDao.updateFile(id, list.size() - 2, "1",list1);
+                    importStuRegDao.updateFile(id, list.size() - 2, "1",list1);
                 }
 
                // importDao.saveOpt(fileName, list.size() - 2, userName);

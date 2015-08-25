@@ -6,6 +6,9 @@ import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.utils.ExcelPoiTools;
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +42,134 @@ public class InsuranceDAO extends BaseDAO {
         }
         return 0;
     }
-    public List<String> check(FileItem fileItem,int year) throws IOException{
+    private String decodeNull(Object o) {
+        if (o == null) {
+            return "";
+        }
+        return o.toString().trim();
+    }
+    public List<String> check(FileItem fileItem ,int year) throws IOException {
+        List<String> stringList = new ArrayList<String>();
+        InputStream inp = fileItem.getInputStream();
+        if (!inp.markSupported()) {
+            inp = new PushbackInputStream(inp, 8);
+        }
+        if (!POIFSFileSystem.hasPOIFSHeader(inp)) {
+            stringList.add("校验结果：");
+            stringList.add("请检验Excel版本，需为excle 97-2003 工作簿（*.xls）！");
+            return stringList;
+        }
+        //Workbook wb =  new HSSFWorkbook(inp);
+        Workbook wb = null;
+        try {
+            wb=  Workbook.getWorkbook(inp);
+        } catch (BiffException e) {
+            e.printStackTrace();
+        }
+        // 获得该工作区的第一个sheet
+
+        Sheet sheet = wb.getSheet(0);
+        int maxRows = sheet.getRows();
+        int maxColumns = sheet.getColumns();
+        if(maxRows<=2||maxColumns>11){
+            stringList.add("校验结果：");
+            stringList.add("导入的数据文件标题不正确或者列数大于11列！");
+            return stringList;
+        }
+        String cscNo = "";
+        String insuranceNo = "";
+        String checkcscNo = "CSC登记号有空行：";
+        String cscNoIsNull = "CSC登记号不存在：";
+        String checkInsuranceNo = "保单号有空行：";
+        //Map<String, String> check = new HashMap<String, String>();
+        for (int m = 2; m < sheet.getRows(); m++) {
+
+            cscNo = String.valueOf(decodeNull(sheet.getCell(0, m).getContents()));
+            insuranceNo = String.valueOf(decodeNull(sheet.getCell(10, m).getContents()));
+            Student student = studentService.getStudentByCscId(cscNo);
+            int i =0;
+            if (student != null) {
+                i = getStuInsurance(student.getId(), year);
+            }
+            if ("".equals(cscNo)) {
+                // stringList.add("第"+(i+1)+"行CSC登记号不能为空,");
+                checkcscNo = checkcscNo+"第"+(m+1)+"行,";
+            }else{
+                if(i==0){
+                    // stringList.add("第"+(i+1)+"行CSC登记号不存在,");
+                    cscNoIsNull = cscNoIsNull +"第"+(m+1)+"行,";
+                }
+            }
+            if ("".equals(insuranceNo)) {
+                checkInsuranceNo = checkInsuranceNo+"第"+(m+1)+"行,";
+
+            }
+
+
+        }
+        if(!"CSC登记号有空行：".equals(checkcscNo)){
+            stringList.add(checkcscNo);
+        }
+        if(!"CSC登记号不存在：".equals(cscNoIsNull)){
+            stringList.add(cscNoIsNull);
+        }
+        if(!"保单号有空行：".equals(checkInsuranceNo)){
+            stringList.add(checkInsuranceNo);
+        }
+        if(stringList.size()==0){
+            stringList.clear();
+            stringList.add("成功导入");
+            System.out.println(stringList);
+            return stringList;
+        }else if(stringList.size()>15){
+            stringList.clear();
+            stringList.add("校验结果：");
+            stringList.add("错误信息太多");
+            stringList.add("请更正后重新导入！");
+            System.out.println(stringList);
+            return stringList;
+        }else{
+            stringList.add("以上是全部错误");
+            System.out.println(stringList);
+            return stringList;
+        }
+
+    }
+    public List<String> doImport(FileItem fileItem,int year) throws IOException {
+        List<String> stringList = new ArrayList<String>();
+        InputStream inp = fileItem.getInputStream();
+
+        //Workbook wb =  new HSSFWorkbook(inp);
+        Workbook wb = null;
+        try {
+            wb=  Workbook.getWorkbook(inp);
+        } catch (BiffException e) {
+            e.printStackTrace();
+        }
+        // 获得该工作区的第一个sheet
+
+        Sheet sheet = wb.getSheet(0);
+
+
+        String cscNo = "";
+        String elcregisteNo = "";
+        String insuranceNo = "";
+        //Map<String, String> check = new HashMap<String, String>();
+        for (int m = 2; m < sheet.getRows(); m++) {
+
+            cscNo = String.valueOf(decodeNull(sheet.getCell(0, m).getContents()));
+          // elcregisteNo = String.valueOf(decodeNull(sheet.getCell(1, m).getContents()));
+            insuranceNo = String.valueOf(decodeNull(sheet.getCell(10, m).getContents()));
+            saveDate(cscNo,insuranceNo,year);
+
+            stringList.add(cscNo);
+
+        }
+
+        return stringList;
+
+    }
+    public List<String> checkOld(FileItem fileItem,int year) throws IOException{
         List<String> stringList = new ArrayList<String>();
         //stringList.add("错误信息");
 
@@ -162,10 +292,10 @@ public class InsuranceDAO extends BaseDAO {
 
     }
     @Transactional
-    public void saveDate(String cicNo,String elcregisteNo,int year){
+    public void saveDate(String cscNo,String elcregisteNo,int year){
         String sql = "update SCMS_INSURANCE t set t.INSURNO = '"+elcregisteNo+"' " +
                 " where t.YEAR = "+year+" and t.studentid = (select s.id from scms_student s" +
-                "  where s.cscid = '"+cicNo+"')";
+                "  where s.cscid = '"+cscNo+"')";
 
         super.updateBySql(sql);
     }
@@ -242,7 +372,7 @@ public class InsuranceDAO extends BaseDAO {
 
         }
         if (colNum.get("cicNo") == null) {
-            stringList.add("导入数据必须包含cic登记号！");
+            stringList.add("导入数据必须包含csc登记号！");
         }
         if (colNum.get("elcregisteNo") == null) {
             stringList.add("导入数据必须包含保单号！");

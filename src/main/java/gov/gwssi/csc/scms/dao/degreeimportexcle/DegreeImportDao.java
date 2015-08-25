@@ -5,6 +5,9 @@ import gov.gwssi.csc.scms.domain.query.ImportResult;
 import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.utils.ExcelPoiTools;
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +36,126 @@ public class DegreeImportDao extends BaseDAO {
         }
         return manager;
     }
+    //add by lzs 20150825
+
+    private String decodeNull(Object o) {
+        if (o == null) {
+            return "";
+        }
+        return o.toString().trim();
+    }
+    public List<String> check(FileItem fileItem) throws IOException {
+        List<String> stringList = new ArrayList<String>();
+        InputStream inp = fileItem.getInputStream();
+        if (!inp.markSupported()) {
+            inp = new PushbackInputStream(inp, 8);
+        }
+        if (!POIFSFileSystem.hasPOIFSHeader(inp)) {
+            stringList.add("校验结果：");
+            stringList.add("请检验Excel版本，需为excle 97-2003 工作簿（*.xls）！");
+            return stringList;
+        }
+        //Workbook wb =  new HSSFWorkbook(inp);
+        Workbook wb = null;
+        try {
+            wb=  Workbook.getWorkbook(inp);
+        } catch (BiffException e) {
+            e.printStackTrace();
+        }
+        // 获得该工作区的第一个sheet
+
+        Sheet sheet = wb.getSheet(0);
+        int maxRows = sheet.getRows();
+        int maxColumns = sheet.getColumns();
+        if(maxRows<=2||maxColumns>3){
+            stringList.add("校验结果：");
+            stringList.add("导入的数据文件标题不正确或者列数大于3列！");
+            return stringList;
+        }
+        String cscNo = "";
+        String elcregisteNo = "";
+        String checkcscNo = "CSC登记号有空行：";
+        String cscNoIsNull = "CSC登记号不存在：";
+
+        //Map<String, String> check = new HashMap<String, String>();
+        for (int m = 2; m < sheet.getRows(); m++) {
+
+            cscNo = String.valueOf(decodeNull(sheet.getCell(0, m).getContents()));
+           // elcregisteNo = String.valueOf(decodeNull(sheet.getCell(1, m).getContents()));
+            Student student = studentService.getStudentByCscId(cscNo);
+            if ("".equals(cscNo)) {
+                // stringList.add("第"+(i+1)+"行CSC登记号不能为空,");
+                checkcscNo = checkcscNo+"第"+(m+1)+"行,";
+            }else{
+                if(student==null){
+                    // stringList.add("第"+(i+1)+"行CSC登记号不存在,");
+                    cscNoIsNull = cscNoIsNull +"第"+(m+1)+"行,";
+                }
+            }
+
+
+
+
+        }
+        if(!"CSC登记号有空行：".equals(checkcscNo)){
+            stringList.add(checkcscNo);
+        }
+        if(!"CSC登记号不存在：".equals(cscNoIsNull)){
+            stringList.add(cscNoIsNull);
+        }
+
+        if(stringList.size()==0){
+            stringList.clear();
+            stringList.add("成功导入");
+            System.out.println(stringList);
+            return stringList;
+        }else if(stringList.size()>15){
+            stringList.clear();
+            stringList.add("校验结果：");
+            stringList.add("错误信息太多");
+            stringList.add("请更正后重新导入！");
+            System.out.println(stringList);
+            return stringList;
+        }else{
+            stringList.add("<br/>以上是全部错误");
+            System.out.println(stringList);
+            return stringList;
+        }
+
+    }
+    public List<String> doImport(FileItem fileItem) throws IOException {
+        List<String> stringList = new ArrayList<String>();
+        InputStream inp = fileItem.getInputStream();
+
+        //Workbook wb =  new HSSFWorkbook(inp);
+        Workbook wb = null;
+        try {
+            wb=  Workbook.getWorkbook(inp);
+        } catch (BiffException e) {
+            e.printStackTrace();
+        }
+        // 获得该工作区的第一个sheet
+
+        Sheet sheet = wb.getSheet(0);
+
+
+        String cscNo = "";
+        String elcregisteNo = "";
+        String degreeNo = "";
+        //Map<String, String> check = new HashMap<String, String>();
+        for (int m = 2; m < sheet.getRows(); m++) {
+
+            cscNo = String.valueOf(decodeNull(sheet.getCell(0, m).getContents()));
+            elcregisteNo = String.valueOf(decodeNull(sheet.getCell(1, m).getContents()));
+            degreeNo = String.valueOf(decodeNull(sheet.getCell(2, m).getContents()));
+            stringList.add(cscNo);
+
+        }
+
+        return stringList;
+
+    }
+    //end by lzs 20150825
     public List getList(String pro,String univ) {
         List<Map> getList = null;
         List<ImportResult> newStudenTimeSettList = new ArrayList<ImportResult>();
@@ -85,7 +208,7 @@ public class DegreeImportDao extends BaseDAO {
         // System.out.println("11111");
         return newStudenTimeSettList;
     }
-    public List<String> check(FileItem fileItem) throws IOException{
+    public List<String> checkOld(FileItem fileItem) throws IOException{
         List<String> stringList = new ArrayList<String>();
         //stringList.add("错误信息");
 
@@ -224,10 +347,10 @@ public class DegreeImportDao extends BaseDAO {
 
 }
     @Transactional
-    public void saveDate(String cicNo,String elcregisteNo,String degreeNo){
-        String sql = "update scms_schoolroll t set t.elcregisteno = '"+elcregisteNo+"' " +
+    public void saveDate(String cscNo,String elcregisteNo,String degreeNo){
+        String sql = "update scms_schoolroll t set t.DEGREENO = '"+degreeNo+"' ,t.ACADEMICCERTIFICATENO = '"+elcregisteNo+"'" +
                 " where t.studentid = (select t.studentid from scms_schoolroll t, scms_student s" +
-                "  where t.studentid = s.id  and s.cscid = '"+cicNo+"')";
+                "  where t.studentid = s.id  and s.cscid = '"+cscNo+"')";
 
        super.updateBySql(sql);
     }
