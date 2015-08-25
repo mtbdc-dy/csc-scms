@@ -97,14 +97,11 @@ public class WarningController {
     }
 
     //删除
-    @RequestMapping(value = "/{id}/{log}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
-    public Warning deleteWarning(@PathVariable("id") String id, @PathVariable("log") String log) {
+    @RequestMapping(value = "/{warningId}/{studentId}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
+    public Warning deleteWarning(@PathVariable("warningId") String warningId, @PathVariable("studentId") String studentId) {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
-//          JsonBody jbosy = new ObjectMapper().readValue(log, JsonBody.class);
-            List<OperationLog> operationLogs = mapper.readValue(log, javaType);
-            Warning warning = warningService.deleteWarningById(id, operationLogs);
+            Warning warning = warningService.deleteWarningById(warningId, studentId);
             if (warning == null) {
                 throw new NoSuchWarningException("cannot delete the warning");
             }

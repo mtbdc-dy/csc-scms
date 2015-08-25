@@ -172,6 +172,11 @@ public class StudentService extends BaseService {
             schoolfellowService.saveSchoolfellow(student.getSchoolfellow());
         return studentRepository.save(student);
     }
+
+    @Transactional
+    public Student updateStudent(Student student) {
+        return studentRepository.save(student);
+    }
     
     @Transactional
     public String saveStudent(String dbType, OperationLog operationLog) throws Exception {
@@ -196,6 +201,7 @@ public class StudentService extends BaseService {
         getBaseDao().updateBySql(sql);
         return operationLog.getAfter().toString();
     }
+
 
     @SuppressWarnings("unchecked")
     public Object getGroupByStudentId(String studentId, String groupName) {

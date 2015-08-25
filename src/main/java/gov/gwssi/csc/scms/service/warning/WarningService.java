@@ -11,7 +11,6 @@ import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.domain.warning.Warning;
 import gov.gwssi.csc.scms.repository.warning.WarningRepository;
 import gov.gwssi.csc.scms.service.BaseService;
-import gov.gwssi.csc.scms.service.log.OperationLogService;
 import gov.gwssi.csc.scms.service.student.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -34,8 +33,6 @@ public class WarningService extends BaseService {
     @Autowired
     @Qualifier("warningRepository")
     private WarningRepository warningRepository;
-    @Autowired
-    private OperationLogService operationLogService;
     @Autowired
     private StudentService studentService;
 
@@ -94,11 +91,11 @@ public class WarningService extends BaseService {
         //与student主表建立关联
         Student student = studentService.getStudentById(studentId);
         student.setWarning(warning);
+        studentService.updateStudent(student);
+
         warning.setStudent(student);
         //保存新增的预警名单人员
         warningRepository.save(warning);
-
-
         return warning.getWarningId();
     }
 
@@ -123,13 +120,18 @@ public class WarningService extends BaseService {
     }
 
     //删除
-    public Warning deleteWarningById(String id, List<OperationLog> operationLogs) {
+    public Warning deleteWarningById(String id, String studentId) {
         Warning warning = getWarningById(id);
         if (warning == null)
             return null;
-        //记录日志
-        operationLogService.saveOperationLog(operationLogs);
-        warningRepository.delete(warning);
+        try{
+            Student student = studentService.getStudentById(studentId);
+            student.setWarning(null);
+            studentService.updateStudent(student);
+            warningRepository.delete(warning);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return warning;
     }
 
