@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.service.scholarship;
 
 import gov.gwssi.csc.scms.dao.scholarshipJ.ScholarshipJDAO;
+import gov.gwssi.csc.scms.domain.scholarship.ScholarshipDetail;
 import gov.gwssi.csc.scms.repository.scholarshipX.ScholarshipDetailRepository;
 import gov.gwssi.csc.scms.repository.scholarshipX.ScholarshipRepository;
 import gov.gwssi.csc.scms.service.BaseService;
