@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.controller.JsonBody;
 import gov.gwssi.csc.scms.controller.RequestHeaderError;
+import gov.gwssi.csc.scms.dao.ticket.TicketDAO;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.TicketResultObject;
@@ -15,15 +16,22 @@ import gov.gwssi.csc.scms.service.user.NoSuchUserException;
 import gov.gwssi.csc.scms.service.user.UserIdentityError;
 import gov.gwssi.csc.scms.service.user.UserService;
 import gov.gwssi.csc.scms.utils.JWTUtil;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by lzs on 2015/5/29.
@@ -36,6 +44,9 @@ public class TicketController {
     private UserService userService;
     @Autowired
     private TicketService ticketService;
+    @Autowired
+    private TicketDAO ticketDAO;
+    public static Map<String,List> MAP = new HashMap<String, List>();
     //学校用户在前台点击生成机票管理列表，返回列表
     @RequestMapping(value = "/new",method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<TicketResultObject> getTickets(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
@@ -231,5 +242,80 @@ public class TicketController {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+    //
+    @RequestMapping(value = "/getkey", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
+    public List getValue(@RequestParam(value = "key") String key) {
+        //按照分页（默认）要求，返回列表内容
+        List proAndUnivList = null;
+        if (key == null || "null".equals(key)) {
+
+            return new ArrayList();
+        }else{
+            //System.out.println("hehe="+MAP.get(key));
+            return MAP.get(key);
+        }
+        //return null;
+
+
+
+    }
+    /**
+     * 导入机票信息
+     * POST /insurance
+     *
+     * @return
+     */
+    @RequestMapping(value = "/dr",
+            method = RequestMethod.POST
+    )
+    public ResponseEntity importInsurance(@RequestParam(value = "filename") String filename,
+                                          @RequestParam(value = "key") String key,
+                                          HttpServletRequest request) {
+//        System.out.println("request = " + request);
+        try {
+            System.out.println("filename = " + URLDecoder.decode(filename, "utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        Calendar cale = Calendar.getInstance();
+        cale.setTime(new Date());   // 当前年
+        int year = cale.get(Calendar.YEAR);
+
+        System.out.println("InsuranceController.importInsurance");
+        boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+        System.out.println("isMultipart = " + isMultipart);
+        List<String> list1 = new ArrayList<String>();
+        if (isMultipart) {
+            DiskFileItemFactory factory = new DiskFileItemFactory();
+
+            File repository = (File)  request.getSession().getServletContext().getAttribute("javax.servlet.context.tempdir");
+            factory.setRepository(repository);
+
+            ServletFileUpload upload = new ServletFileUpload(factory);
+
+            try {
+                List<FileItem> items = upload.parseRequest(request);
+                System.out.println("items = " + items);
+                list1 = ticketDAO.check(items.get(0),year);
+                MAP.put(key,list1);
+                if (list1.size() > 0&&!"成功导入".equals(list1.get(0))) {
+                    System.out.println("list1 = " + list1);
+
+                    return new ResponseEntity<List<String>>(list1, HttpStatus.OK);
+                }
+                List<String> list = ticketDAO.doImport(items.get(0),year);
+                // return new ResponseEntity<List<String>>(list1, HttpStatus.OK);
+
+                // Vector<Vector<String>> list = importDao.doExcelImport(items.get(0));
+//                System.out.println("list = " + list.size());
+//                System.out.println("list = " + list);
+            } catch (FileUploadException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return new ResponseEntity<List<String>>(list1, HttpStatus.OK);
     }
     }
