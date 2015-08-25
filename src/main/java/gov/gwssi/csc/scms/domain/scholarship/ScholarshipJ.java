@@ -52,15 +52,27 @@ public class ScholarshipJ {
     @Column
     private Long count;
     /**
-     * 合格人数
+     *合格人数——学校用户
      */
     @Column
-    private Long qualnum;
+    private Long schoolQual;
+
     /**
-     * 奖学金评审状态
+     *不合格人数——学校用户
      */
     @Column
-    private Long unqualnum;
+    private Long schoolUnQual;
+    /**
+     *合格人数--基金委用户
+     */
+    @Column
+    private Long cscQual;
+
+    /**
+     *不合格人数--基金委用户
+     */
+    @Column
+    private Long cscUnQual;
     /**
      * 基金委批复时间
      */
@@ -131,20 +143,36 @@ public class ScholarshipJ {
         this.count = count;
     }
 
-    public Long getQualnum() {
-        return qualnum;
+    public Long getSchoolQual() {
+        return schoolQual;
     }
 
-    public void setQualnum(Long qualnum) {
-        this.qualnum = qualnum;
+    public void setSchoolQual(Long schoolQual) {
+        this.schoolQual = schoolQual;
     }
 
-    public Long getUnqualnum() {
-        return unqualnum;
+    public Long getSchoolUnQual() {
+        return schoolUnQual;
     }
 
-    public void setUnqualnum(Long unqualnum) {
-        this.unqualnum = unqualnum;
+    public void setSchoolUnQual(Long schoolUnQual) {
+        this.schoolUnQual = schoolUnQual;
+    }
+
+    public Long getCscQual() {
+        return cscQual;
+    }
+
+    public void setCscQual(Long cscQual) {
+        this.cscQual = cscQual;
+    }
+
+    public Long getCscUnQual() {
+        return cscUnQual;
+    }
+
+    public void setCscUnQual(Long cscUnQual) {
+        this.cscUnQual = cscUnQual;
     }
 
     public String getCscdate() {

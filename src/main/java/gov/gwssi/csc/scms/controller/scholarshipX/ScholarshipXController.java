@@ -35,7 +35,7 @@ import java.util.List;
 
 /**
  * Created by gc on 2015/7/17.
- * 机票管理控制器
+ * 保险管理控制器
  */
 @RestController
 @RequestMapping(value = "/scholarshipX")
@@ -128,21 +128,40 @@ public class ScholarshipXController {
                 int year=ts.getYear()+1900;
                 if(user.getUserType().equals("2")){//学校用户
                     school=user.getNode().getNodeId();
-                }
-
-                for (Iterator iter = scholarshipXlist.iterator(); iter.hasNext(); ) {
-                    ScholarshipX strX = (ScholarshipX) iter.next();
-                    if(strX.getYear()==year && strX.getSchool().equals(school)){
-                        if (strX.getSchReview().equals("AQ0001")) {
-                            qualNum++;
-                        } else {
-                            unqualNum++;
+                    for (Iterator iter = scholarshipXlist.iterator(); iter.hasNext(); ) {
+                        ScholarshipX strX = (ScholarshipX) iter.next();
+                        if(strX.getYear()==year && strX.getSchool().equals(school)){
+                            if (strX.getSchReview().equals("AQ0001")) {
+                                qualNum++;
+                            } else {
+                                unqualNum++;
+                            }
+                        }
+                    }
+                }else{
+                    for (Iterator iter = scholarshipXlist.iterator(); iter.hasNext(); ) {
+                        ScholarshipX strX = (ScholarshipX) iter.next();
+                        if(strX.getYear()==year && strX.getSchool().equals(school)){
+                            if (strX.getCscReview().equals("AQ0001")) {
+                                qualNum++;
+                            } else {
+                                unqualNum++;
+                            }
                         }
                     }
                 }
+
+
                 Scholarship scholarship = scholarshipXService.findScholarshipOne(ScholarshipDetails.get(0).getScholarship().getId());
-                scholarship.setQualNum((long) qualNum);
-                scholarship.setUnQualNum((long) unqualNum);
+                if(user.getUserType().equals("2")){//学校用户
+                    scholarship.setSchoolQual((long) qualNum);
+                    scholarship.setSchoolUnQual((long) unqualNum);
+
+                }else{//基金委用户进入进行修改时，更新csc的人数
+                    scholarship.setCscQual((long) qualNum);
+                    scholarship.setCscUnQual((long) unqualNum);
+
+                }
                 scholarship.setUpdated(ts);//同时对主表的更新人和更新时间，进行更新
                 scholarship.setUpdateBy(user.getUserId());
 
@@ -205,8 +224,8 @@ public class ScholarshipXController {
                      }
                  }
                  Scholarship scholarship = scholarshipXService.findScholarshipOne(scholarshipDetail.getScholarship().getId());
-                 scholarship.setQualNum((long) qualNum);
-                 scholarship.setUnQualNum((long) unqualNum);
+                 scholarship.setSchoolQual((long) qualNum);
+                 scholarship.setSchoolUnQual((long) unqualNum);
                  scholarship.setUpdated(ts);//同时对主表的更新人和更新时间，进行更新
                  scholarship.setUpdateBy(user.getUserId());
                  scholarshipXService.saveScholarship(scholarship, null);
@@ -232,6 +251,10 @@ public class ScholarshipXController {
             User user = userService.getUserByJWT(header);
             String[] id1;
             id1 = id.split(",");
+            //获取主表id
+            ScholarshipDetail ssD = scholarshipXService.getScholarshipDetailById(id1[1]);
+            String scholarshipId =ssD.getScholarship().getId();
+
             List<ScholarshipXResultObject> scholarshipXResultObjectList = new ArrayList<ScholarshipXResultObject>();
             for (int i = 1; i < id1.length; i++) {
                 ScholarshipDetail scholarshipDetail = scholarshipXService.deleteScholarshipDetailById(id1[i], operationLogs);
@@ -239,11 +262,10 @@ public class ScholarshipXController {
                     throw new NoSuchAbnormalException("cannot delete the scholarshipX,id=" + id1[i]);
                 }
             }
-            //子表全部保存完成后，对主表的合格，不合格人数进行重新统计并更新主表
+             //子表全部保存完成后，对主表的合格，不合格人数进行重新统计并更新主表
             Iterable scholarshipXlist = scholarshipXService.findScholarshipXAll();
             int qualNum = 0;//合格人数
             int unqualNum = 0;//不合格人数
-            String scholarshipId = "";
             Timestamp ts = new Timestamp(System.currentTimeMillis());
             int year=ts.getYear()+1900;
             String school=user.getNode().getNodeId();
@@ -252,7 +274,6 @@ public class ScholarshipXController {
                 ScholarshipX strX = (ScholarshipX) iter.next();
 
                 if(strX.getYear()==year && strX.getSchool().equals(school)){
-                    scholarshipId=strX.getScholarshipId();
                     if (strX.getSchReview().equals("AQ0001")) {
                         qualNum++;
                     } else {
@@ -261,8 +282,8 @@ public class ScholarshipXController {
                 }
             }
             Scholarship scholarship = scholarshipXService.findScholarshipOne(scholarshipId);
-            scholarship.setQualNum((long) qualNum);
-            scholarship.setUnQualNum((long) unqualNum);
+            scholarship.setSchoolQual((long) qualNum);
+            scholarship.setSchoolUnQual((long) unqualNum);
             scholarship.setUpdated(ts);//同时对主表的更新人和更新时间，进行更新
             scholarship.setUpdateBy(user.getUserId());
             scholarshipXService.saveScholarship(scholarship, null);//对主表进行更新
@@ -321,8 +342,10 @@ public class ScholarshipXController {
                     }
                 }
                 Scholarship scholarship = scholarshipXService.findScholarshipOne(scholarshipId);
-                scholarship.setQualNum((long) qualNum);
-                scholarship.setUnQualNum((long) unqualNum);
+                scholarship.setSchoolQual((long) qualNum);
+                scholarship.setSchoolUnQual((long) unqualNum);
+                scholarship.setCscQual((long) qualNum);//提交时把人数，赋值给基金委的对应字段
+                scholarship.setCscUnQual((long) unqualNum);//提交时把人数，赋值给基金委的对应字段
                 scholarship.setUpdated(ts);//同时对主表的更新人和更新时间，进行更新
                 scholarship.setUpdateBy(user.getUserId());
                 //对主表的状态进行更新，学校提交状态，和学校提交时间

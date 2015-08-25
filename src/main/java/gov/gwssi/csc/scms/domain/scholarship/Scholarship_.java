@@ -11,7 +11,6 @@ public abstract class Scholarship_ {
 
     public static volatile SingularAttribute<Scholarship, String> updateBy;
     public static volatile SingularAttribute<Scholarship, Date> cscDate;
-    public static volatile SingularAttribute<Scholarship, Long> unQualNum;
     public static volatile SingularAttribute<Scholarship, String> createBy;
     public static volatile SingularAttribute<Scholarship, Date> schoolDate;
     public static volatile SingularAttribute<Scholarship, String> id;
@@ -21,7 +20,9 @@ public abstract class Scholarship_ {
     public static volatile SingularAttribute<Scholarship, Date> created;
     public static volatile SingularAttribute<Scholarship, Date> updated;
     public static volatile SingularAttribute<Scholarship, Long> year;
-    public static volatile SingularAttribute<Scholarship, Long> qualNum;
-
+    public static volatile SingularAttribute<Scholarship, Long> schoolQual;
+    public static volatile SingularAttribute<Scholarship, Long> cscQual;
+    public static volatile SingularAttribute<Scholarship, Long> cscUnQual;
+    public static volatile SingularAttribute<Scholarship, Long> schoolUnQual;
 }
 

@@ -2,10 +2,8 @@ package gov.gwssi.csc.scms.service.scholarship;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.base.UnitTestBase;
-import gov.gwssi.csc.scms.domain.query.ScholarshipJResultObject;
 import gov.gwssi.csc.scms.domain.query.ScholarshipXResultObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
-import gov.gwssi.csc.scms.domain.scholarship.Scholarship;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
