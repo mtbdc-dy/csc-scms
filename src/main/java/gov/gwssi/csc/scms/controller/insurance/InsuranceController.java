@@ -44,7 +44,7 @@ import java.util.*;
 
 /**
  * Created by gc on 2015/7/17.
- * 机票管理控制器
+ * 保险管理控制器
  */
 @RestController
 @RequestMapping(value = "/insurance")
@@ -190,24 +190,25 @@ public class InsuranceController {
      * GET /insurance?ids=1,2,3 HTTP/1.1
      * Accept: application/octet-stream
      *
-     * @param ids 需要导出的保险信息ID
+     * @param id     需要导出的保险信息ID
      */
     @RequestMapping(
             method = RequestMethod.GET,
-            params = {"ids"},
+            params = {"id"},
             headers = "Accept=application/octet-stream")
     public ResponseEntity<byte[]> exportInsurance(
-            @RequestParam("ids") String ids) throws IOException {
+            @RequestParam("id") String[] id) throws IOException {
         byte[] bytes = null;
 
-        String tableName = "v_scholarship_lastyear";
-        bytes = exportService.exportByfilter(tableName, ids);
+        String tableName = "v_exp_insurance";
+        bytes = exportService.exportByfilter(tableName, id);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
-        String fileName = "tableName_" + ts.getTime() + ".xls"; // 组装附件名称和格式
+        String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         httpHeaders.setContentDispositionFormData("attachment", fileName);
+        insuranceService.updateInsurancePresta(id);//导出后，根据传入的id数组进行批量更新导出状态
 
         return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
     }

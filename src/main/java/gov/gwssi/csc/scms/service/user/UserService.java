@@ -12,6 +12,7 @@ import gov.gwssi.csc.scms.utils.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,6 +41,7 @@ public class UserService extends BaseService {
 
     @Autowired
     private ProjectService projectService;
+
 
     public User getUserByIdAndEnable(String id, String enable) {
         return userRepository.findUserByIdAndEnable(id, enable);
@@ -217,4 +219,17 @@ public class UserService extends BaseService {
         role.setMenus(menuService.getMenuByRole(role));
         return user;
     }
+    //修改用户密码
+    @Transactional
+    public void updateUserPwd(String userId, String newPwd1){
+        User user = userRepository.findUserByUserId(userId);
+        user.setPassword(newPwd1);
+        userRepository.save(user);
+    }
+
+    public User getUserByUserId(String userId){
+        return userRepository.findUserByUserId(userId);
+    }
+
+
 }

@@ -2,7 +2,12 @@ package gov.gwssi.csc.scms.controller.student;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.gwssi.csc.scms.service.export.ExportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import gov.gwssi.csc.scms.controller.JsonBody;
@@ -23,6 +28,7 @@ import gov.gwssi.csc.scms.utils.JWTUtil;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -37,6 +43,9 @@ public class StudentController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ExportService exportService;
 
     /**
      * 学籍信息管理相关操作，获取学生列表
@@ -75,10 +84,88 @@ public class StudentController {
         }
     }
 
+
+    /**
+     * 在校生学籍信息管理相关操作，获取学生列表
+     * 请求信息为Json格式对应的StudentFilterObject类
+     */
+    @RequestMapping(value = "/schoolstudent", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
+    public List<StudentResultObject> getSchoolStudentsByConditions(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
+                                                             @RequestParam(value = "filter") String filter) {
+        try {
+            StudentFilterObject sfo = null;
+            sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);
+//            User user = userService.getUserByUserIdAndEnable(userId, User.ENABLE);
+
+            User user = userService.getUserByJWT(header);
+//            if (user == null)
+//                throw new NoSuchUserException(userId);
+
+            //按照分页（默认）要求，返回列表内容
+            List<StudentResultObject> studentResultObjects = studentService.getSchoolStudentsByFilter(sfo, user);
+            return studentResultObjects;
+        } catch (UnsupportedEncodingException uee) {
+            uee.printStackTrace();
+            throw new RuntimeException(uee);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (NoSuchUserException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (UserIdentityError userIdentityError) {
+            userIdentityError.printStackTrace();
+            throw new RuntimeException(userIdentityError);
+        } catch (RequestHeaderError requestHeaderError) {
+            requestHeaderError.printStackTrace();
+            throw new RuntimeException(requestHeaderError);
+        }
+    }
+
+    /**
+     * 离校生学籍信息管理相关操作，获取学生列表
+     * 请求信息为Json格式对应的StudentFilterObject类
+     */
+    @RequestMapping(value = "/leavestudent", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
+    public List<StudentResultObject> getLeaveStudentsByConditions(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
+                                                                   @RequestParam(value = "filter") String filter) {
+        try {
+            StudentFilterObject sfo = null;
+            sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);
+//            User user = userService.getUserByUserIdAndEnable(userId, User.ENABLE);
+
+            User user = userService.getUserByJWT(header);
+//            if (user == null)
+//                throw new NoSuchUserException(userId);
+
+            //按照分页（默认）要求，返回列表内容
+            List<StudentResultObject> studentResultObjects = studentService.getLeaveStudentsByFilter(sfo, user);
+            return studentResultObjects;
+        } catch (UnsupportedEncodingException uee) {
+            uee.printStackTrace();
+            throw new RuntimeException(uee);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (NoSuchUserException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (UserIdentityError userIdentityError) {
+            userIdentityError.printStackTrace();
+            throw new RuntimeException(userIdentityError);
+        } catch (RequestHeaderError requestHeaderError) {
+            requestHeaderError.printStackTrace();
+            throw new RuntimeException(requestHeaderError);
+        }
+    }
+
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
     public Student getStudentById(@PathVariable(value = "id") String id) {
         try {
             Student student = studentService.getStudentById(id);
+            student.setAbnormals(null);
+            student.setTickets(null);
             return student;
         } catch (Exception e) {
             e.printStackTrace();
@@ -100,6 +187,9 @@ public class StudentController {
                 return null;
 
             String after = studentService.saveStudent(dbType,operationLog);
+            if(!"".equals(after)){
+                studentService.updateRegistState(operationLog);
+            }
             return "{\"after\":\""+after+"\"}";
         } catch (Exception e) {
             e.printStackTrace();
@@ -264,5 +354,32 @@ public class StudentController {
             groupObject = mapper.readValue(body, javaType);
         }
         return groupObject;
+    }
+
+    /**
+     * 导出报到注册信息
+     * GET
+     * Accept: application/octet-stream
+     *
+     * @param id
+     */
+    @RequestMapping(
+            method = RequestMethod.GET,
+            params = {"id"},
+            headers = "Accept=application/octet-stream")
+    public ResponseEntity<byte[]> exportSturegister(
+            @RequestParam("id") String[] id) throws IOException {
+        byte[] bytes = null;
+
+        String tableName = "v_exp_register";
+        bytes = exportService.exportByfilter(tableName, id);
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        httpHeaders.setContentDispositionFormData("attachment", fileName);
+
+        return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
     }
 }

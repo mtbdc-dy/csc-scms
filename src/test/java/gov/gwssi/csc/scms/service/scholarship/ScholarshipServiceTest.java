@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.base.UnitTestBase;
 import gov.gwssi.csc.scms.domain.query.ScholarshipXResultObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
+import gov.gwssi.csc.scms.domain.scholarship.ScholarshipDetail;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -27,8 +28,23 @@ public class ScholarshipServiceTest extends UnitTestBase {
 
     }
 
+    @Test
+    public void testfindScholarshipDetailAllById() throws Exception {
+        ScholarshipJService scholarshipJService = super.getBean("scholarshipJService");
 
+        List<ScholarshipDetail> scholarshipDetailList=scholarshipJService.findDetailListBy("2015082500000000182");
+        List aa=scholarshipJService.findDetailListBy("2015082500000000182");
+        Assert.assertNotNull(scholarshipDetailList);
+        System.out.println("list size::" + scholarshipDetailList);
+    }
+    @Test
+    public void testgetScholarshipXListcscId1() throws Exception {
+        ScholarshipXService scholarshipXService = super.getBean("scholarshipXService");
 
+        List<ScholarshipXResultObject> inResultObjectList = scholarshipXService.getScholarshipXListcscId("csc000000002");
+        Assert.assertNotNull(inResultObjectList);
+        System.out.println("list size::" + inResultObjectList);
+    }
     @Test
     public void testsaveScholarshipDetail() throws Exception {
         ScholarshipXService scholarshipXService = super.getBean("scholarshipXService");
@@ -40,7 +56,7 @@ public class ScholarshipServiceTest extends UnitTestBase {
     @Test
     public void testgetScholarshipXListByFilter() throws Exception {
         ScholarshipXService scholarshipXService = super.getBean("scholarshipXService");
-        String body = "{\"schReview\" : \"AV0001\" ," +
+        String body = "{\"year\" : \"2015\" ," +
                 "\"offSet\" : \"0\" , \"pageSize\" : \"2\"}";
         StudentFilterObject ticketResultObject;
         List<ScholarshipXResultObject> list1 = null;

@@ -55,6 +55,7 @@ public class RegistrationInfo {
     /**
      * 院校3
      */
+    private String university3;
     /**
      * 创建人
      */
@@ -73,7 +74,6 @@ public class RegistrationInfo {
      */
     @Column(name = "UPDATED")
     private Date updateDate;
-    private String university3;
     /**
      * 学生
      */

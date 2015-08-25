@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
+
 /**
  * Created by Murray on 4/3/2015.
  */
@@ -24,9 +26,9 @@ public class SchoolRollService extends BaseService {
     }
 
     public SchoolRoll updateSchoolRoll(SchoolRoll schoolRoll) {
-        String id = schoolRoll.getId();
-        SchoolRoll sr = getSchoolRollById(schoolRoll.getId());
-        Student student = sr.getStudent();
+//        String id = schoolRoll.getId();
+//        SchoolRoll sr = getSchoolRollById(schoolRoll.getId());
+//        Student student = sr.getStudent();
        // schoolRoll.setStudent(student);
         return schoolRollRepository.save(schoolRoll);
     }
@@ -39,4 +41,15 @@ public class SchoolRollService extends BaseService {
     public SchoolRoll getSchoolRollByStudentId(String studentId) {
         return schoolRollRepository.findByStudentId(studentId);
     }
+
+    public void updateSchoolRollRegisterYear(String studentId){
+        SchoolRoll schoolRoll = getSchoolRollByStudentId(studentId);
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        schoolRoll.setRegisterYear(year);
+        updateSchoolRoll(schoolRoll);
+    }
+
+
+
 }

@@ -7,11 +7,11 @@ import javax.persistence.Table;
 import java.util.Date;
 
 /**
- * Created by Wang Rui on 2015/4/14.
+ * Created by gaochen 20150817.
  * 奖学金评审
  */
 @Entity
-@Table(name = "v_scholarship_lastyear")
+@Table(name = "V_SCHOLARSHIP_LASTYEAR")
 public class ScholarshipX {
     @Id
     //@Column(length = 19)
@@ -19,6 +19,8 @@ public class ScholarshipX {
 
     @Column
     private String studentId;
+    @Column
+    private String cscId;
     @Column
     private String scholarshipId;
     @Column
@@ -42,9 +44,17 @@ public class ScholarshipX {
     @Column
     private Date cscEndTime;
     @Column
-    private Long qualNum;
+    private Long schoolQual;
     @Column
-    private Long unQualNum;
+    private Long schoolUnQual;
+    @Column
+    private Long cscQual;
+    @Column
+    private Long cscUnQual;
+    @Column
+    private Date updated;
+    @Column
+    private String  updateby;
     @Column
     private String schoolSta;
     @Column
@@ -55,84 +65,45 @@ public class ScholarshipX {
     /**
      *年度
      */
-    @Column(name = "year",length=4)
+    @Column
     private long year;
     /**
      *院校 DIM_UNIVERSITY代码
      */
-    @Column(name = "school",length=6)
+    @Column
     private String school;
 
 
-
-
-
-    /**
-     *合格人数
-     */
-//    @Column(name = "qualNum",length=16)
-//    private Long qualNum;
-
-    /**
-     *不合格人数
-     */
-//    @Column(name = "unQualNum",length=16)
-//    private Long unQualNum;
-//    /**
-//     *创建人
-//     */
-//    @Column(name = "CREATEBY",length=20)
-//    private String createBy;
-//    /**
-//     *入库日期
-//     */
-//    @Column(name = "CREATED")
-//    private Date created;
-//    /**
-//     *修改人
-//     */
-//    @Column(name = "UPDATEBY",length=20)
-//    private String updateBy;
-//    /**
-//     *修改时间
-//     */
-//    @Column(name = "UPDATED")
-//    private Date updated;
-    /**
-     *基金委状态：0未提交；1提交
-     */
-//    @Column(name = "CSCSTA",length=1)
-//    private String cscSta;
-    /**
-     *学校状态：0未提交；1提交
-     */
-//    @Column(name = "SCHOOLSTA",length=1)
-//    private String schoolSta;
-//    /**
-//     *学校评审提交日期
-//     */
-//    @Column(name = "SCHOOLDATE")
-//    private Date schoolDate;
-//
-//    /**
-//     *基金委批复日期
-//     */
-//    @Column(name = "CSCDATE")
-//    private Date cscDate;
-    public Long getQualNum() {
-        return qualNum;
+    public Long getSchoolQual() {
+        return schoolQual;
     }
 
-    public void setQualNum(Long qualNum) {
-        this.qualNum = qualNum;
+    public void setSchoolQual(Long schoolQual) {
+        this.schoolQual = schoolQual;
     }
 
-    public Long getUnQualNum() {
-        return unQualNum;
+    public Long getSchoolUnQual() {
+        return schoolUnQual;
     }
 
-    public void setUnQualNum(Long unQualNum) {
-        this.unQualNum = unQualNum;
+    public void setSchoolUnQual(Long schoolUnQual) {
+        this.schoolUnQual = schoolUnQual;
+    }
+
+    public Long getCscQual() {
+        return cscQual;
+    }
+
+    public void setCscQual(Long cscQual) {
+        this.cscQual = cscQual;
+    }
+
+    public Long getCscUnQual() {
+        return cscUnQual;
+    }
+
+    public void setCscUnQual(Long cscUnQual) {
+        this.cscUnQual = cscUnQual;
     }
 
     public String getSchoolSta() {
@@ -194,7 +165,21 @@ public class ScholarshipX {
         this.scholarshipId = scholarshipId;
     }
 
+    public Date getUpdated() {
+        return updated;
+    }
 
+    public void setUpdated(Date updated) {
+        this.updated = updated;
+    }
+
+    public String getUpdateby() {
+        return updateby;
+    }
+
+    public void setUpdateby(String updateby) {
+        this.updateby = updateby;
+    }
 
     public String getSchResult() {
         return schResult;
@@ -204,6 +189,13 @@ public class ScholarshipX {
         this.schResult = schResult;
     }
 
+    public String getCscId() {
+        return cscId;
+    }
+
+    public void setCscId(String cscId) {
+        this.cscId = cscId;
+    }
 
     public String getSchReview() {
         return schReview;

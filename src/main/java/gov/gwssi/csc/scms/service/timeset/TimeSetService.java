@@ -22,4 +22,11 @@ public class TimeSetService extends BaseService {
     public int setTime(String userName,String begin,String end,String ids){
         return timeSetDAO.setTime(userName, begin, end, ids);
     }
+    public List findOldProAndUniv(String pro,String univ){
+        return timeSetDAO.getOldStudentTimeSetList(pro, univ);
+    }
+    @Transactional
+    public int setOldTime(String userName,String begin,String end,String ids){
+        return timeSetDAO.setOldTime(userName, begin, end, ids);
+    }
 }

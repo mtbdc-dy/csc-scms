@@ -105,6 +105,52 @@ public class StudentService extends BaseService {
         return studentList;
     }
 
+    public List<StudentResultObject> getSchoolStudentsByFilter(FilterObject filterObject, User user) {
+        List<StudentResultObject> studentList;
+        int startPosition, pageSize;
+        String str = "and schoolRoll.registed = 'AX0002' and schoolRoll.leaveChina ='BA0001'";
+        String sql = getSqlByBody(filterObject, user, str);
+        System.out.println("getStudentSql===" + sql);
+        if (sql == null) {
+            return null;
+        }
+
+        try {
+            startPosition = Integer.parseInt(filterObject.getOffSet());
+            pageSize = Integer.parseInt(filterObject.getPageSize());
+        } catch (NumberFormatException ne) {
+            ne.printStackTrace();
+            startPosition = FilterObject.OFFSETDEFULT;
+            pageSize = FilterObject.PAGESIZEDEFULT;
+        }
+
+        studentList = super.getBaseDao().getObjectListByHQL(sql, StudentResultObject.class, startPosition, pageSize);
+        return studentList;
+    }
+
+    public List<StudentResultObject> getLeaveStudentsByFilter(FilterObject filterObject, User user) {
+        List<StudentResultObject> studentList;
+        int startPosition, pageSize;
+        String str = "and schoolRoll.registed = 'AX0002' and schoolRoll.leaveChina ='BA0002'";
+        String sql = getSqlByBody(filterObject, user, str);
+        System.out.println("getStudentSql===" + sql);
+        if (sql == null) {
+            return null;
+        }
+
+        try {
+            startPosition = Integer.parseInt(filterObject.getOffSet());
+            pageSize = Integer.parseInt(filterObject.getPageSize());
+        } catch (NumberFormatException ne) {
+            ne.printStackTrace();
+            startPosition = FilterObject.OFFSETDEFULT;
+            pageSize = FilterObject.PAGESIZEDEFULT;
+        }
+
+        studentList = super.getBaseDao().getObjectListByHQL(sql, StudentResultObject.class, startPosition, pageSize);
+        return studentList;
+    }
+
     public int getCountByQueryFilter(FilterObject filterObject, User user) {
         String sql = getCountSqlByBody(filterObject, user);
         if (sql == null) {
@@ -139,6 +185,22 @@ public class StudentService extends BaseService {
         sqlStr += " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll " +
                 "where student.id = basicInfo.student " +
                 "and student.id = schoolRoll.student ";
+
+        //添加查询条件，并返回完整SQL语句
+        return sqlStr + new StudentFilter((StudentFilterObject) filterObject).getFilter(user,"","");
+    }
+
+    private String getSqlByBody(FilterObject filterObject, User user, String str) {
+        if (filterObject == null)
+            return null;
+
+        //获取查询结果集
+        String sqlStr = StudentResultObject.getResultObject();
+
+        //添加查询实体
+        sqlStr += " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll " +
+                "where student.id = basicInfo.student " +
+                "and student.id = schoolRoll.student " + str;
 
         //添加查询条件，并返回完整SQL语句
         return sqlStr + new StudentFilter((StudentFilterObject) filterObject).getFilter(user,"","");
@@ -194,10 +256,23 @@ public class StudentService extends BaseService {
         sql+= " where studentid ='" + operationLog.getStudentId()+"'";
         System.out.println(sql);
         getBaseDao().updateBySql(sql);
+
+
         return operationLog.getAfter().toString();
     }
-
-
+    @Transactional
+    public void updateRegistState( OperationLog operationLog) throws Exception {
+        if(operationLog.getAfter().equals("AX0002")){    //若将"是否报到"从否(AX0001)改为是(AX0002)，则还要将报到状态从未处理(AW0002)改为报到(AW0001)
+            SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(operationLog.getStudentId());
+            schoolRoll.setRegisterState("AW0001");
+            schoolRollService.updateSchoolRoll(schoolRoll);
+        }
+        if(operationLog.getAfter().equals("AX0001")){  //若将"是否报到"从是(AX0002)改为否(AX0001)，则还要将报到状态从报到(AW0001)改为未处理(AW0002)
+            SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(operationLog.getStudentId());
+            schoolRoll.setRegisterState("AW0002");
+            schoolRollService.updateSchoolRoll(schoolRoll);
+        }
+    }
     @SuppressWarnings("unchecked")
     public Object getGroupByStudentId(String studentId, String groupName) {
         if ("basicInfo".equalsIgnoreCase(groupName)) {
@@ -384,7 +459,6 @@ public class StudentService extends BaseService {
         System.out.println(sql);
         getBaseDao().updateBySql(sql);
     }
-
 
     @Transactional
     public void leaveChina(String studentIds, SchoolRoll schoolRoll, List<OperationLog> operationLogs) throws Exception {

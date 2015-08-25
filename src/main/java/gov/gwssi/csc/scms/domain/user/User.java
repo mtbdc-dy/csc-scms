@@ -94,7 +94,9 @@ public class User implements Serializable {
      * 用户权限
      */
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "PUB_USER_PROJECT", joinColumns = {@JoinColumn(name = "USERID", referencedColumnName = "USERID")},
+    @JoinTable(
+            name = "PUB_USER_PROJECT",
+            joinColumns = {@JoinColumn(name = "USERID", referencedColumnName = "USERID")},
             inverseJoinColumns = {@JoinColumn(name = "PROJECTID")})
     private List<Project> projects = new ArrayList<Project>();
 
@@ -148,6 +150,10 @@ public class User implements Serializable {
 
     public Role getRole() {
         return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public void setRoll(Role role) {
@@ -224,10 +230,6 @@ public class User implements Serializable {
 
     public void setEnable(String enable) {
         this.enable = enable;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 
     public List<Project> getProjects() {

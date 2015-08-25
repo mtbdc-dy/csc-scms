@@ -8,9 +8,11 @@ import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.AbnormalResultObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
+import gov.gwssi.csc.scms.domain.student.SchoolRoll;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.abnormal.AbnormalService;
 import gov.gwssi.csc.scms.service.abnormal.NoSuchAbnormalException;
+import gov.gwssi.csc.scms.service.student.SchoolRollService;
 import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.user.NoSuchUserException;
 import gov.gwssi.csc.scms.service.user.UserIdentityError;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -36,6 +39,8 @@ public class AbnormalController {
     private StudentService studentService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private SchoolRollService schoolRollService;
 
     //学校用户在前台点击异动申请菜单后，返回异动申请列表
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
@@ -76,8 +81,8 @@ public class AbnormalController {
 
     //保存新增的异动申请
 
-    @RequestMapping(value = "/{studentId}",  method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
-    public  AbnormalResultObject putAbnormal(@PathVariable(value = "studentId") String studentId,
+    @RequestMapping(value = "/{studentId}/{flag}",  method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
+    public  AbnormalResultObject putAbnormal(@PathVariable(value = "studentId") String studentId, @PathVariable(value = "flag") String flag,
                                              @RequestBody String abnormalJson) {
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -93,8 +98,12 @@ public class AbnormalController {
 
             JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
             List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
-            String id = abnormalService.saveAbnormal(abnormal, null);
+            String id = abnormalService.saveAbnormal(abnormal, operationLogs);
             AbnormalResultObject  abnormalResult = abnormalService.getAbnormalAndStu(id);
+
+            if("oldregister".equals(flag)){
+                schoolRollService.updateSchoolRollRegisterYear(studentId);
+            }
             return abnormalResult;
         } catch (Exception e) {
             e.printStackTrace();
@@ -115,7 +124,7 @@ public class AbnormalController {
             } else {
             JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
             List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
-            abnormal = abnormalService.updateAbnormal(abnormal, null);
+            abnormal = abnormalService.updateAbnormal(abnormal, operationLogs);
             //修改成功后返回 修改的该条异动信息 包含学生信息
             AbnormalResultObject  abnormalResult = abnormalService.getAbnormalAndStu(abnormal.getId());
             return abnormalResult;

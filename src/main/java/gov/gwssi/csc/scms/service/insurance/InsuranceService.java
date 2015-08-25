@@ -2,7 +2,7 @@ package gov.gwssi.csc.scms.service.insurance;
 
 import gov.gwssi.csc.scms.dao.insurance.InsuranceDAO;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
-import gov.gwssi.csc.scms.domain.query.FilterObject;
+import gov.gwssi.csc.scms.domain.query.FilterObject; 
 import gov.gwssi.csc.scms.domain.query.StudentFilter;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.InsuranceResultObject;
@@ -156,7 +156,20 @@ public class InsuranceService extends BaseService {
         insuranceRepository.delete(insurance);
         return insurance;
     }
-    public int getStuInsurance(String studentid,int year) {
+
+    //导出后更新保险导出状态
+    public void updateInsurancePresta(String[] id) {
+        for (int i=0;i<id.length;i++){
+            Insurance insurance = getInsuranceById(id[i]);
+            insurance.setPreSta("AV0002");
+            insuranceRepository.save(insurance);
+        }
+
+
+    }
+
+
+   public int getStuInsurance(String studentid,int year) {
         return insuranceDAO.getStuInsurance(studentid,year);
     }
-    }
+   }
