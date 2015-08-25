@@ -87,13 +87,7 @@ public class WarningController {
             if (warning == null) {
                 throw new NoSuchWarningException("cannot generate the warning");
             }
-
-            Student student = studentService.getStudentById(studentId);
-            warning.setStudent(student);
-
-            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
-            List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
-            String id = warningService.saveWarning(warning, operationLogs);
+            String id = warningService.saveWarning(warning,studentId);
             WarningResultObject warningResult = warningService.getWarningAndStu(id);
             return warningResult;
         } catch (Exception e) {

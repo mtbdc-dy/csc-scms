@@ -172,7 +172,7 @@ public class StudentService extends BaseService {
             schoolfellowService.saveSchoolfellow(student.getSchoolfellow());
         return studentRepository.save(student);
     }
-
+    
     @Transactional
     public String saveStudent(String dbType, OperationLog operationLog) throws Exception {
         //记录日志

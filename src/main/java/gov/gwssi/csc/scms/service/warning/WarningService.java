@@ -12,6 +12,7 @@ import gov.gwssi.csc.scms.domain.warning.Warning;
 import gov.gwssi.csc.scms.repository.warning.WarningRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.service.log.OperationLogService;
+import gov.gwssi.csc.scms.service.student.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -35,6 +36,8 @@ public class WarningService extends BaseService {
     private WarningRepository warningRepository;
     @Autowired
     private OperationLogService operationLogService;
+    @Autowired
+    private StudentService studentService;
 
     public Warning getWarningById(String id) {
         return warningRepository.findOne(id);
@@ -86,12 +89,16 @@ public class WarningService extends BaseService {
 
     //保存
     @Transactional
-    public String saveWarning(Warning warning, List<OperationLog> operationLogs) throws Exception {
-        //记录日志
-        operationLogService.saveOperationLog(operationLogs);
+    public String saveWarning(Warning warning, String studentId) throws Exception {
         warning.setWarningId(getBaseDao().getIdBySequence("SEQ_WARNING"));
+        //与student主表建立关联
+        Student student = studentService.getStudentById(studentId);
+        student.setWarning(warning);
+        warning.setStudent(student);
         //保存新增的预警名单人员
         warningRepository.save(warning);
+
+
         return warning.getWarningId();
     }
 

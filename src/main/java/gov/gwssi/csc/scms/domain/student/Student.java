@@ -94,11 +94,11 @@ public class Student implements Cloneable {
     public void setWarning(Warning warning) {
         this.warning = warning;
     }
-
     /**
      * 预警名单
      */
-    @OneToOne(fetch = FetchType.EAGER, mappedBy = "student")
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "warning", unique = true)
     private Warning warning;
 
     public String getId() {
