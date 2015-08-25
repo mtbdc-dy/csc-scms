@@ -30,16 +30,27 @@ public class Scholarship {
     private String school;
 
     /**
-     *合格人数
+     *合格人数——学校用户
      */
-    @Column(name = "qualNum",length=16)
-    private Long qualNum;
+    @Column(name = "schoolqual",length=16)
+    private Long schoolQual;
 
     /**
-     *不合格人数
+     *不合格人数——学校用户
      */
-    @Column(name = "unQualNum",length=16)
-    private Long unQualNum;
+    @Column(name = "SCHOOLUNQUAL",length=16)
+    private Long schoolUnQual;
+    /**
+     *合格人数--基金委用户
+     */
+    @Column(name = "CSCQUAL",length=16)
+    private Long cscQual;
+
+    /**
+     *不合格人数--基金委用户
+     */
+    @Column(name = "CSCUNQUAL",length=16)
+    private Long cscUnQual;
     /**
      *创建人
      */
@@ -106,20 +117,36 @@ public class Scholarship {
         this.school = school;
     }
 
-    public Long getQualNum() {
-        return qualNum;
+    public Long getSchoolQual() {
+        return schoolQual;
     }
 
-    public void setQualNum(Long qualNum) {
-        this.qualNum = qualNum;
+    public void setSchoolQual(Long schoolQual) {
+        this.schoolQual = schoolQual;
     }
 
-    public Long getUnQualNum() {
-        return unQualNum;
+    public Long getSchoolUnQual() {
+        return schoolUnQual;
     }
 
-    public void setUnQualNum(Long unQualNum) {
-        this.unQualNum = unQualNum;
+    public void setSchoolUnQual(Long schoolUnQual) {
+        this.schoolUnQual = schoolUnQual;
+    }
+
+    public Long getCscQual() {
+        return cscQual;
+    }
+
+    public void setCscQual(Long cscQual) {
+        this.cscQual = cscQual;
+    }
+
+    public Long getCscUnQual() {
+        return cscUnQual;
+    }
+
+    public void setCscUnQual(Long cscUnQual) {
+        this.cscUnQual = cscUnQual;
     }
 
     public String getCreateBy() {

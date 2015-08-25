@@ -257,7 +257,7 @@ public class InsuranceController {
 
                     return new ResponseEntity<List<String>>(list1, HttpStatus.OK);
                 }
-                    Vector<Vector<String>> list = importDao.doExcelImport(items.get(0),year);
+                    List<String> list = importDao.doImport(items.get(0),year);
                    // return new ResponseEntity<List<String>>(list1, HttpStatus.OK);
 
                // Vector<Vector<String>> list = importDao.doExcelImport(items.get(0));
