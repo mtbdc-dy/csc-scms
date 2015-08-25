@@ -98,7 +98,8 @@ public class Student implements Cloneable {
     /**
      * 预警名单
      */
-    @OneToOne(fetch = FetchType.EAGER, mappedBy = "student")
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "warning", unique = true)
     private Warning warning;
 
     public String getId() {

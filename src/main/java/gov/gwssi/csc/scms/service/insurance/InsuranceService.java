@@ -1,4 +1,4 @@
-﻿package gov.gwssi.csc.scms.service.insurance;
+package gov.gwssi.csc.scms.service.insurance; 
 
 import gov.gwssi.csc.scms.dao.insurance.InsuranceDAO;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
