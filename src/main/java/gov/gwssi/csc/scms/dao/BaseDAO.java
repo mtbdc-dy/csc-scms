@@ -223,7 +223,12 @@ public class BaseDAO {
         try {
             em = entityManagerFactory.createEntityManager();
             Query query = em.createNativeQuery(sql);
-            return String.valueOf(query.getSingleResult());
+            if(query.getSingleResult()!=null){
+                return String.valueOf(query.getSingleResult());
+            }else{
+                return "-";
+            }
+
         } finally {
             if (em != null) {
                 em.close();
