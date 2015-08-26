@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -78,13 +80,14 @@ public class ScholarshipJController {
                 //对子表进行更新，批复后，把csc的相关值，都赋值给school的相关字段
                 List detailList = scholarshipJService.findDetailListBy(id[i]);//找到主表对应的所有子表
                 for ( int j=0;j<detailList.size();j++) {
-                    ScholarshipDetail strD = (ScholarshipDetail) detailList.get(j);
-                    strD.setSchStartTime(strD.getCscStartTime());
-                    strD.setSchEndTime(strD.getCscEndTime());
-                    strD.setSchReason(strD.getCscReason());
-                    strD.setSchResult(strD.getCscResult());
-                    strD.setSchReview(strD.getCscReview());
-
+                    HashMap strD = (HashMap) detailList.get(j);
+                    ScholarshipDetail scholarshipDetail=scholarshipXService.getScholarshipDetailById((String)strD.get("ID"));
+                    scholarshipDetail.setSchStartTime((Date) strD.get("CSCSTARTTIME"));
+                    scholarshipDetail.setSchEndTime((Date) strD.get("CSCENDTIME"));
+                    scholarshipDetail.setSchReason((String) strD.get("CSCREASON"));
+                    scholarshipDetail.setSchResult((String) strD.get("CSCRESULT"));
+                    scholarshipDetail.setSchReview((String) strD.get("CSCREVIEW"));
+                    scholarshipXService.saveScholarshipDetail(scholarshipDetail,null);
                 }
             }
 
@@ -122,12 +125,14 @@ public class ScholarshipJController {
         for ( int i =0;i<id.length;i++) {
             List detailList = scholarshipJService.findDetailListBy(id[i]);//找到主表对应的所有字表数据
             for(int j=0;j<detailList.size();j++){
-                ScholarshipDetail strD = (ScholarshipDetail) detailList.get(i);
-                ids=ids+","+strD.getId();
+                HashMap strD = (HashMap) detailList.get(j);
+               ids=ids+","+strD.get("ID");
             }
         }
-        ids=ids.substring(1,ids.length());
-        String[] id1=ids.split(",");//转化后的id数组
+        String[] id1=null;
+        if(ids!=null){
+           id1=ids.split(",");//转化后的id数组
+        }
         String tableName = "v_scholarship_lastyear";//对主表对应的所有信息以学生为单位导出
         bytes = exportService.exportByfilter(tableName, id1);
         Timestamp ts = new Timestamp(System.currentTimeMillis());

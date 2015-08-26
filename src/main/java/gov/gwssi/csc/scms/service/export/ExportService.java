@@ -27,9 +27,12 @@ public class ExportService extends BaseService {
 
     public byte[] exportByfilter(String tablename, String[] id) {
         String idins = "";
-        for (int i = 0; i < id.length; i++) {
-            idins = idins + "'" + id[i] + "',";
+        if(id!=null){
+            for (int i = 0; i < id.length; i++) {
+                idins = idins + "'" + id[i] + "',";
+            }
         }
+
         List exportList = exportDAO.getExportList(tablename);
         List seachList = exportDAO.getSeachList(tablename);//除标题行外
         List headarrayList = exportDAO.getHeadarrayList(tablename);//所有标题行
@@ -91,7 +94,11 @@ public class ExportService extends BaseService {
             sql += map.get("COLEN").toString() + ',';
         }
         sql = sql.substring(0, sql.length() - 1) + " from " + tablename + " where 1=1 ";
-        sql = sql + " and id in(" + idins.substring(0, idins.length() - 1) + ")";
+        if(idins.length()>0){
+            sql = sql + " and id in(" + idins.substring(0, idins.length() - 1) + ")";
+        }else{
+            sql = sql + " and id in('')";
+        }
         List resultList = exportDAO.getListbysql(sql);
         List<String[]> recordList = new ArrayList<String[]>();//结果集展示数组
         for (int i = 0; i < resultList.size(); i++) {
