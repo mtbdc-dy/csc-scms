@@ -95,7 +95,7 @@ public class ScholarshipXService extends BaseService {
         List<ScholarshipXResultObject> ScholarshipXResultObjectList;
         int startPosition, pageSize;
 
-        String sql = getSqlByBodyJ(filterObject, user,school);
+        String sql = getSqlByBodyJ(filterObject, user, school);
         if (sql == null) {
             return null;
         }
@@ -220,6 +220,7 @@ public class ScholarshipXService extends BaseService {
     public Iterable<ScholarshipDetail> findScholarshipDetailAll() {//找到所有子表记录
         return scholarshipDetailRepository.findAll();
     }
+
 
     public Iterable<ScholarshipX> findScholarshipXAll() {//找到所有视图记录
         return scholarshipXRepository.findAll();

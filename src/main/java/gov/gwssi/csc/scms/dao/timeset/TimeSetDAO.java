@@ -27,6 +27,8 @@ public class TimeSetDAO extends BaseDAO {
         if(!"".equals(univ)){
             stringBuilder.append("  and t.univid = '"+univ+"'");
         }
+        stringBuilder.append(" order by province,univid");
+
         getNewStudenTimeSettList = super.queryListBySql(stringBuilder.toString());
         if (getNewStudenTimeSettList != null && getNewStudenTimeSettList.size() > 0) {
             for (Map map : getNewStudenTimeSettList) {
@@ -101,6 +103,7 @@ String sql = "update dim_univ t set t.newsetby = '"+userName+"' ,t.newseted = sy
         if(!"".equals(univ)){
             stringBuilder.append("  and t.univid = '"+univ+"'");
         }
+        stringBuilder.append(" order by province,univid");
         getOldStudenTimeSettList = super.queryListBySql(stringBuilder.toString());
         if (getOldStudenTimeSettList != null && getOldStudenTimeSettList.size() > 0) {
             for (Map map : getOldStudenTimeSettList) {
