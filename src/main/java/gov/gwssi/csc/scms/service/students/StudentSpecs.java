@@ -114,7 +114,7 @@ public class StudentSpecs {
                 Predicate predicate = cb.conjunction();
                 Join<Student, SchoolRoll> schoolRoll = student.join(Student_.schoolRoll);
                 predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.registed), "AX0002"));
-                predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.leaveChina), "BA0001"));
+                predicate.getExpressions().add(cb.notEqual(schoolRoll.get(SchoolRoll_.leaveChina), "BA0002"));
 
                 Date sysDate = null;
                 Date finalDate = null;
