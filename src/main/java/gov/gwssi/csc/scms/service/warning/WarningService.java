@@ -1,8 +1,5 @@
 package gov.gwssi.csc.scms.service.warning;
 
-
-import gov.gwssi.csc.scms.domain.filter.Filter;
-import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.FilterObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilter;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
@@ -13,17 +10,15 @@ import gov.gwssi.csc.scms.domain.warning.Warning;
 import gov.gwssi.csc.scms.repository.warning.WarningRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.service.student.StudentService;
+import gov.gwssi.csc.scms.service.students.StudentConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.domain.Specification;
-import gov.gwssi.csc.scms.service.log.OperationLogService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import static org.springframework.data.jpa.domain.Specifications.where;
+import java.util.Map;
+
 /**
  * Created by tianjing on 2015/7/17.
  */
@@ -78,48 +73,31 @@ public class WarningService extends BaseService {
         sqlStr += " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll, Warning warning " +
                 "where student.id = basicInfo.student " +
                 "and student.id = schoolRoll.student " +
-                "and student.id = warning.student ";
+                "and student.id = warning.student.id";
 
         //添加查询条件，并返回完整SQL语句
         return sqlStr + new StudentFilter((StudentFilterObject) filterObject).getFilter(user, "", "");
     }
 
     //保存
-    @Transactional
-    public String saveWarning(Warning warning, String studentId) throws Exception {
+    public Map<String, Object> saveWarning(Warning warning, String studentId) throws Exception {
+        //保存新增的预警名单人员
         warning.setWarningId(getBaseDao().getIdBySequence("SEQ_WARNING"));
+        warningRepository.save(warning);
         //与student主表建立关联
         Student student = studentService.getStudentById(studentId);
         student.setWarning(warning);
         studentService.updateStudent(student);
 
-        warning.setStudent(student);
-        //保存新增的预警名单人员
-        warningRepository.save(warning);
-        return warning.getWarningId();
+        String[] fields = {"id","warning.warningId", "cscId", "basicInfo.passportName", "schoolRoll.certificateNO", "basicInfo.country", "basicInfo.gender", "basicInfo.birthday", "schoolRoll.arrivalDate", "schoolRoll.planLeaveDate", "schoolRoll.majorUniversity", "warning.addTime", "warning.addUserName", "warning.addReason"};
+        StudentConverter studentConverter = new StudentConverter(fields);
+        Map<String, Object> map = studentConverter.convert(student);
+        return map;
     }
 
-    // 根据id查询warningAndStu
-    public WarningResultObject getWarningAndStu(String id) throws Exception {
-        //返回界面包含学生信息 根据异动id查出
-        StringBuilder sb = new StringBuilder();
-        sb.append(WarningResultObject.getResultObject());
-        String tempSql = " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll, Warning warning " +
-                "where student.id = basicInfo.student  " +
-                "and student.id = schoolRoll.student and student.id = warning.student ";
-        sb.append(tempSql);
-        sb.append(" and warning.warningId = '").append(id).append("'");
-        List<WarningResultObject> warningList = super.getBaseDao().getObjectListByHQL(sb.toString(), WarningResultObject.class, 0, 1);
-        WarningResultObject warningResultObject = null;
-        if (null == warningList || warningList.size() == 0) {
-            throw new NoSuchWarningException("cannot find the warning, please refresh the page!");
-        } else {
-            warningResultObject = warningList.get(0);
-        }
-        return warningResultObject;
-    }
 
     //删除
+    @Transactional
     public Warning deleteWarningById(String id, String studentId) {
         Warning warning = getWarningById(id);
         if (warning == null)
@@ -134,11 +112,4 @@ public class WarningService extends BaseService {
         }
         return warning;
     }
-
-//    //分页查询
-//    public Page<Student> getBlacklistStudentsPageByFilter(Filter filter,Integer page,Integer size){
-//        Specification<Student> specA = new WarningSpecs().filterIsLike(filter);
-//        return studentRepository.findAll(where(specA), new PageRequest(page, size));
-//
-//    }
 }

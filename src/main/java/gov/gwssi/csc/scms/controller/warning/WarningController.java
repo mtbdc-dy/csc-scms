@@ -75,7 +75,7 @@ public class WarningController {
 
 
     @RequestMapping(value = "/{studentId}", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
-    public WarningResultObject putWarning(@PathVariable(value = "studentId") String studentId,
+    public Map<String, Object> putWarning(@PathVariable(value = "studentId") String studentId,
                                           @RequestBody String warningJson) {
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -83,13 +83,14 @@ public class WarningController {
             JsonBody jbosy = new ObjectMapper().readValue(warningJson, JsonBody.class);
 
             Warning warning = mapper.readValue(jbosy.getValue(), Warning.class);
+            Student student = studentService.getStudentById(studentId);
+            warning.setStudent(student);
 
             if (warning == null) {
                 throw new NoSuchWarningException("cannot generate the warning");
             }
-            String id = warningService.saveWarning(warning,studentId);
-            WarningResultObject warningResult = warningService.getWarningAndStu(id);
-            return warningResult;
+
+            return warningService.saveWarning(warning, studentId);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -117,6 +118,9 @@ public class WarningController {
     public Warning getWarningByStudentId(@PathVariable(value = "studentId") String studentId) {
         try {
             Warning warning = warningService.getWarningByStudentId(studentId);
+            if(warning == null){
+                return null;
+            }
             warning.setStudent(null);
             return warning;
         } catch (Exception e) {
@@ -124,23 +128,4 @@ public class WarningController {
             throw new RuntimeException(e);
         }
     }
-
-
-
-//    //分页查询
-//    @RequestMapping(
-//            method = RequestMethod.GET,
-//            headers = {"Accept=application/json"},
-//            params = {"field", "page", "size", "filter"})
-//    public ResponseEntity<Page<Map<String, Object>>> getBlacklistStudents(
-//            @RequestParam(value = "field") String[] fields,
-//            @RequestParam(value = "page") Integer page,
-//            @RequestParam(value = "size") Integer size,
-//            @RequestParam(value = "filter") String filterJSON) throws IOException {
-//        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
-//        Page<Student> studentPage = warningService.getBlacklistStudentsPageByFilter(filter, page, size);
-//        Page<Map<String, Object>> mapPage = studentPage.map(new StudentConverter(fields));
-//
-//        return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
-//    }
 }
