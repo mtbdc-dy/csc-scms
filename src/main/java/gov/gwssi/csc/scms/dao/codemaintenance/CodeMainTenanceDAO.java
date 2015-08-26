@@ -3,6 +3,7 @@ package gov.gwssi.csc.scms.dao.codemaintenance;
 import gov.gwssi.csc.scms.dao.BaseDAO;
 import gov.gwssi.csc.scms.domain.query.CodeDetailResult;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -419,18 +420,19 @@ public class CodeMainTenanceDAO extends BaseDAO {
             }
     }
     //新增
-
+    @Transactional
     public String saveNewCode(CodeDetailResult codeDetailResult,String type) {
         String sql = "",zdz = "";
         List codeList = null,zdList =null;
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         CodeDetailResult codeDetailResult1 = new CodeDetailResult();
         if(TRANSLATE.equals(codeDetailResult.getTABLEEN())){
+            zdz =super.getDicIdByClassType(type);
             sql = "insert into "+codeDetailResult.getTABLEEN()+" values('"+type+"',f_scms_dim_id('"+type+"'),'"+codeDetailResult.getNAME()+"','','"+codeDetailResult.getENABLED()+"','"+codeDetailResult.getFULLNAME()+"',SYSDATE)";
             int n = super.updateBySql(sql);
             if (n==1) {
 
-                zdz =super.getDicIdByClassType(type);
+
                 return zdz;
             }
             return "";
