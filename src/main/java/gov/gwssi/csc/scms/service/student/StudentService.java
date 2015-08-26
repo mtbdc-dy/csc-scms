@@ -236,6 +236,11 @@ public class StudentService extends BaseService {
     }
 
     @Transactional
+    public Student updateStudent(Student student) {
+        return studentRepository.save(student);
+    }
+    
+    @Transactional
     public String saveStudent(String dbType, OperationLog operationLog) throws Exception {
         //记录日志
         List<OperationLog> operationLogs = new ArrayList<OperationLog>();

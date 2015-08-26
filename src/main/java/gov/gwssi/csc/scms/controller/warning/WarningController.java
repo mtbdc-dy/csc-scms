@@ -4,11 +4,14 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.controller.JsonBody;
 import gov.gwssi.csc.scms.controller.RequestHeaderError;
+import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.WarningResultObject;
+import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.domain.warning.Warning;
+import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.user.NoSuchUserException;
 import gov.gwssi.csc.scms.service.user.UserIdentityError;
 import gov.gwssi.csc.scms.service.user.UserService;
@@ -16,12 +19,16 @@ import gov.gwssi.csc.scms.service.warning.NoSuchWarningException;
 import gov.gwssi.csc.scms.service.warning.WarningService;
 import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by tianjing on 2015/7/16.
@@ -35,6 +42,9 @@ public class WarningController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private StudentService studentService;
 
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
     public List<WarningResultObject> getStudentsByConditions(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
@@ -65,7 +75,7 @@ public class WarningController {
 
 
     @RequestMapping(value = "/{studentId}", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
-    public WarningResultObject putWarning(@PathVariable(value = "studentId") String studentId,
+    public Map<String, Object> putWarning(@PathVariable(value = "studentId") String studentId,
                                           @RequestBody String warningJson) {
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -73,17 +83,14 @@ public class WarningController {
             JsonBody jbosy = new ObjectMapper().readValue(warningJson, JsonBody.class);
 
             Warning warning = mapper.readValue(jbosy.getValue(), Warning.class);
+            Student student = studentService.getStudentById(studentId);
+            warning.setStudent(student);
 
             if (warning == null) {
                 throw new NoSuchWarningException("cannot generate the warning");
             }
-            warning.setStudentId(studentId);
 
-            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
-            List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
-            String id = warningService.saveWarning(warning, operationLogs);
-            WarningResultObject warningResult = warningService.getWarningAndStu(id);
-            return warningResult;
+            return warningService.saveWarning(warning, studentId);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -91,17 +98,15 @@ public class WarningController {
     }
 
     //删除
-    @RequestMapping(value = "/{id}/{log}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
-    public Warning deleteWarning(@PathVariable("id") String id, @PathVariable("log") String log) {
+    @RequestMapping(value = "/{warningId}/{studentId}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
+    public Warning deleteWarning(@PathVariable("warningId") String warningId, @PathVariable("studentId") String studentId) {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
-//          JsonBody jbosy = new ObjectMapper().readValue(log, JsonBody.class);
-            List<OperationLog> operationLogs = mapper.readValue(log, javaType);
-            Warning warning = warningService.deleteWarningById(id, operationLogs);
+            Warning warning = warningService.deleteWarningById(warningId, studentId);
             if (warning == null) {
                 throw new NoSuchWarningException("cannot delete the warning");
             }
+            warning.setStudent(null);
             return warning;
         } catch (Exception e) {
             e.printStackTrace();
@@ -109,20 +114,14 @@ public class WarningController {
         }
     }
 
-    //    @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
-//    public Warning getWarningById(@PathVariable(value = "id") String id) {
-//        try {
-//            Warning warning = warningService.getWarningById(id);
-//            return warning;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            throw new RuntimeException(e);
-//        }
-//    }
     @RequestMapping(value = "/{studentId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
     public Warning getWarningByStudentId(@PathVariable(value = "studentId") String studentId) {
         try {
             Warning warning = warningService.getWarningByStudentId(studentId);
+            if(warning == null){
+                return null;
+            }
+            warning.setStudent(null);
             return warning;
         } catch (Exception e) {
             e.printStackTrace();

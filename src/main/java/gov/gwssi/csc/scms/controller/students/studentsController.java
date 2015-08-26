@@ -134,6 +134,31 @@ public class studentsController {
      * @param page       页数
      * @param size       每页显示条数
      * @param filterJSON filter查询对象
+     * @param mode     应用模块
+     */
+    @RequestMapping(
+            method = RequestMethod.GET,
+            headers = {"Accept=application/json"},
+            params = {"mode", "field", "page", "size", "filter"})
+    public ResponseEntity<Page<Map<String, Object>>> getStudents(
+            @RequestParam(value = "mode") String mode,
+            @RequestParam(value = "field") String[] fields,
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size,
+            @RequestParam(value = "filter") String filterJSON) throws IOException {
+        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+        Page<Student> studentPage = studentsService.getStudentsPageByFilter(filter, page, size, mode);
+        Page<Map<String, Object>> mapPage = studentPage.map(new StudentConverter(fields));
+        return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+    }
+
+    /**
+     * 返回全部学生字段的所有信息，并将集合根据偏离值、限定值分页
+     * GET /api/students?field=cscId,gender,age&page=0&size=20
+     * @param fields      所需要的字段内容
+     * @param page       页数
+     * @param size       每页显示条数
+     * @param filterJSON filter查询对象
      */
     @RequestMapping(
             method = RequestMethod.GET,
@@ -144,11 +169,9 @@ public class studentsController {
             @RequestParam(value = "page") Integer page,
             @RequestParam(value = "size") Integer size,
             @RequestParam(value = "filter") String filterJSON) throws IOException {
-        // TODO.. GET /api/students?fields=cscId,gender,age&offset=0&limit=20
         Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
         Page<Student> studentPage = studentsService.getStudentsPageByFilter(filter, page, size);
         Page<Map<String, Object>> mapPage = studentPage.map(new StudentConverter(fields));
-
         return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
     }
 //

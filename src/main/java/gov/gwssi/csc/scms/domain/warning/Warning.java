@@ -1,9 +1,8 @@
 package gov.gwssi.csc.scms.domain.warning;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import gov.gwssi.csc.scms.domain.student.Student;
+
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -70,17 +69,26 @@ public class Warning {
     /**
      * 学生
      */
-//    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    @JoinColumn(name = "STUDENTID")
-//    private Student student;
-    private String studentId;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "STUDENTID")
+    private Student student;
 
-    public String getStudentId() {
-        return studentId;
+//    private String studentId;
+
+//    public String getStudentId() {
+//        return studentId;
+//    }
+//
+//    public void setStudentId(String studentId) {
+//        this.studentId = studentId;
+//    }
+
+    public Student getStudent() {
+        return student;
     }
 
-    public void setStudentId(String studentId) {
-        this.studentId = studentId;
+    public void setStudent(Student student) {
+        this.student = student;
     }
 
     public String getAddReason() {
