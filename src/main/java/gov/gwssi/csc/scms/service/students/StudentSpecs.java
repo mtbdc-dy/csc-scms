@@ -621,6 +621,9 @@ public class StudentSpecs {
                 if("warning".equals(mode)){
                     Join<Student, Warning> warning = student.join(Student_.warning);
                 }
+                if(!needAbnormals && "abnormal".equals(mode)){
+                    ListJoin<Student, Abnormal> abnormals = student.join(Student_.abnormals);
+                }
                 return predicate;
             }
         };

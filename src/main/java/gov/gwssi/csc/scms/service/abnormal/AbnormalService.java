@@ -42,7 +42,7 @@ public class AbnormalService extends BaseService {
         if (sql == null) {
             return null;
         }
-
+        
         try {
             startPosition = Integer.parseInt(filterObject.getOffSet());
             pageSize = Integer.parseInt(filterObject.getPageSize());

@@ -47,7 +47,6 @@ public class DatabaseConfig {
         // boneCPDataSource.setReleaseHelperThreads(3);
 
         return boneCPDataSource;
-
     }
 
     @Bean

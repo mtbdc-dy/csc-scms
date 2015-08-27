@@ -81,7 +81,7 @@ public class Student implements Cloneable {
     /**
      * 异动记录
      */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "student")
     private List<Abnormal> abnormals;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")

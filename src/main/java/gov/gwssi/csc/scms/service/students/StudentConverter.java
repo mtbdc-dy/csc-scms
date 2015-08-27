@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.service.students;
 
+import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
 import gov.gwssi.csc.scms.domain.student.*;
 import gov.gwssi.csc.scms.domain.warning.Warning;
 import gov.gwssi.csc.scms.service.BaseService;
@@ -49,8 +50,9 @@ public class StudentConverter extends BaseService implements Converter<Student, 
         setNullByField(source.getRelatedAddress(), "student", RelatedAddress.class);
         setNullByField(source.getGrades(), "student", Grade.class);
         setNullByField(source.getGradeAttachment(), "student", GradeAttachment.class);
+        setNullByField(source.getAbnormals(),"student", Abnormal.class);
 
-        source.setAbnormals(null);
+//        source.setAbnormals(null);
         source.setTickets(null);
 
         if (this.fields != null) {
