@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.service.students;
 
 import gov.gwssi.csc.scms.domain.student.*;
+import gov.gwssi.csc.scms.domain.warning.Warning;
 import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.core.convert.converter.Converter;
 
@@ -43,7 +44,7 @@ public class StudentConverter extends BaseService implements Converter<Student, 
         setNullByField(source.getProfilesHistory(), "student", ProfilesHistory.class);
         setNullByField(source.getRegistrationInfo(), "student", RegistrationInfo.class);
         setNullByField(source.getSchoolRoll(), "student", SchoolRoll.class);
-
+        setNullByField(source.getWarning(), "student", Warning.class);
         setNullByField(source.getAccidents(), "student", Accident.class);
         setNullByField(source.getRelatedAddress(), "student", RelatedAddress.class);
         setNullByField(source.getGrades(), "student", Grade.class);
@@ -57,7 +58,7 @@ public class StudentConverter extends BaseService implements Converter<Student, 
             for (String fieldName : this.fields) {
                 try {
                     if (fieldName.contains(".")){
-                        System.out.println("fieldName = " + fieldName);
+//                        System.out.println("fieldName = " + fieldName);
                         String[] subFieldNames = fieldName.split("\\.");
                         Map<String, Object> map = new HashMap<String, Object>();
 

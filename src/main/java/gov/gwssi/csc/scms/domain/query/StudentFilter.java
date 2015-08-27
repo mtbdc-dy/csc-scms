@@ -151,7 +151,7 @@ public class StudentFilter implements Filter {
 
                     }
                 } else if ("leavechina".equals(str[0])) {//离华管理 默认条件未离华leaveChina !='BA0002'
-                    sb.append(" and schoolRoll.leaveChina !='BA0002'");
+                    sb.append(" and schoolRoll.leaveChina !='BA0002' and schoolRoll.registed = 'AX0002'");
                 }
             }
         }

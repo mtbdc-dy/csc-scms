@@ -10,6 +10,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.Expression;
+
 import static org.springframework.data.jpa.domain.Specifications.where;
 
 /**
@@ -36,6 +38,24 @@ public class StudentsService extends StudentSpecs {
         Specification<Student> specA = filterIsLike(filter);
 //        Specification<Student> specB = userIs(user);
         return studentRepository.findAll(where(specA), new PageRequest(page, size));
+    }
+
+    public Page<Student> getStudentsPageByFilter(Filter filter,Integer page,Integer size,String mode) {
+        Specification<Student> specA = filterIsLike(filter,mode);
+//        Specification<Student> specB = userIs(user);
+
+        if("freshregister".equals(mode)){
+            return studentRepository.findAll(where(specA).and(isFreshRegister()), new PageRequest(page, size));
+        }else if("oldregister".equals(mode)){
+            return studentRepository.findAll(where(specA).and(isOldRegister()), new PageRequest(page, size));
+        }else if(mode.equals("schoolstudent")){
+            return studentRepository.findAll(where(specA).and(isSchoolStudent()), new PageRequest(page, size));
+        }else if("leavestudent".equals(mode) || "alumnus".equals(mode)){
+            return studentRepository.findAll(where(specA).and(isLeaveStudent()), new PageRequest(page, size));
+        }else{
+            return studentRepository.findAll(where(specA), new PageRequest(page, size));
+        }
+
     }
 
 
