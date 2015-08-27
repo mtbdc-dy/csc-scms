@@ -33,6 +33,7 @@ public abstract class ScholarshipX_ {
     public static volatile SingularAttribute<ScholarshipX, Long> schoolUnQual;
     public static volatile SingularAttribute<ScholarshipX, Date> updated;
     public static volatile SingularAttribute<ScholarshipX, String> updateby;
+    public static volatile SingularAttribute<ScholarshipX, String> passportName;
 
 }
 

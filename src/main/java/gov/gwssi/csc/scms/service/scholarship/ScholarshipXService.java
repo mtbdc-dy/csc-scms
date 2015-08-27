@@ -9,6 +9,7 @@ import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.scholarship.Scholarship;
 import gov.gwssi.csc.scms.domain.scholarship.ScholarshipDetail;
 import gov.gwssi.csc.scms.domain.scholarship.ScholarshipX;
+import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.scholarshipX.ScholarshipDetailRepository;
 import gov.gwssi.csc.scms.repository.scholarshipX.ScholarshipRepository;
@@ -16,13 +17,17 @@ import gov.gwssi.csc.scms.repository.scholarshipX.ScholarshipXRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.service.abnormal.NoSuchAbnormalException;
 import gov.gwssi.csc.scms.service.log.OperationLogService;
+import gov.gwssi.csc.scms.service.student.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -40,13 +45,17 @@ public class ScholarshipXService extends BaseService {
     @Autowired
     @Qualifier("scholarshipXRepository")
     private ScholarshipXRepository scholarshipXRepository;
-
+    @Autowired
+    private StudentService studentService;
     @Autowired
     private OperationLogService operationLogService;
+    @Autowired
+    private ScholarshipJService scholarshipJService;
     @Autowired
     private ScholarshipXDAO scholarshipXDAO;
     //生成奖学金评审清单
     public List<ScholarshipXResultObject> getScholarshipXList(User user) {
+
         List listParameter = new ArrayList();
         List<ScholarshipXResultObject> ScholarshipXResultObjectList;
         listParameter.add(user.getUserId());//传入userid
@@ -61,6 +70,35 @@ public class ScholarshipXService extends BaseService {
             pageSize =FilterObject.PAGESIZEDEFULT;
 
         ScholarshipXResultObjectList = super.getBaseDao().getObjectListByHQL(sql, ScholarshipXResultObject.class, startPosition, pageSize);
+
+        List<OperationLog> operationLogs = new ArrayList<OperationLog>();
+        for(int i=0;i<ScholarshipXResultObjectList.size();i++){//每个学生插入一条日志
+            if(ScholarshipXResultObjectList.get(i).getSchReason()==null
+                    &&ScholarshipXResultObjectList.get(i).getSchStartTime()==null&&
+                    ScholarshipXResultObjectList.get(i).getSchEndTime()==null){//三项全为空的才插入
+                OperationLog operationLog = new OperationLog();
+                operationLog.setOptType("1");//新增
+                operationLog.setModule("奖学金年度评审管理");
+                operationLog.setModuleId("BG0006");
+                operationLog.setStudentId(ScholarshipXResultObjectList.get(i).getStudentId());
+                operationLog.setCscId(ScholarshipXResultObjectList.get(i).getCscId());
+                operationLog.setPassportName(ScholarshipXResultObjectList.get(i).getPassportName());
+                String after = baseDAO.getNameCHByTranslateId(ScholarshipXResultObjectList.get(i).getSchReview()) + "/" +baseDAO.getNameCHByTranslateId(ScholarshipXResultObjectList.get(i).getSchResult()) + "/" + "-"+ "/" + "-"+ "/" +"-";
+                operationLog.setBefore("");
+                operationLog.setAfter(after);
+                operationLog.setColumnEN("");
+                operationLog.setColumnCH("");
+                operationLog.setTableEN("scms_scholarship_detail");
+                operationLog.setTableCH("奖学金评审信息表");
+                operationLog.setNodeId(user.getNode().getNodeId());
+                operationLog.setNodeType(user.getNode().getNodeType());
+                operationLog.setCreateBy(user.getUserId());
+                operationLog.setCreateD(new java.util.Date());
+                operationLogs.add(operationLog);
+            }
+
+        }
+        operationLogService.saveOperationLog(operationLogs);//保存日志
         return ScholarshipXResultObjectList;
 
     }
@@ -190,18 +228,108 @@ public class ScholarshipXService extends BaseService {
 
     //保存修改后奖学金字表的值
     @Transactional
-    public String saveScholarshipDetail(ScholarshipDetail scholarshipDetail, List<OperationLog> operationLogs) {
+    public String saveScholarshipDetail(ScholarshipDetail scholarshipDetail, User user) {
+
+
         //记录日志
-        operationLogService.saveOperationLog(operationLogs);
+        List<OperationLog> operationLogs = new ArrayList<OperationLog>();
+        ScholarshipX scholarshipX = findOne(scholarshipDetail.getId());
+        OperationLog operationLog = new OperationLog();
+        operationLog.setOptType("2");//修改
+        operationLog.setModule("奖学金年度评审管理");
+        operationLog.setModuleId("BG0006");
+        operationLog.setStudentId(scholarshipX.getStudentId());
+        operationLog.setCscId(scholarshipX.getCscId());
+        operationLog.setPassportName(scholarshipX.getPassportName());
+        //区分基金委用户还是学校用户
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");//日期格式化
+        String before="";
+        String after="";
+        if(user.getUserType().equals("1")){//基金委用户
+            String reasonB=(scholarshipX.getCscReason()!=null)? scholarshipX.getCscReason():"-";//对null的情况进行转化
+            String reasonA=(scholarshipDetail.getCscReason()!=null)? scholarshipDetail.getCscReason():"-";//对null的情况进行转化
+            String sTB=(scholarshipX.getCscStartTime()!=null)? formatter.format(scholarshipX.getCscStartTime()):"-";
+            String sTA=(scholarshipDetail.getCscStartTime()!=null)? formatter.format(scholarshipDetail.getCscStartTime()):"-";
+            String eTB=(scholarshipX.getCscEndTime()!=null)? formatter.format(scholarshipX.getCscEndTime()):"-";
+            String eTA=(scholarshipDetail.getCscEndTime()!=null)? formatter.format(scholarshipDetail.getCscEndTime()) :"-";
+            before = baseDAO.getNameCHByTranslateId(scholarshipX.getCscReview()) + "/" +baseDAO.getNameCHByTranslateId(scholarshipX.getCscResult()) + "/" + reasonB+ "/" + sTB+ "/" + eTB;
+            after = baseDAO.getNameCHByTranslateId(scholarshipDetail.getCscReview()) + "/" +baseDAO.getNameCHByTranslateId(scholarshipDetail.getCscResult()) + "/" + reasonA+ "/" + sTA+ "/" +eTA;
+          }else if(user.getUserType().equals("2")){//学校用户
+            String reasonB=(scholarshipX.getSchReason()!=null)? scholarshipX.getSchReason():"-";//对null的情况进行转化
+            String reasonA=(scholarshipDetail.getSchReason()!=null)? scholarshipDetail.getSchReason():"-";//对null的情况进行转化
+            String sTB=(scholarshipX.getSchStartTime()!=null)? formatter.format(scholarshipX.getSchStartTime()):"-";
+            String sTA=(scholarshipDetail.getSchStartTime()!=null)? formatter.format(scholarshipDetail.getSchStartTime()):"-";
+            String eTB=(scholarshipX.getSchEndTime()!=null)? formatter.format(scholarshipX.getSchEndTime()):"-";
+            String eTA=(scholarshipDetail.getSchEndTime()!=null)? formatter.format(scholarshipDetail.getSchEndTime()) :"-";
+            before = baseDAO.getNameCHByTranslateId(scholarshipX.getSchReview()) + "/" +baseDAO.getNameCHByTranslateId(scholarshipX.getSchResult()) + "/" + reasonB+ "/" + sTB+ "/" + eTB;
+            after = baseDAO.getNameCHByTranslateId(scholarshipDetail.getSchReview()) + "/" +baseDAO.getNameCHByTranslateId(scholarshipDetail.getSchResult()) + "/" + reasonA+ "/" + sTA+ "/" +eTA;
+
+        }
+
+        if(!before.equals(after)){//如果有修改before和after不一致，才进行日志的插入
+            operationLog.setBefore(before);
+            operationLog.setAfter(after);
+            operationLog.setColumnEN("");
+            operationLog.setColumnCH("");
+            operationLog.setTableEN("scms_scholarship_detail");
+            operationLog.setTableCH("奖学金评审信息表");
+            operationLog.setNodeId(user.getNode().getNodeId());
+            operationLog.setNodeType(user.getNode().getNodeType());
+            operationLog.setCreateBy(user.getUserId());
+            operationLog.setCreateD(new java.util.Date());
+            operationLogs.add(operationLog);
+            operationLogService.saveOperationLog(operationLogs);//保存日志
+        }
+
         scholarshipDetailRepository.save(scholarshipDetail);
         return scholarshipDetail.getId();
     }
 
     //更新主表信息
     @Transactional
-    public String saveScholarship(Scholarship scholarship, List<OperationLog> operationLogs) {
-        //记录日志
-        operationLogService.saveOperationLog(operationLogs);
+    public String saveScholarship(Scholarship scholarship, User user) {
+       scholarshipRepository.save(scholarship);
+        return scholarship.getId();
+    }
+
+    //更新主表信息,提交时，记录日志
+    @Transactional
+    public String saveScholarship(Scholarship scholarship, User user,String type) {
+        //记录日志，以主表id找到所有对应字表中的学生，循环记录日志
+        List detailList= scholarshipJService.findDetailListBy(scholarship.getId());//根据主表字段找到所有字表记录
+        List<OperationLog> operationLogs = new ArrayList<OperationLog>();
+        for ( int j=0;j<detailList.size();j++) {//以主表id找到所有对应字表中的学生，循环记录日志
+            HashMap strD = (HashMap) detailList.get(j);
+            OperationLog operationLog = new OperationLog();
+            operationLog.setOptType("2");//修改
+            operationLog.setModule("奖学金年度评审管理");
+            operationLog.setModuleId("BG0006");
+            ScholarshipX  scholarshipX =findOne((String)strD.get("ID"));
+            operationLog.setStudentId(scholarshipX.getStudentId());
+            operationLog.setCscId(scholarshipX.getCscId());
+            operationLog.setPassportName(scholarshipX.getPassportName());
+            if(type.equals("1")){//提交
+                operationLog.setBefore("未提交");
+                operationLog.setAfter("已提交");
+                operationLog.setColumnEN("schoolSta");
+            } else {//批复
+                operationLog.setBefore("未批复");
+                operationLog.setAfter("已批复");
+                operationLog.setColumnEN("schSta");
+            }
+            operationLog.setColumnCH("状态");
+            operationLog.setTableEN("scms_scholarship_detail");
+            operationLog.setTableCH("奖学金评审信息表");
+            operationLog.setNodeId(user.getNode().getNodeId());
+            operationLog.setNodeType(user.getNode().getNodeType());
+            operationLog.setCreateBy(user.getUserId());
+            operationLog.setCreateD(new java.util.Date());
+            operationLogs.add(operationLog);
+        }
+
+        operationLogService.saveOperationLog(operationLogs);//保存日志
+
+
         scholarshipRepository.save(scholarship);
         return scholarship.getId();
     }
@@ -225,13 +353,42 @@ public class ScholarshipXService extends BaseService {
     public Iterable<ScholarshipX> findScholarshipXAll() {//找到所有视图记录
         return scholarshipXRepository.findAll();
     }
-    //保存新增的奖学金详细记录
+
+    //保存新增的奖学金详细记录,保存日志
     @Transactional
-    public String savenewScholarshipDetail(ScholarshipDetail scholarshipDetail, List<OperationLog> operationLogs) {
-        //记录日志
-        operationLogService.saveOperationLog(operationLogs);
+    public String savenewScholarshipDetail(ScholarshipDetail scholarshipDetail,User user) {
+
+
         scholarshipDetail.setId(getBaseDao().getIdBySequence("seq_scholarship_detail"));
         scholarshipDetailRepository.save(scholarshipDetail);
+        //记录日志
+        List<OperationLog> operationLogs = new ArrayList<OperationLog>();
+        Student student = null;
+        try {
+            student = studentService.getStudentById(scholarshipDetail.getStudentId());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        OperationLog operationLog = new OperationLog();
+        operationLog.setOptType("1");//新增
+        operationLog.setModule("奖学金年度评审管理");
+        operationLog.setModuleId("BG0006");
+        operationLog.setStudentId(scholarshipDetail.getStudentId());
+        operationLog.setCscId(student.getCscId());
+        operationLog.setPassportName(student.getBasicInfo().getPassportName());
+        String after = baseDAO.getNameCHByTranslateId(scholarshipDetail.getSchReview()) + "/" +baseDAO.getNameCHByTranslateId(scholarshipDetail.getSchResult()) + "/" + "-"+ "/" + "-"+ "/" +"-";
+        operationLog.setBefore("");
+        operationLog.setAfter(after);
+        operationLog.setColumnEN("");
+        operationLog.setColumnCH("");
+        operationLog.setTableEN("scms_scholarship_detail");
+        operationLog.setTableCH("奖学金评审信息表");
+        operationLog.setNodeId(user.getNode().getNodeId());
+        operationLog.setNodeType(user.getNode().getNodeType());
+        operationLog.setCreateBy(user.getUserId());
+        operationLog.setCreateD(new java.util.Date());
+        operationLogs.add(operationLog);
+        operationLogService.saveOperationLog(operationLogs);//保存日志
         return scholarshipDetail.getId();
     }
 // 根据id查询scholarshipXAndStu
@@ -277,13 +434,39 @@ public ScholarshipXResultObject getScholarshipXAndStu(String id) throws Exceptio
         return scholarshipXResultObject;
     }
     //删除保险子表记录
-    public ScholarshipDetail deleteScholarshipDetailById(String id, List<OperationLog> operationLogs) {
+    public ScholarshipDetail deleteScholarshipDetailById(User user,String id) {
         ScholarshipDetail scholarshipDetail = getScholarshipDetailById(id);
         if (scholarshipDetail == null)
             return null;
         //记录日志
-        operationLogService.saveOperationLog(operationLogs);
-        scholarshipDetailRepository.delete(scholarshipDetail);
+        List<OperationLog> operationLogs = new ArrayList<OperationLog>();
+        ScholarshipX scholarshipX = findOne(id);
+        OperationLog operationLog = new OperationLog();
+        operationLog.setOptType("3");
+        operationLog.setModule("奖学金年度评审管理");
+        operationLog.setModuleId("BG0006");
+        operationLog.setStudentId(scholarshipX.getStudentId());
+        operationLog.setCscId(scholarshipX.getCscId());
+        operationLog.setPassportName(scholarshipX.getPassportName());
+        String reason=(scholarshipX.getSchReason()!=null)? scholarshipX.getSchReason():"-";//对null的情况进行转化
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");//日期格式化
+        String sTB=(scholarshipX.getSchStartTime()!=null)? formatter.format(scholarshipX.getSchStartTime()) :"-";
+        String eTB=(scholarshipX.getSchEndTime()!=null)? formatter.format(scholarshipX.getSchEndTime()) :"-";
+        String before = baseDAO.getNameCHByTranslateId(scholarshipX.getSchReview()) + "/" +baseDAO.getNameCHByTranslateId(scholarshipX.getSchResult()) + "/" + reason+ "/" + sTB+ "/" + eTB;
+        operationLog.setBefore(before);
+        operationLog.setAfter("");
+        operationLog.setColumnEN("");
+        operationLog.setColumnCH("");
+        operationLog.setTableEN("scms_scholarship_detail");
+        operationLog.setTableCH("奖学金评审信息表");
+        operationLog.setNodeId(user.getNode().getNodeId());
+        operationLog.setNodeType(user.getNode().getNodeType());
+        operationLog.setCreateBy(user.getUserId());
+        operationLog.setCreateD(new java.util.Date());
+        operationLogs.add(operationLog);
+        operationLogService.saveOperationLog(operationLogs);//保存日志
+
+        scholarshipDetailRepository.delete(scholarshipDetail);//删除记录
         return scholarshipDetail;
     }
 
