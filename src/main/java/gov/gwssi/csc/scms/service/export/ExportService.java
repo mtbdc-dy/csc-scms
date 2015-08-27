@@ -25,7 +25,7 @@ public class ExportService extends BaseService {
     @Autowired
     private ExportDAO exportDAO;
 
-    public byte[] exportByfilter(String tablename, String[] id) {
+    public byte[] exportByfilter(String tablename,String subtable, String[] id) {
         String idins = "";
         if(id!=null){
             for (int i = 0; i < id.length; i++) {
@@ -33,13 +33,13 @@ public class ExportService extends BaseService {
             }
         }
 
-        List exportList = exportDAO.getExportList(tablename);
-        List seachList = exportDAO.getSeachList(tablename);//除标题行外
-        List headarrayList = exportDAO.getHeadarrayList(tablename);//所有标题行
+        List exportList = exportDAO.getExportList(tablename,subtable);
+        List seachList = exportDAO.getSeachList(tablename,subtable);//除标题行外
+        List headarrayList = exportDAO.getHeadarrayList(tablename,subtable);//所有标题行
 
-        List mergeList = exportDAO.getMergeList(tablename);//需要合并的标题
+        List mergeList = exportDAO.getMergeList(tablename,subtable);//需要合并的标题
         String sql = "select ";//查询语句
-        int headarrayint = exportDAO.getHeadarrayInt(tablename);//动态标题行数
+        int headarrayint = exportDAO.getHeadarrayInt(tablename,subtable);//动态标题行数
         String headArray[][] = new String[headarrayint][seachList.size()];//需要显示的标题行
         String headArray1[][] = new String[1][seachList.size()];//查询的字段，英文，和数据库对应
         String titleExcel = "";//excel标题
@@ -143,7 +143,7 @@ public class ExportService extends BaseService {
 
 
     //生成多个sheet页的导出
-    public byte[] exportByfilter(String[] tablename, String[] id) {
+    public byte[] exportByfilter(String[] tablename, String subtable,String[] id) {
         String idins = "";
 
         for (int i = 0; i < id.length; i++) {
@@ -157,13 +157,13 @@ public class ExportService extends BaseService {
         ArrayList columnLengths=new ArrayList();
         
         for (int k = 0; k < tablename.length; k++) {
-            List exportList = exportDAO.getExportList(tablename[k]);
-            List seachList = exportDAO.getSeachList(tablename[k]);//除标题行外
-            List headarrayList = exportDAO.getHeadarrayList(tablename[k]);//所有标题行
+            List exportList = exportDAO.getExportList(tablename[k],subtable);
+            List seachList = exportDAO.getSeachList(tablename[k],subtable);//除标题行外
+            List headarrayList = exportDAO.getHeadarrayList(tablename[k],subtable);//所有标题行
 
-            List mergeList = exportDAO.getMergeList(tablename[k]);//需要合并的标题
+            List mergeList = exportDAO.getMergeList(tablename[k],subtable);//需要合并的标题
             String sql = "select ";//查询语句
-            int headarrayint = exportDAO.getHeadarrayInt(tablename[k]);//动态标题行数
+            int headarrayint = exportDAO.getHeadarrayInt(tablename[k],subtable);//动态标题行数
             String headArray[][] = new String[headarrayint][seachList.size()];//需要显示的标题行
             String headArray1[][] = new String[1][seachList.size()];//查询的字段，英文，和数据库对应
             String titleExcel = "";//excel标题
