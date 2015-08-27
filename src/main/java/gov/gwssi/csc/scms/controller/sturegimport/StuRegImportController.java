@@ -127,7 +127,7 @@ public class StuRegImportController {
                     List<String> list = importStuRegDao.doImport(items.get(0));
                     System.out.println("list = " + list.size());
                     System.out.println("list = " + list);
-                    importStuRegDao.updateFile(id, list.size() - 2, "1",list1);
+                    importStuRegDao.updateFile(id, list.size(), "1",list1);
                 }
 
                // importDao.saveOpt(fileName, list.size() - 2, userName);
