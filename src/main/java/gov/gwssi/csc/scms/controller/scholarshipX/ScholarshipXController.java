@@ -1,6 +1,8 @@
 package gov.gwssi.csc.scms.controller.scholarshipX;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.controller.JsonBody;
 import gov.gwssi.csc.scms.controller.RequestHeaderError;
@@ -51,6 +53,7 @@ public class ScholarshipXController {
     @RequestMapping(value = "/new",method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<ScholarshipXResultObject> getScholarshipXs(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
         User user = null;
+        List<OperationLog> operationLogs=null;
         try {
             user = userService.getUserByJWT(header);
         } catch (RequestHeaderError requestHeaderError) {
@@ -58,7 +61,8 @@ public class ScholarshipXController {
         } catch (UserIdentityError userIdentityError) {
             userIdentityError.printStackTrace();
         }
-        List<ScholarshipXResultObject> scholarshipXResultObjectList = scholarshipXService.getScholarshipXList(user);
+        List<ScholarshipXResultObject> scholarshipXResultObjectList = scholarshipXService.getScholarshipXList(user);//保存日志
+
         return scholarshipXResultObjectList;
     }
     //学校用户在前台点击查询，返回列表
@@ -100,6 +104,7 @@ public class ScholarshipXController {
         }
         return scholarshipXResultObjectList;
     }
+
     //修改奖学金评审管理信息
     @RequestMapping(value = "/save/{school}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public List<ScholarshipXResultObject> modScholarshipXdetail(@PathVariable(value = "school") String school,
@@ -117,8 +122,9 @@ public class ScholarshipXController {
                 return null;
             } else {
                 for (int i = 0; i < ScholarshipDetails.size(); i++) {
-                    scholarshipDetail = ScholarshipDetails.get(i);
-                    String id = scholarshipXService.saveScholarshipDetail(scholarshipDetail, null);
+                    scholarshipDetail = ScholarshipDetails.get(i);//前台获取的
+                    //更新记录，保存日志
+                    String id = scholarshipXService.saveScholarshipDetail(scholarshipDetail, user);
                 }
                 //子表全部保存完成后，对主表的合格，不合格人数进行重新统计并更新主表
                 Iterable scholarshipXlist = scholarshipXService.findScholarshipXAll();
@@ -203,7 +209,7 @@ public class ScholarshipXController {
                  }else{//上次为空，或者上次为合格
                      scholarshipDetail.setSchResult("AP0001");//继续
                  }
-                 String id = scholarshipXService.savenewScholarshipDetail(scholarshipDetail, null);//插入新增记录
+                 String id = scholarshipXService.savenewScholarshipDetail(scholarshipDetail, user);//插入新增记录
 
                  //子表全部保存完成后，对主表的合格，不合格人数进行重新统计并更新主表
                  Iterable scholarshipXlist = scholarshipXService.findScholarshipXAll();
@@ -244,11 +250,7 @@ public class ScholarshipXController {
     @RequestMapping(value = "/{id}/{log}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
     public List<ScholarshipXResultObject> deleteScholarshipDetail(@PathVariable("id") String id, @PathVariable("log") String log,@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) {
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
-//                    JsonBody jbosy = new ObjectMapper().readValue(log, JsonBody.class);
-            List<OperationLog> operationLogs = mapper.readValue(log, javaType);
-            User user = userService.getUserByJWT(header);
+           User user = userService.getUserByJWT(header);
             String[] id1;
             id1 = id.split(",");
             //获取主表id
@@ -257,7 +259,7 @@ public class ScholarshipXController {
 
             List<ScholarshipXResultObject> scholarshipXResultObjectList = new ArrayList<ScholarshipXResultObject>();
             for (int i = 1; i < id1.length; i++) {
-                ScholarshipDetail scholarshipDetail = scholarshipXService.deleteScholarshipDetailById(id1[i], operationLogs);
+                ScholarshipDetail scholarshipDetail = scholarshipXService.deleteScholarshipDetailById(user,id1[i]);//保存日志
                 if (scholarshipDetail == null) {
                     throw new NoSuchAbnormalException("cannot delete the scholarshipX,id=" + id1[i]);
                 }
@@ -319,7 +321,7 @@ public class ScholarshipXController {
             } else {
                 for (int i = 0; i < ScholarshipDetails.size(); i++) {
                     scholarshipDetail = ScholarshipDetails.get(i);
-                    String id = scholarshipXService.saveScholarshipDetail(scholarshipDetail, null);
+                    String id = scholarshipXService.saveScholarshipDetail(scholarshipDetail, user);//保存记录日志
                 }
                 //子表全部保存完成后，对主表的合格，不合格人数进行重新统计并更新主表
                 Iterable scholarshipXlist = scholarshipXService.findScholarshipXAll();
@@ -352,7 +354,7 @@ public class ScholarshipXController {
                 scholarship.setSchoolSta("1");//已提交
                 scholarship.setSchoolDate(ts);//评审提交时间
                 scholarship.setCscSta("0");//设置默认的基金委提交状态为“未提交”
-                scholarshipXService.saveScholarship(scholarship, null);
+                scholarshipXService.saveScholarship(scholarship, user,"1");//记录提交日志
                 for (int i = 0; i < ScholarshipDetails.size(); i++) {
                     scholarshipDetail = ScholarshipDetails.get(i);
                     ScholarshipXResultObject scholarshipXResult = scholarshipXService.getScholarshipXAndStu(scholarshipDetail.getId());
