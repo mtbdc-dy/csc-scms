@@ -207,4 +207,14 @@ public class TicketService extends BaseService {
         }
     }
 
+    //修改机票State为已导出
+    public void updateTicketState(String[] ids){
+        for(int i=0;i<ids.length;i++){
+            Ticket ticket = ticketRepository.findOne(ids[i]);
+            ticket.setState("AT0005");
+            ticketRepository.save(ticket);
+        }
+    }
+
+
     }

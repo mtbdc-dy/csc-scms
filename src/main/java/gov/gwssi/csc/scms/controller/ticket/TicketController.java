@@ -378,4 +378,14 @@ public class TicketController {
         return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
 
     }
+    @RequestMapping(
+            method = RequestMethod.PUT,
+            params = {"id"},
+            headers = "Accept=application/octet-stream")
+    public  List<String> updateTicketState(@RequestParam("id") String[] id) throws IOException {
+            ticketService.updateTicketState(id);
+            List<String> ids = new ArrayList<String>();
+            ids.add(id[0]);
+            return ids;
+    }
     }
