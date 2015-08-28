@@ -360,10 +360,10 @@ public class TicketController {
      */
     @RequestMapping(
             method = RequestMethod.GET,
-            params = {"id"},
+            params = {"id","userType"},
             headers = "Accept=application/octet-stream")
     public ResponseEntity<byte[]> exportTickets(
-            @RequestParam("id") String[] id) throws IOException {
+            @RequestParam("id") String[] id,@RequestParam("userType") String userType) throws IOException {
         byte[] bytes = null;
 
         String tableName = "v_exp_airticket";
@@ -375,17 +375,11 @@ public class TicketController {
         httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         httpHeaders.setContentDispositionFormData("attachment", fileName);
 
+        if("1".equals(userType)){
+            ticketService.updateTicketState(id);
+        }
+
         return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
 
-    }
-    @RequestMapping(
-            method = RequestMethod.PUT,
-            params = {"id"},
-            headers = "Accept=application/octet-stream")
-    public  List<String> updateTicketState(@RequestParam("id") String[] id) throws IOException {
-            ticketService.updateTicketState(id);
-            List<String> ids = new ArrayList<String>();
-            ids.add(id[0]);
-            return ids;
     }
     }
