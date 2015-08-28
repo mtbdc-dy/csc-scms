@@ -162,8 +162,12 @@ public class TicketDAO extends BaseDAO {
         if(!"CSC登记号不存在：".equals(cscNoIsNull)){
             stringList.add(cscNoIsNull);
         }
-        if(!"机票编号不存在：".equals(cscNoIsNull)){
-            stringList.add(cscNoIsNull);
+        if(!"机票编号不存在：".equals(ticketIdIsError)){
+            stringList.add(ticketIdIsError);
+        }
+//        String ticketIsError = "导入的订票信息存在错误行：";
+        if(!"导入的订票信息存在错误行：".equals(ticketIsError)){
+            stringList.add(ticketIsError);
         }
         if(stringList.size()==0){
             stringList.clear();
