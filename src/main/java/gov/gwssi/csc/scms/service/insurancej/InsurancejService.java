@@ -1,13 +1,13 @@
 
-package gov.gwssi.csc.scms.service.insurance;
+package gov.gwssi.csc.scms.service.insurancej;
 
 import gov.gwssi.csc.scms.dao.insurance.InsuranceDAO;
+import gov.gwssi.csc.scms.domain.insurance.Insurance;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.FilterObject;
+import gov.gwssi.csc.scms.domain.query.InsuranceResultObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilter;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
-import gov.gwssi.csc.scms.domain.query.InsuranceResultObject;
-import gov.gwssi.csc.scms.domain.insurance.Insurance;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.insurance.InsuranceRepository;
 import gov.gwssi.csc.scms.service.BaseService;
@@ -26,8 +26,8 @@ import java.util.List;
  * Created by gc on 2015/7/17.
  * 保险服务类
  */
-@Service("insuranceService")
-public class InsuranceService extends BaseService {
+@Service("insurancejService")
+public class InsurancejService extends BaseService {
     @Autowired
     @Qualifier("insuranceRepository")
     private InsuranceRepository insuranceRepository;
@@ -39,7 +39,7 @@ public class InsuranceService extends BaseService {
     public List<InsuranceResultObject> getInsuranceList(User user) {
         List listParameter = new ArrayList();
         List<InsuranceResultObject> InsuranceResultObjectList;
-        listParameter.add("1");//传入“1”：正式
+        listParameter.add("0");//传入“0”：预计
         insuranceDAO.doSt("p_scms_insurance",listParameter);//调用存储生成当年需要投保的保单记录
         int startPosition, pageSize;
 
@@ -93,7 +93,7 @@ public class InsuranceService extends BaseService {
         int year=ts.getYear()+1900;
         String tempSql = " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll,Insurance Insurance " +
                 "where student.id = basicInfo.student  " +
-                "and student.id = schoolRoll.student   and student.id = Insurance.studentId and  Insurance.insurSta ='1'";//正式的
+                "and student.id = schoolRoll.student   and student.id = Insurance.studentId and  Insurance.insurSta ='0'";//预计的
         sb.append(tempSql);
         sb.append(" and Insurance.year = '").append(year).append("'");//只显示当前年份的
         return sb.toString();
@@ -108,7 +108,7 @@ public class InsuranceService extends BaseService {
         sb.append(InsuranceResultObject.getResultObject());
         String tempSql = " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll,Insurance Insurance " +
                 "where student.id = basicInfo.student  " +
-                "and student.id = schoolRoll.student   and student.id = Insurance.studentId and  Insurance.insurSta ='1'";//正式的
+                "and student.id = schoolRoll.student   and student.id = Insurance.studentId and  Insurance.insurSta ='0'";//预计的
         sb.append(tempSql);
         sb.append(" and Insurance.year = '").append(year).append("'");//只显示当前年份的
         sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter(user, "insurance", ""));
@@ -131,7 +131,7 @@ public class InsuranceService extends BaseService {
         sb.append(InsuranceResultObject.getResultObject());
         String tempSql = " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll, Insurance Insurance " +
                 "where student.id = basicInfo.student  " +
-                "and student.id = schoolRoll.student and student.id = Insurance.studentId  and  Insurance.insurSta ='1'";//正式的
+                "and student.id = schoolRoll.student and student.id = Insurance.studentId  and  Insurance.insurSta ='0'";//预计
         sb.append(tempSql);
         sb.append(" and Insurance.id = '").append(id).append("'");
         List<InsuranceResultObject> insuranceList = super.getBaseDao().getObjectListByHQL(sb.toString(), InsuranceResultObject.class, 0, 1);

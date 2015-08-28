@@ -1,10 +1,9 @@
-package gov.gwssi.csc.scms.controller.insurance;
+package gov.gwssi.csc.scms.controller.insurancej;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.controller.JsonBody;
 import gov.gwssi.csc.scms.controller.RequestHeaderError;
-import gov.gwssi.csc.scms.dao.importExcle.ImportDao;
 import gov.gwssi.csc.scms.dao.insurance.InsuranceDAO;
 import gov.gwssi.csc.scms.domain.insurance.Insurance;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
@@ -14,47 +13,49 @@ import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.abnormal.NoSuchAbnormalException;
 import gov.gwssi.csc.scms.service.export.ExportService;
 import gov.gwssi.csc.scms.service.insurance.InsuranceService;
+import gov.gwssi.csc.scms.service.insurancej.InsurancejService;
 import gov.gwssi.csc.scms.service.user.NoSuchUserException;
 import gov.gwssi.csc.scms.service.user.UserIdentityError;
 import gov.gwssi.csc.scms.service.user.UserService;
 import gov.gwssi.csc.scms.utils.JWTUtil;
-
-//import org.apache.commons.fileupload.FileItem;
-//import org.apache.commons.fileupload.FileUploadException;
-//import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-//import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.sql.Timestamp;
 import java.util.*;
 
+//import org.apache.commons.fileupload.FileItem;
+//import org.apache.commons.fileupload.FileUploadException;
+//import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+//import org.apache.commons.fileupload.servlet.ServletFileUpload;
+
 /**
- * Created by gc on 2015/7/17.
+ * Created by gc on 2015/8/26.
  * 保险管理控制器
  */
 @RestController
-@RequestMapping(value = "/insurance")
-public class InsuranceController {
+@RequestMapping(value = "/insurancej")
+public class InsurancejController {
     @Autowired
     private ExportService exportService;
     @Autowired
     private UserService userService;
+
     @Autowired
-    private InsuranceService insuranceService;
+    private InsurancejService insurancejService;
     @Autowired
     private InsuranceDAO importDao;
     public static Map<String,List> MAP = new HashMap<String, List>();
@@ -86,7 +87,7 @@ public class InsuranceController {
         } catch (UserIdentityError userIdentityError) {
             userIdentityError.printStackTrace();
         }
-        List<InsuranceResultObject> insuranceResultObjectList = insuranceService.getInsuranceList(user);
+        List<InsuranceResultObject> insuranceResultObjectList = insurancejService.getInsuranceList(user);
         return insuranceResultObjectList;
     }
 
@@ -102,7 +103,7 @@ public class InsuranceController {
             User user = userService.getUserByJWT(header);
             String userid = user.getUserId();
             //按照分页（默认）要求，返回列表内容
-            List<InsuranceResultObject> insuranceResultObjects = insuranceService.getInsuranceListByFilter(sfo, user);
+            List<InsuranceResultObject> insuranceResultObjects = insurancejService.getInsuranceListByFilter(sfo, user);
             return insuranceResultObjects;
         } catch (UnsupportedEncodingException uee) {
             uee.printStackTrace();
@@ -142,12 +143,12 @@ public class InsuranceController {
             insurance.setCreateBy(user.getUserId());
             insurance.setCreated(ts);
             insurance.setYear(ts.getYear() + 1900);
-            insurance.setInsurSta("1");//未导出
+            insurance.setInsurSta("0");//预计
             insurance.setPreSta("AV0001");//未导出
             JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
             List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
-            String id = insuranceService.saveInsurance(insurance, operationLogs);
-            InsuranceResultObject insuranceResult = insuranceService.getInsuranceAndStu(id);
+            String id = insurancejService.saveInsurance(insurance, operationLogs);
+            InsuranceResultObject insuranceResult = insurancejService.getInsuranceAndStu(id);
             return insuranceResult;
         } catch (Exception e) {
             e.printStackTrace();
@@ -169,9 +170,9 @@ public class InsuranceController {
             Insurance insurance = new Insurance();
             List<InsuranceResultObject> insuranceResultObjectList = new ArrayList<InsuranceResultObject>();
             for (int i = 1; i < id1.length; i++) {
-                InsuranceResultObject insuranceResult = insuranceService.getInsuranceAndStu(id1[i]);
+                InsuranceResultObject insuranceResult = insurancejService.getInsuranceAndStu(id1[i]);
                 insuranceResultObjectList.add(insuranceResult);
-                insurance = insuranceService.deleteInsuranceById(id1[i], operationLogs);
+                insurance = insurancejService.deleteInsuranceById(id1[i], operationLogs);
                 if (insurance == null) {
                     throw new NoSuchAbnormalException("cannot delete the insurance,id=" + id1[i]);
                 }
@@ -208,7 +209,7 @@ public class InsuranceController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         httpHeaders.setContentDispositionFormData("attachment", fileName);
-        insuranceService.updateInsurancePresta(id);//导出后，根据传入的id数组进行批量更新导出状态
+        insurancejService.updateInsurancePresta(id);//导出后，根据传入的id数组进行批量更新导出状态
 
         return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
     }

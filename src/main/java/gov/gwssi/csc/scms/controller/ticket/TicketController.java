@@ -360,20 +360,24 @@ public class TicketController {
      */
     @RequestMapping(
             method = RequestMethod.GET,
-            params = {"id"},
+            params = {"id","userType"},
             headers = "Accept=application/octet-stream")
     public ResponseEntity<byte[]> exportTickets(
-            @RequestParam("id") String[] id) throws IOException {
+            @RequestParam("id") String[] id,@RequestParam("userType") String userType) throws IOException {
         byte[] bytes = null;
 
         String tableName = "v_exp_airticket";
-        bytes = exportService.exportByfilter(tableName, id);
+        bytes = exportService.exportByfilter(tableName,"0", id);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         httpHeaders.setContentDispositionFormData("attachment", fileName);
+
+        if("1".equals(userType)){
+            ticketService.updateTicketState(id);
+        }
 
         return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
 

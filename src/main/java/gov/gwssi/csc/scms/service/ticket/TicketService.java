@@ -180,7 +180,7 @@ public class TicketService extends BaseService {
 
             operationLog.setOptType("3");
             operationLog.setModule("在校生学籍管理");
-            operationLog.setModuleId("BG003");
+            operationLog.setModuleId("BG0003");
             operationLog.setStudentId(student.getId());
             operationLog.setCscId(student.getCscId());
             operationLog.setPassportName(student.getBasicInfo().getPassportName());
@@ -206,5 +206,15 @@ public class TicketService extends BaseService {
             throw new RuntimeException(e);
         }
     }
+
+    //修改机票State为已导出
+    public void updateTicketState(String[] ids){
+        for(int i=0;i<ids.length;i++){
+            Ticket ticket = ticketRepository.findOne(ids[i]);
+            ticket.setState("AT0005");
+            ticketRepository.save(ticket);
+        }
+    }
+
 
     }

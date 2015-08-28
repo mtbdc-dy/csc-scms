@@ -61,6 +61,8 @@ public class ScholarshipX {
     private String cscSta;
     @Column
     private String cscrresult_lastyear;
+    @Column
+    private String passportName;
 
     /**
      *年度
@@ -73,6 +75,13 @@ public class ScholarshipX {
     @Column
     private String school;
 
+    public String getPassportName() {
+        return passportName;
+    }
+
+    public void setPassportName(String passportName) {
+        this.passportName = passportName;
+    }
 
     public Long getSchoolQual() {
         return schoolQual;
