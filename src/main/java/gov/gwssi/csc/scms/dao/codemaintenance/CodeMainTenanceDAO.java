@@ -152,7 +152,7 @@ public class CodeMainTenanceDAO extends BaseDAO {
 
             codeDetailResult1.setID(map.get("univid".toUpperCase()).toString());
             codeDetailResult1.setENABLED(map.get("enabled".toUpperCase()).toString());
-            codeDetailResult1.setNAME(map.get("namech".toUpperCase()).toString());
+            codeDetailResult1.setNAME(map.get("UNIV".toUpperCase()).toString());
             codeDetailResult1.setTABLEEN(codeDetailResult.getTABLEEN());
             codeDetailResult1.setFULLNAME(map.get("updateby".toUpperCase()).toString());
             codeDetailResult1.setPARENTID(map.get("province".toUpperCase()).toString());
@@ -285,7 +285,7 @@ public class CodeMainTenanceDAO extends BaseDAO {
 
             codeDetailResult1.setID(map.get("univid".toUpperCase()).toString());
             codeDetailResult1.setENABLED(map.get("enabled".toUpperCase()).toString());
-            codeDetailResult1.setNAME(map.get("namech".toUpperCase()).toString());
+            codeDetailResult1.setNAME(map.get("UNIV".toUpperCase()).toString());
             codeDetailResult1.setTABLEEN(codeDetailResult.getTABLEEN());
             codeDetailResult1.setFULLNAME(map.get("updateby".toUpperCase()).toString());
             codeDetailResult1.setPARENTID(map.get("province".toUpperCase()).toString());
@@ -473,7 +473,7 @@ public class CodeMainTenanceDAO extends BaseDAO {
             return "";
         }else if(UNIVERSITIES.equals(codeDetailResult.getTABLEEN())){
             zdz =super.getDicIdByClassType(type);
-            sql = "insert into "+codeDetailResult.getTABLEEN()+" values(f_scms_dim_id('"+type+"'),'"+codeDetailResult.getNAME()+"','','"+codeDetailResult.getPARENTID()+"','','','','','"+codeDetailResult.getENABLED()+"','"+codeDetailResult.getFULLNAME()+"',SYSDATE)";
+            sql = "insert into "+codeDetailResult.getTABLEEN()+" (UNIVID,UNIV,PROVINCE,ENABLED,UPDATEBY,UPDATED) values(f_scms_dim_id('"+type+"'),'"+codeDetailResult.getNAME()+"','"+codeDetailResult.getPARENTID()+"','"+codeDetailResult.getENABLED()+"','"+codeDetailResult.getFULLNAME()+"',SYSDATE)";
             int n = super.updateBySql(sql);
             if (n==1) {
                 return zdz;
