@@ -84,7 +84,7 @@ public class Student implements Cloneable {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "student")
     private List<Abnormal> abnormals;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "student")
     private List<Ticket> tickets;
 
     public Warning getWarning() {
