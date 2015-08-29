@@ -40,6 +40,8 @@ public class InsurancejService extends BaseService {
         List listParameter = new ArrayList();
         List<InsuranceResultObject> InsuranceResultObjectList;
         listParameter.add("0");//传入“0”：预计
+        String userId = user.getUserId();
+        listParameter.add(userId);
         insuranceDAO.doSt("p_scms_insurance",listParameter);//调用存储生成当年需要投保的保单记录
         int startPosition, pageSize;
 
