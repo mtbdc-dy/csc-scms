@@ -84,6 +84,9 @@ public class Student implements Cloneable {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "student")
     private List<Abnormal> abnormals;
 
+    /**
+     * 机票信息
+     */
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "student")
     private List<Ticket> tickets;
 
