@@ -4,17 +4,21 @@ import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.student.*;
 import gov.gwssi.csc.scms.domain.ticket.Ticket;
 import gov.gwssi.csc.scms.domain.ticket.Ticket_;
+import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
  * Created by tianj on 2015/8/29.
  */
 public class TicketSpecs extends BaseService {
-    public static Specification<Ticket> filterIsLike(final Filter filter) {
+    public static Specification<Ticket> filterIsLike(final Filter filter, final User user) {
         return new Specification<Ticket>() {
             @Override
             public Predicate toPredicate(Root<Ticket> ticket, CriteriaQuery<?> query, CriteriaBuilder cb) {
@@ -65,8 +69,30 @@ public class TicketSpecs extends BaseService {
 
 
                 /**机票部分*/
+                Date finalDate = null;
+                Date intialDate = null;
+                int currentYear=0;
+                try {
+                    Calendar calendar = Calendar.getInstance();
+                    currentYear = calendar.get(Calendar.YEAR);
+                    SimpleDateFormat ds = new SimpleDateFormat("yyyy-MM-dd");
+                    intialDate = ds.parse(currentYear + "-01-01");
+                    finalDate = ds.parse(currentYear + "-09-01");
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                predicate.getExpressions().add(cb.greaterThanOrEqualTo(cb.currentDate(),intialDate));
+                predicate.getExpressions().add(cb.lessThan(cb.currentDate(), finalDate));
+
                 if (filter.getTicketState() != null) {
                     predicate.getExpressions().add(cb.like(ticket.get(Ticket_.state), filter.getTicketState()));
+                } else {
+                    if ("2".equals(user.getUserType())) {//1 基金委用户 2学校用户
+                        predicate.getExpressions().add(cb.in(ticket.get(Ticket_.state)).value("AT0001").value("AT0002").value("AT0005").value("AT0003").value("AT0004"));
+                    } else if ("1".equals(user.getUserType())) {
+                        predicate.getExpressions().add(cb.in(ticket.get(Ticket_.state)).value("AT0002").value("AT0005").value("AT0003").value("AT0004"));
+                    }
                 }
 
                 /**学生主表部分*/

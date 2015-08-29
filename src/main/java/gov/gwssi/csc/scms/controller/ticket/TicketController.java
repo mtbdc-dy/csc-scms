@@ -15,6 +15,7 @@ import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.export.ExportService;
 import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.ticket.NoSuchTicketException;
+import gov.gwssi.csc.scms.service.ticket.TicketConverter;
 import gov.gwssi.csc.scms.service.ticket.TicketService;
 import gov.gwssi.csc.scms.service.user.NoSuchUserException;
 import gov.gwssi.csc.scms.service.user.UserIdentityError;
@@ -388,20 +389,27 @@ public class TicketController {
 
     }
 
-//    //分页查询
-//    @RequestMapping(
-//            method = RequestMethod.GET,
-//            headers = {"Accept=application/json"},
-//            params = {"mode", "field", "page", "size", "filter"})
-//    public ResponseEntity<Page<Map<String, Object>>> getStudents(
-//            @RequestParam(value = "mode") String mode,
-//            @RequestParam(value = "field") String[] fields,
-//            @RequestParam(value = "page") Integer page,
-//            @RequestParam(value = "size") Integer size,
-//            @RequestParam(value = "filter") String filterJSON) throws IOException {
-//        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
-//        Page<Student> studentPage = ticketService.getTicketsPagingByFilter(filter, page, size, mode);
-//        Page<Map<String, Object>> mapPage = studentPage.map(new StudentConverter(fields));
-//        return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
-//    }
+    //分页查询
+    @RequestMapping(
+            method = RequestMethod.GET,
+            headers = {"Accept=application/json"},
+            params = {"mode", "field", "page", "size", "filter"})
+    public ResponseEntity<Page<Map<String, Object>>> getTickets(
+            @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
+            @RequestParam(value = "mode") String mode,
+            @RequestParam(value = "field") String[] fields,
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size,
+            @RequestParam(value = "filter") String filterJSON) throws IOException {
+        try {
+            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            User user = userService.getUserByJWT(header);
+            Page<Ticket> ticketPage = ticketService.getTicketsPagingByFilter(filter, page, size, mode, user);
+            Page<Map<String, Object>> mapPage = ticketPage.map(new TicketConverter());
+            return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -226,11 +226,11 @@ public class TicketService extends TicketSpecs {
         }
     }
 
-//    public Page<Ticket> getTicketsPagingByFilter(Filter filter) {
-//        Specification<Ticket> specA = filterIsLike(filter);
-////        Specification<Ticket> specB = userIs(user);
-//        return ticketRepository.findAll(where(specA), new PageRequest(0, 20));
-//    }
+    public Page<Ticket> getTicketsPagingByFilter(Filter filter,Integer page,Integer size,String mode,User user) {
+        Specification<Ticket> specA = filterIsLike(filter,user);
+//        Specification<Ticket> specB = userIs(user);
+        return ticketRepository.findAll(where(specA), new PageRequest(page, size));
+    }
 
 
 }

@@ -18,8 +18,6 @@ public class TicketServiceTest extends UnitTestBase {
         TicketService ticketService = getBean(TicketService.class);
         Filter filter = new Filter();
         filter.setTicketState("AT0001");
-        Page<Ticket> ticketPage = ticketService.getTicketsPagingByFilter(filter);
-        Page<Map<String, Object>> mapPage = ticketPage.map(new TicketConverter());
-        System.out.println("mapPage = " + mapPage);
+
     }
 }
