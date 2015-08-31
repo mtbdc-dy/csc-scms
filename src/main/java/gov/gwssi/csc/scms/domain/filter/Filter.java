@@ -25,7 +25,11 @@ public class Filter {
     private String insuranceState = null;    // 保险订购状态 add by gc
     private String schReview = null;         // 奖学金评审结果 add by gc
     private String schResult = null;         // 奖学金处理结果 add by gc
-
+/**
+ * LZS 自定义的查询条件 非公共条件
+ */
+    private String pro = null;//省市
+    private String univ = null;//学校
     /**
      * 隐藏查询条件
      */
@@ -339,5 +343,21 @@ public class Filter {
 
     public void setMode(String mode) {
         this.mode = mode;
+    }
+
+    public String getPro() {
+        return pro;
+    }
+
+    public void setPro(String pro) {
+        this.pro = pro;
+    }
+
+    public String getUniv() {
+        return univ;
+    }
+
+    public void setUniv(String univ) {
+        this.univ = univ;
     }
 }
