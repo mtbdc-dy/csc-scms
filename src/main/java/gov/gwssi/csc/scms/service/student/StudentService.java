@@ -18,10 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Murray on 4/5/2015.
@@ -270,6 +267,9 @@ public class StudentService extends BaseService {
         if(operationLog.getAfter().equals("AX0002")){    //若将"是否报到"从否(AX0001)改为是(AX0002)，则还要将报到状态从未处理(AW0002)改为报到(AW0001)
             SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(operationLog.getStudentId());
             schoolRoll.setRegisterState("AW0001");
+            Calendar calendar = Calendar.getInstance();
+            int currentYear = calendar.get(Calendar.YEAR);
+            schoolRoll.setRegisterYear(currentYear);
             schoolRollService.updateSchoolRoll(schoolRoll);
         }
         if(operationLog.getAfter().equals("AX0001")){  //若将"是否报到"从是(AX0002)改为否(AX0001)，则还要将报到状态从报到(AW0001)改为未处理(AW0002)

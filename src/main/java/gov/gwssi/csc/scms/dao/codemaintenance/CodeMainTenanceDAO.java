@@ -155,6 +155,7 @@ public class CodeMainTenanceDAO extends BaseDAO {
             codeDetailResult1.setNAME(map.get("namech".toUpperCase()).toString());
             codeDetailResult1.setTABLEEN(codeDetailResult.getTABLEEN());
             codeDetailResult1.setFULLNAME(map.get("updateby".toUpperCase()).toString());
+            codeDetailResult1.setPARENTID(map.get("province".toUpperCase()).toString());
             System.out.println(map.get("univid".toUpperCase()).toString());
             try {
                 codeDetailResult1.setUPDATED(sdf.parse(map.get("updated".toUpperCase()).toString()));
@@ -287,6 +288,7 @@ public class CodeMainTenanceDAO extends BaseDAO {
             codeDetailResult1.setNAME(map.get("namech".toUpperCase()).toString());
             codeDetailResult1.setTABLEEN(codeDetailResult.getTABLEEN());
             codeDetailResult1.setFULLNAME(map.get("updateby".toUpperCase()).toString());
+            codeDetailResult1.setPARENTID(map.get("province".toUpperCase()).toString());
             System.out.println(map.get("univid".toUpperCase()).toString());
             //System.out.println(map.get("projectid".toUpperCase()).toString());
             try {
@@ -509,6 +511,7 @@ public class CodeMainTenanceDAO extends BaseDAO {
             if(seqList.size()>0){
                 codeSql = ((HashMap)seqList.get(0)).get("SQL").toString();
                 codeList = super.queryListBySql(codeSql);
+                System.out.println();
                 return codeList;
             } else{
                 return codeList;
