@@ -1,6 +1,8 @@
 package gov.gwssi.csc.scms.service.abnormal;
 
+import gov.gwssi.csc.scms.controller.abnormal.AbnormalSpecs;
 import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
+import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.AbnormalResultObject;
 import gov.gwssi.csc.scms.domain.query.FilterObject;
@@ -12,17 +14,22 @@ import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.service.log.OperationLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static org.springframework.data.jpa.domain.Specifications.where;
 
 /**
  * Created by WangZhenghua on 2015/4/24.
  */
 
 @Service("abnormalService")
-public class AbnormalService extends BaseService {
+public class AbnormalService extends AbnormalSpecs {
     @Autowired
     @Qualifier("abnormalRepository")
     private AbnormalRepository abnormalRepository;
@@ -66,7 +73,7 @@ public class AbnormalService extends BaseService {
 
         String tempSql = " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll, Abnormal abnormal " +
                 "where student.id = basicInfo.student  " +
-                "and student.id = schoolRoll.student and student.id = abnormal.studentId ";
+                "and student.id = schoolRoll.student and student.id = abnormal.student.id ";
         sb.append(tempSql);
 
         sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter(user,"abnormal","abnormal"));
@@ -89,14 +96,14 @@ public class AbnormalService extends BaseService {
 
     //保存新增的异动申请
     @Transactional
-    public String saveAbnormal(Abnormal abnormal, List<OperationLog> operationLogs) throws Exception{
+    public Abnormal saveAbnormal(Abnormal abnormal, List<OperationLog> operationLogs) throws Exception{
         //记录日志
         operationLogService.saveOperationLog(operationLogs);
         abnormal.setId(getBaseDao().getIdBySequence("SEQ_ABNORMAL"));
         //保存异动
-         abnormalRepository.save(abnormal);
+         Abnormal resultAbnormal = abnormalRepository.save(abnormal);
 
-        return abnormal.getId();
+        return resultAbnormal;
     }
     // 根据id查询abnormalAndStu
     public AbnormalResultObject getAbnormalAndStu(String id) throws Exception{
@@ -105,7 +112,7 @@ public class AbnormalService extends BaseService {
         sb.append(AbnormalResultObject.getResultObject());
         String tempSql = " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll, Abnormal abnormal " +
                 "where student.id = basicInfo.student  " +
-                "and student.id = schoolRoll.student and student.id = abnormal.studentId ";
+                "and student.id = schoolRoll.student and student.id = abnormal.student.id ";
         sb.append(tempSql);
         sb.append(" and abnormal.id = '").append(id).append("'");
         List<AbnormalResultObject> abnormalList = super.getBaseDao().getObjectListByHQL(sb.toString(), AbnormalResultObject.class, 0, 1);
@@ -135,5 +142,12 @@ public class AbnormalService extends BaseService {
         operationLogService.saveOperationLog(operationLogs);
         abnormalRepository.delete(abnormal);
         return abnormal;
+    }
+
+    //分页查询
+    public Page<Abnormal> getAbnormalsPagingByFilter(Filter filter,Integer page,Integer size,String mode,User user) {
+        Specification<Abnormal> specA = filterIsLike(filter, user);
+//        Specification<Abnormal> specB = userIs(user);
+        return abnormalRepository.findAll(where(specA), new PageRequest(page, size));
     }
 }
