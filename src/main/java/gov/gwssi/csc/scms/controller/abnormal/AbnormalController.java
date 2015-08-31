@@ -175,7 +175,7 @@ public class AbnormalController {
             method = RequestMethod.GET,
             headers = {"Accept=application/json"},
             params = {"mode", "field", "page", "size", "filter"})
-    public ResponseEntity<Page<Map<String, Object>>> getTickets(
+    public ResponseEntity<Page<Map<String, Object>>> getAbnormals(
             @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
             @RequestParam(value = "mode") String mode,
             @RequestParam(value = "field") String[] fields,

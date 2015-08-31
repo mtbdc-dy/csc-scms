@@ -226,6 +226,7 @@ public class TicketService extends TicketSpecs {
         }
     }
 
+    //分页查询
     public Page<Ticket> getTicketsPagingByFilter(Filter filter,Integer page,Integer size,String mode,User user) {
         Specification<Ticket> specA = filterIsLike(filter,user);
 //        Specification<Ticket> specB = userIs(user);
