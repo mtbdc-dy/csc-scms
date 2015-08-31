@@ -95,7 +95,7 @@ public class InsuranceService extends BaseService {
         int year=ts.getYear()+1900;
         String tempSql = " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll,Insurance Insurance " +
                 "where student.id = basicInfo.student  " +
-                "and student.id = schoolRoll.student   and student.id = Insurance.studentId and  Insurance.insurSta ='1'";//正式的
+                "and student.id = schoolRoll.student   and student.id = Insurance.student.id and  Insurance.insurSta ='1'";//正式的
         sb.append(tempSql);
         sb.append(" and Insurance.year = '").append(year).append("'");//只显示当前年份的
         return sb.toString();
@@ -110,7 +110,7 @@ public class InsuranceService extends BaseService {
         sb.append(InsuranceResultObject.getResultObject());
         String tempSql = " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll,Insurance Insurance " +
                 "where student.id = basicInfo.student  " +
-                "and student.id = schoolRoll.student   and student.id = Insurance.studentId and  Insurance.insurSta ='1'";//正式的
+                "and student.id = schoolRoll.student   and student.id = Insurance.student.id and  Insurance.insurSta ='1'";//正式的
         sb.append(tempSql);
         sb.append(" and Insurance.year = '").append(year).append("'");//只显示当前年份的
         sb.append(new StudentFilter((StudentFilterObject) filterObject).getFilter(user, "insurance", ""));
@@ -133,7 +133,7 @@ public class InsuranceService extends BaseService {
         sb.append(InsuranceResultObject.getResultObject());
         String tempSql = " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll, Insurance Insurance " +
                 "where student.id = basicInfo.student  " +
-                "and student.id = schoolRoll.student and student.id = Insurance.studentId  and  Insurance.insurSta ='1'";//正式的
+                "and student.id = schoolRoll.student and student.id = Insurance.student.id  and  Insurance.insurSta ='1'";//正式的
         sb.append(tempSql);
         sb.append(" and Insurance.id = '").append(id).append("'");
         List<InsuranceResultObject> insuranceList = super.getBaseDao().getObjectListByHQL(sb.toString(), InsuranceResultObject.class, 0, 1);
