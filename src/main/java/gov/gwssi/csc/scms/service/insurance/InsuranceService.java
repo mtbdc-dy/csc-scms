@@ -38,6 +38,8 @@ public class InsuranceService extends BaseService {
     //生成保险管理清单
     public List<InsuranceResultObject> getInsuranceList(User user) {
         List listParameter = new ArrayList();
+        String userId = user.getUserId();
+        listParameter.add(userId);
         List<InsuranceResultObject> InsuranceResultObjectList;
         listParameter.add("1");//传入“1”：正式
         insuranceDAO.doSt("p_scms_insurance",listParameter);//调用存储生成当年需要投保的保单记录
