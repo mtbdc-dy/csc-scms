@@ -34,7 +34,7 @@ public class AppropriationService extends BaseService {
     //查询经费统计列表
     public List getList(List listParameter){
         //调用存储过程
-        String id=appropriationDAO.doSt("p_scms_scholarship", listParameter);
+        String id=appropriationDAO.doSt("p_scms_stats_appropriation", listParameter);
         //根据id找到生成的统计记录
         return appropriationDAO.getListById(id);
     }

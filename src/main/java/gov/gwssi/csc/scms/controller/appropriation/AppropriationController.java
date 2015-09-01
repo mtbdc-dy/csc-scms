@@ -78,7 +78,7 @@ public class AppropriationController {
             @RequestParam("id") String[] id) throws IOException {
         byte[] bytes = null;
 
-        String tableName = "v_scholarship_lastyear";
+        String tableName = "v_exp_appropriation";
         bytes = exportService.exportByfilter(tableName,"0", id);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
