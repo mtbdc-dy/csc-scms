@@ -30,6 +30,9 @@ public class Filter {
  */
     private String pro = null;//省市
     private String univ = null;//学校
+    //导入模块日期
+    private Date beginTime = null;
+    private Date endTime = null;
     /**
      * 隐藏查询条件
      */
@@ -359,5 +362,21 @@ public class Filter {
 
     public void setPreSta(String preSta) {
         this.preSta = preSta;
+    }
+
+    public Date getBeginTime() {
+        return beginTime;
+    }
+
+    public void setBeginTime(Date beginTime) {
+        this.beginTime = beginTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 }
