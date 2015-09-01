@@ -1,8 +1,8 @@
 package gov.gwssi.csc.scms.dao.statistics;
 
 import gov.gwssi.csc.scms.dao.BaseDAO;
-import gov.gwssi.csc.scms.domain.statistics.TablesJson;
-import gov.gwssi.csc.scms.domain.statistics.ValueObject;
+import gov.gwssi.csc.scms.domain.dynamicReport.TablesJson;
+import gov.gwssi.csc.scms.domain.dynamicReport.ValueObject;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

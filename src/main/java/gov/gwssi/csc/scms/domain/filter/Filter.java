@@ -50,8 +50,91 @@ public class Filter {
     private Date planLeaveDateBegin = null;  // 预计离华时间起始时间
     private Date planLeaveDateEnd = null;    // 预计离华时间终止时间
 
+    // 动态查询统计专用条件
+    private String configId = null;        // 配置编号
+    private String title = null;           // 报表标题
+    private String configType = null;      // 配置类型: 1) 动态查询 2) 动态统计
+    private String accessState = null;     // 使用性质: 1) 公用 2) 自用
+    private String publishState = null;    // 发布状态: Y) 已发布 N) 未发布
+    private Date createTimeFrom = null;    // 制表时间起
+    private Date createTimeTo = null;      // 制表时间至
+    private Date publishTimeFrom = null;   // 发布时间起
+    private Date publishTimeTo = null;     // 发布时间止
+
     // add by lzs20150511 添加 mode 字段用来区分新增学生列表时候，返回不同列表
     private String mode = null; // 区分学生列表
+
+    public String getConfigId() {
+        return configId;
+    }
+
+    public void setConfigId(String configId) {
+        this.configId = configId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getConfigType() {
+        return configType;
+    }
+
+    public void setConfigType(String configType) {
+        this.configType = configType;
+    }
+
+    public String getAccessState() {
+        return accessState;
+    }
+
+    public void setAccessState(String accessState) {
+        this.accessState = accessState;
+    }
+
+    public String getPublishState() {
+        return publishState;
+    }
+
+    public void setPublishState(String publishState) {
+        this.publishState = publishState;
+    }
+
+    public Date getCreateTimeFrom() {
+        return createTimeFrom;
+    }
+
+    public void setCreateTimeFrom(Date createTimeFrom) {
+        this.createTimeFrom = createTimeFrom;
+    }
+
+    public Date getCreateTimeTo() {
+        return createTimeTo;
+    }
+
+    public void setCreateTimeTo(Date createTimeTo) {
+        this.createTimeTo = createTimeTo;
+    }
+
+    public Date getPublishTimeFrom() {
+        return publishTimeFrom;
+    }
+
+    public void setPublishTimeFrom(Date publishTimeFrom) {
+        this.publishTimeFrom = publishTimeFrom;
+    }
+
+    public Date getPublishTimeTo() {
+        return publishTimeTo;
+    }
+
+    public void setPublishTimeTo(Date publishTimeTo) {
+        this.publishTimeTo = publishTimeTo;
+    }
 
     public String getCscId() {
         return cscId;

@@ -1,9 +1,9 @@
 package gov.gwssi.csc.scms.dao.statistics;
 
 import gov.gwssi.csc.scms.dao.BaseDAO;
-import gov.gwssi.csc.scms.domain.statistics.Header;
-import gov.gwssi.csc.scms.domain.statistics.Merge;
-import gov.gwssi.csc.scms.domain.statistics.Position;
+import gov.gwssi.csc.scms.domain.dynamicReport.Header;
+import gov.gwssi.csc.scms.domain.dynamicReport.Merge;
+import gov.gwssi.csc.scms.domain.dynamicReport.Position;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;

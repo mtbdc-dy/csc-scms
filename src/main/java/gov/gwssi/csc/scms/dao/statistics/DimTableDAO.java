@@ -1,7 +1,6 @@
 package gov.gwssi.csc.scms.dao.statistics;
 
 import gov.gwssi.csc.scms.dao.BaseDAO;
-import gov.gwssi.csc.scms.domain.statistics.DimTable;
 import gov.gwssi.csc.scms.service.dictionary.util.JsonMapper;
 import org.springframework.stereotype.Service;
 
