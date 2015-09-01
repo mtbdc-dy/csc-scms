@@ -33,20 +33,20 @@ public class TimeSetController {
     @Autowired
     private UserService userService;
     //点击查询返回列表
-    @RequestMapping(value = "/newstu",method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
-    public List getALLCode(@RequestParam(value = "pro") String pro,@RequestParam(value = "univ") String univ) {
-        //按照分页（默认）要求，返回列表内容
-        List proAndUnivList = null;
-        if(pro ==null||"null".equals(pro)){
-            pro = "";
-        }
-        if(univ ==null||"null".equals(univ)||"undefined".equals(univ)){
-            univ = "";
-        }
-        proAndUnivList = timeSetService.findProAndUniv(pro, univ);
-
-        return proAndUnivList;
-    }
+//    @RequestMapping(value = "/newstu",method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
+//    public List getALLCode(@RequestParam(value = "pro") String pro,@RequestParam(value = "univ") String univ) {
+//        //按照分页（默认）要求，返回列表内容
+//        List proAndUnivList = null;
+//        if(pro ==null||"null".equals(pro)){
+//            pro = "";
+//        }
+//        if(univ ==null||"null".equals(univ)||"undefined".equals(univ)){
+//            univ = "";
+//        }
+//        proAndUnivList = timeSetService.findProAndUniv(pro, univ);
+//
+//        return proAndUnivList;
+//    }
     //
     @RequestMapping(value = "/newstus",
             method = RequestMethod.PUT,
@@ -110,14 +110,37 @@ public class TimeSetController {
 
 
     }
-
-    //分页查询
+    //分页查询 老生
     @RequestMapping(
-            value = "/newstu1",
+            value = "/oldstu",
             method = RequestMethod.GET,
             headers = {"Accept=application/json"},
             params = {"mode", "page", "size", "filter"})
-    public ResponseEntity<Page<Map<String, Object>>> getTickets(
+    public ResponseEntity<Page<Map<String, Object>>> getOldStuTimeSet(
+            @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
+            @RequestParam(value = "mode") String mode,
+
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size,
+            @RequestParam(value = "filter") String filterJSON) throws IOException {
+        try {
+            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            User user = userService.getUserByJWT(header);
+            Page<DimUniv> dimUnivsPage = timeSetService.getDimUnivsPagingByFilter(filter, page, size, mode, user);
+            Page<Map<String, Object>> mapPage = dimUnivsPage.map(new TimeSetConverter());
+            return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+    //分页查询 新生
+    @RequestMapping(
+            value = "/newstu",
+            method = RequestMethod.GET,
+            headers = {"Accept=application/json"},
+            params = {"mode", "page", "size", "filter"})
+    public ResponseEntity<Page<Map<String, Object>>> getNewStuTimeSet(
             @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
             @RequestParam(value = "mode") String mode,
 
