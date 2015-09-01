@@ -25,6 +25,7 @@ public class Filter {
     private String preSta = null;            // 保险订购状态 add by gc
     private String schReview = null;         // 奖学金评审结果 add by gc
     private String schResult = null;         // 奖学金处理结果 add by gc
+    private int year = 0;                    //奖学金评审年度
 /**
  * LZS 自定义的查询条件 非公共条件
  */
@@ -364,6 +365,7 @@ public class Filter {
         this.preSta = preSta;
     }
 
+
     public Date getBeginTime() {
         return beginTime;
     }
@@ -378,5 +380,13 @@ public class Filter {
 
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
+    }
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+
     }
 }
