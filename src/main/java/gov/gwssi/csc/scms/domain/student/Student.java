@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.domain.student;
 
 import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
+import gov.gwssi.csc.scms.domain.insurance.Insurance;
 import gov.gwssi.csc.scms.domain.ticket.Ticket;
 import gov.gwssi.csc.scms.domain.warning.Warning;
 
@@ -81,11 +82,35 @@ public class Student implements Cloneable {
     /**
      * 异动记录
      */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "student")
     private List<Abnormal> abnormals;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
+    /**
+     * 机票信息
+     */
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "student")
     private List<Ticket> tickets;
+
+    /**
+     * 保险信息
+     */
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "student")
+    private List<Insurance> insurances;
+
+    public List<Insurance> getInsurances() {
+        return insurances;
+    }
+
+    public void setInsurances(List<Insurance> insurances) {
+        this.insurances = insurances;
+    }
+
+    /**
+     * 预警名单
+     */
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "warning", unique = true)
+    private Warning warning;
 
     public Warning getWarning() {
         return warning;
@@ -94,12 +119,7 @@ public class Student implements Cloneable {
     public void setWarning(Warning warning) {
         this.warning = warning;
     }
-    /**
-     * 预警名单
-     */
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "warning", unique = true)
-    private Warning warning;
+
 
     public String getId() {
         return id;
