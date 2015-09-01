@@ -220,7 +220,7 @@ public class StudentSpecs {
                         || filter.getAbnormalDateBegin() != null
                         || filter.getAbnormalDateEnd() != null;
                 boolean needTickets = filter.getTicketState() != null;
-                boolean needInsurances = filter.getInsuranceState()!= null;
+                boolean needInsurances = filter.getPreSta()!= null;
                 boolean needScholarshipXs = filter.getSchReview()!= null
                         ||filter.getSchResult()!= null;
 
@@ -376,8 +376,8 @@ public class StudentSpecs {
                 /**保险部分*/
                 if (needInsurances) {
                     ListJoin<Student, Insurance> insurances = student.join(Student_.insurances);
-                    if (filter.getInsuranceState() != null) {
-                        predicate.getExpressions().add(cb.like(insurances.get(Insurance_.insurSta), filter.getInsuranceState()));
+                    if (filter.getPreSta() != null) {
+                        predicate.getExpressions().add(cb.like(insurances.get(Insurance_.preSta), filter.getPreSta()));
                     }
                 }
 
@@ -446,7 +446,7 @@ public class StudentSpecs {
                         || filter.getAbnormalDateBegin() != null
                         || filter.getAbnormalDateEnd() != null;
                 boolean needTickets = filter.getTicketState() != null;
-                boolean needInsurances = filter.getInsuranceState()!= null;
+                boolean needInsurances = filter.getPreSta()!= null;
                 boolean needScholarshipXs = filter.getSchReview()!= null
                         ||filter.getSchResult()!= null;
 
@@ -602,8 +602,8 @@ public class StudentSpecs {
                 /**保险部分*/
                 if (needInsurances) {
                     ListJoin<Student, Insurance> insurances = student.join(Student_.insurances);
-                    if (filter.getInsuranceState() != null) {
-                        predicate.getExpressions().add(cb.like(insurances.get(Insurance_.insurSta), filter.getInsuranceState()));
+                    if (filter.getPreSta() != null) {
+                        predicate.getExpressions().add(cb.like(insurances.get(Insurance_.preSta), filter.getPreSta()));
                     }
                 }
 
@@ -620,12 +620,6 @@ public class StudentSpecs {
 
                 if("warning".equals(mode)){
                     Join<Student, Warning> warning = student.join(Student_.warning);
-                }
-                if(!needAbnormals && "abnormal".equals(mode)){
-                    ListJoin<Student, Abnormal> abnormals = student.join(Student_.abnormals);
-                }
-                if(!needTickets && "ticket".equals(mode)){
-                    ListJoin<Student, Ticket> tickets = student.join(Student_.tickets);
                 }
                 return predicate;
             }

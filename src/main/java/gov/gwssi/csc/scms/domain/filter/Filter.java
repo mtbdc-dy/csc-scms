@@ -22,7 +22,7 @@ public class Filter {
     private Date abnormalDateBegin = null;   // 异动申请起始日期
     private Date abnormalDateEnd = null;     // 异动申请终止日期
     private String ticketState = null;       // 异动处理状态
-    private String insuranceState = null;    // 保险订购状态 add by gc
+    private String preSta = null;            // 保险订购状态 add by gc
     private String schReview = null;         // 奖学金评审结果 add by gc
     private String schResult = null;         // 奖学金处理结果 add by gc
 /**
@@ -151,14 +151,6 @@ public class Filter {
 
     public void setTicketState(String ticketState) {
         this.ticketState = ticketState;
-    }
-
-    public String getInsuranceState() {
-        return insuranceState;
-    }
-
-    public void setInsuranceState(String insuranceState) {
-        this.insuranceState = insuranceState;
     }
 
     public String getSchReview() {
@@ -359,5 +351,13 @@ public class Filter {
 
     public void setUniv(String univ) {
         this.univ = univ;
+    }
+
+    public String getPreSta() {
+        return preSta;
+    }
+
+    public void setPreSta(String preSta) {
+        this.preSta = preSta;
     }
 }
