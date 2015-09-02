@@ -31,9 +31,12 @@ public class Filter {
  */
     private String pro = null;//省市
     private String univ = null;//学校
-    //导入模块日期
+    //导入模块日期 报到进度统计 公用
     private Date beginTime = null;
     private Date endTime = null;
+    //报到进度统计 省和市字段
+    private String province = null;//省市
+    private String university = null;//学校
     /**
      * 隐藏查询条件
      */
@@ -388,5 +391,21 @@ public class Filter {
     public void setYear(int year) {
         this.year = year;
 
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getUniversity() {
+        return university;
+    }
+
+    public void setUniversity(String university) {
+        this.university = university;
     }
 }
