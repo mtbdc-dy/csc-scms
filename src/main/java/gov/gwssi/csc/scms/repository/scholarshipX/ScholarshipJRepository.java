@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.repository.scholarshipX;
 
 import gov.gwssi.csc.scms.domain.scholarship.ScholarshipJ;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,5 +10,5 @@ import org.springframework.stereotype.Repository;
  * 保险管理接口
  */
 @Repository(value="scholarshipJRepository")
-public interface ScholarshipJRepository extends CrudRepository<ScholarshipJ,String> {
+public interface ScholarshipJRepository extends CrudRepository<ScholarshipJ,String> ,JpaSpecificationExecutor<ScholarshipJ> {
 }

@@ -26,6 +26,8 @@ public class Filter {
     private String schReview = null;         // 奖学金评审结果 add by gc
     private String schResult = null;         // 奖学金处理结果 add by gc
     private int year = 0;                    //奖学金评审年度
+    private Character state = null;          //奖学金评审状态
+    private String qualified = null;         //奖学金是否有不合格人数
 /**
  * LZS 自定义的查询条件 非公共条件
  */
@@ -388,5 +390,21 @@ public class Filter {
     public void setYear(int year) {
         this.year = year;
 
+    }
+
+    public Character getState() {
+        return state;
+    }
+
+    public void setState(Character state) {
+        this.state = state;
+    }
+
+    public String getQualified() {
+        return qualified;
+    }
+
+    public void setQualified(String qualified) {
+        this.qualified = qualified;
     }
 }
