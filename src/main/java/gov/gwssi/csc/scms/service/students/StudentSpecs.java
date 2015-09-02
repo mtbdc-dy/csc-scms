@@ -63,6 +63,7 @@ public class StudentSpecs {
                 Join<Student, SchoolRoll> schoolRoll = student.join(Student_.schoolRoll);
                 predicate.getExpressions().add(cb.notEqual(schoolRoll.get(SchoolRoll_.registed), "AX0002"));
                 predicate.getExpressions().add(cb.notEqual(schoolRoll.get(SchoolRoll_.registerState), "AW0001"));
+                predicate.getExpressions().add(cb.notEqual(schoolRoll.get(SchoolRoll_.registerState), "AW0004"));
 
                 Date sysDate = null;
                 Date finalDate = null;
