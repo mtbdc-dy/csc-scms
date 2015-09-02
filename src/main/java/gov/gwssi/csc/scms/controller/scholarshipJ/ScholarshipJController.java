@@ -1,14 +1,20 @@
 package gov.gwssi.csc.scms.controller.scholarshipJ;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.scholarship.Scholarship;
 import gov.gwssi.csc.scms.domain.scholarship.ScholarshipDetail;
+import gov.gwssi.csc.scms.domain.scholarship.ScholarshipJ;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.export.ExportService;
+import gov.gwssi.csc.scms.service.scholarship.ScholarshipJConverter;
 import gov.gwssi.csc.scms.service.scholarship.ScholarshipJService;
+import gov.gwssi.csc.scms.service.scholarship.ScholarshipXConverter;
 import gov.gwssi.csc.scms.service.scholarship.ScholarshipXService;
 import gov.gwssi.csc.scms.service.user.UserService;
 import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,11 +22,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by gc on 2015/8/18.
@@ -145,6 +149,28 @@ public class ScholarshipJController {
         return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
     }
 
+    //分页查询
+    @RequestMapping(
+            method = RequestMethod.GET,
+            headers = {"Accept=application/json"},
+            params = {"mode", "page", "size", "filter"})
+    public ResponseEntity<Page<Map<String, Object>>> getScholarshipJs(
+            @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
+            @RequestParam(value = "mode") String mode,
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size,
+            @RequestParam(value = "filter") String filterJSON) throws IOException {
+        try {
+            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            User user = userService.getUserByJWT(header);
+            Page<ScholarshipJ> scholarshipJPage = scholarshipJService.getScholarshipJsPagingByFilter(filter, page, size, mode, user);
+            Page<Map<String, Object>> mapPage = scholarshipJPage.map(new ScholarshipJConverter());
+            return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 
 
 

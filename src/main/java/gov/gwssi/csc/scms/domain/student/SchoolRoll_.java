@@ -19,6 +19,7 @@ public abstract class SchoolRoll_ {
     public static volatile SingularAttribute<SchoolRoll, String> abnormalDocumentNO;
     public static volatile SingularAttribute<SchoolRoll, String> id;
     public static volatile SingularAttribute<SchoolRoll, String> currentUniversity;
+    public static volatile SingularAttribute<SchoolRoll, String> currentProvince;
     public static volatile SingularAttribute<SchoolRoll, Student> student;
     public static volatile SingularAttribute<SchoolRoll, String> leaveReason;
     public static volatile SingularAttribute<SchoolRoll, String> appropriation;

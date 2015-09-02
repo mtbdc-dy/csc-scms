@@ -50,7 +50,9 @@ public class ScholarshipXSpecs extends BaseService {
                         || filter.getMajorStartDateBegin() != null
                         || filter.getMajorStartDateEnd() != null
                         || filter.getPlanLeaveDateBegin() != null
-                        || filter.getPlanLeaveDateEnd() != null;
+                        || filter.getPlanLeaveDateEnd() != null
+                        || filter.getCurrentUniversity() != null
+                        || filter.getCurrentProvince() != null;
                 boolean needStudent = filter.getCscId() != null
                         || needBasicInfo || needSchoolRoll;
 
@@ -193,6 +195,12 @@ public class ScholarshipXSpecs extends BaseService {
                         } else if (filter.getPlanLeaveDateEnd() != null) {
                             Date end = filter.getMajorStartDateEnd();
                             predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), end));
+                        }
+                        if(filter.getCurrentUniversity()!=null){
+                            predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.currentUniversity),filter.getCurrentUniversity()));
+                        }
+                        if(filter.getCurrentProvince()!=null){
+                            predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.currentProvince),filter.getCurrentProvince()));
                         }
                     }
 
