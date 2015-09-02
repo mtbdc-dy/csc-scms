@@ -215,7 +215,9 @@ public class StudentSpecs {
                         || filter.getMajorStartDateBegin() != null
                         || filter.getMajorStartDateEnd() != null
                         || filter.getPlanLeaveDateBegin() != null
-                        || filter.getPlanLeaveDateEnd() != null;
+                        || filter.getPlanLeaveDateEnd() != null
+                        || filter.getCurrentProvince() != null
+                        || filter.getCurrentUniversity() != null;
                 boolean needAbnormals = filter.getAbnormalState() != null
                         || filter.getAbnormalDateBegin() != null
                         || filter.getAbnormalDateEnd() != null;
@@ -345,6 +347,12 @@ public class StudentSpecs {
                     } else if (filter.getPlanLeaveDateEnd() != null) {
                         Date end = filter.getMajorStartDateEnd();
                         predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), end));
+                    }
+                    if(filter.getCurrentUniversity()!=null){
+                        predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.currentUniversity),filter.getCurrentUniversity()));
+                    }
+                    if(filter.getCurrentProvince()!=null){
+                        predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.currentProvince),filter.getCurrentProvince()));
                     }
                 }
                 if (needAbnormals) {
