@@ -3,6 +3,7 @@ package gov.gwssi.csc.scms.service.dynamicReport;
 import gov.gwssi.csc.scms.domain.dynamicReport.ReportConfiguration;
 import gov.gwssi.csc.scms.domain.dynamicReport.ReportConfiguration_;
 import gov.gwssi.csc.scms.domain.filter.Filter;
+import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
@@ -13,7 +14,7 @@ import java.util.List;
  * Created by Wang Zishi on 15/8/31.
  * JPA 查询时所需使用的 Specs
  */
-public class DynamicReportSpecs {
+public class DynamicReportSpecs extends BaseService{
     public static Specification<ReportConfiguration> filterIsLike(final Filter filter) {
         return new Specification<ReportConfiguration>() {
             @Override

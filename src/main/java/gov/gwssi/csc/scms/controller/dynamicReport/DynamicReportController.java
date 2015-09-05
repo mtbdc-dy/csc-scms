@@ -1,8 +1,11 @@
 package gov.gwssi.csc.scms.controller.dynamicReport;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.gwssi.csc.scms.domain.dynamicReport.Column;
 import gov.gwssi.csc.scms.domain.dynamicReport.ReportConfiguration;
+import gov.gwssi.csc.scms.domain.dynamicReport.Table;
 import gov.gwssi.csc.scms.domain.filter.Filter;
+import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.service.dynamicReport.DStatisticsHandlerService;
 import gov.gwssi.csc.scms.service.dynamicReport.DimTableService;
 import gov.gwssi.csc.scms.service.dynamicReport.DynamicReportService;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -24,7 +28,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/dynamic")
-public class DynamicReportController {
+public class DynamicReportController extends BaseService{
 
     @Autowired
     private DynamicReportService dynamicReportService;
@@ -49,6 +53,19 @@ public class DynamicReportController {
             e.printStackTrace();
         }
         return new ResponseEntity<Page<ReportConfiguration>>(reportConfigurations, HttpStatus.OK);
+    }
+
+    @RequestMapping(
+            value = {"/tables"},
+            method = RequestMethod.GET,
+            headers = {"Accept=application/json;charset=utf-8"}
+    )
+    public ResponseEntity<Collection<Table>> getTables(){
+        Collection<Table> tables = dynamicReportService.getTables();
+        for (Table table : tables) {
+            table.setColumns(null);
+        }
+        return new ResponseEntity<Collection<Table>>(tables, HttpStatus.OK);
     }
 
 //    /**

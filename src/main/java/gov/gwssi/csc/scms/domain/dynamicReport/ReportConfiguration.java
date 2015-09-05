@@ -10,7 +10,7 @@ import java.util.Date;
  */
 
 @Entity
-@Table(name = "SCMS_D_CONFIG")
+@javax.persistence.Table(name = "SCMS_D_CONFIG")
 public class ReportConfiguration implements Serializable {
     private String id;
     // 配置类型(1查询、2统计)
@@ -176,7 +176,7 @@ public class ReportConfiguration implements Serializable {
 
     @Lob
     @Basic(fetch = FetchType.EAGER)
-    @Column(name = "SQL", columnDefinition = "CLOB")
+    @javax.persistence.Column(name = "SQL", columnDefinition = "CLOB")
     public String getSql() {
         return sql;
     }
