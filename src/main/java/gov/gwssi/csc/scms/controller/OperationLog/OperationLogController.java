@@ -42,6 +42,9 @@ public class OperationLogController {
                                        @RequestHeader(value = HEADER_AUTHORIZATION) String header) {
         try {
             User user = getUserByHeader(header);
+            if("".equals(optType)){
+                optType = null;
+            }
             return doQuery(user, beginTime, endTime, moduleId, optType);
         } catch (Exception e) {
             e.printStackTrace();
