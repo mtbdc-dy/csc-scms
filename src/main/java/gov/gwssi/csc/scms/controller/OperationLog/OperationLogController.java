@@ -1,17 +1,25 @@
 package gov.gwssi.csc.scms.controller.OperationLog;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.controller.RequestHeaderError;
+import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.log.LogQueryException;
 import gov.gwssi.csc.scms.service.log.NoSupportedUserException;
+import gov.gwssi.csc.scms.service.log.OperationLogConverter;
 import gov.gwssi.csc.scms.service.log.OperationLogService;
 import gov.gwssi.csc.scms.service.user.NoSuchUserException;
 import gov.gwssi.csc.scms.service.user.UserService;
 import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -69,14 +77,14 @@ public class OperationLogController {
     }
 
     private List<OperationLog> doQuery(User user, String beginTime, String endTime, String moduleId, String optType) throws ParseException, LogQueryException, NoSupportedUserException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+
 
         if (isNull(beginTime))
             throw new LogQueryException("start time can not be null!");
 
         if (isNull(endTime))
             throw new LogQueryException("end time can not be null!");
-
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         Date startDate = sdf.parse(beginTime);
         Date endDate = sdf.parse(endTime);
         Calendar c = Calendar.getInstance();
@@ -124,6 +132,31 @@ public class OperationLogController {
     public List<OperationLog> getChangelogsByStudentId(@PathVariable(value = "studentId") String studentId) {
         try {
             return operationLogService.getLogByStudentId(studentId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    //分页查询
+    @RequestMapping(
+            value = "/query1",
+            method = RequestMethod.GET,
+            headers = {"Accept=application/json"},
+            params = {"mode", "page", "size", "filter"})
+    public ResponseEntity<Page<Map<String, Object>>> getNewStuTimeSet(
+            @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
+            @RequestParam(value = "mode") String mode,
+
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size,
+            @RequestParam(value = "filter") String filterJSON) throws IOException {
+        try {
+            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            User user = userService.getUserByJWT(header);
+            Page<OperationLog> operationLogsPage = operationLogService.getOptLogsPagingByFilter(filter, page, size, mode, user);
+            Page<Map<String, Object>> mapPage = operationLogsPage.map(new OperationLogConverter());
+            return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);

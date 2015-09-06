@@ -38,6 +38,9 @@ public class Filter {
     //导入模块日期 报到进度统计 公用
     private Date beginTime = null;
     private Date endTime = null;
+    //日志查询模块
+    private  String businessModule = null;
+    private  String optType = null;
     //报到进度统计 省和市字段
     private String province = null;//省市
     private String university = null;//学校
@@ -444,5 +447,21 @@ public class Filter {
     public void setCurrentUniversity(String currentUniversity) {
         this.currentUniversity = currentUniversity;
 
+    }
+
+    public String getBusinessModule() {
+        return businessModule;
+    }
+
+    public void setBusinessModule(String businessModule) {
+        this.businessModule = businessModule;
+    }
+
+    public String getOptType() {
+        return optType;
+    }
+
+    public void setOptType(String optType) {
+        this.optType = optType;
     }
 }
