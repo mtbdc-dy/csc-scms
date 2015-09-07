@@ -40,7 +40,7 @@ public class ScholarshipXConverter extends BaseService implements Converter<Scho
         target.put("updated",scholarshipX.getUpdated());
         target.put("updateby",scholarshipX.getUpdateby());
         target.put("cscEndTime",scholarshipX.getCscEndTime());
-        target.put("cscrresult_lastyear",scholarshipX.getCscResult());
+        target.put("cscrresult_lastyear",scholarshipX.getCscrresult_lastyear());
         target.put("schoolSta",scholarshipX.getSchoolSta());
         target.put("cscSta",scholarshipX.getCscSta());
         target.put("schoolQual",scholarshipX.getSchoolQual());
