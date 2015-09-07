@@ -68,6 +68,18 @@ public class DynamicReportController extends BaseService{
         return new ResponseEntity<Collection<Table>>(tables, HttpStatus.OK);
     }
 
+    @RequestMapping(
+            value = {"/tables/{id}"},
+            method = RequestMethod.GET,
+            headers = {"Accept=application/json;charset=utf-8"}
+    )
+    public ResponseEntity<Table> getTable(@PathVariable(value = "id") String id){
+        Table table = dynamicReportService.getTable(id);
+        setNullByField(table.getColumns(), "table", Column.class);
+        return new ResponseEntity<Table>(table, HttpStatus.OK);
+    }
+
+
 //    /**
 //     * 动态查询统计中初始化的table列表以及对应表下的column列表
 //     */

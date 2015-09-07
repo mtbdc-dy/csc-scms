@@ -55,6 +55,14 @@ public class DynamicReportService extends DynamicReportSpecs {
         return tables;
     }
 
+    @Transactional
+    public Table getTable(String id){
+        Table table = tableRepository.findOne(id);
+        // 用于执行 Columns 的查询
+        table.getColumns().size();
+        return table;
+    }
+
 //    public ReportConfiguration findById(String id){
 //        return reportConfigurationRepository.findOne(id);
 //    }
