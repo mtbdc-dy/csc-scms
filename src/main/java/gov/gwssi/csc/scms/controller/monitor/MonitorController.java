@@ -5,6 +5,7 @@ import gov.gwssi.csc.scms.controller.JsonBody;
 import gov.gwssi.csc.scms.domain.monitor.Monitor;
 import gov.gwssi.csc.scms.domain.monitor.MonitorDay;
 import gov.gwssi.csc.scms.domain.monitor.MonitorMonth;
+import gov.gwssi.csc.scms.domain.monitor.MonitorWeek;
 import gov.gwssi.csc.scms.service.monitor.MonitorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -60,6 +61,17 @@ public class MonitorController {
                                              @RequestParam("endTime") String endTime) {
         try {
             return monitorService.getMonthMonitors(beginTime, endTime);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    @RequestMapping(value = "/week", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public List<MonitorWeek> queryWeekMonitors(@RequestParam("beginTime") String beginTime,
+                                                 @RequestParam("endTime") String endTime) {
+        try {
+            return monitorService.getWeekMonitors(beginTime, endTime);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
