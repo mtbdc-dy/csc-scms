@@ -3,6 +3,7 @@ package gov.gwssi.csc.scms.service.timeset;
 import gov.gwssi.csc.scms.dao.timeset.TimeSetDAO;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.universities.DimUniv;
+import gov.gwssi.csc.scms.domain.universities.DimUniv_;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.timeset.TimeSetRepository;
 import gov.gwssi.csc.scms.service.BaseService;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +48,6 @@ public class TimeSetService extends TimeSetSpecs {
     public Page<DimUniv> getDimUnivsPagingByFilter(Filter filter,Integer page,Integer size,String mode,User user) {
         Specification<DimUniv> specA = filterIsLike(filter,user);
 //        Specification<Ticket> specB = userIs(user);
-        return timeSetRepository.findAll(where(specA), new PageRequest(page, size));
+        return timeSetRepository.findAll(where(specA), new PageRequest(page, size, Sort.Direction.ASC,"province","univId"));
     }
 }

@@ -22,14 +22,28 @@ public class Filter {
     private Date abnormalDateBegin = null;   // 异动申请起始日期
     private Date abnormalDateEnd = null;     // 异动申请终止日期
     private String ticketState = null;       // 异动处理状态
-    private String insuranceState = null;    // 保险订购状态 add by gc
+    private String preSta = null;            // 保险订购状态 add by gc
     private String schReview = null;         // 奖学金评审结果 add by gc
     private String schResult = null;         // 奖学金处理结果 add by gc
+    private int year = 0;                    //奖学金评审年度
+    private Character state = null;          //奖学金评审状态
+    private String qualified = null;         //奖学金是否有不合格人数
+    private String currentProvince = null;
+    private String currentUniversity = null;
 /**
  * LZS 自定义的查询条件 非公共条件
  */
     private String pro = null;//省市
     private String univ = null;//学校
+    //导入模块日期 报到进度统计 公用
+    private Date beginTime = null;
+    private Date endTime = null;
+    //日志查询模块
+    private  String businessModule = null;
+    private  String optType = null;
+    //报到进度统计 省和市字段
+    private String province = null;//省市
+    private String university = null;//学校
     /**
      * 隐藏查询条件
      */
@@ -151,14 +165,6 @@ public class Filter {
 
     public void setTicketState(String ticketState) {
         this.ticketState = ticketState;
-    }
-
-    public String getInsuranceState() {
-        return insuranceState;
-    }
-
-    public void setInsuranceState(String insuranceState) {
-        this.insuranceState = insuranceState;
     }
 
     public String getSchReview() {
@@ -359,5 +365,103 @@ public class Filter {
 
     public void setUniv(String univ) {
         this.univ = univ;
+    }
+
+    public String getPreSta() {
+        return preSta;
+    }
+
+    public void setPreSta(String preSta) {
+        this.preSta = preSta;
+    }
+
+
+    public Date getBeginTime() {
+        return beginTime;
+    }
+
+    public void setBeginTime(Date beginTime) {
+        this.beginTime = beginTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+
+    }
+
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getUniversity() {
+        return university;
+    }
+
+    public void setUniversity(String university) {
+        this.university = university;
+    }
+    public Character getState() {
+        return state;
+    }
+
+    public void setState(Character state) {
+        this.state = state;
+    }
+
+    public String getQualified() {
+        return qualified;
+    }
+
+    public void setQualified(String qualified) {
+        this.qualified = qualified;
+    }
+
+    public String getCurrentProvince() {
+        return currentProvince;
+    }
+
+    public void setCurrentProvince(String currentProvince) {
+        this.currentProvince = currentProvince;
+    }
+
+    public String getCurrentUniversity() {
+        return currentUniversity;
+    }
+
+    public void setCurrentUniversity(String currentUniversity) {
+        this.currentUniversity = currentUniversity;
+
+    }
+
+    public String getBusinessModule() {
+        return businessModule;
+    }
+
+    public void setBusinessModule(String businessModule) {
+        this.businessModule = businessModule;
+    }
+
+    public String getOptType() {
+        return optType;
+    }
+
+    public void setOptType(String optType) {
+        this.optType = optType;
     }
 }

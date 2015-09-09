@@ -20,7 +20,7 @@ import java.util.Date;
  * Created by tianj on 2015/8/29.
  */
 public class InsuranceSpecs extends BaseService {
-    public static Specification<Insurance> filterIsLike(final Filter filter, final User user) {
+    public static Specification<Insurance> filterIsLike(final Filter filter, final User user , final String mode) {
         return new Specification<Insurance>() {
             @Override
             public Predicate toPredicate(Root<Insurance> insurance, CriteriaQuery<?> query, CriteriaBuilder cb) {
@@ -53,15 +53,21 @@ public class InsuranceSpecs extends BaseService {
                         || filter.getMajorStartDateBegin() != null
                         || filter.getMajorStartDateEnd() != null
                         || filter.getPlanLeaveDateBegin() != null
-                        || filter.getPlanLeaveDateEnd() != null;
+                        || filter.getPlanLeaveDateEnd() != null
+                        || filter.getCurrentProvince() != null
+                        || filter.getCurrentUniversity() != null;
                 boolean needStudent = filter.getCscId() != null
                         || needBasicInfo || needSchoolRoll;
 
-                if (filter.getInsuranceState() != null) {
-                    predicate.getExpressions().add(cb.like(insurance.get(Insurance_.preSta), filter.getInsuranceState()));
+                if (filter.getPreSta() != null) {
+                    predicate.getExpressions().add(cb.like(insurance.get(Insurance_.preSta), filter.getPreSta()));
+                }
+                if("insurance".equals(mode)){
+                    predicate.getExpressions().add(cb.like(insurance.get(Insurance_.insurSta), "1"));
+                }else{
+                    predicate.getExpressions().add(cb.like(insurance.get(Insurance_.insurSta), "0"));
                 }
 
-                predicate.getExpressions().add(cb.like(insurance.get(Insurance_.insurSta), "1"));
 
                 Calendar calendar = Calendar.getInstance();
                 int currnetYear = calendar.get(Calendar.YEAR);
@@ -190,6 +196,12 @@ public class InsuranceSpecs extends BaseService {
                         } else if (filter.getPlanLeaveDateEnd() != null) {
                             Date end = filter.getMajorStartDateEnd();
                             predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), end));
+                        }
+                        if(filter.getCurrentUniversity()!=null){
+                            predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.currentUniversity),filter.getCurrentUniversity()));
+                        }
+                        if(filter.getCurrentProvince()!=null){
+                            predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.currentProvince),filter.getCurrentProvince()));
                         }
                     }
 

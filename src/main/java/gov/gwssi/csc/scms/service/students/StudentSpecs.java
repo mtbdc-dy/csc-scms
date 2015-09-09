@@ -63,6 +63,7 @@ public class StudentSpecs {
                 Join<Student, SchoolRoll> schoolRoll = student.join(Student_.schoolRoll);
                 predicate.getExpressions().add(cb.notEqual(schoolRoll.get(SchoolRoll_.registed), "AX0002"));
                 predicate.getExpressions().add(cb.notEqual(schoolRoll.get(SchoolRoll_.registerState), "AW0001"));
+                predicate.getExpressions().add(cb.notEqual(schoolRoll.get(SchoolRoll_.registerState), "AW0004"));
 
                 Date sysDate = null;
                 Date finalDate = null;
@@ -215,12 +216,14 @@ public class StudentSpecs {
                         || filter.getMajorStartDateBegin() != null
                         || filter.getMajorStartDateEnd() != null
                         || filter.getPlanLeaveDateBegin() != null
-                        || filter.getPlanLeaveDateEnd() != null;
+                        || filter.getPlanLeaveDateEnd() != null
+                        || filter.getCurrentProvince() != null
+                        || filter.getCurrentUniversity() != null;
                 boolean needAbnormals = filter.getAbnormalState() != null
                         || filter.getAbnormalDateBegin() != null
                         || filter.getAbnormalDateEnd() != null;
                 boolean needTickets = filter.getTicketState() != null;
-                boolean needInsurances = filter.getInsuranceState()!= null;
+                boolean needInsurances = filter.getPreSta()!= null;
                 boolean needScholarshipXs = filter.getSchReview()!= null
                         ||filter.getSchResult()!= null;
 
@@ -346,6 +349,12 @@ public class StudentSpecs {
                         Date end = filter.getMajorStartDateEnd();
                         predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), end));
                     }
+                    if(filter.getCurrentUniversity()!=null){
+                        predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.currentUniversity),filter.getCurrentUniversity()));
+                    }
+                    if(filter.getCurrentProvince()!=null){
+                        predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.currentProvince),filter.getCurrentProvince()));
+                    }
                 }
                 if (needAbnormals) {
                     ListJoin<Student, Abnormal> abnormals = student.join(Student_.abnormals);
@@ -376,8 +385,8 @@ public class StudentSpecs {
                 /**保险部分*/
                 if (needInsurances) {
                     ListJoin<Student, Insurance> insurances = student.join(Student_.insurances);
-                    if (filter.getInsuranceState() != null) {
-                        predicate.getExpressions().add(cb.like(insurances.get(Insurance_.insurSta), filter.getInsuranceState()));
+                    if (filter.getPreSta() != null) {
+                        predicate.getExpressions().add(cb.like(insurances.get(Insurance_.preSta), filter.getPreSta()));
                     }
                 }
 
@@ -441,12 +450,14 @@ public class StudentSpecs {
                         || filter.getMajorStartDateBegin() != null
                         || filter.getMajorStartDateEnd() != null
                         || filter.getPlanLeaveDateBegin() != null
-                        || filter.getPlanLeaveDateEnd() != null;
+                        || filter.getPlanLeaveDateEnd() != null
+                        || filter.getCurrentProvince() !=null
+                        || filter.getCurrentUniversity() !=null;
                 boolean needAbnormals = filter.getAbnormalState() != null
                         || filter.getAbnormalDateBegin() != null
                         || filter.getAbnormalDateEnd() != null;
                 boolean needTickets = filter.getTicketState() != null;
-                boolean needInsurances = filter.getInsuranceState()!= null;
+                boolean needInsurances = filter.getPreSta()!= null;
                 boolean needScholarshipXs = filter.getSchReview()!= null
                         ||filter.getSchResult()!= null;
 
@@ -572,6 +583,12 @@ public class StudentSpecs {
                         Date end = filter.getMajorStartDateEnd();
                         predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), end));
                     }
+                    if(filter.getCurrentUniversity()!=null){
+                        predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.currentUniversity),filter.getCurrentUniversity()));
+                    }
+                    if(filter.getCurrentProvince()!=null){
+                        predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.currentProvince),filter.getCurrentProvince()));
+                    }
                 }
                 if (needAbnormals) {
                     ListJoin<Student, Abnormal> abnormals = student.join(Student_.abnormals);
@@ -602,8 +619,8 @@ public class StudentSpecs {
                 /**保险部分*/
                 if (needInsurances) {
                     ListJoin<Student, Insurance> insurances = student.join(Student_.insurances);
-                    if (filter.getInsuranceState() != null) {
-                        predicate.getExpressions().add(cb.like(insurances.get(Insurance_.insurSta), filter.getInsuranceState()));
+                    if (filter.getPreSta() != null) {
+                        predicate.getExpressions().add(cb.like(insurances.get(Insurance_.preSta), filter.getPreSta()));
                     }
                 }
 
@@ -620,12 +637,6 @@ public class StudentSpecs {
 
                 if("warning".equals(mode)){
                     Join<Student, Warning> warning = student.join(Student_.warning);
-                }
-                if(!needAbnormals && "abnormal".equals(mode)){
-                    ListJoin<Student, Abnormal> abnormals = student.join(Student_.abnormals);
-                }
-                if(!needTickets && "ticket".equals(mode)){
-                    ListJoin<Student, Ticket> tickets = student.join(Student_.tickets);
                 }
                 return predicate;
             }

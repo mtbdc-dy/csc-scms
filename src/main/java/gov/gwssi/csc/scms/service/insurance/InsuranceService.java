@@ -189,7 +189,7 @@ public class InsuranceService extends InsuranceSpecs {
 
     //分页查询
     public Page<Insurance> getInsurancesPagingByFilter(Filter filter,Integer page,Integer size,String mode,User user) {
-        Specification<Insurance> specA = filterIsLike(filter,user);
+        Specification<Insurance> specA = filterIsLike(filter,user,mode);
 //        Specification<Insurance> specB = userIs(user);
         return insuranceRepository.findAll(where(specA), new PageRequest(page, size));
     }

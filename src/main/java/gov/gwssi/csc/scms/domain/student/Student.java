@@ -2,6 +2,7 @@ package gov.gwssi.csc.scms.domain.student;
 
 import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
 import gov.gwssi.csc.scms.domain.insurance.Insurance;
+import gov.gwssi.csc.scms.domain.scholarship.ScholarshipX;
 import gov.gwssi.csc.scms.domain.ticket.Ticket;
 import gov.gwssi.csc.scms.domain.warning.Warning;
 
@@ -103,6 +104,20 @@ public class Student implements Cloneable {
 
     public void setInsurances(List<Insurance> insurances) {
         this.insurances = insurances;
+    }
+
+    /**
+     * 奖学金信息
+     */
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "student")
+    private List<ScholarshipX> scholarshipXs;
+
+    public List<ScholarshipX> getScholarshipXs() {
+        return scholarshipXs;
+    }
+
+    public void setScholarshipXs(List<ScholarshipX> scholarshipXs) {
+        this.scholarshipXs = scholarshipXs;
     }
 
     /**

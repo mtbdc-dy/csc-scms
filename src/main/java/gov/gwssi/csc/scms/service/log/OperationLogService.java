@@ -1,15 +1,23 @@
 package gov.gwssi.csc.scms.service.log;
 
+import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.log.OperationLogRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+
+import static gov.gwssi.csc.scms.service.log.OperationLogSpecs.filterIsLike;
+import static org.springframework.data.jpa.domain.Specifications.where;
 
 /**
  * Created by Murray on 2015/4/27.
@@ -79,5 +87,10 @@ public class OperationLogService extends BaseService {
             throw new NoSupportedUserException("log query not support current user!");
         }
     }
-
+    public Page<OperationLog> getOptLogsPagingByFilter(Filter filter,Integer page,Integer size,String mode,User user) {
+        Specification<OperationLog> specA = filterIsLike(filter,user);
+//        Specification<Ticket> specB = userIs(user);getOptLogsPagingByFilter
+//        System.out.println();
+        return operationLogRepository.findAll(where(specA), new PageRequest(page, size, Sort.Direction.DESC,"createD"));
+    }
 }

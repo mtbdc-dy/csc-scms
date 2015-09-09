@@ -1,39 +1,26 @@
-package gov.gwssi.csc.scms.service.ticket;
+package gov.gwssi.csc.scms.service.scholarship;
 
 import gov.gwssi.csc.scms.domain.filter.Filter;
+import gov.gwssi.csc.scms.domain.scholarship.ScholarshipX;
+import gov.gwssi.csc.scms.domain.scholarship.ScholarshipX_;
 import gov.gwssi.csc.scms.domain.student.*;
-import gov.gwssi.csc.scms.domain.ticket.Ticket;
-import gov.gwssi.csc.scms.domain.ticket.Ticket_;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Created by tianj on 2015/8/29.
+ * Created by tianj on 2015/9/1.
  */
-public class TicketSpecs extends BaseService {
-    public static Specification<Ticket> filterIsLike(final Filter filter, final User user) {
-        return new Specification<Ticket>() {
+public class ScholarshipXSpecs extends BaseService {
+
+    public static Specification<ScholarshipX> filterIsLike(final Filter filter, final User user) {
+        return new Specification<ScholarshipX>() {
             @Override
-            public Predicate toPredicate(Root<Ticket> ticket, CriteriaQuery<?> query, CriteriaBuilder cb) {
-//                for (Field field : filter.getClass().getDeclaredFields()) {
-//                    field.setAccessible(true);
-//                    try {
-//                        if(field.get(filter) == null){
-//                            System.out.println("field.get(filter) = " + field.get(filter));
-//                        }
-//                    } catch (IllegalAccessException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//              除了下面的暴力平铺的形式，是否有更好的解决方式？
-//              上面是尝试是用反射遍历来实现，但是再处理原模型时遇到了困难
+            public Predicate toPredicate(Root<ScholarshipX> scholarshipX, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 Predicate predicate = cb.conjunction();
 
 
@@ -69,37 +56,25 @@ public class TicketSpecs extends BaseService {
                 boolean needStudent = filter.getCscId() != null
                         || needBasicInfo || needSchoolRoll;
 
-
-                /**机票部分*/
-                Date finalDate = null;
-                Date intialDate = null;
-                int currentYear=0;
-                try {
+                /**奖学金部分*/
+                if (filter.getSchReview() != null) {
+                    predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.schReview), filter.getSchReview()));
+                }
+                if(filter.getYear() != 0){
+                    predicate.getExpressions().add(cb.equal(scholarshipX.get(ScholarshipX_.year), filter.getYear()));
+                } else{
                     Calendar calendar = Calendar.getInstance();
-                    currentYear = calendar.get(Calendar.YEAR);
-                    SimpleDateFormat ds = new SimpleDateFormat("yyyy-MM-dd");
-                    intialDate = ds.parse(currentYear + "-01-01");
-                    finalDate = ds.parse(currentYear + "-09-01");
-
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                    int currentYear = calendar.get(Calendar.YEAR);
+                    predicate.getExpressions().add(cb.equal(scholarshipX.get(ScholarshipX_.year), currentYear));
                 }
-                predicate.getExpressions().add(cb.greaterThanOrEqualTo(cb.currentDate(),intialDate));
-                predicate.getExpressions().add(cb.lessThan(cb.currentDate(), finalDate));
-
-                if (filter.getTicketState() != null) {
-                    predicate.getExpressions().add(cb.like(ticket.get(Ticket_.state), filter.getTicketState()));
-                } else {
-                    if ("2".equals(user.getUserType())) {//1 基金委用户 2学校用户
-                        predicate.getExpressions().add(cb.in(ticket.get(Ticket_.state)).value("AT0001").value("AT0002").value("AT0005").value("AT0003").value("AT0004"));
-                    } else if ("1".equals(user.getUserType())) {
-                        predicate.getExpressions().add(cb.in(ticket.get(Ticket_.state)).value("AT0002").value("AT0005").value("AT0003").value("AT0004"));
-                    }
+                if (filter.getSchResult() != null) {
+                    predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.schResult), filter.getSchResult()));
                 }
+                predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.school), user.getNode().getNodeId()));
 
                 /**学生主表部分*/
                 if (needStudent) {
-                    Join<Ticket, Student> student = ticket.join(Ticket_.student);
+                    Join<ScholarshipX, Student> student = scholarshipX.join(ScholarshipX_.student);
                     if (filter.getCscId() != null) {
                         predicate.getExpressions().add(cb.like(student.get(Student_.cscId), filter.getCscId()));
                     }
