@@ -6,14 +6,18 @@ import gov.gwssi.csc.scms.controller.JsonBody;
 import gov.gwssi.csc.scms.controller.RequestHeaderError;
 import gov.gwssi.csc.scms.dao.importExcle.ImportDao;
 import gov.gwssi.csc.scms.dao.insurance.InsuranceDAO;
+import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.insurance.Insurance;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.InsuranceResultObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
+import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.abnormal.NoSuchAbnormalException;
 import gov.gwssi.csc.scms.service.export.ExportService;
+import gov.gwssi.csc.scms.service.insurance.InsuranceConverter;
 import gov.gwssi.csc.scms.service.insurance.InsuranceService;
+import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.user.NoSuchUserException;
 import gov.gwssi.csc.scms.service.user.UserIdentityError;
 import gov.gwssi.csc.scms.service.user.UserService;
@@ -29,6 +33,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -56,8 +61,11 @@ public class InsuranceController {
     @Autowired
     private InsuranceService insuranceService;
     @Autowired
+    private StudentService studentService;
+    @Autowired
     private InsuranceDAO importDao;
-    public static Map<String,List> MAP = new HashMap<String, List>();
+    public static Map<String, List> MAP = new HashMap<String, List>();
+
     //点击查询返回代码维护列表
     @RequestMapping(value = "/getkey", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
     public List getValue(@RequestParam(value = "key") String key) {
@@ -66,15 +74,15 @@ public class InsuranceController {
         if (key == null || "null".equals(key)) {
 
             return new ArrayList();
-        }else{
+        } else {
             //System.out.println("hehe="+MAP.get(key));
             return MAP.get(key);
         }
         //return null;
 
 
-
     }
+
     //用户在前台点击生成机票管理列表，返回列表
     @RequestMapping(value = "/new", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<InsuranceResultObject> getInsurances(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
@@ -136,7 +144,8 @@ public class InsuranceController {
             if (insurance == null) {
                 throw new NoSuchAbnormalException("cannot generate the Insurance");
             }
-            insurance.setStudentId(studentId);
+            Student student = studentService.getStudentById(studentId);
+            insurance.setStudent(student);
             User user = userService.getUserByJWT(header);
             Timestamp ts = new Timestamp(System.currentTimeMillis());
             insurance.setCreateBy(user.getUserId());
@@ -190,7 +199,7 @@ public class InsuranceController {
      * GET /insurance?ids=1,2,3 HTTP/1.1
      * Accept: application/octet-stream
      *
-     * @param id     需要导出的保险信息ID
+     * @param id 需要导出的保险信息ID
      */
     @RequestMapping(
             method = RequestMethod.GET,
@@ -201,7 +210,7 @@ public class InsuranceController {
         byte[] bytes = null;
 
         String tableName = "v_exp_insurance";
-        bytes = exportService.exportByfilter(tableName,"0", id);
+        bytes = exportService.exportByfilter(tableName, "0", id);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
 
@@ -224,7 +233,7 @@ public class InsuranceController {
     )
     public ResponseEntity importInsurance(@RequestParam(value = "filename") String filename,
                                           @RequestParam(value = "key") String key,
-            HttpServletRequest request) {
+                                          HttpServletRequest request) {
 //        System.out.println("request = " + request);
         try {
             System.out.println("filename = " + URLDecoder.decode(filename, "utf-8"));
@@ -242,7 +251,7 @@ public class InsuranceController {
         if (isMultipart) {
             DiskFileItemFactory factory = new DiskFileItemFactory();
 
-            File repository = (File)  request.getSession().getServletContext().getAttribute("javax.servlet.context.tempdir");
+            File repository = (File) request.getSession().getServletContext().getAttribute("javax.servlet.context.tempdir");
             factory.setRepository(repository);
 
             ServletFileUpload upload = new ServletFileUpload(factory);
@@ -250,17 +259,17 @@ public class InsuranceController {
             try {
                 List<FileItem> items = upload.parseRequest(request);
                 System.out.println("items = " + items);
-                 list1 = importDao.check(items.get(0),year);
-                MAP.put(key,list1);
-                if (list1.size() > 0&&!"成功导入".equals(list1.get(0))) {
+                list1 = importDao.check(items.get(0), year);
+                MAP.put(key, list1);
+                if (list1.size() > 0 && !"成功导入".equals(list1.get(0))) {
                     System.out.println("list1 = " + list1);
 
                     return new ResponseEntity<List<String>>(list1, HttpStatus.OK);
                 }
-                    List<String> list = importDao.doImport(items.get(0),year);
-                   // return new ResponseEntity<List<String>>(list1, HttpStatus.OK);
+                List<String> list = importDao.doImport(items.get(0), year);
+                // return new ResponseEntity<List<String>>(list1, HttpStatus.OK);
 
-               // Vector<Vector<String>> list = importDao.doExcelImport(items.get(0));
+                // Vector<Vector<String>> list = importDao.doExcelImport(items.get(0));
 //                System.out.println("list = " + list.size());
 //                System.out.println("list = " + list);
             } catch (FileUploadException e) {
@@ -272,7 +281,7 @@ public class InsuranceController {
         return new ResponseEntity<List<String>>(list1, HttpStatus.OK);
     }
 
-//    @RequestMapping(
+    //    @RequestMapping(
 //            method = RequestMethod.OPTIONS
 //    )
 //    public ResponseEntity options(){
@@ -281,6 +290,29 @@ public class InsuranceController {
 //        httpHeaders.add("Allow", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH");
 //        return new ResponseEntity(httpHeaders, HttpStatus.OK);
 //    }
+//分页查询
+    @RequestMapping(
+            method = RequestMethod.GET,
+            headers = {"Accept=application/json"},
+            params = {"mode", "field", "page", "size", "filter"})
+    public ResponseEntity<Page<Map<String, Object>>> getInsurances(
+            @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
+            @RequestParam(value = "mode") String mode,
+            @RequestParam(value = "field") String[] fields,
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size,
+            @RequestParam(value = "filter") String filterJSON) throws IOException {
+        try {
+            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            User user = userService.getUserByJWT(header);
+            Page<Insurance> insurancePage = insuranceService.getInsurancesPagingByFilter(filter, page, size, mode, user);
+            Page<Map<String, Object>> mapPage = insurancePage.map(new InsuranceConverter());
+            return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 
 
 }

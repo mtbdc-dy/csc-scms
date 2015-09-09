@@ -46,10 +46,10 @@ public class exportTest extends UnitTestBase {
     @Test
     public void testExportservice1() throws Exception {
         ExportService exportService = getBean("exportService");
-        String tableName = "v_scholarship_lastyear" ;
-        String ids = "2015072900000000018,2015072900000000017";
+        String tableName = "v_exp_appropriation" ;
+        String ids = "201509079782";
         String id[] = ids.split(",");
-        exportService.exportByfilter(tableName,"1", id);
+        exportService.exportByfilter(tableName,"0", id);
 
     }
 

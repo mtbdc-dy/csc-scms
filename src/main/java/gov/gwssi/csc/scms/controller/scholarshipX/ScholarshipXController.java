@@ -12,10 +12,12 @@ import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.scholarship.Scholarship;
 import gov.gwssi.csc.scms.domain.scholarship.ScholarshipDetail;
 import gov.gwssi.csc.scms.domain.scholarship.ScholarshipX;
+import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.abnormal.NoSuchAbnormalException;
 import gov.gwssi.csc.scms.service.export.ExportService;
 import gov.gwssi.csc.scms.service.scholarship.ScholarshipXService;
+import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.user.NoSuchUserException;
 import gov.gwssi.csc.scms.service.user.UserIdentityError;
 import gov.gwssi.csc.scms.service.user.UserService;
@@ -46,6 +48,8 @@ public class ScholarshipXController {
     private ExportService exportService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private StudentService studentService;
     @Autowired
     private ScholarshipXService scholarshipXService;
 
@@ -203,12 +207,15 @@ public class ScholarshipXController {
             } else {
                  scholarshipDetail.setSchReview("AQ0001");//合格
                  //查询该学生历史的schReview
-                 ScholarshipXResultObject scholarshipXLS =scholarshipXService.getScholarshipXAndStuBy(scholarshipDetail.getStudentId());
+                 ScholarshipXResultObject scholarshipXLS =scholarshipXService.getScholarshipXAndStuBy(scholarshipDetail.getStudent().getId());
                  if(scholarshipXLS!=null && scholarshipXLS.getSchReview().equals("AQ0002")){//上次结果存在且上次结果为不合格
                      scholarshipDetail.setSchResult("AP0002");//恢复
                  }else{//上次为空，或者上次为合格
                      scholarshipDetail.setSchResult("AP0001");//继续
                  }
+                 Student student=studentService.getStudentById(studentId);
+                 scholarshipDetail.setStudent(student);
+
                  String id = scholarshipXService.savenewScholarshipDetail(scholarshipDetail, user);//插入新增记录
 
                  //子表全部保存完成后，对主表的合格，不合格人数进行重新统计并更新主表
