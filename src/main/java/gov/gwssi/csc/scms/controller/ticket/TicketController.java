@@ -5,13 +5,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.controller.JsonBody;
 import gov.gwssi.csc.scms.controller.RequestHeaderError;
 import gov.gwssi.csc.scms.dao.ticket.TicketDAO;
+
+import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
+
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.TicketResultObject;
-import gov.gwssi.csc.scms.domain.student.Student;
+import gov.gwssi.csc.scms.domain.student.*;
 import gov.gwssi.csc.scms.domain.ticket.Ticket;
 import gov.gwssi.csc.scms.domain.user.User;
+import gov.gwssi.csc.scms.domain.warning.Warning;
+import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.service.export.ExportService;
 import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.ticket.NoSuchTicketException;
@@ -49,7 +54,7 @@ import java.util.*;
  */
 @RestController
 @RequestMapping(value = "/ticket")
-public class TicketController {
+public class TicketController extends BaseService {
     @Autowired
     private UserService userService;
     @Autowired
@@ -143,6 +148,21 @@ public class TicketController {
                     ticket.setUpdated(ts);
                     Ticket oldTicket = ticketService.getTicketById(ticket.getId());
                     Student student = oldTicket.getStudent();
+
+                    setNullByField(student.getBasicInfo(), "student", BasicInfo.class);
+                    setNullByField(student.getSchoolfellow(), "student", Schoolfellow.class);
+                    setNullByField(student.getDiscuss(), "student", Discuss.class);
+                    setNullByField(student.getProfilesHistory(), "student", ProfilesHistory.class);
+                    setNullByField(student.getRegistrationInfo(), "student", RegistrationInfo.class);
+                    setNullByField(student.getSchoolRoll(), "student", SchoolRoll.class);
+                    setNullByField(student.getWarning(), "student", Warning.class);
+                    setNullByField(student.getAccidents(), "student", Accident.class);
+                    setNullByField(student.getRelatedAddress(), "student", RelatedAddress.class);
+                    setNullByField(student.getGrades(), "student", Grade.class);
+                    setNullByField(student.getGradeAttachment(), "student", GradeAttachment.class);
+                    setNullByField(student.getAbnormals(), "student", Abnormal.class);
+                    setNullByField(student.getTickets(), "student", Ticket.class);
+
                     ticket.setStudent(student);
                     Ticket hqTicket = ticketService.saveTicket(ticket, null);
                     newTickets.add(hqTicket);
