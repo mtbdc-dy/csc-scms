@@ -24,6 +24,7 @@ public class CodeMainTenanceDAO extends BaseDAO {
     public static final String ABNORMAL = "dim_anml";
     public static final String UNIVERSITIES = "dim_univ";
     public static final String TRANSLATE = "dim_translate";
+    public static final String DEPT = "dim_dept";
     //获取代码维护列表
     public List getAllCodeList( String tableName,String chinaName) {
         List allCodeList = null;
@@ -156,7 +157,32 @@ public class CodeMainTenanceDAO extends BaseDAO {
             codeDetailResult1.setTABLEEN(codeDetailResult.getTABLEEN());
             codeDetailResult1.setFULLNAME(map.get("updateby".toUpperCase()).toString());
             codeDetailResult1.setPARENTID(map.get("province".toUpperCase()).toString());
-            System.out.println(map.get("univid".toUpperCase()).toString());
+            codeDetailResult1.setTYPE(map.get("type".toUpperCase()) == null ? "" : map.get("type".toUpperCase()).toString());
+            codeDetailResult1.setADMINDEPT(map.get("admindept".toUpperCase()) == null ? "" : map.get("admindept".toUpperCase()).toString());
+            codeDetailResult1.setCODE(map.get("code".toUpperCase())==null?"":map.get("code".toUpperCase()).toString());
+            try {
+                codeDetailResult1.setUPDATED(sdf.parse(map.get("updated".toUpperCase()).toString()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            System.out.println(codeDetailResult1.getID());
+            return codeDetailResult1;
+        }else if(DEPT.equals(codeDetailResult.getTABLEEN())){
+            sql = "select * from dim_dept t where deptid = '"+zdz+"'";
+            codeList = super.queryListBySql(sql);
+            HashMap map = (HashMap) codeList.get(0);
+            SimpleDateFormat sdf =   new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+            codeDetailResult1.setID(map.get("deptid".toUpperCase()).toString());
+            codeDetailResult1.setENABLED(map.get("enabled".toUpperCase()).toString());
+            codeDetailResult1.setNAME(map.get("namech".toUpperCase()).toString());
+            codeDetailResult1.setTABLEEN(codeDetailResult.getTABLEEN());
+            codeDetailResult1.setFULLNAME(map.get("updateby".toUpperCase()).toString());
+            codeDetailResult1.setPARENTID(map.get("parentid".toUpperCase()).toString());
+            codeDetailResult1.setTYPE(map.get("type".toUpperCase()) == null ? "" : map.get("type".toUpperCase()).toString());
+            codeDetailResult1.setADMINDEPT(map.get("admindept".toUpperCase()) == null ? "" : map.get("admindept".toUpperCase()).toString());
+            codeDetailResult1.setCODE(map.get("code".toUpperCase()) == null ? "" : map.get("code".toUpperCase()).toString());
+            //System.out.println(map.get("univid".toUpperCase()).toString());
             try {
                 codeDetailResult1.setUPDATED(sdf.parse(map.get("updated".toUpperCase()).toString()));
             } catch (ParseException e) {
@@ -289,14 +315,39 @@ public class CodeMainTenanceDAO extends BaseDAO {
             codeDetailResult1.setTABLEEN(codeDetailResult.getTABLEEN());
             codeDetailResult1.setFULLNAME(map.get("updateby".toUpperCase()).toString());
             codeDetailResult1.setPARENTID(map.get("province".toUpperCase()).toString());
-            System.out.println(map.get("univid".toUpperCase()).toString());
-            //System.out.println(map.get("projectid".toUpperCase()).toString());
+            codeDetailResult1.setTYPE(map.get("type".toUpperCase()) == null ? "" : map.get("type".toUpperCase()).toString());
+            codeDetailResult1.setADMINDEPT(map.get("admindept".toUpperCase()) == null ? "" : map.get("admindept".toUpperCase()).toString());
+            codeDetailResult1.setCODE(map.get("code".toUpperCase())==null?"":map.get("code".toUpperCase()).toString());
             try {
                 codeDetailResult1.setUPDATED(sdf.parse(map.get("updated".toUpperCase()).toString()));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
             System.out.println(codeDetailResult1.getID());
+            return codeDetailResult1;
+        }else if(DEPT.equals(codeDetailResult.getTABLEEN())){
+            sql = "select * from dim_dept t where deptid = '"+codeDetailResult.getID()+"'";
+            codeList = super.queryListBySql(sql);
+            HashMap map = (HashMap) codeList.get(0);
+            SimpleDateFormat sdf =   new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+            codeDetailResult1.setID(map.get("deptid".toUpperCase()).toString());
+            codeDetailResult1.setENABLED(map.get("enabled".toUpperCase()).toString());
+            codeDetailResult1.setNAME(map.get("namech".toUpperCase()).toString());
+            codeDetailResult1.setTABLEEN(codeDetailResult.getTABLEEN());
+            codeDetailResult1.setFULLNAME(map.get("updateby".toUpperCase()).toString());
+            codeDetailResult1.setPARENTID(map.get("parentid".toUpperCase()).toString());
+            codeDetailResult1.setTYPE(map.get("type".toUpperCase()) == null ? "" : map.get("type".toUpperCase()).toString());
+            codeDetailResult1.setADMINDEPT(map.get("admindept".toUpperCase()) == null ? "" : map.get("admindept".toUpperCase()).toString());
+            codeDetailResult1.setCODE(map.get("code".toUpperCase()) == null ? "" : map.get("code".toUpperCase()).toString());
+            //System.out.println(map.get("univid".toUpperCase()).toString());
+            //System.out.println(map.get("projectid".toUpperCase()).toString());
+            try {
+                codeDetailResult1.setUPDATED(sdf.parse(map.get("updated".toUpperCase()).toString()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            //System.out.println(codeDetailResult1.getID());
             return codeDetailResult1;
         }
         return null;
@@ -383,7 +434,7 @@ public class CodeMainTenanceDAO extends BaseDAO {
                 }
             }else if (UNIVERSITIES.equals(codeDetailResult.getTABLEEN())){
                 if("1".equals(codeDetailResult.getENABLED())){
-                    sql="update dim_univ t set t.UNIV ='"+codeDetailResult.getNAME()+"',t.enabled ='1',t.updateby='"+codeDetailResult.getFULLNAME()+"',t.updated =sysdate where t.univid = '"+codeDetailResult.getID()+"'";
+                    sql="update dim_univ t set t.UNIV ='"+codeDetailResult.getNAME()+"',t.enabled ='1',t.updateby='"+codeDetailResult.getFULLNAME()+"',t.updated =sysdate,t.admindept = '"+codeDetailResult.getADMINDEPT()+"',t.type = '"+codeDetailResult.getTYPE()+"',t.code = '"+codeDetailResult.getCODE()+"' where t.univid = '"+codeDetailResult.getID()+"'";
                     int m = super.updateBySql(sql);
                     if(m==0){
                         throw  new RuntimeException("代码维护保存失败");
@@ -412,6 +463,24 @@ public class CodeMainTenanceDAO extends BaseDAO {
                     List list = new ArrayList();
                     list.add(codeDetailResult.getID());
                     list.add("dim_translate");
+                    list.add(codeDetailResult.getFULLNAME());
+                    String str =  super.doStatementForRtn("p_scms_delete_dim",list);
+                    return codeDetailResult;
+                }
+
+            }else if (DEPT.equals(codeDetailResult.getTABLEEN())){
+                if("1".equals(codeDetailResult.getENABLED())){
+                    sql="update dim_dept t set t.NAMECH ='"+codeDetailResult.getNAME()+"',t.enabled ='1',t.updateby='"+codeDetailResult.getFULLNAME()+"',t.updated =sysdate where t.deptid = '"+codeDetailResult.getID()+"'";
+                    int m = super.updateBySql(sql);
+                    if(m==0){
+                        throw  new RuntimeException("代码维护保存失败");
+                    }else{
+                        return codeDetailResult;
+                    }
+                }else{
+                    List list = new ArrayList();
+                    list.add(codeDetailResult.getID());
+                    list.add("dim_dept");
                     list.add(codeDetailResult.getFULLNAME());
                     String str =  super.doStatementForRtn("p_scms_delete_dim",list);
                     return codeDetailResult;
@@ -473,7 +542,15 @@ public class CodeMainTenanceDAO extends BaseDAO {
             return "";
         }else if(UNIVERSITIES.equals(codeDetailResult.getTABLEEN())){
             zdz =super.getDicIdByClassType(type);
-            sql = "insert into "+codeDetailResult.getTABLEEN()+" (UNIVID,UNIV,PROVINCE,ENABLED,UPDATEBY,UPDATED) values(f_scms_dim_id('"+type+"'),'"+codeDetailResult.getNAME()+"','"+codeDetailResult.getPARENTID()+"','"+codeDetailResult.getENABLED()+"','"+codeDetailResult.getFULLNAME()+"',SYSDATE)";
+            sql = "insert into "+codeDetailResult.getTABLEEN()+" (UNIVID,UNIV,PROVINCE,CODE,TYPE,ADMINDEPT,ENABLED,UPDATEBY,UPDATED) values(f_scms_dim_id('"+type+"'),'"+codeDetailResult.getNAME()+"','"+codeDetailResult.getPARENTID()+"','"+codeDetailResult.getCODE()+"','"+codeDetailResult.getTYPE()+"','"+codeDetailResult.getADMINDEPT()+"','"+codeDetailResult.getENABLED()+"','"+codeDetailResult.getFULLNAME()+"',SYSDATE)";
+            int n = super.updateBySql(sql);
+            if (n==1) {
+                return zdz;
+            }
+            return "";
+        }else if(DEPT.equals(codeDetailResult.getTABLEEN())){
+            zdz =super.getDicIdByClassType(type);
+            sql = "insert into "+codeDetailResult.getTABLEEN()+" values(f_scms_dim_id('"+type+"'),'','"+codeDetailResult.getNAME()+"','"+codeDetailResult.getPARENTID()+"','"+type+"','"+codeDetailResult.getENABLED()+"','"+codeDetailResult.getFULLNAME()+"',SYSDATE)";
             int n = super.updateBySql(sql);
             if (n==1) {
                 return zdz;
@@ -511,7 +588,7 @@ public class CodeMainTenanceDAO extends BaseDAO {
             if(seqList.size()>0){
                 codeSql = ((HashMap)seqList.get(0)).get("SQL").toString();
                 codeList = super.queryListBySql(codeSql);
-                System.out.println();
+                System.out.println("print derailCodeList");
                 return codeList;
             } else{
                 return codeList;

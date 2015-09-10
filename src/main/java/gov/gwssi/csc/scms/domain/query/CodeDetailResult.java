@@ -28,7 +28,18 @@ public class CodeDetailResult implements Serializable {
      * 修改人
      */
     private String FULLNAME;
-
+    /**
+     * 招生代码
+     */
+    private String CODE;
+    /**
+     * 主管部门
+     */
+    private String ADMINDEPT;
+    /**
+     * 归属
+     */
+    private String TYPE;
     /**
      * 修改时间
      */
@@ -55,6 +66,19 @@ public class CodeDetailResult implements Serializable {
         this.ENABLED = ENABLED;
         this.TABLEEN = TABLEEN;
         this.FULLNAME = FULLNAME;
+        this.UPDATED = UPDATED;
+        this.PARENTID = PARENTID;
+    }
+
+    public CodeDetailResult(String ID, String NAME, String ENABLED, String TABLEEN, String FULLNAME, String CODE, String ADMINDEPT, String TYPE, Date UPDATED, String PARENTID) {
+        this.ID = ID;
+        this.NAME = NAME;
+        this.ENABLED = ENABLED;
+        this.TABLEEN = TABLEEN;
+        this.FULLNAME = FULLNAME;
+        this.CODE = CODE;
+        this.ADMINDEPT = ADMINDEPT;
+        this.TYPE = TYPE;
         this.UPDATED = UPDATED;
         this.PARENTID = PARENTID;
     }
@@ -113,5 +137,29 @@ public class CodeDetailResult implements Serializable {
 
     public void setPARENTID(String PARENTID) {
         this.PARENTID = PARENTID;
+    }
+
+    public String getCODE() {
+        return CODE;
+    }
+
+    public void setCODE(String CODE) {
+        this.CODE = CODE;
+    }
+
+    public String getADMINDEPT() {
+        return ADMINDEPT;
+    }
+
+    public void setADMINDEPT(String ADMINDEPT) {
+        this.ADMINDEPT = ADMINDEPT;
+    }
+
+    public String getTYPE() {
+        return TYPE;
+    }
+
+    public void setTYPE(String TYPE) {
+        this.TYPE = TYPE;
     }
 }
