@@ -51,7 +51,8 @@ public class NodeService extends BaseService {
         if (!Node.ENABLED.equalsIgnoreCase(parent.getEnabled())) {
             throw new NoSuchNodeException("the parent of the node is not enabled:" + node.getParent().getNodeId());
         }
-        node.setNodeId(getBaseDao().getDicIdByClassType(node.getNodeType()));
+//        node.setNodeId(getBaseDao().getDicIdByClassType(node.getNodeType()));
+
         node.setParent(parent);
         return saveNode(node);
     }
