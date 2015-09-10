@@ -52,7 +52,15 @@ public class NodeService extends BaseService {
             throw new NoSuchNodeException("the parent of the node is not enabled:" + node.getParent().getNodeId());
         }
 //        node.setNodeId(getBaseDao().getDicIdByClassType(node.getNodeType()));
-
+        if("P".equals(node.getNodeType())){
+            node.setNodeId(node.getNode());
+            node.setNode(getBaseDao().getNameCHByRegionId(node.getNode()));
+        }else if("S".equals(node.getNodeType())){
+            node.setNodeId(node.getNode());
+            node.setNode(getBaseDao().getUnivByUnivId(node.getNode()));
+        } else {
+            node.setNodeId(getBaseDao().getDicIdByClassType(node.getNodeType()));
+        }
         node.setParent(parent);
         return saveNode(node);
     }
