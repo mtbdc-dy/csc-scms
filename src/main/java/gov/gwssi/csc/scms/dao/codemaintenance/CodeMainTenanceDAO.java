@@ -3,6 +3,7 @@ package gov.gwssi.csc.scms.dao.codemaintenance;
 import gov.gwssi.csc.scms.dao.BaseDAO;
 import gov.gwssi.csc.scms.domain.query.CodeDetailResult;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -151,9 +152,10 @@ public class CodeMainTenanceDAO extends BaseDAO {
 
             codeDetailResult1.setID(map.get("univid".toUpperCase()).toString());
             codeDetailResult1.setENABLED(map.get("enabled".toUpperCase()).toString());
-            codeDetailResult1.setNAME(map.get("namech".toUpperCase()).toString());
+            codeDetailResult1.setNAME(map.get("UNIV".toUpperCase()).toString());
             codeDetailResult1.setTABLEEN(codeDetailResult.getTABLEEN());
             codeDetailResult1.setFULLNAME(map.get("updateby".toUpperCase()).toString());
+            codeDetailResult1.setPARENTID(map.get("province".toUpperCase()).toString());
             System.out.println(map.get("univid".toUpperCase()).toString());
             try {
                 codeDetailResult1.setUPDATED(sdf.parse(map.get("updated".toUpperCase()).toString()));
@@ -283,9 +285,10 @@ public class CodeMainTenanceDAO extends BaseDAO {
 
             codeDetailResult1.setID(map.get("univid".toUpperCase()).toString());
             codeDetailResult1.setENABLED(map.get("enabled".toUpperCase()).toString());
-            codeDetailResult1.setNAME(map.get("namech".toUpperCase()).toString());
+            codeDetailResult1.setNAME(map.get("UNIV".toUpperCase()).toString());
             codeDetailResult1.setTABLEEN(codeDetailResult.getTABLEEN());
             codeDetailResult1.setFULLNAME(map.get("updateby".toUpperCase()).toString());
+            codeDetailResult1.setPARENTID(map.get("province".toUpperCase()).toString());
             System.out.println(map.get("univid".toUpperCase()).toString());
             //System.out.println(map.get("projectid".toUpperCase()).toString());
             try {
@@ -419,18 +422,19 @@ public class CodeMainTenanceDAO extends BaseDAO {
             }
     }
     //新增
-
+    @Transactional
     public String saveNewCode(CodeDetailResult codeDetailResult,String type) {
         String sql = "",zdz = "";
         List codeList = null,zdList =null;
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         CodeDetailResult codeDetailResult1 = new CodeDetailResult();
         if(TRANSLATE.equals(codeDetailResult.getTABLEEN())){
+            zdz =super.getDicIdByClassType(type);
             sql = "insert into "+codeDetailResult.getTABLEEN()+" values('"+type+"',f_scms_dim_id('"+type+"'),'"+codeDetailResult.getNAME()+"','','"+codeDetailResult.getENABLED()+"','"+codeDetailResult.getFULLNAME()+"',SYSDATE)";
             int n = super.updateBySql(sql);
             if (n==1) {
 
-                zdz =super.getDicIdByClassType(type);
+
                 return zdz;
             }
             return "";
@@ -469,7 +473,7 @@ public class CodeMainTenanceDAO extends BaseDAO {
             return "";
         }else if(UNIVERSITIES.equals(codeDetailResult.getTABLEEN())){
             zdz =super.getDicIdByClassType(type);
-            sql = "insert into "+codeDetailResult.getTABLEEN()+" values(f_scms_dim_id('"+type+"'),'"+codeDetailResult.getNAME()+"','','"+codeDetailResult.getPARENTID()+"','','','','','"+codeDetailResult.getENABLED()+"','"+codeDetailResult.getFULLNAME()+"',SYSDATE)";
+            sql = "insert into "+codeDetailResult.getTABLEEN()+" (UNIVID,UNIV,PROVINCE,ENABLED,UPDATEBY,UPDATED) values(f_scms_dim_id('"+type+"'),'"+codeDetailResult.getNAME()+"','"+codeDetailResult.getPARENTID()+"','"+codeDetailResult.getENABLED()+"','"+codeDetailResult.getFULLNAME()+"',SYSDATE)";
             int n = super.updateBySql(sql);
             if (n==1) {
                 return zdz;
@@ -507,6 +511,7 @@ public class CodeMainTenanceDAO extends BaseDAO {
             if(seqList.size()>0){
                 codeSql = ((HashMap)seqList.get(0)).get("SQL").toString();
                 codeList = super.queryListBySql(codeSql);
+                System.out.println();
                 return codeList;
             } else{
                 return codeList;

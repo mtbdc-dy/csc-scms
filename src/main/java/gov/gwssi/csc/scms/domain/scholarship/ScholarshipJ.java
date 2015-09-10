@@ -16,6 +16,9 @@ public class ScholarshipJ {
     @Id
     //@Column(length = 19)
     private Long id;
+
+    @Column
+    private String scholarshipId;
     /**
      * 年度
      */
@@ -78,6 +81,7 @@ public class ScholarshipJ {
      */
     @Column
     private String cscdate;
+
 
     public Long getId() {
         return id;
@@ -182,4 +186,13 @@ public class ScholarshipJ {
     public void setCscdate(String cscdate) {
         this.cscdate = cscdate;
     }
+
+    public String getScholarshipId() {
+        return scholarshipId;
+    }
+
+    public void setScholarshipId(String scholarshipId) {
+        this.scholarshipId = scholarshipId;
+    }
+
 }

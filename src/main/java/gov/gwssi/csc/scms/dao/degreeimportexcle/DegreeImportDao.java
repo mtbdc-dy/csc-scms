@@ -148,6 +148,7 @@ public class DegreeImportDao extends BaseDAO {
             cscNo = String.valueOf(decodeNull(sheet.getCell(0, m).getContents()));
             elcregisteNo = String.valueOf(decodeNull(sheet.getCell(1, m).getContents()));
             degreeNo = String.valueOf(decodeNull(sheet.getCell(2, m).getContents()));
+            saveDate(cscNo,elcregisteNo,degreeNo);
             stringList.add(cscNo);
 
         }

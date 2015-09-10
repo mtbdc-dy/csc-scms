@@ -1,5 +1,7 @@
 package gov.gwssi.csc.scms.domain.scholarship;
 
+import gov.gwssi.csc.scms.domain.student.Student;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -72,21 +74,21 @@ public class ScholarshipDetail {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "SCHOLARSHIPID")
     private Scholarship scholarship;
-//    /**
-//     * 学生id
-//     */
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "STUDENTID")
-//    private Student student;
 
-    private String studentId;
+    /**
+     * 学生
+     */
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "STUDENTID")
+    private Student student;
 
-    public String getStudentId() {
-        return studentId;
+
+    public Student getStudent() {
+        return student;
     }
 
-    public void setStudentId(String studentId) {
-        this.studentId = studentId;
+    public void setStudent(Student student) {
+        this.student = student;
     }
 
     public String getId() {
@@ -193,11 +195,5 @@ public class ScholarshipDetail {
         this.scholarship = scholarship;
     }
 
-//    public Student getStudent() {
-//        return student;
-//    }
-//
-//    public void setStudent(Student student) {
-//        this.student = student;
-//    }
+
 }

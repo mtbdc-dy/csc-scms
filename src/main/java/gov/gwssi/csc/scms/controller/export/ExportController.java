@@ -68,7 +68,7 @@ public class ExportController {
                 "v_sheet8_airticket",
                 "v_sheet9_grade",
                 "v_sheet10_school_fellow"};
-        bytes = exportService.exportByfilter(tableName, id);
+        bytes = exportService.exportByfilter(tableName,"0", id);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = ts.getTime() + ".xls"; // 组装附件名称和格式
 

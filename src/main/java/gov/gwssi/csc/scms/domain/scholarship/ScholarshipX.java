@@ -1,9 +1,8 @@
 package gov.gwssi.csc.scms.domain.scholarship;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import gov.gwssi.csc.scms.domain.student.Student;
+
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -17,8 +16,14 @@ public class ScholarshipX {
     //@Column(length = 19)
     private String id;
 
-    @Column
-    private String studentId;
+
+    /**
+     * 学生
+     */
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "STUDENTID")
+    private Student student;
+
     @Column
     private String cscId;
     @Column
@@ -61,6 +66,8 @@ public class ScholarshipX {
     private String cscSta;
     @Column
     private String cscrresult_lastyear;
+    @Column
+    private String passportName;
 
     /**
      *年度
@@ -73,6 +80,13 @@ public class ScholarshipX {
     @Column
     private String school;
 
+    public String getPassportName() {
+        return passportName;
+    }
+
+    public void setPassportName(String passportName) {
+        this.passportName = passportName;
+    }
 
     public Long getSchoolQual() {
         return schoolQual;
@@ -269,11 +283,12 @@ public class ScholarshipX {
         this.cscrresult_lastyear = cscrresult_lastyear;
     }
 
-    public String getStudentId() {
-        return studentId;
+
+    public Student getStudent() {
+        return student;
     }
 
-    public void setStudentId(String studentId) {
-        this.studentId = studentId;
+    public void setStudent(Student student) {
+        this.student = student;
     }
 }

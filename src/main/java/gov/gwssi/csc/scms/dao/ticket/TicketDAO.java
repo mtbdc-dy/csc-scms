@@ -85,9 +85,9 @@ public class TicketDAO extends BaseDAO {
         Sheet sheet = wb.getSheet(0);
         int maxRows = sheet.getRows();
         int maxColumns = sheet.getColumns();
-        if(maxRows<=2||maxColumns>11){
+        if(maxRows<=2||maxColumns>17){
             stringList.add("校验结果：");
-            stringList.add("导入的数据文件标题不正确或者列数大于11列！");
+            stringList.add("导入的数据文件标题不正确或者列数大于17列！");
             return stringList;
         }
         String cscNo = "";
@@ -98,7 +98,8 @@ public class TicketDAO extends BaseDAO {
         String id = "";
         BigDecimal priceSave ;
         String checkcscNo = "CSC登记号有空行：";
-        String cscNoIsNull = "CSC登记号不存在机票记录：";
+        String cscNoIsNull = "CSC登记号不存在：";
+        String ticketIdIsError = "机票编号不存在：";
         String ticketIsError = "导入的订票信息存在错误行：";
 
 //String linTime = "";
@@ -106,17 +107,17 @@ public class TicketDAO extends BaseDAO {
         for (int m = 2; m < sheet.getRows(); m++) {
             id = String.valueOf(decodeNull(sheet.getCell(0, m).getContents()));
             cscNo = String.valueOf(decodeNull(sheet.getCell(1, m).getContents()));
-            ticketLine = String.valueOf(decodeNull(sheet.getCell(4, m).getContents()));
-            airNo= String.valueOf(decodeNull(sheet.getCell(5, m).getContents()));
-            price= String.valueOf(decodeNull(sheet.getCell(3, m).getContents()));
-            time= String.valueOf(decodeNull(sheet.getCell(2, m).getContents()));
+            ticketLine = String.valueOf(decodeNull(sheet.getCell(13, m).getContents()));
+            airNo= String.valueOf(decodeNull(sheet.getCell(15, m).getContents()));
+            price= String.valueOf(decodeNull(sheet.getCell(14, m).getContents()));
+            time= String.valueOf(decodeNull(sheet.getCell(12, m).getContents()));
             if("".equals(time)||"".equals(ticketLine)||"".equals(airNo)||"".equals(price)){
                 ticketIsError = ticketIsError+"第"+(m+1)+"行,";
                 continue;
             }
             if(!"".equals(time)){
-                if(sheet.getCell(2, m).getType() == CellType.DATE){
-                    DateCell dc = (DateCell)sheet.getCell(2, m);
+                if(sheet.getCell(12, m).getType() == CellType.DATE){
+                    DateCell dc = (DateCell)sheet.getCell(12, m);
                     Date date = dc.getDate();
                     SimpleDateFormat ds = new SimpleDateFormat("yyyy-MM-dd");
                     time = ds.format(date);
@@ -143,9 +144,12 @@ public class TicketDAO extends BaseDAO {
                 // stringList.add("第"+(i+1)+"行CSC登记号不能为空,");
                 checkcscNo = checkcscNo+"第"+(m+1)+"行,";
             }else{
+                if(student == null){
+                    cscNoIsNull = cscNoIsNull +"第"+(m+1)+"行,";
+                }
                 if(i==0){
                     // stringList.add("第"+(i+1)+"行CSC登记号不存在,");
-                    cscNoIsNull = cscNoIsNull +"第"+(m+1)+"行,";
+                    ticketIdIsError = ticketIdIsError +"第"+(m+1)+"行,";
                 }
             }
 
@@ -155,10 +159,16 @@ public class TicketDAO extends BaseDAO {
         if(!"CSC登记号有空行：".equals(checkcscNo)){
             stringList.add(checkcscNo);
         }
-        if(!"CSC登记号不存在机票记录：".equals(cscNoIsNull)){
+        if(!"CSC登记号不存在：".equals(cscNoIsNull)){
             stringList.add(cscNoIsNull);
         }
-
+        if(!"机票编号不存在：".equals(ticketIdIsError)){
+            stringList.add(ticketIdIsError);
+        }
+//        String ticketIsError = "导入的订票信息存在错误行：";
+        if(!"导入的订票信息存在错误行：".equals(ticketIsError)){
+            stringList.add(ticketIsError);
+        }
         if(stringList.size()==0){
             stringList.clear();
             stringList.add("成功导入");
@@ -206,13 +216,13 @@ public class TicketDAO extends BaseDAO {
 
             id = String.valueOf(decodeNull(sheet.getCell(0, m).getContents()));
             cscNo = String.valueOf(decodeNull(sheet.getCell(1, m).getContents()));
-            ticketLine = String.valueOf(decodeNull(sheet.getCell(4, m).getContents()));
-            airNo= String.valueOf(decodeNull(sheet.getCell(5, m).getContents()));
-            price= String.valueOf(decodeNull(sheet.getCell(3, m).getContents()));
-            time= String.valueOf(decodeNull(sheet.getCell(2, m).getContents()));
+            ticketLine = String.valueOf(decodeNull(sheet.getCell(13, m).getContents()));
+            airNo= String.valueOf(decodeNull(sheet.getCell(15, m).getContents()));
+            price= String.valueOf(decodeNull(sheet.getCell(14, m).getContents()));
+            time= String.valueOf(decodeNull(sheet.getCell(12, m).getContents()));;
             if(!"".equals(time)){
-                if(sheet.getCell(2, m).getType() == CellType.DATE){
-                    DateCell dc = (DateCell)sheet.getCell(2, m);
+                if(sheet.getCell(12, m).getType() == CellType.DATE){
+                    DateCell dc = (DateCell)sheet.getCell(12, m);
                     Date date = dc.getDate();
                     SimpleDateFormat ds = new SimpleDateFormat("yyyy-MM-dd");
                     time = ds.format(date);

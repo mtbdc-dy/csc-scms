@@ -1,24 +1,31 @@
 package gov.gwssi.csc.scms.controller.scholarshipX;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.controller.JsonBody;
 import gov.gwssi.csc.scms.controller.RequestHeaderError;
+import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.ScholarshipXResultObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.scholarship.Scholarship;
 import gov.gwssi.csc.scms.domain.scholarship.ScholarshipDetail;
 import gov.gwssi.csc.scms.domain.scholarship.ScholarshipX;
+import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.abnormal.NoSuchAbnormalException;
 import gov.gwssi.csc.scms.service.export.ExportService;
+import gov.gwssi.csc.scms.service.scholarship.ScholarshipXConverter;
 import gov.gwssi.csc.scms.service.scholarship.ScholarshipXService;
+import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.user.NoSuchUserException;
 import gov.gwssi.csc.scms.service.user.UserIdentityError;
 import gov.gwssi.csc.scms.service.user.UserService;
 import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,6 +39,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by gc on 2015/7/17.
@@ -45,12 +53,15 @@ public class ScholarshipXController {
     @Autowired
     private UserService userService;
     @Autowired
+    private StudentService studentService;
+    @Autowired
     private ScholarshipXService scholarshipXService;
 
     //用户在前台点击生奖学金评审列表，返回列表
-    @RequestMapping(value = "/new",method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    @RequestMapping(value = "/new", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<ScholarshipXResultObject> getScholarshipXs(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
         User user = null;
+        List<OperationLog> operationLogs = null;
         try {
             user = userService.getUserByJWT(header);
         } catch (RequestHeaderError requestHeaderError) {
@@ -58,40 +69,43 @@ public class ScholarshipXController {
         } catch (UserIdentityError userIdentityError) {
             userIdentityError.printStackTrace();
         }
-        List<ScholarshipXResultObject> scholarshipXResultObjectList = scholarshipXService.getScholarshipXList(user);
+        List<ScholarshipXResultObject> scholarshipXResultObjectList = scholarshipXService.getScholarshipXList(user);//保存日志
+
         return scholarshipXResultObjectList;
     }
+
     //学校用户在前台点击查询，返回列表
-            @RequestMapping(value = "/select",method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-            public List<ScholarshipXResultObject> getScholarshipXsByConditions(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
-                                                                   @RequestParam(value = "filter") String filter) throws NoSuchUserException {
-                try {
+    @RequestMapping(value = "/select", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public List<ScholarshipXResultObject> getScholarshipXsByConditions(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
+                                                                       @RequestParam(value = "filter") String filter) throws NoSuchUserException {
+        try {
             StudentFilterObject sfo = null;
             sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);
 
-                    User user = userService.getUserByJWT(header);
-                    String userid = user.getUserId();
+            User user = userService.getUserByJWT(header);
+            String userid = user.getUserId();
             //按照分页（默认）要求，返回列表内容
             List<ScholarshipXResultObject> scholarshipXResultObjects = scholarshipXService.getScholarshipXListByFilter(sfo, user);
             return scholarshipXResultObjects;
         } catch (UnsupportedEncodingException uee) {
             uee.printStackTrace();
-                    throw new RuntimeException(uee);
+            throw new RuntimeException(uee);
         } catch (IOException e) {
             e.printStackTrace();
-                    throw new RuntimeException(e);
+            throw new RuntimeException(e);
         } catch (UserIdentityError userIdentityError) {
-                    userIdentityError.printStackTrace();
-                    throw new RuntimeException(userIdentityError);
-                } catch (RequestHeaderError requestHeaderError) {
-                    requestHeaderError.printStackTrace();
-                    throw new RuntimeException(requestHeaderError);
-                }
+            userIdentityError.printStackTrace();
+            throw new RuntimeException(userIdentityError);
+        } catch (RequestHeaderError requestHeaderError) {
+            requestHeaderError.printStackTrace();
+            throw new RuntimeException(requestHeaderError);
+        }
 
     }
+
     //根据detail的id，查询LIST,查询历史评审意见
-    @RequestMapping(value = "/selectH/{cscId}",method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public List<ScholarshipXResultObject> getScholarshipXsById(@PathVariable(value = "cscId") String cscId,@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
+    @RequestMapping(value = "/selectH/{cscId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public List<ScholarshipXResultObject> getScholarshipXsById(@PathVariable(value = "cscId") String cscId, @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
         List<ScholarshipXResultObject> scholarshipXResultObjectList = null;
         try {
             scholarshipXResultObjectList = scholarshipXService.getScholarshipXListcscId(cscId);
@@ -100,6 +114,7 @@ public class ScholarshipXController {
         }
         return scholarshipXResultObjectList;
     }
+
     //修改奖学金评审管理信息
     @RequestMapping(value = "/save/{school}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public List<ScholarshipXResultObject> modScholarshipXdetail(@PathVariable(value = "school") String school,
@@ -117,20 +132,21 @@ public class ScholarshipXController {
                 return null;
             } else {
                 for (int i = 0; i < ScholarshipDetails.size(); i++) {
-                    scholarshipDetail = ScholarshipDetails.get(i);
-                    String id = scholarshipXService.saveScholarshipDetail(scholarshipDetail, null);
+                    scholarshipDetail = ScholarshipDetails.get(i);//前台获取的
+                    //更新记录，保存日志
+                    String id = scholarshipXService.saveScholarshipDetail(scholarshipDetail, user);
                 }
                 //子表全部保存完成后，对主表的合格，不合格人数进行重新统计并更新主表
                 Iterable scholarshipXlist = scholarshipXService.findScholarshipXAll();
                 int qualNum = 0;//合格人数
                 int unqualNum = 0;//不合格人数
                 Timestamp ts = new Timestamp(System.currentTimeMillis());
-                int year=ts.getYear()+1900;
-                if(user.getUserType().equals("2")){//学校用户
-                    school=user.getNode().getNodeId();
+                int year = ts.getYear() + 1900;
+                if (user.getUserType().equals("2")) {//学校用户
+                    school = user.getNode().getNodeId();
                     for (Iterator iter = scholarshipXlist.iterator(); iter.hasNext(); ) {
                         ScholarshipX strX = (ScholarshipX) iter.next();
-                        if(strX.getYear()==year && strX.getSchool().equals(school)){
+                        if (strX.getYear() == year && strX.getSchool().equals(school)) {
                             if (strX.getSchReview().equals("AQ0001")) {
                                 qualNum++;
                             } else {
@@ -138,10 +154,10 @@ public class ScholarshipXController {
                             }
                         }
                     }
-                }else{
+                } else {
                     for (Iterator iter = scholarshipXlist.iterator(); iter.hasNext(); ) {
                         ScholarshipX strX = (ScholarshipX) iter.next();
-                        if(strX.getYear()==year && strX.getSchool().equals(school)){
+                        if (strX.getYear() == year && strX.getSchool().equals(school)) {
                             if (strX.getCscReview().equals("AQ0001")) {
                                 qualNum++;
                             } else {
@@ -153,11 +169,11 @@ public class ScholarshipXController {
 
 
                 Scholarship scholarship = scholarshipXService.findScholarshipOne(ScholarshipDetails.get(0).getScholarship().getId());
-                if(user.getUserType().equals("2")){//学校用户
+                if (user.getUserType().equals("2")) {//学校用户
                     scholarship.setSchoolQual((long) qualNum);
                     scholarship.setSchoolUnQual((long) unqualNum);
 
-                }else{//基金委用户进入进行修改时，更新csc的人数
+                } else {//基金委用户进入进行修改时，更新csc的人数
                     scholarship.setCscQual((long) qualNum);
                     scholarship.setCscUnQual((long) unqualNum);
 
@@ -181,58 +197,60 @@ public class ScholarshipXController {
     }
 
 
-
     //新增一个学生，到奖学金评审记录当中，对奖学金详细子表进行新增保存
-    @RequestMapping(value = "/{studentId}",  method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
-    public  ScholarshipXResultObject saveScholarshipX(@PathVariable(value = "studentId") String studentId,
-                                             @RequestBody String scholarshipJson,@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) {
+    @RequestMapping(value = "/{studentId}", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
+    public ScholarshipXResultObject saveScholarshipX(@PathVariable(value = "studentId") String studentId,
+                                                     @RequestBody String scholarshipJson, @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) {
         try {
             ObjectMapper mapper = new ObjectMapper();
 
             JsonBody jbosy = new ObjectMapper().readValue(scholarshipJson, JsonBody.class);
             ScholarshipDetail scholarshipDetail = mapper.readValue(jbosy.getValue(), ScholarshipDetail.class);
             User user = userService.getUserByJWT(header);
-             if (scholarshipDetail == null) {
+            if (scholarshipDetail == null) {
                 return null;
             } else {
-                 scholarshipDetail.setSchReview("AQ0001");//合格
-                 //查询该学生历史的schReview
-                 ScholarshipXResultObject scholarshipXLS =scholarshipXService.getScholarshipXAndStuBy(scholarshipDetail.getStudentId());
-                 if(scholarshipXLS!=null && scholarshipXLS.getSchReview().equals("AQ0002")){//上次结果存在且上次结果为不合格
-                     scholarshipDetail.setSchResult("AP0002");//恢复
-                 }else{//上次为空，或者上次为合格
-                     scholarshipDetail.setSchResult("AP0001");//继续
-                 }
-                 String id = scholarshipXService.savenewScholarshipDetail(scholarshipDetail, null);//插入新增记录
+                scholarshipDetail.setSchReview("AQ0001");//合格
+                //查询该学生历史的schReview
+                ScholarshipXResultObject scholarshipXLS = scholarshipXService.getScholarshipXAndStuBy(scholarshipDetail.getStudent().getId());
+                if (scholarshipXLS != null && scholarshipXLS.getSchReview().equals("AQ0002")) {//上次结果存在且上次结果为不合格
+                    scholarshipDetail.setSchResult("AP0002");//恢复
+                } else {//上次为空，或者上次为合格
+                    scholarshipDetail.setSchResult("AP0001");//继续
+                }
+                Student student = studentService.getStudentById(studentId);
+                scholarshipDetail.setStudent(student);
 
-                 //子表全部保存完成后，对主表的合格，不合格人数进行重新统计并更新主表
-                 Iterable scholarshipXlist = scholarshipXService.findScholarshipXAll();
-                 int qualNum = 0;//合格人数
-                 int unqualNum = 0;//不合格人数
-                 Timestamp ts = new Timestamp(System.currentTimeMillis());
-                 int year=ts.getYear()+1900;
-                 String school=user.getNode().getNodeId();
+                String id = scholarshipXService.savenewScholarshipDetail(scholarshipDetail, user);//插入新增记录
 
-                 for (Iterator iter = scholarshipXlist.iterator(); iter.hasNext(); ) {
-                     ScholarshipX strX = (ScholarshipX) iter.next();
-                     if(strX.getYear()==year && strX.getSchool().equals(school)){
-                         if (strX.getSchReview().equals("AQ0001")) {
-                             qualNum++;
-                         } else {
-                             unqualNum++;
-                         }
-                     }
-                 }
-                 Scholarship scholarship = scholarshipXService.findScholarshipOne(scholarshipDetail.getScholarship().getId());
-                 scholarship.setSchoolQual((long) qualNum);
-                 scholarship.setSchoolUnQual((long) unqualNum);
-                 scholarship.setUpdated(ts);//同时对主表的更新人和更新时间，进行更新
-                 scholarship.setUpdateBy(user.getUserId());
-                 scholarshipXService.saveScholarship(scholarship, null);
-                 ScholarshipXResultObject scholarshipXResult = scholarshipXService.getScholarshipXAndStu(scholarshipDetail.getId());
+                //子表全部保存完成后，对主表的合格，不合格人数进行重新统计并更新主表
+                Iterable scholarshipXlist = scholarshipXService.findScholarshipXAll();
+                int qualNum = 0;//合格人数
+                int unqualNum = 0;//不合格人数
+                Timestamp ts = new Timestamp(System.currentTimeMillis());
+                int year = ts.getYear() + 1900;
+                String school = user.getNode().getNodeId();
 
-                 return scholarshipXResult;
-             }
+                for (Iterator iter = scholarshipXlist.iterator(); iter.hasNext(); ) {
+                    ScholarshipX strX = (ScholarshipX) iter.next();
+                    if (strX.getYear() == year && strX.getSchool().equals(school)) {
+                        if (strX.getSchReview().equals("AQ0001")) {
+                            qualNum++;
+                        } else {
+                            unqualNum++;
+                        }
+                    }
+                }
+                Scholarship scholarship = scholarshipXService.findScholarshipOne(scholarshipDetail.getScholarship().getId());
+                scholarship.setSchoolQual((long) qualNum);
+                scholarship.setSchoolUnQual((long) unqualNum);
+                scholarship.setUpdated(ts);//同时对主表的更新人和更新时间，进行更新
+                scholarship.setUpdateBy(user.getUserId());
+                scholarshipXService.saveScholarship(scholarship, null);
+                ScholarshipXResultObject scholarshipXResult = scholarshipXService.getScholarshipXAndStu(scholarshipDetail.getId());
+
+                return scholarshipXResult;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -242,38 +260,34 @@ public class ScholarshipXController {
 
     //删除
     @RequestMapping(value = "/{id}/{log}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
-    public List<ScholarshipXResultObject> deleteScholarshipDetail(@PathVariable("id") String id, @PathVariable("log") String log,@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) {
+    public List<ScholarshipXResultObject> deleteScholarshipDetail(@PathVariable("id") String id, @PathVariable("log") String log, @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) {
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
-//                    JsonBody jbosy = new ObjectMapper().readValue(log, JsonBody.class);
-            List<OperationLog> operationLogs = mapper.readValue(log, javaType);
             User user = userService.getUserByJWT(header);
             String[] id1;
             id1 = id.split(",");
             //获取主表id
             ScholarshipDetail ssD = scholarshipXService.getScholarshipDetailById(id1[1]);
-            String scholarshipId =ssD.getScholarship().getId();
+            String scholarshipId = ssD.getScholarship().getId();
 
             List<ScholarshipXResultObject> scholarshipXResultObjectList = new ArrayList<ScholarshipXResultObject>();
             for (int i = 1; i < id1.length; i++) {
-                ScholarshipDetail scholarshipDetail = scholarshipXService.deleteScholarshipDetailById(id1[i], operationLogs);
+                ScholarshipDetail scholarshipDetail = scholarshipXService.deleteScholarshipDetailById(user, id1[i]);//保存日志
                 if (scholarshipDetail == null) {
                     throw new NoSuchAbnormalException("cannot delete the scholarshipX,id=" + id1[i]);
                 }
             }
-             //子表全部保存完成后，对主表的合格，不合格人数进行重新统计并更新主表
+            //子表全部保存完成后，对主表的合格，不合格人数进行重新统计并更新主表
             Iterable scholarshipXlist = scholarshipXService.findScholarshipXAll();
             int qualNum = 0;//合格人数
             int unqualNum = 0;//不合格人数
             Timestamp ts = new Timestamp(System.currentTimeMillis());
-            int year=ts.getYear()+1900;
-            String school=user.getNode().getNodeId();
+            int year = ts.getYear() + 1900;
+            String school = user.getNode().getNodeId();
 
             for (Iterator iter = scholarshipXlist.iterator(); iter.hasNext(); ) {
                 ScholarshipX strX = (ScholarshipX) iter.next();
 
-                if(strX.getYear()==year && strX.getSchool().equals(school)){
+                if (strX.getYear() == year && strX.getSchool().equals(school)) {
                     if (strX.getSchReview().equals("AQ0001")) {
                         qualNum++;
                     } else {
@@ -290,7 +304,7 @@ public class ScholarshipXController {
             Iterable scholarshipXlist1 = scholarshipXService.findScholarshipXAll();
             for (Iterator iter = scholarshipXlist1.iterator(); iter.hasNext(); ) {
                 ScholarshipX strX = (ScholarshipX) iter.next();
-                if(strX.getYear()==year && strX.getSchool().equals(school)) {
+                if (strX.getYear() == year && strX.getSchool().equals(school)) {
                     ScholarshipXResultObject scholarshipXResult = scholarshipXService.getScholarshipXAndStu(strX.getId());
                     scholarshipXResultObjectList.add(scholarshipXResult);
                 }
@@ -319,7 +333,7 @@ public class ScholarshipXController {
             } else {
                 for (int i = 0; i < ScholarshipDetails.size(); i++) {
                     scholarshipDetail = ScholarshipDetails.get(i);
-                    String id = scholarshipXService.saveScholarshipDetail(scholarshipDetail, null);
+                    String id = scholarshipXService.saveScholarshipDetail(scholarshipDetail, user);//保存记录日志
                 }
                 //子表全部保存完成后，对主表的合格，不合格人数进行重新统计并更新主表
                 Iterable scholarshipXlist = scholarshipXService.findScholarshipXAll();
@@ -352,7 +366,7 @@ public class ScholarshipXController {
                 scholarship.setSchoolSta("1");//已提交
                 scholarship.setSchoolDate(ts);//评审提交时间
                 scholarship.setCscSta("0");//设置默认的基金委提交状态为“未提交”
-                scholarshipXService.saveScholarship(scholarship, null);
+                scholarshipXService.saveScholarship(scholarship, user, "1");//记录提交日志
                 for (int i = 0; i < ScholarshipDetails.size(); i++) {
                     scholarshipDetail = ScholarshipDetails.get(i);
                     ScholarshipXResultObject scholarshipXResult = scholarshipXService.getScholarshipXAndStu(scholarshipDetail.getId());
@@ -373,7 +387,7 @@ public class ScholarshipXController {
      * GET /scholarshipX?ids=1,2,3 HTTP/1.1
      * Accept: application/octet-stream
      *
-     * @param id     需要导出的保险信息ID
+     * @param id 需要导出的保险信息ID
      */
     @RequestMapping(
             method = RequestMethod.GET,
@@ -384,7 +398,7 @@ public class ScholarshipXController {
         byte[] bytes = null;
 
         String tableName = "v_scholarship_lastyear";
-        bytes = exportService.exportByfilter(tableName, id);
+        bytes = exportService.exportByfilter(tableName, "0", id);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
 
@@ -396,34 +410,58 @@ public class ScholarshipXController {
     }
 
 
-//基金委跳转进来的相关操作
+    //基金委跳转进来的相关操作
 //基金委用户在前台点击查询，返回列表
-@RequestMapping(value = "/select/{school}",method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-public List<ScholarshipXResultObject> getScholarshipXsByConditionsJ(@PathVariable("school") String school, @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
-                                                                   @RequestParam(value = "filter") String filter) throws NoSuchUserException {
-    try {
-        StudentFilterObject sfo = null;
-        sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);
+    @RequestMapping(value = "/select/{school}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public List<ScholarshipXResultObject> getScholarshipXsByConditionsJ(@PathVariable("school") String school, @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
+                                                                        @RequestParam(value = "filter") String filter) throws NoSuchUserException {
+        try {
+            StudentFilterObject sfo = null;
+            sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);
 
-        User user = userService.getUserByJWT(header);
-        String userid = user.getUserId();
-        //按照分页（默认）要求，返回列表内容
-        List<ScholarshipXResultObject> scholarshipXResultObjects = scholarshipXService.getScholarshipXListByFilterJ(sfo, user,school);
-        return scholarshipXResultObjects;
-    } catch (UnsupportedEncodingException uee) {
-        uee.printStackTrace();
-        throw new RuntimeException(uee);
-    } catch (IOException e) {
-        e.printStackTrace();
-        throw new RuntimeException(e);
-    } catch (UserIdentityError userIdentityError) {
-        userIdentityError.printStackTrace();
-        throw new RuntimeException(userIdentityError);
-    } catch (RequestHeaderError requestHeaderError) {
-        requestHeaderError.printStackTrace();
-        throw new RuntimeException(requestHeaderError);
+            User user = userService.getUserByJWT(header);
+            String userid = user.getUserId();
+            //按照分页（默认）要求，返回列表内容
+            List<ScholarshipXResultObject> scholarshipXResultObjects = scholarshipXService.getScholarshipXListByFilterJ(sfo, user, school);
+            return scholarshipXResultObjects;
+        } catch (UnsupportedEncodingException uee) {
+            uee.printStackTrace();
+            throw new RuntimeException(uee);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (UserIdentityError userIdentityError) {
+            userIdentityError.printStackTrace();
+            throw new RuntimeException(userIdentityError);
+        } catch (RequestHeaderError requestHeaderError) {
+            requestHeaderError.printStackTrace();
+            throw new RuntimeException(requestHeaderError);
+        }
+
     }
 
-}
+    //分页查询
+    @RequestMapping(
+            method = RequestMethod.GET,
+            headers = {"Accept=application/json"},
+            params = {"mode", "field", "page", "size", "filter"})
+    public ResponseEntity<Page<Map<String, Object>>> getScholarshipXs(
+            @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
+            @RequestParam(value = "mode") String mode,
+            @RequestParam(value = "field") String[] fields,
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size,
+            @RequestParam(value = "filter") String filterJSON) throws IOException {
+        try {
+            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            User user = userService.getUserByJWT(header);
+            Page<ScholarshipX> scholarshipXPage = scholarshipXService.getScholarshipXsPagingByFilter(filter, page, size, mode, user);
+            Page<Map<String, Object>> mapPage = scholarshipXPage.map(new ScholarshipXConverter());
+            return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 
 }

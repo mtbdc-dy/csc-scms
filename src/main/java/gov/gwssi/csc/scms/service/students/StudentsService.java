@@ -48,7 +48,7 @@ public class StudentsService extends StudentSpecs {
             return studentRepository.findAll(where(specA).and(isFreshRegister()), new PageRequest(page, size));
         }else if("oldregister".equals(mode)){
             return studentRepository.findAll(where(specA).and(isOldRegister()), new PageRequest(page, size));
-        }else if(mode.equals("schoolstudent")){
+        }else if("schoolstudent".equals(mode)){
             return studentRepository.findAll(where(specA).and(isSchoolStudent()), new PageRequest(page, size));
         }else if("leavestudent".equals(mode) || "alumnus".equals(mode)){
             return studentRepository.findAll(where(specA).and(isLeaveStudent()), new PageRequest(page, size));

@@ -1,14 +1,20 @@
 package gov.gwssi.csc.scms.controller.scholarshipJ;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.scholarship.Scholarship;
 import gov.gwssi.csc.scms.domain.scholarship.ScholarshipDetail;
+import gov.gwssi.csc.scms.domain.scholarship.ScholarshipJ;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.export.ExportService;
+import gov.gwssi.csc.scms.service.scholarship.ScholarshipJConverter;
 import gov.gwssi.csc.scms.service.scholarship.ScholarshipJService;
+import gov.gwssi.csc.scms.service.scholarship.ScholarshipXConverter;
 import gov.gwssi.csc.scms.service.scholarship.ScholarshipXService;
 import gov.gwssi.csc.scms.service.user.UserService;
 import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,11 +22,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by gc on 2015/8/18.
@@ -76,7 +80,7 @@ public class ScholarshipJController {
                 scholarship.setSchoolSta("2");//已批复
                 scholarship.setSchoolQual(scholarship.getCscQual());//人数
                 scholarship.setSchoolUnQual(scholarship.getCscUnQual());
-                scholarshipXService.saveScholarship(scholarship, null);//对主表进行更新
+                scholarshipXService.saveScholarship(scholarship, user,"2");//对主表进行更新,并保存批复日志
                 //对子表进行更新，批复后，把csc的相关值，都赋值给school的相关字段
                 List detailList = scholarshipJService.findDetailListBy(id[i]);//找到主表对应的所有子表
                 for ( int j=0;j<detailList.size();j++) {
@@ -87,7 +91,7 @@ public class ScholarshipJController {
                     scholarshipDetail.setSchReason((String) strD.get("CSCREASON"));
                     scholarshipDetail.setSchResult((String) strD.get("CSCRESULT"));
                     scholarshipDetail.setSchReview((String) strD.get("CSCREVIEW"));
-                    scholarshipXService.saveScholarshipDetail(scholarshipDetail,null);
+                    scholarshipXService.saveScholarshipDetail(scholarshipDetail,user);
                 }
             }
 
@@ -134,7 +138,7 @@ public class ScholarshipJController {
            id1=ids.split(",");//转化后的id数组
         }
         String tableName = "v_scholarship_lastyear";//对主表对应的所有信息以学生为单位导出
-        bytes = exportService.exportByfilter(tableName, id1);
+        bytes = exportService.exportByfilter(tableName,"1", id1);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
 
@@ -145,6 +149,28 @@ public class ScholarshipJController {
         return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
     }
 
+    //分页查询
+    @RequestMapping(
+            method = RequestMethod.GET,
+            headers = {"Accept=application/json"},
+            params = {"mode", "page", "size", "filter"})
+    public ResponseEntity<Page<Map<String, Object>>> getScholarshipJs(
+            @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
+            @RequestParam(value = "mode") String mode,
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size,
+            @RequestParam(value = "filter") String filterJSON) throws IOException {
+        try {
+            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            User user = userService.getUserByJWT(header);
+            Page<ScholarshipJ> scholarshipJPage = scholarshipJService.getScholarshipJsPagingByFilter(filter, page, size, mode, user);
+            Page<Map<String, Object>> mapPage = scholarshipJPage.map(new ScholarshipJConverter());
+            return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 
 
 

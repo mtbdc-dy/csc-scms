@@ -1,5 +1,7 @@
 package gov.gwssi.csc.scms.domain.scholarship;
 
+import gov.gwssi.csc.scms.domain.student.Student;
+
 import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
@@ -33,6 +35,8 @@ public abstract class ScholarshipX_ {
     public static volatile SingularAttribute<ScholarshipX, Long> schoolUnQual;
     public static volatile SingularAttribute<ScholarshipX, Date> updated;
     public static volatile SingularAttribute<ScholarshipX, String> updateby;
+    public static volatile SingularAttribute<ScholarshipX, String> passportName;
+    public static volatile SingularAttribute<ScholarshipX, Student> student;
 
 }
 
