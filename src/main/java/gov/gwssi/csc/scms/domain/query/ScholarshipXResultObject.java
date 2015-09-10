@@ -166,7 +166,7 @@ public class ScholarshipXResultObject extends ResultObject{
     public static String getResultObject() {
 
         String resultSql = "select new gov.gwssi.csc.scms.domain.query.ScholarshipXResultObject(" +
-                "ScholarshipX.id,ScholarshipX.studentId,ScholarshipX.scholarshipId, student.cscId, basicInfo.passportName,basicInfo.gender," +
+                "ScholarshipX.id,student.id,ScholarshipX.scholarshipId, student.cscId, basicInfo.passportName,basicInfo.gender," +
                 "basicInfo.birthday,ScholarshipX.schReview,ScholarshipX.schResult,ScholarshipX.cscReview,ScholarshipX.cscResult," +
                 "ScholarshipX.year,ScholarshipX.schoolQual,ScholarshipX.schoolUnQual,ScholarshipX.cscQual,ScholarshipX.cscUnQual," +
                 "ScholarshipX.updated,ScholarshipX.updateby," +

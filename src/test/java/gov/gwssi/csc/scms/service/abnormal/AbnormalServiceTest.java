@@ -4,12 +4,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.base.UnitTestBase;
 
 import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
+import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.*;
 import gov.gwssi.csc.scms.domain.student.Student;
+import gov.gwssi.csc.scms.domain.ticket.Ticket;
+import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.student.StudentService;
+import gov.gwssi.csc.scms.service.user.UserService;
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.data.domain.Page;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -130,4 +135,16 @@ public class AbnormalServiceTest  extends UnitTestBase {
 
          return list;
      }
+
+     @Test
+     public void abnormalPagingTest(){
+         AbnormalService ticketService = getBean(AbnormalService.class);
+         UserService userService = getBean(UserService.class);
+         User user = userService.getUserByUserId("q0922");
+         Filter filter = new Filter();
+         filter.setAbnormalState("AS0005");
+         Page<Abnormal> abnormalPage = ticketService.getAbnormalsPagingByFilter(filter, 0, 10, "abnormal", user);
+         System.out.println(abnormalPage);
+     }
+
 }

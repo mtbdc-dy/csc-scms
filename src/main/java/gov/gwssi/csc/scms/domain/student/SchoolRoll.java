@@ -53,6 +53,10 @@ public class SchoolRoll {
      */
     private String currentUniversity;
     /**
+     * 当前省市
+     */
+    private String currentProvince;
+    /**
      * 预计毕业日期
      */
     private Date planLeaveDate;
@@ -464,5 +468,13 @@ public class SchoolRoll {
 
     public void setStudent(Student student) {
         this.student = student;
+    }
+
+    public String getCurrentProvince() {
+        return currentProvince;
+    }
+
+    public void setCurrentProvince(String currentProvince) {
+        this.currentProvince = currentProvince;
     }
 }

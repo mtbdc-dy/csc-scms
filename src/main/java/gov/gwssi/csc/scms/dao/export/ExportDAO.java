@@ -90,6 +90,7 @@ public class ExportDAO extends BaseDAO {
         stringBuilder.append(" where SCMS_INI_EXPORT.subtable= '").append(subtable).append("' ");
         stringBuilder.append("  and (MERGELINE is not null or MERGECOLUMN is not null)   ");
         stringBuilder.append(" and SCMS_INI_EXPORT.tablename = '").append(tableName).append("' ");//根据表名找到配置
+        stringBuilder.append("  order by title, to_number(seq) ");
         seachList = super.queryListBySql(stringBuilder.toString());
         return seachList;
     }

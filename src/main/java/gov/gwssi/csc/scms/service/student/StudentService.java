@@ -264,7 +264,7 @@ public class StudentService extends BaseService {
     }
     @Transactional
     public void updateRegistState( OperationLog operationLog) throws Exception {
-        if(operationLog.getAfter().equals("AX0002")){    //若将"是否报到"从否(AX0001)改为是(AX0002)，则还要将报到状态从未处理(AW0002)改为报到(AW0001)
+        if(operationLog.getAfter().equals("AX0002")){    //若将"是否报到"从否(AX0001)改为是(AX0002)，则还要将报到状态从未处理(AW0002)改为新生报到(AW0001)
             SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(operationLog.getStudentId());
             schoolRoll.setRegisterState("AW0001");
             Calendar calendar = Calendar.getInstance();
@@ -272,7 +272,7 @@ public class StudentService extends BaseService {
             schoolRoll.setRegisterYear(currentYear);
             schoolRollService.updateSchoolRoll(schoolRoll);
         }
-        if(operationLog.getAfter().equals("AX0001")){  //若将"是否报到"从是(AX0002)改为否(AX0001)，则还要将报到状态从报到(AW0001)改为未处理(AW0002)
+        if(operationLog.getAfter().equals("AX0001")){  //若将"是否报到"从是(AX0002)改为否(AX0001)，则还要将报到状态从新生报到(AW0001)改为未处理(AW0002)
             SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(operationLog.getStudentId());
             schoolRoll.setRegisterState("AW0002");
             schoolRollService.updateSchoolRoll(schoolRoll);
@@ -454,7 +454,7 @@ public class StudentService extends BaseService {
         String sql = null;
         if("register".equals(mode)){
             sql = " update SCMS_SCHOOLROLL set registed = 'AX0002'," +
-                    " registerState = 'AW0001', registerYear = extract(year from sysdate)"+
+                    " registerState = 'AW0004', registerYear = extract(year from sysdate)"+
                     " where studentid = '"+studentId +"'";
         }
         if("abandon".equals(mode)){

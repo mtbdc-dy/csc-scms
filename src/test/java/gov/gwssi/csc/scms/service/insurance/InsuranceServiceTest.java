@@ -4,12 +4,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.base.UnitTestBase;
 import gov.gwssi.csc.scms.dao.insurance.InsuranceDAO;
 import gov.gwssi.csc.scms.dao.ticket.TicketDAO;
+import gov.gwssi.csc.scms.domain.filter.Filter;
+import gov.gwssi.csc.scms.domain.insurance.Insurance;
 import gov.gwssi.csc.scms.domain.query.InsuranceResultObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
+import gov.gwssi.csc.scms.domain.user.User;
+import gov.gwssi.csc.scms.service.user.UserService;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.data.domain.Page;
 
 import java.io.IOException;
 import java.util.List;
@@ -80,5 +85,16 @@ public class InsuranceServiceTest extends UnitTestBase {
         List<InsuranceResultObject> insuranceResultObjectList = insuranceService.getInsuranceList(null);
         Assert.assertNotNull(insuranceResultObjectList);
         System.out.println("list size::" + insuranceResultObjectList.size());
+    }
+
+    @Test
+    public void insurancePagingTest(){
+        InsuranceService insuranceService = super.getBean("insuranceService");
+        UserService userService = getBean(UserService.class);
+        User user = userService.getUserByUserId("q0922");
+        Filter filter = new Filter();
+//        filter.setInsuranceState("AV0001");
+        Page<Insurance> insurancePage = insuranceService.getInsurancesPagingByFilter(filter, 0, 10, "insurance", user);
+        System.out.println(insurancePage);
     }
 }
