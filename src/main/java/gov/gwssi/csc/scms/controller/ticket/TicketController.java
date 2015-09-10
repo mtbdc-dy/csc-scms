@@ -143,8 +143,11 @@ public class TicketController {
                     ticket.setUpdated(ts);
                     Ticket oldTicket = ticketService.getTicketById(ticket.getId());
                     Student student = oldTicket.getStudent();
-                    ticket.setStudent(student);
+                    Student student1 = new Student();
+                    student1.setId(student.getId());
+                    ticket.setStudent(student1);
                     Ticket hqTicket = ticketService.saveTicket(ticket, null);
+                    hqTicket.setStudent(student1);
                     newTickets.add(hqTicket);
                 }
 
@@ -183,8 +186,11 @@ public class TicketController {
                     ticket.setState("AT0002");//订票状态待修改成对应的代码值
                     Ticket oldTicket = ticketService.getTicketById(ticket.getId());
                     Student student = oldTicket.getStudent();
-                    ticket.setStudent(student);
+                    Student student2 = new Student();
+                    student2.setId(student.getId());
+                    ticket.setStudent(student2);
                     Ticket hqTicket = ticketService.saveTicket(ticket, null);
+                    hqTicket.setStudent(student2);
                     newTickets.add(hqTicket);
                 }
 
