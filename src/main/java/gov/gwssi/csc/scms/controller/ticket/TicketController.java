@@ -149,22 +149,12 @@ public class TicketController extends BaseService {
                     Ticket oldTicket = ticketService.getTicketById(ticket.getId());
                     Student student = oldTicket.getStudent();
 
-                    setNullByField(student.getBasicInfo(), "student", BasicInfo.class);
-                    setNullByField(student.getSchoolfellow(), "student", Schoolfellow.class);
-                    setNullByField(student.getDiscuss(), "student", Discuss.class);
-                    setNullByField(student.getProfilesHistory(), "student", ProfilesHistory.class);
-                    setNullByField(student.getRegistrationInfo(), "student", RegistrationInfo.class);
-                    setNullByField(student.getSchoolRoll(), "student", SchoolRoll.class);
-                    setNullByField(student.getWarning(), "student", Warning.class);
-                    setNullByField(student.getAccidents(), "student", Accident.class);
-                    setNullByField(student.getRelatedAddress(), "student", RelatedAddress.class);
-                    setNullByField(student.getGrades(), "student", Grade.class);
-                    setNullByField(student.getGradeAttachment(), "student", GradeAttachment.class);
-                    setNullByField(student.getAbnormals(), "student", Abnormal.class);
-                    setNullByField(student.getTickets(), "student", Ticket.class);
+                    Student student1 = new Student();
+                    student1.setId(student.getId());
+                    ticket.setStudent(student1);
 
-                    ticket.setStudent(student);
                     Ticket hqTicket = ticketService.saveTicket(ticket, null);
+                    hqTicket.setStudent(student1);
                     newTickets.add(hqTicket);
                 }
 
@@ -203,8 +193,11 @@ public class TicketController extends BaseService {
                     ticket.setState("AT0002");//订票状态待修改成对应的代码值
                     Ticket oldTicket = ticketService.getTicketById(ticket.getId());
                     Student student = oldTicket.getStudent();
-                    ticket.setStudent(student);
+                    Student student2 = new Student();
+                    student2.setId(student.getId());
+                    ticket.setStudent(student2);
                     Ticket hqTicket = ticketService.saveTicket(ticket, null);
+                    hqTicket.setStudent(student2);
                     newTickets.add(hqTicket);
                 }
 
