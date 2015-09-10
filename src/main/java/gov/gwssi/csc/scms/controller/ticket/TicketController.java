@@ -5,13 +5,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.controller.JsonBody;
 import gov.gwssi.csc.scms.controller.RequestHeaderError;
 import gov.gwssi.csc.scms.dao.ticket.TicketDAO;
+
+import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
+
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.TicketResultObject;
-import gov.gwssi.csc.scms.domain.student.Student;
+import gov.gwssi.csc.scms.domain.student.*;
 import gov.gwssi.csc.scms.domain.ticket.Ticket;
 import gov.gwssi.csc.scms.domain.user.User;
+import gov.gwssi.csc.scms.domain.warning.Warning;
+import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.service.export.ExportService;
 import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.ticket.NoSuchTicketException;
@@ -49,7 +54,7 @@ import java.util.*;
  */
 @RestController
 @RequestMapping(value = "/ticket")
-public class TicketController {
+public class TicketController extends BaseService {
     @Autowired
     private UserService userService;
     @Autowired
@@ -143,9 +148,11 @@ public class TicketController {
                     ticket.setUpdated(ts);
                     Ticket oldTicket = ticketService.getTicketById(ticket.getId());
                     Student student = oldTicket.getStudent();
+
                     Student student1 = new Student();
                     student1.setId(student.getId());
                     ticket.setStudent(student1);
+
                     Ticket hqTicket = ticketService.saveTicket(ticket, null);
                     hqTicket.setStudent(student1);
                     newTickets.add(hqTicket);

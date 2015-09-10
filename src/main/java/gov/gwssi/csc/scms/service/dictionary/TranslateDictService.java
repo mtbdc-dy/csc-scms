@@ -200,6 +200,7 @@ public class TranslateDictService {
         }
         return jsonList;
     }
+
     private List<DictTreeJson> getBelongings() throws NoSuchDictTreeException {
         List<DictTreeJson> jsonList = codeTableDAO.getCodeTableByLevel(CodeTableDAO.DEPT, CodeTableDAO.DEPT_LEVEL_TWO);
         if (jsonList == null) {
@@ -207,17 +208,5 @@ public class TranslateDictService {
         }
         return jsonList;
     }
-//    private list<DictTreeJson> getProjectsWithTypeAndName
-
-
-//    // 根据region层次获取相应的大洲以及国别信息
-//    public List<DictTreeJson> getRegionDictTreeByLevel(String level) throws  NoSuchDictTreeException{
-//        List<DictTreeJson> regionDictTree = null;
-//        regionDictTree = regionDictDAO.getRegionDictTreeByLevel(level);
-//        if(regionDictTree == null){
-//            throw new NoSuchDictTreeException("can not find the region with level " +level);
-//        }
-//        return  regionDictTree;
-//    }
 
 }
