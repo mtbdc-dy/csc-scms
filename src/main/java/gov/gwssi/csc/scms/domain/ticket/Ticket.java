@@ -16,7 +16,7 @@ public class Ticket {
     @Id
     private String id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "studentid"/*,nullable = false*/)
     private Student student;
 //    /**

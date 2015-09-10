@@ -1,6 +1,8 @@
 package gov.gwssi.csc.scms.service.students;
 
+import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
 import gov.gwssi.csc.scms.domain.student.*;
+import gov.gwssi.csc.scms.domain.ticket.Ticket;
 import gov.gwssi.csc.scms.domain.warning.Warning;
 import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.core.convert.converter.Converter;
@@ -49,9 +51,11 @@ public class StudentConverter extends BaseService implements Converter<Student, 
         setNullByField(source.getRelatedAddress(), "student", RelatedAddress.class);
         setNullByField(source.getGrades(), "student", Grade.class);
         setNullByField(source.getGradeAttachment(), "student", GradeAttachment.class);
+        setNullByField(source.getAbnormals(),"student", Abnormal.class);
+        setNullByField(source.getTickets(),"student", Ticket.class);
 
-        source.setAbnormals(null);
-        source.setTickets(null);
+//        source.setAbnormals(null);
+//        source.setTickets(null);
 
         if (this.fields != null) {
 

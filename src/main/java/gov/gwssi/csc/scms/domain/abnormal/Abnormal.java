@@ -18,13 +18,18 @@ public class Abnormal {
     private String id;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "studentid"/*,nullable = false*/,insertable = false, updatable = false)
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name = "studentid"/*,nullable = false*/,insertable = false, updatable = false)
+//    private Student student;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "studentid"/*,nullable = false*/)
     private Student student;
+
     /**
      * STUDENTID
      */
-    private String studentId;
+//    private String studentId;
     /**
      *异动原因代码
      */
@@ -155,13 +160,13 @@ public class Abnormal {
         this.id = id;
     }
 
-    public String getStudentId() {
-        return studentId;
-    }
-
-    public void setStudentId(String studentId) {
-        this.studentId = studentId;
-    }
+//    public String getStudentId() {
+//        return studentId;
+//    }
+//
+//    public void setStudentId(String studentId) {
+//        this.student.setId(studentId);
+//    }
 
     public String getReasonId() {
         return reasonId;

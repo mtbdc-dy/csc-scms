@@ -2,10 +2,7 @@ package gov.gwssi.csc.scms.controller.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.controller.JsonBody;
-import gov.gwssi.csc.scms.domain.user.Menu;
-import gov.gwssi.csc.scms.domain.user.Node;
-import gov.gwssi.csc.scms.domain.user.Role;
-import gov.gwssi.csc.scms.domain.user.User;
+import gov.gwssi.csc.scms.domain.user.*;
 import gov.gwssi.csc.scms.service.user.*;
 import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;

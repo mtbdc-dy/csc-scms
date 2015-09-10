@@ -9,11 +9,13 @@ import gov.gwssi.csc.scms.domain.insurance.Insurance;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.InsuranceResultObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
+import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.abnormal.NoSuchAbnormalException;
 import gov.gwssi.csc.scms.service.export.ExportService;
 import gov.gwssi.csc.scms.service.insurance.InsuranceService;
 import gov.gwssi.csc.scms.service.insurancej.InsurancejService;
+import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.user.NoSuchUserException;
 import gov.gwssi.csc.scms.service.user.UserIdentityError;
 import gov.gwssi.csc.scms.service.user.UserService;
@@ -53,7 +55,8 @@ public class InsurancejController {
     private ExportService exportService;
     @Autowired
     private UserService userService;
-
+    @Autowired
+    private StudentService studentService;
     @Autowired
     private InsurancejService insurancejService;
     @Autowired
@@ -137,7 +140,8 @@ public class InsurancejController {
             if (insurance == null) {
                 throw new NoSuchAbnormalException("cannot generate the Insurance");
             }
-            insurance.setStudentId(studentId);
+            Student student=studentService.getStudentById(studentId);
+            insurance.setStudent(student);
             User user = userService.getUserByJWT(header);
             Timestamp ts = new Timestamp(System.currentTimeMillis());
             insurance.setCreateBy(user.getUserId());

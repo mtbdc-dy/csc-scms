@@ -1,5 +1,7 @@
 package gov.gwssi.csc.scms.domain.scholarship;
 
+import gov.gwssi.csc.scms.domain.student.Student;
+
 import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
@@ -22,6 +24,7 @@ public abstract class ScholarshipDetail_ {
     public static volatile SingularAttribute<ScholarshipDetail, String> studentId;
     public static volatile SingularAttribute<ScholarshipDetail, Date> cscEndTime;
     public static volatile SingularAttribute<ScholarshipDetail, Date> schStartTime;
+    public static volatile SingularAttribute<ScholarshipDetail, Student> student;
 
 }
 

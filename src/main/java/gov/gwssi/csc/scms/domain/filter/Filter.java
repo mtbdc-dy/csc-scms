@@ -22,10 +22,28 @@ public class Filter {
     private Date abnormalDateBegin = null;   // 异动申请起始日期
     private Date abnormalDateEnd = null;     // 异动申请终止日期
     private String ticketState = null;       // 异动处理状态
-    private String insuranceState = null;    // 保险订购状态 add by gc
+    private String preSta = null;            // 保险订购状态 add by gc
     private String schReview = null;         // 奖学金评审结果 add by gc
     private String schResult = null;         // 奖学金处理结果 add by gc
-
+    private int year = 0;                    //奖学金评审年度
+    private Character state = null;          //奖学金评审状态
+    private String qualified = null;         //奖学金是否有不合格人数
+    private String currentProvince = null;
+    private String currentUniversity = null;
+/**
+ * LZS 自定义的查询条件 非公共条件
+ */
+    private String pro = null;//省市
+    private String univ = null;//学校
+    //导入模块日期 报到进度统计 公用
+    private Date beginTime = null;
+    private Date endTime = null;
+    //日志查询模块
+    private  String businessModule = null;
+    private  String optType = null;
+    //报到进度统计 省和市字段
+    private String province = null;//省市
+    private String university = null;//学校
     /**
      * 隐藏查询条件
      */
@@ -50,8 +68,91 @@ public class Filter {
     private Date planLeaveDateBegin = null;  // 预计离华时间起始时间
     private Date planLeaveDateEnd = null;    // 预计离华时间终止时间
 
+    // 动态查询统计专用条件
+    private String configId = null;        // 配置编号
+    private String title = null;           // 报表标题
+    private String configType = null;      // 配置类型: 1) 动态查询 2) 动态统计
+    private String accessState = null;     // 使用性质: 1) 公用 2) 自用
+    private String publishState = null;    // 发布状态: Y) 已发布 N) 未发布
+    private Date createTimeFrom = null;    // 制表时间起
+    private Date createTimeTo = null;      // 制表时间至
+    private Date publishTimeFrom = null;   // 发布时间起
+    private Date publishTimeTo = null;     // 发布时间止
+
     // add by lzs20150511 添加 mode 字段用来区分新增学生列表时候，返回不同列表
     private String mode = null; // 区分学生列表
+
+    public String getConfigId() {
+        return configId;
+    }
+
+    public void setConfigId(String configId) {
+        this.configId = configId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getConfigType() {
+        return configType;
+    }
+
+    public void setConfigType(String configType) {
+        this.configType = configType;
+    }
+
+    public String getAccessState() {
+        return accessState;
+    }
+
+    public void setAccessState(String accessState) {
+        this.accessState = accessState;
+    }
+
+    public String getPublishState() {
+        return publishState;
+    }
+
+    public void setPublishState(String publishState) {
+        this.publishState = publishState;
+    }
+
+    public Date getCreateTimeFrom() {
+        return createTimeFrom;
+    }
+
+    public void setCreateTimeFrom(Date createTimeFrom) {
+        this.createTimeFrom = createTimeFrom;
+    }
+
+    public Date getCreateTimeTo() {
+        return createTimeTo;
+    }
+
+    public void setCreateTimeTo(Date createTimeTo) {
+        this.createTimeTo = createTimeTo;
+    }
+
+    public Date getPublishTimeFrom() {
+        return publishTimeFrom;
+    }
+
+    public void setPublishTimeFrom(Date publishTimeFrom) {
+        this.publishTimeFrom = publishTimeFrom;
+    }
+
+    public Date getPublishTimeTo() {
+        return publishTimeTo;
+    }
+
+    public void setPublishTimeTo(Date publishTimeTo) {
+        this.publishTimeTo = publishTimeTo;
+    }
 
     public String getCscId() {
         return cscId;
@@ -147,14 +248,6 @@ public class Filter {
 
     public void setTicketState(String ticketState) {
         this.ticketState = ticketState;
-    }
-
-    public String getInsuranceState() {
-        return insuranceState;
-    }
-
-    public void setInsuranceState(String insuranceState) {
-        this.insuranceState = insuranceState;
     }
 
     public String getSchReview() {
@@ -339,5 +432,119 @@ public class Filter {
 
     public void setMode(String mode) {
         this.mode = mode;
+    }
+
+    public String getPro() {
+        return pro;
+    }
+
+    public void setPro(String pro) {
+        this.pro = pro;
+    }
+
+    public String getUniv() {
+        return univ;
+    }
+
+    public void setUniv(String univ) {
+        this.univ = univ;
+    }
+
+    public String getPreSta() {
+        return preSta;
+    }
+
+    public void setPreSta(String preSta) {
+        this.preSta = preSta;
+    }
+
+
+    public Date getBeginTime() {
+        return beginTime;
+    }
+
+    public void setBeginTime(Date beginTime) {
+        this.beginTime = beginTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+
+    }
+
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getUniversity() {
+        return university;
+    }
+
+    public void setUniversity(String university) {
+        this.university = university;
+    }
+    public Character getState() {
+        return state;
+    }
+
+    public void setState(Character state) {
+        this.state = state;
+    }
+
+    public String getQualified() {
+        return qualified;
+    }
+
+    public void setQualified(String qualified) {
+        this.qualified = qualified;
+    }
+
+    public String getCurrentProvince() {
+        return currentProvince;
+    }
+
+    public void setCurrentProvince(String currentProvince) {
+        this.currentProvince = currentProvince;
+    }
+
+    public String getCurrentUniversity() {
+        return currentUniversity;
+    }
+
+    public void setCurrentUniversity(String currentUniversity) {
+        this.currentUniversity = currentUniversity;
+
+    }
+
+    public String getBusinessModule() {
+        return businessModule;
+    }
+
+    public void setBusinessModule(String businessModule) {
+        this.businessModule = businessModule;
+    }
+
+    public String getOptType() {
+        return optType;
+    }
+
+    public void setOptType(String optType) {
+        this.optType = optType;
     }
 }

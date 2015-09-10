@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -50,7 +51,7 @@ public class BaseService {
         return bean;
     }
 
-    protected <T> List<T> setNullByField(List<T> beans, String fieldName, Class<T> clazz) {
+    protected <T> Collection<T> setNullByField(Collection<T> beans, String fieldName, Class<T> clazz) {
         if (beans == null || beans.size() == 0)
             return beans;
         try {
