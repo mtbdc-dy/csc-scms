@@ -197,14 +197,33 @@ public class UserController {
 
     //    GET /login/{userId} USER JSONObject
     @RequestMapping(value = "/login/{userId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public User login(@PathVariable(value = "userId") String userId) {
+    public PwdToken login(@PathVariable(value = "userId") String userId) {
         try {
+//            Date a = new Date();
+//            String pwd = userService.userLogin(userId);
+//            Map<String, String> map = new HashMap<String, String>();
+//            map.put("pwd", pwd);
+//            Date b = new Date();
+//            long c = b.getTime() - a.getTime();
+//            System.out.println("time for login one User = " + c + "ms");
+//            return map;
             Date a = new Date();
-            User user = userService.userLogin(userId);
+            PwdToken pwdToken = userService.userLogin(userId);
             Date b = new Date();
             long c = b.getTime() - a.getTime();
             System.out.println("time for login one User = " + c + "ms");
-            return user;
+            return pwdToken;
+        } catch (NoSuchUserException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @RequestMapping(value = "/loginAfter/{userId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public UserToken loginAfter(@PathVariable(value = "userId") String userId) {
+        try {
+            UserToken userToken = userService.userLoginAfter(userId);
+            return userToken;
         } catch (NoSuchUserException e) {
             e.printStackTrace();
             return null;

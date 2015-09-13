@@ -156,21 +156,36 @@ public class UserService extends BaseService {
         return userRepository.findUserByUserId(userId) != null;
     }
 
-    public User userLogin(String userId) throws NoSuchUserException {
+    public PwdToken userLogin(String userId) throws NoSuchUserException {
+//        Date a = new Date();
+//        User user = userRepository.findUserByUserId(userId);
+//        Date b = new Date();
+//        if (user == null)
+//            throw new NoSuchUserException();
+//        initUser(user);
+//        Date c = new Date();
+//        long findUser = b.getTime() - a.getTime();
+//        long initUser = c.getTime() - b.getTime();
+//
+//        System.out.println("findUser = " + findUser + "ms");
+//        System.out.println("initUser = " + initUser + "ms");
+//
+//        return user;
         Date a = new Date();
-        User user = userRepository.findUserByUserId(userId);
+//        String pwd = getBaseDao().getPWDByUserId(userId);
+        PwdToken pwdToken = userRepository.getPwdToken(userId);
         Date b = new Date();
-        if (user == null)
-            throw new NoSuchUserException();
-        initUser(user);
-        Date c = new Date();
         long findUser = b.getTime() - a.getTime();
-        long initUser = c.getTime() - b.getTime();
-
         System.out.println("findUser = " + findUser + "ms");
-        System.out.println("initUser = " + initUser + "ms");
+        return pwdToken;
 
-        return user;
+    }
+
+
+    public UserToken userLoginAfter(String userId) throws NoSuchUserException {
+        UserToken userToken = userRepository.getUserToken(userId);
+        return userToken;
+
     }
 
     public List<User> getUsersByRole(Role role) {

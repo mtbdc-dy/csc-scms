@@ -97,7 +97,8 @@ public class User implements Serializable {
     @JoinTable(
             name = "PUB_USER_PROJECT",
             joinColumns = {@JoinColumn(name = "USERID", referencedColumnName = "USERID")},
-            inverseJoinColumns = {@JoinColumn(name = "PROJECTID")})
+            inverseJoinColumns = {@JoinColumn(name = "PROJECTID")}
+    )
     private List<Project> projects = new ArrayList<Project>();
 
     public String getId() {
