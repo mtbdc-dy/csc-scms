@@ -6,6 +6,7 @@ import gov.gwssi.csc.scms.domain.user.*;
 import gov.gwssi.csc.scms.service.user.*;
 import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;

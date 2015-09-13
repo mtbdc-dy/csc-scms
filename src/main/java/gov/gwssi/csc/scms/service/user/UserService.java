@@ -172,8 +172,13 @@ public class UserService extends BaseService {
 //
 //        return user;
         Date a = new Date();
+
 //        String pwd = getBaseDao().getPWDByUserId(userId);
         PwdToken pwdToken = userRepository.getPwdToken(userId);
+        Role role = pwdToken.getRole();
+        List<Menu> menus = menuService.getMenuByRole(role);
+        pwdToken.getRole().setMenus(menus);
+
         Date b = new Date();
         long findUser = b.getTime() - a.getTime();
         System.out.println("findUser = " + findUser + "ms");
