@@ -1,22 +1,36 @@
 package gov.gwssi.csc.scms.service.codemaintenance;
 
 import gov.gwssi.csc.scms.dao.codemaintenance.CodeMainTenanceDAO;
+import gov.gwssi.csc.scms.domain.codemaintenance.CodeMainTenance;
+import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.query.CodeDetailResult;
+import gov.gwssi.csc.scms.domain.user.User;
+import gov.gwssi.csc.scms.repository.codemaintenance.CodeMainTenanceRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static org.springframework.data.jpa.domain.Specifications.where;
 
 /**
  * Created by think on 2015/7/13.
  * 代码维护service层
  */
 @Service("codeMainTenanceService")
-public class CodeMainTenanceService extends BaseService {
+public class CodeMainTenanceService extends CodeMainTenanceSpecs {
     @Autowired
     private CodeMainTenanceDAO codeMainTenanceDAO;
+    @Autowired
+    @Qualifier("codeMainTenanceRepository")
+    private CodeMainTenanceRepository codeMainTenanceRepository;
     public List findAllCode(String tableName,String chinaName){
         return codeMainTenanceDAO.getAllCodeList(tableName,chinaName);
     }
@@ -32,13 +46,19 @@ public class CodeMainTenanceService extends BaseService {
     }
     @Transactional
     public String saveNewCode(CodeDetailResult codeDetailResult,String type){
-        return codeMainTenanceDAO.saveNewCode(codeDetailResult,type);
+        return codeMainTenanceDAO.saveNewCode(codeDetailResult, type);
     }
     public CodeDetailResult selectCode(CodeDetailResult codeDetailResult,String zdz){
         return codeMainTenanceDAO.selectCode(codeDetailResult, zdz);
     }
     public CodeDetailResult selectCode(CodeDetailResult codeDetailResult){
         return codeMainTenanceDAO.selectCode(codeDetailResult);
+    }
+
+    public Page<CodeMainTenance> getDimUnivsPagingByFilter(Filter filter,Integer page,Integer size,String mode,User user) {
+        Specification<CodeMainTenance> specA = filterIsLike(filter,user);
+//        Specification<Ticket> specB = userIs(user);
+        return codeMainTenanceRepository.findAll(where(specA), new PageRequest(page, size, Sort.Direction.ASC, "seq"));
     }
 }
 
