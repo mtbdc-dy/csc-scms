@@ -1,10 +1,7 @@
 package gov.gwssi.csc.scms.service.user;
 
 import gov.gwssi.csc.scms.controller.RequestHeaderError;
-import gov.gwssi.csc.scms.domain.user.Node;
-import gov.gwssi.csc.scms.domain.user.Project;
-import gov.gwssi.csc.scms.domain.user.Role;
-import gov.gwssi.csc.scms.domain.user.User;
+import gov.gwssi.csc.scms.domain.user.*;
 import gov.gwssi.csc.scms.repository.user.UserRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.utils.JWTUtil;
@@ -13,11 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Murray on 15/5/2.
@@ -230,6 +223,4 @@ public class UserService extends BaseService {
     public User getUserByUserId(String userId){
         return userRepository.findUserByUserId(userId);
     }
-
-
 }

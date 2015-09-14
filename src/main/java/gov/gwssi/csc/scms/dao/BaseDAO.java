@@ -214,10 +214,57 @@ public class BaseDAO {
     }
 
     /**
+     * 根据nameCH查询dim_region表得到regionId
+     */
+    public String getNameCHByRegionId(String regionId) {
+        String sql = "select NAMECH from DIM_REGION where REGIONID='" + regionId + "'";
+        EntityManager em = null;
+        try {
+            em = entityManagerFactory.createEntityManager();
+            Query query = em.createNativeQuery(sql);
+            if(query.getSingleResult()!=null){
+                return String.valueOf(query.getSingleResult());
+            }else{
+                return "-";
+            }
+
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+
+    }
+
+    /**
+     * 根据univId查询dim_univ表得到univ
+     */
+    public String getUnivByUnivId(String univId) {
+        String sql = "select UNIV from DIM_UNIV where UNIVID='" + univId + "'";
+        EntityManager em = null;
+        try {
+            em = entityManagerFactory.createEntityManager();
+            Query query = em.createNativeQuery(sql);
+            if(query.getSingleResult()!=null){
+                return String.valueOf(query.getSingleResult());
+            }else{
+                return "-";
+            }
+
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+
+    }
+
+
+    /**
      * 根据TranslateId查询dim_translate表得到中文名称
      */
     public String getNameCHByTranslateId(String translateId) {
-        System.out.println(translateId);
+//        System.out.println(translateId);
         String sql = "select NAMECH from DIM_TRANSLATE where TRANSLATEID='" + translateId + "'";
         EntityManager em = null;
         try {
