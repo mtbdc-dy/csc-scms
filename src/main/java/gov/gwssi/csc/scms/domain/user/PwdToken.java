@@ -7,7 +7,7 @@ public class PwdToken {
     private String userId;
     private String password;
     private String userType;
-    private Role role;
+    private String identity;
 
     public String getUserId() {
         return userId;
@@ -33,18 +33,18 @@ public class PwdToken {
         this.userType = userType;
     }
 
-    public Role getRole() {
-        return role;
+    public String getIdentity() {
+        return identity;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setIdentity(String identity) {
+        this.identity = identity;
     }
 
-    public PwdToken(String userId, String password, String userType, Role role) {
+    public PwdToken(String userId, String password, String userType, String identity) {
         this.userId = userId;
         this.password = password;
         this.userType = userType;
-        this.role = role;
+        this.identity = identity;
     }
 }

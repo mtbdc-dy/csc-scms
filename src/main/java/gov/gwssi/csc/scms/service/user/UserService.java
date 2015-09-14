@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.*;
 
 /**
@@ -40,7 +41,7 @@ public class UserService extends BaseService {
         return userRepository.findUserByIdAndEnable(id, enable);
     }
 
-    public User getUserByUserIdAndEnable(String userId, String enable) throws NoSuchUserException{
+    public User getUserByUserIdAndEnable(String userId, String enable) throws NoSuchUserException {
         return userRepository.findUserByUserIdAndEnable(userId, enable);
     }
 
@@ -67,7 +68,7 @@ public class UserService extends BaseService {
 //        if (userId == null)
 //            throw new RequestHeaderError("can not read the invalid message!");
         User user = getUserByJWT(header);
-        if (checkRootUser(user)){
+        if (checkRootUser(user)) {
 
         }
 
@@ -175,9 +176,6 @@ public class UserService extends BaseService {
 
 //        String pwd = getBaseDao().getPWDByUserId(userId);
         PwdToken pwdToken = userRepository.getPwdToken(userId);
-        Role role = pwdToken.getRole();
-        List<Menu> menus = menuService.getMenuByRole(role);
-        pwdToken.getRole().setMenus(menus);
 
         Date b = new Date();
         long findUser = b.getTime() - a.getTime();
@@ -189,6 +187,10 @@ public class UserService extends BaseService {
 
     public UserToken userLoginAfter(String userId) throws NoSuchUserException {
         UserToken userToken = userRepository.getUserToken(userId);
+        userToken.getNode().setParent(null);
+        Role role = userToken.getRole();
+        List<Menu> menus = menuService.getMenuByRole(role);
+        userToken.getRole().setMenus(menus);
         return userToken;
 
     }
@@ -232,15 +234,16 @@ public class UserService extends BaseService {
         role.setMenus(menuService.getMenuByRole(role));
         return user;
     }
+
     //修改用户密码
     @Transactional
-    public void updateUserPwd(String userId, String newPwd1){
+    public void updateUserPwd(String userId, String newPwd1) {
         User user = userRepository.findUserByUserId(userId);
         user.setPassword(newPwd1);
         userRepository.save(user);
     }
 
-    public User getUserByUserId(String userId){
+    public User getUserByUserId(String userId) {
         return userRepository.findUserByUserId(userId);
     }
 }

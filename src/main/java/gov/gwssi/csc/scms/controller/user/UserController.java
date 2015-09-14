@@ -97,6 +97,18 @@ public class UserController {
         }
     }
 
+    @RequestMapping(value = "/menu/{userId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public List<Menu> getMenusByUserId(@PathVariable String userId) {
+        try {
+            User user = userService.getUserByUserId(userId);
+            Role role = user.getRole();
+            return menuService.getMenuByRole(role);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
     @RequestMapping(value = "/role", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<Role> getRole(@RequestHeader(value = HEADER_AUTHORIZATION) String header) {
         try {
