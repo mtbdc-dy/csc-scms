@@ -58,4 +58,19 @@ public class OperationLogSpecs extends BaseService {
             }
         };
     }
+//重载一个 供 学籍变化记录 分页查询
+    public static Specification<OperationLog> filterIsLike(final String studentId) {
+        return new Specification<OperationLog>() {
+
+            @Override
+            public Predicate toPredicate(Root<OperationLog> operationLog, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                Predicate predicate = cb.conjunction();
+                if(!"".equals(studentId)){
+                    predicate.getExpressions().add(cb.equal(operationLog.get(OperationLog_.studentId), studentId));
+
+                }
+                return predicate;
+            }
+        };
+    }
 }
