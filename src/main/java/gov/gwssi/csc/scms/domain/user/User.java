@@ -93,7 +93,7 @@ public class User implements Serializable {
     /**
      * 用户权限
      */
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "PUB_USER_PROJECT",
             joinColumns = {@JoinColumn(name = "USERID", referencedColumnName = "USERID")},

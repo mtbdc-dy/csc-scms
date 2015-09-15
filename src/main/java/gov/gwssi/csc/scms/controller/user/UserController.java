@@ -6,7 +6,6 @@ import gov.gwssi.csc.scms.domain.user.*;
 import gov.gwssi.csc.scms.service.user.*;
 import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -32,12 +31,14 @@ public class UserController {
     @Autowired
     private MenuService menuService;
 
+
     @RequestMapping(value = "/node", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<Node> getNodeTree(@RequestHeader(value = HEADER_AUTHORIZATION) String header) {
         try {
             userService.getRootUser(header);
-
-            return nodeService.getNodeTree();
+            List<Node> nodes = nodeService.getNodeTree();
+            nodeService.setParentNull(nodes);
+            return nodes;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -51,6 +52,8 @@ public class UserController {
 
             Node node = new ObjectMapper().readValue(nodeStr, Node.class);
             node = nodeService.updateNode(node, user);
+            node.setChildren(null);
+            node.setParent(null);
             return node;
         } catch (Exception e) {
             e.printStackTrace();
@@ -65,6 +68,8 @@ public class UserController {
 
             Node node = new ObjectMapper().readValue(nodeStr, Node.class);
             node = nodeService.addNode(node, user);
+            node.setChildren(null);
+            node.setParent(null);
             return node;
         } catch (Exception e) {
             e.printStackTrace();
@@ -76,8 +81,10 @@ public class UserController {
     public Node deleteNode(@RequestHeader(value = HEADER_AUTHORIZATION) String header, @PathVariable String nodeId) {
         try {
             User user = userService.getRootUser(header);
-
-            return nodeService.deleteNodeByNodeId(nodeId, user);
+            Node node = nodeService.deleteNodeByNodeId(nodeId, user);
+            node.setChildren(null);
+            node.setParent(null);
+            return node;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -89,8 +96,8 @@ public class UserController {
     public List<Menu> getMenuTree(@RequestHeader(value = HEADER_AUTHORIZATION) String header) {
         try {
             userService.getRootUser(header);
-
-            return menuService.getMenuTree();
+            List<Menu> root = menuService.getMenuTree();
+            return root;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -102,7 +109,8 @@ public class UserController {
         try {
             User user = userService.getUserByUserId(userId);
             Role role = user.getRole();
-            return menuService.getMenuByRole(role);
+            List<Menu> menus = menuService.getMenuByRole(role);
+            return menus;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -113,8 +121,8 @@ public class UserController {
     public List<Role> getRole(@RequestHeader(value = HEADER_AUTHORIZATION) String header) {
         try {
             userService.getRootUser(header);
-
-            return roleService.getRolesByEnable(Role.ENABLE);
+            List<Role> roles = roleService.getRolesByEnable(Role.ENABLE);
+            return roles;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -127,7 +135,8 @@ public class UserController {
             User user = userService.getRootUser(header);
 
             Role role = new ObjectMapper().readValue(roleStr, Role.class);
-            return roleService.updateRole(role, user);
+            role = roleService.updateRole(role, user);
+            return role;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -236,6 +245,10 @@ public class UserController {
     public UserToken loginAfter(@PathVariable(value = "userId") String userId) {
         try {
             UserToken userToken = userService.userLoginAfter(userId);
+
+            userToken.getNode().setParent(null);
+            nodeService.setParentNull(userToken.getNode().getChildren());
+
             return userToken;
         } catch (NoSuchUserException e) {
             e.printStackTrace();

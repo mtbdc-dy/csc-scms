@@ -185,9 +185,13 @@ public class UserService extends BaseService {
     }
 
 
+    @Transactional
     public UserToken userLoginAfter(String userId) throws NoSuchUserException {
         UserToken userToken = userRepository.getUserToken(userId);
-        userToken.getNode().setParent(null);
+
+        nodeService.getChildren(userToken.getNode().getChildren());
+//        nodeService.setParentNull(userToken.getNode().getChildren());
+//        userToken.getNode().setParent(null);
         Role role = userToken.getRole();
         List<Menu> menus = menuService.getMenuByRole(role);
         userToken.getRole().setMenus(menus);
@@ -207,11 +211,14 @@ public class UserService extends BaseService {
         Node node = nodeService.getNodeByNodeIdAndEnable(nodeId, Node.ENABLED);
         if (node == null)
             throw new NoSuchNodeException("can not find enabled node of the user with the nodeId:" + nodeId);
+
         List<User> users = userRepository.findUserByNodeAndEnable(node, User.ENABLE);
         for (User u : users) {
             initUser(u);
         }
         return users;
+
+
     }
 
     private User initUser(User user) {

@@ -7,6 +7,7 @@ import gov.gwssi.csc.scms.repository.user.RoleRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,6 +42,7 @@ public class RoleService extends BaseService {
         return initMenu(role);
     }
 
+//    @Transactional
     public List<Role> getRolesByEnable(String enable) {
         List<Role> roles = roleRepository.findRoleByEnable(enable);
         for (Role role : roles)
@@ -83,8 +85,10 @@ public class RoleService extends BaseService {
             throw new RoleBeingUsedException("role is used by user:" + role.getRoleId());
     }
 
+//    @Transactional
     private Role initMenu(Role role) {
-        role.setMenus(menuService.getMenuByRole(role));
+        List<Menu> menus = menuService.getMenuByRole(role);
+        role.setMenus(menus);
         return role;
     }
 
