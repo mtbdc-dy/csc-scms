@@ -45,7 +45,7 @@ public class Menu {
     /**
      * 子菜单
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent", fetch = FetchType.LAZY)
     private List<Menu> children;
     /**
      * 角色关联

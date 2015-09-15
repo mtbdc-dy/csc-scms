@@ -34,7 +34,7 @@ public class MenuService extends BaseService {
 
     }
 
-    private List<Menu> setParentNull(List<Menu> root) {
+    public List<Menu> setParentNull(List<Menu> root) {
         if (root == null || root.size() == 0)
             return null;
         for (Menu menu : root) {
@@ -68,8 +68,10 @@ public class MenuService extends BaseService {
         List<Menu> childrenNode;
         for (Menu menu : menus) {
             childrenNode = getChildrenMenuByRole(menu, role);
-            menu.setChildren(childrenNode);
-            menu.setParent(null);
+            if(childrenNode != null && childrenNode.size() >0) {
+                menu.setChildren(childrenNode);
+            }
+//            menu.setParent(null);
 
             if (childrenNode != null && childrenNode.size() > 0) {
                 getChildrenMenuByRole(childrenNode, role);

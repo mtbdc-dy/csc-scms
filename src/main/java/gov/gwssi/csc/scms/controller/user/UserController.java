@@ -110,6 +110,7 @@ public class UserController {
             User user = userService.getUserByUserId(userId);
             Role role = user.getRole();
             List<Menu> menus = menuService.getMenuByRole(role);
+            menuService.setParentNull(menus);
             return menus;
         } catch (Exception e) {
             e.printStackTrace();
@@ -248,6 +249,9 @@ public class UserController {
 
             userToken.getNode().setParent(null);
             nodeService.setParentNull(userToken.getNode().getChildren());
+
+            List<Menu> menus =userToken.getRole().getMenus();
+            menuService.setParentNull(menus);
 
             return userToken;
         } catch (NoSuchUserException e) {

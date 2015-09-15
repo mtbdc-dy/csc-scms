@@ -184,14 +184,11 @@ public class UserService extends BaseService {
 
     }
 
-
     @Transactional
     public UserToken userLoginAfter(String userId) throws NoSuchUserException {
         UserToken userToken = userRepository.getUserToken(userId);
 
         nodeService.getChildren(userToken.getNode().getChildren());
-//        nodeService.setParentNull(userToken.getNode().getChildren());
-//        userToken.getNode().setParent(null);
         Role role = userToken.getRole();
         List<Menu> menus = menuService.getMenuByRole(role);
         userToken.getRole().setMenus(menus);
