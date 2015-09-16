@@ -85,7 +85,7 @@ public class RoleService extends BaseService {
             throw new RoleBeingUsedException("role is used by user:" + role.getRoleId());
     }
 
-//    @Transactional
+
     private Role initMenu(Role role) {
         List<Menu> menus = menuService.getMenuByRole(role);
         role.setMenus(menus);

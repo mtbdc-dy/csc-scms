@@ -90,6 +90,7 @@ public class UserController {
             throw new RuntimeException(e);
         }
     }
+
     // GET /menu/{userId}
     //获取所有菜单的API
     @RequestMapping(value = "/menu", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
@@ -110,7 +111,6 @@ public class UserController {
             User user = userService.getUserByUserId(userId);
             Role role = user.getRole();
             List<Menu> menus = menuService.getMenuByRole(role);
-            menuService.setParentNull(menus);
             return menus;
         } catch (Exception e) {
             e.printStackTrace();
@@ -168,12 +168,15 @@ public class UserController {
             throw new RuntimeException(e);
         }
     }
+
     @RequestMapping(value = "/user/{nodeId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<User> getUsers(@RequestHeader(value = HEADER_AUTHORIZATION) String header, @PathVariable String nodeId) {
         try {
             userService.getRootUser(header);
 
-            return userService.getUsersByNode(nodeId);
+            List<User> users = userService.getUsersByNode(nodeId);
+            userService.setUserNull(users);
+            return users;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -186,7 +189,15 @@ public class UserController {
             User user = userService.getRootUser(header);
 
             User user1 = new ObjectMapper().readValue(UserStr, User.class);
-            return userService.updateUser(user1, user);
+
+//            Role role = roleService.getRoleByRoleIdAndEnable(user1.getRole().getRoleId(), Role.ENABLE);
+//            if (role == null)
+//                throw new NoSuchRoleException("can not find enabled role of the user with the roleId:" + user.getRole().getRoleId());
+//            user1.setRole(role);
+
+            User userRet = userService.updateUser(user1, user);
+            userService.setUserNull(userRet);
+            return userRet;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -199,7 +210,9 @@ public class UserController {
             User user = userService.getRootUser(header);
 
             User user1 = new ObjectMapper().readValue(userStr, User.class);
-            return userService.addUser(user1, user);
+            User userRet = userService.addUser(user1, user);
+            userService.setUserNull(userRet);
+            return userRet;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -250,8 +263,9 @@ public class UserController {
             userToken.getNode().setParent(null);
             nodeService.setParentNull(userToken.getNode().getChildren());
 
-            List<Menu> menus =userToken.getRole().getMenus();
-            menuService.setParentNull(menus);
+            Role role = userToken.getRole();
+            List<Menu> menus = menuService.getMenuByRole(role);
+            userToken.getRole().setMenus(menus);
 
             return userToken;
         } catch (NoSuchUserException e) {
@@ -275,7 +289,7 @@ public class UserController {
     @RequestMapping(value = "/{userId}/getPwd", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public Map<String, String> getUserPwd(@PathVariable("userId") String userId) {
         try {
-            String pwd=userService.getUserByUserId(userId).getPassword();
+            String pwd = userService.getUserByUserId(userId).getPassword();
             Map<String, String> map = new HashMap<String, String>();
             map.put("pwd", pwd);
 //            String pwdJson = "{\"pwd\":\""+pwd+"\"}";

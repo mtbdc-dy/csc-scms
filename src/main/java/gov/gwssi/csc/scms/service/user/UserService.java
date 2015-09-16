@@ -85,6 +85,7 @@ public class UserService extends BaseService {
         return true;
     }
 
+//    @Transactional
     public User addUser(User user, User loginUser) throws UserIdBeingUsedException, NoSuchRoleException, NoSuchNodeException {
         if (userExists(user.getUserId()))
             throw new UserIdBeingUsedException("this username for new user is used :" + user.getUserId());
@@ -120,13 +121,16 @@ public class UserService extends BaseService {
         user.setProjects(newProjects);
 
         user = doSave(user);
-        return initUser(user);
+
+//        return initUser(user);
+        return user;
     }
 
     private User doSave(User user) {
         return userRepository.save(user);
     }
 
+//    @Transactional
     public void deleteUser(String id, User loginUser) throws NoSuchUserException, NoSuchNodeException, NoSuchRoleException {
         User user = getUserByUserIdAndEnable(id, User.ENABLE);
         if (user == null)
@@ -138,6 +142,7 @@ public class UserService extends BaseService {
         doSave(user);
     }
 
+//    @Transactional
     public User updateUser(User user, User loginUser) throws NoSuchUserException, NoSuchNodeException, NoSuchRoleException {
         User u = getUserByUserIdAndEnable(user.getUserId(), User.ENABLE);
         if (u == null)
@@ -187,11 +192,7 @@ public class UserService extends BaseService {
     @Transactional
     public UserToken userLoginAfter(String userId) throws NoSuchUserException {
         UserToken userToken = userRepository.getUserToken(userId);
-
         nodeService.getChildren(userToken.getNode().getChildren());
-        Role role = userToken.getRole();
-        List<Menu> menus = menuService.getMenuByRole(role);
-        userToken.getRole().setMenus(menus);
         return userToken;
 
     }
@@ -204,18 +205,35 @@ public class UserService extends BaseService {
         return userRepository.findUserByNodeAndEnable(node, User.ENABLE);
     }
 
+    @Transactional
     public List<User> getUsersByNode(String nodeId) throws NoSuchNodeException {
         Node node = nodeService.getNodeByNodeIdAndEnable(nodeId, Node.ENABLED);
         if (node == null)
             throw new NoSuchNodeException("can not find enabled node of the user with the nodeId:" + nodeId);
 
         List<User> users = userRepository.findUserByNodeAndEnable(node, User.ENABLE);
-        for (User u : users) {
-            initUser(u);
-        }
+//        for (User u : users) {
+//            initUser(u);
+//        }
         return users;
 
 
+    }
+
+    public void setUserNull(List<User> users){
+        for(User user:users){
+            user.getNode().setParent(null);
+            user.getNode().setChildren(null);
+            user.getRole().setMenus(null);
+            user.setProjects(null);
+        }
+    }
+
+    public void setUserNull(User user){
+            user.getNode().setParent(null);
+            user.getNode().setChildren(null);
+            user.getRole().setMenus(null);
+            user.setProjects(null);
     }
 
     private User initUser(User user) {

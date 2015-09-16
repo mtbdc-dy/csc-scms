@@ -49,16 +49,18 @@ public class MenuService extends BaseService {
         String sql = "select * from PUB_MENU where menuid in" +
                 " (select menuid from PUB_ROLE_MENU where roleid = '"+role.getRoleId()+"')" +
                 " and menutype = '1'";
-        List<Menu> root = getBaseDao().queryTListBySql(sql,Menu.class);
+        List<Menu> root = getBaseDao().queryTListBySql(sql, Menu.class);
         root = getChildrenMenuByRole(root, role);
         return root;
     }
+
 
 
     private List<Menu> getChildrenMenuByRole(Menu parentMenu, Role role) {
         List<Menu> menus = menuRepository.findMenuByRoleAndParent(role, parentMenu);
         return menus;
     }
+
 
 
     private List<Menu> getChildrenMenuByRole(List<Menu> menus, Role role) {
@@ -68,10 +70,8 @@ public class MenuService extends BaseService {
         List<Menu> childrenNode;
         for (Menu menu : menus) {
             childrenNode = getChildrenMenuByRole(menu, role);
-            if(childrenNode != null && childrenNode.size() >0) {
-                menu.setChildren(childrenNode);
-            }
-//            menu.setParent(null);
+            menu.setChildren(childrenNode);
+            menu.setParent(null);
 
             if (childrenNode != null && childrenNode.size() > 0) {
                 getChildrenMenuByRole(childrenNode, role);
