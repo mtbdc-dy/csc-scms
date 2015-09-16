@@ -214,6 +214,9 @@ public class UserService extends BaseService {
 //        for (User u : users) {
 //            initUser(u);
 //        }
+        for(User user:users){
+            projectService.getChildren(user.getProjects());
+        }
         return users;
 
 
@@ -224,7 +227,6 @@ public class UserService extends BaseService {
             user.getNode().setParent(null);
             user.getNode().setChildren(null);
             user.getRole().setMenus(null);
-            user.setProjects(null);
         }
     }
 

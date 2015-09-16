@@ -30,7 +30,8 @@ public class UserController {
     private NodeService nodeService;
     @Autowired
     private MenuService menuService;
-
+    @Autowired
+    private ProjectService projectService ;
 
     @RequestMapping(value = "/node", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<Node> getNodeTree(@RequestHeader(value = HEADER_AUTHORIZATION) String header) {
@@ -176,6 +177,9 @@ public class UserController {
 
             List<User> users = userService.getUsersByNode(nodeId);
             userService.setUserNull(users);
+            for(User user:users){
+                projectService.setParentNull(user.getProjects());
+            }
             return users;
         } catch (Exception e) {
             e.printStackTrace();
@@ -189,12 +193,6 @@ public class UserController {
             User user = userService.getRootUser(header);
 
             User user1 = new ObjectMapper().readValue(UserStr, User.class);
-
-//            Role role = roleService.getRoleByRoleIdAndEnable(user1.getRole().getRoleId(), Role.ENABLE);
-//            if (role == null)
-//                throw new NoSuchRoleException("can not find enabled role of the user with the roleId:" + user.getRole().getRoleId());
-//            user1.setRole(role);
-
             User userRet = userService.updateUser(user1, user);
             userService.setUserNull(userRet);
             return userRet;

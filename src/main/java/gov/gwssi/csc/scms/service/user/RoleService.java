@@ -42,7 +42,6 @@ public class RoleService extends BaseService {
         return initMenu(role);
     }
 
-//    @Transactional
     public List<Role> getRolesByEnable(String enable) {
         List<Role> roles = roleRepository.findRoleByEnable(enable);
         for (Role role : roles)
