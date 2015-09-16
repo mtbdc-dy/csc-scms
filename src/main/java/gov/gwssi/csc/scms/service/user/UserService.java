@@ -85,7 +85,6 @@ public class UserService extends BaseService {
         return true;
     }
 
-//    @Transactional
     public User addUser(User user, User loginUser) throws UserIdBeingUsedException, NoSuchRoleException, NoSuchNodeException {
         if (userExists(user.getUserId()))
             throw new UserIdBeingUsedException("this username for new user is used :" + user.getUserId());
@@ -130,7 +129,7 @@ public class UserService extends BaseService {
         return userRepository.save(user);
     }
 
-//    @Transactional
+
     public void deleteUser(String id, User loginUser) throws NoSuchUserException, NoSuchNodeException, NoSuchRoleException {
         User user = getUserByUserIdAndEnable(id, User.ENABLE);
         if (user == null)
@@ -142,7 +141,7 @@ public class UserService extends BaseService {
         doSave(user);
     }
 
-//    @Transactional
+
     public User updateUser(User user, User loginUser) throws NoSuchUserException, NoSuchNodeException, NoSuchRoleException {
         User u = getUserByUserIdAndEnable(user.getUserId(), User.ENABLE);
         if (u == null)
