@@ -57,7 +57,7 @@ public class Role {
     /**
      * 角色菜单
      */
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "PUB_ROLE_MENU", joinColumns = {@JoinColumn(name = "ROLEID")},
             inverseJoinColumns = {@JoinColumn(name = "MENUID")})
     private List<Menu> menus = new ArrayList<Menu>();
