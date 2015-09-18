@@ -185,6 +185,22 @@ public class studentsController {
      * @param filterJSON filter查询对象
      */
     @RequestMapping(
+            value = "/leaveChina",
+            method = RequestMethod.GET,
+            headers = {"Accept=application/json"},
+            params = {"mode","field", "page", "size", "filter"})
+    public ResponseEntity<Page<Map<String, Object>>> getLeaveChinaStudents(
+            @RequestParam(value = "mode") String mode,
+            @RequestParam(value = "field") String[] fields,
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size,
+            @RequestParam(value = "filter") String filterJSON) throws IOException {
+        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+        Page<Student> studentPage = studentsService.getStudentsPageByFilter(filter, page, size,mode);
+        Page<Map<String, Object>> mapPage = studentPage.map(new StudentConverter(fields));
+        return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+    }
+    @RequestMapping(
             method = RequestMethod.GET,
             headers = {"Accept=application/json"},
             params = {"field", "page", "size", "filter"})

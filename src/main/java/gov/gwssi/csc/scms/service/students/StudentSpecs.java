@@ -137,7 +137,7 @@ public class StudentSpecs {
 
                 predicate.getExpressions().add(cb.notEqual(schoolRoll.get(SchoolRoll_.registerYear), currentYear));
 
-                Expression e1 = cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateEnd),nextIntialDate);
+                Expression e1 = cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateEnd), nextIntialDate);
                 Expression e2 = cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), nextIntialDate);
                 Expression e3 = cb.or(e1,e2);
                 predicate.getExpressions().add(e3);
@@ -171,7 +171,18 @@ public class StudentSpecs {
             }
         };
     }
-
+    public static Specification<Student> isLeaveChina() {
+        return new Specification<Student>() {
+            @Override
+            public Predicate toPredicate(Root<Student> student, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                Predicate predicate = cb.conjunction();
+                Join<Student, SchoolRoll> schoolRoll = student.join(Student_.schoolRoll);
+                predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.registed), "AX0002"));
+                predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.leaveChina), "BA0001"));
+                return predicate;
+            }
+        };
+    }
     public static Specification<Student> filterIsLike(final Filter filter) {
         return new Specification<Student>() {
             @Override
