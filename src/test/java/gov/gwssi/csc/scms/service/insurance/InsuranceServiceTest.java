@@ -94,7 +94,7 @@ public class InsuranceServiceTest extends UnitTestBase {
         User user = userService.getUserByUserId("q0922");
         Filter filter = new Filter();
 //        filter.setInsuranceState("AV0001");
-        Page<Insurance> insurancePage = insuranceService.getInsurancesPagingByFilter(filter, 0, 10, "insurance", user);
-        System.out.println(insurancePage);
+        //Page<Insurance> insurancePage = insuranceService.getInsurancesPagingByFilter(filter, 0, 10, "insurance", user);
+       // System.out.println(insurancePage);
     }
 }

@@ -15,6 +15,7 @@ import gov.gwssi.csc.scms.repository.ticket.TicketRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.service.log.OperationLogService;
 import gov.gwssi.csc.scms.service.student.StudentService;
+import gov.gwssi.csc.scms.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -41,6 +42,8 @@ public class TicketService extends TicketSpecs {
     private OperationLogService operationLogService;
     @Autowired
     private StudentService studentService;
+    @Autowired
+    private UserService userService;
     @Autowired
     private TicketDAO ticketDAO;
 
@@ -227,10 +230,17 @@ public class TicketService extends TicketSpecs {
     }
 
     //分页查询
-    public Page<Ticket> getTicketsPagingByFilter(Filter filter,Integer page,Integer size,String mode,User user) {
-        Specification<Ticket> specA = filterIsLike(filter,user);
-//        Specification<Ticket> specB = userIs(user);
-        return ticketRepository.findAll(where(specA), new PageRequest(page, size));
+    @Transactional
+    public Page<Ticket> getTicketsPagingByFilter(Filter filter,Integer page,Integer size,String mode,String header) {
+        try {
+            User user = userService.getUserByJWT(header);
+            Specification<Ticket> specA = filterIsLike(filter, user);
+            Specification<Ticket> specB = userIs(user);
+            return ticketRepository.findAll(where(specA).and(specB), new PageRequest(page, size));
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
 

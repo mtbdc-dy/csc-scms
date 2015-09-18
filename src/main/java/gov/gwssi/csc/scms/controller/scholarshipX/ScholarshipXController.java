@@ -1,8 +1,6 @@
 package gov.gwssi.csc.scms.controller.scholarshipX;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.controller.JsonBody;
 import gov.gwssi.csc.scms.controller.RequestHeaderError;
@@ -454,8 +452,7 @@ public class ScholarshipXController {
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         try {
             Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
-            User user = userService.getUserByJWT(header);
-            Page<ScholarshipX> scholarshipXPage = scholarshipXService.getScholarshipXsPagingByFilter(filter, page, size, mode, user);
+            Page<ScholarshipX> scholarshipXPage = scholarshipXService.getScholarshipXsPagingByFilter(filter, page, size, mode, header);
             Page<Map<String, Object>> mapPage = scholarshipXPage.map(new ScholarshipXConverter());
             return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
         } catch (Exception e) {

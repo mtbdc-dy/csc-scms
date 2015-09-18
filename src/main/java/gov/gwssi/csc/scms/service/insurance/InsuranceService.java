@@ -14,6 +14,7 @@ import gov.gwssi.csc.scms.repository.insurance.InsuranceRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.service.abnormal.NoSuchAbnormalException;
 import gov.gwssi.csc.scms.service.log.OperationLogService;
+import gov.gwssi.csc.scms.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -39,6 +40,8 @@ public class InsuranceService extends InsuranceSpecs {
     private InsuranceRepository insuranceRepository;
     @Autowired
     private OperationLogService operationLogService;
+    @Autowired
+    private UserService userService;
     @Autowired
     private InsuranceDAO insuranceDAO;
 
@@ -188,9 +191,16 @@ public class InsuranceService extends InsuranceSpecs {
     }
 
     //分页查询
-    public Page<Insurance> getInsurancesPagingByFilter(Filter filter,Integer page,Integer size,String mode,User user) {
-        Specification<Insurance> specA = filterIsLike(filter,user,mode);
-//        Specification<Insurance> specB = userIs(user);
-        return insuranceRepository.findAll(where(specA), new PageRequest(page, size));
+    @Transactional
+    public Page<Insurance> getInsurancesPagingByFilter(Filter filter,Integer page,Integer size,String mode,String header) {
+        try {
+            User user = userService.getUserByJWT(header);
+            Specification<Insurance> specA = filterIsLike(filter, user, mode);
+            Specification<Insurance> specB = userIs(user);
+            return insuranceRepository.findAll(where(specA).and(specB), new PageRequest(page, size));
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 }

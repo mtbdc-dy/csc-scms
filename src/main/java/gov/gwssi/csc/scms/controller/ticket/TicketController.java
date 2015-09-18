@@ -423,8 +423,7 @@ public class TicketController extends BaseService {
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         try {
             Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
-            User user = userService.getUserByJWT(header);
-            Page<Ticket> ticketPage = ticketService.getTicketsPagingByFilter(filter, page, size, mode, user);
+            Page<Ticket> ticketPage = ticketService.getTicketsPagingByFilter(filter, page, size, mode, header);
             Page<Map<String, Object>> mapPage = ticketPage.map(new TicketConverter());
             return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
         } catch (Exception e) {

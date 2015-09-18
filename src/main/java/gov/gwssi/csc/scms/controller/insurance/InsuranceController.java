@@ -302,13 +302,13 @@ public class InsuranceController {
             @RequestParam(value = "page") Integer page,
             @RequestParam(value = "size") Integer size,
             @RequestParam(value = "filter") String filterJSON) throws IOException {
+
         try {
             Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
-            User user = userService.getUserByJWT(header);
-            Page<Insurance> insurancePage = insuranceService.getInsurancesPagingByFilter(filter, page, size, mode, user);
+            Page<Insurance> insurancePage = insuranceService.getInsurancesPagingByFilter(filter, page, size, mode, header);
             Page<Map<String, Object>> mapPage = insurancePage.map(new InsuranceConverter());
             return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
-        } catch (Exception e) {
+        }catch (Exception e){
             e.printStackTrace();
             throw new RuntimeException(e);
         }
