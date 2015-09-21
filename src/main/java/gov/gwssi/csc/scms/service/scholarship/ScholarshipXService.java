@@ -489,7 +489,15 @@ public class ScholarshipXService extends ScholarshipXSpecs {
 
     //分页查询
     public Page<ScholarshipX> getScholarshipXsPagingByFilter(Filter filter,Integer page,Integer size,String mode,User user) {
-        Specification<ScholarshipX> specA = filterIsLike(filter,user);
+        String school = user.getNode().getNodeId();
+        Specification<ScholarshipX> specA = filterIsLike(filter,user,school);
+//        Specification<ScholarshipX> specB = userIs(user);
+        return scholarshipXRepository.findAll(where(specA), new PageRequest(page, size));
+    }
+
+    //分页查询
+    public Page<ScholarshipX> getScholarshipXsPagingByFilterJ(Filter filter,Integer page,Integer size,String mode,User user,String school) {
+        Specification<ScholarshipX> specA = filterIsLike(filter,user,school);
 //        Specification<ScholarshipX> specB = userIs(user);
         return scholarshipXRepository.findAll(where(specA), new PageRequest(page, size));
     }
