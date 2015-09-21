@@ -6,8 +6,6 @@ import gov.gwssi.csc.scms.domain.dynamicReport.ReportConfiguration;
 import gov.gwssi.csc.scms.domain.dynamicReport.Table;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.service.BaseService;
-import gov.gwssi.csc.scms.service.dynamicReport.DStatisticsHandlerService;
-import gov.gwssi.csc.scms.service.dynamicReport.DimTableService;
 import gov.gwssi.csc.scms.service.dynamicReport.DynamicReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,7 +17,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Created by WangZhenghua on 2015/5/28.
