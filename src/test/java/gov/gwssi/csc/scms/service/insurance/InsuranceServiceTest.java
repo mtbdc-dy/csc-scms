@@ -40,9 +40,9 @@ public class InsuranceServiceTest extends UnitTestBase {
     @Test
     public void testGetInsuranceList() throws Exception {//��������ɱ�����Ϣ��
         InsuranceService insuranceService = super.getBean("insuranceService");
-        List<InsuranceResultObject> inResultObjectList = insuranceService.getInsuranceList(null);
-        Assert.assertNotNull(inResultObjectList);
-        System.out.println("list size::" + inResultObjectList.size());
+//        List<InsuranceResultObject> inResultObjectList = insuranceService.getInsuranceList(null);
+//        Assert.assertNotNull(inResultObjectList);
+//        System.out.println("list size::" + inResultObjectList.size());
 
     }
 
@@ -82,9 +82,9 @@ public class InsuranceServiceTest extends UnitTestBase {
     @Test
     public void testgetInsuranceList() throws Exception {
         InsuranceService insuranceService = super.getBean("insuranceService");
-        List<InsuranceResultObject> insuranceResultObjectList = insuranceService.getInsuranceList(null);
-        Assert.assertNotNull(insuranceResultObjectList);
-        System.out.println("list size::" + insuranceResultObjectList.size());
+//        List<InsuranceResultObject> insuranceResultObjectList = insuranceService.getInsuranceList(null);
+//        Assert.assertNotNull(insuranceResultObjectList);
+//        System.out.println("list size::" + insuranceResultObjectList.size());
     }
 
     @Test

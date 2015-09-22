@@ -25,7 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.data.jpa.domain.Specifications.where;
 
@@ -46,27 +48,30 @@ public class InsuranceService extends InsuranceSpecs {
     private InsuranceDAO insuranceDAO;
 
     //生成保险管理清单
-    public List<InsuranceResultObject> getInsuranceList(User user) {
+    public Map<String,String> getInsuranceList(User user) {
         List listParameter = new ArrayList();
         String userId = user.getUserId();
         listParameter.add(userId);
         List<InsuranceResultObject> InsuranceResultObjectList;
         listParameter.add("1");//传入“1”：正式
         insuranceDAO.doSt("p_scms_insurance", listParameter);//调用存储生成当年需要投保的保单记录
-        int startPosition, pageSize;
-
-        String sql = getSql(user);
-        if (sql == null) {
-            return null;
-        }
-
-
-        startPosition = FilterObject.OFFSETDEFULT;
-        pageSize = FilterObject.PAGESIZEDEFULT;
-
-
-        InsuranceResultObjectList = super.getBaseDao().getObjectListByHQL(sql, InsuranceResultObject.class, startPosition, pageSize);
-        return InsuranceResultObjectList;
+//        int startPosition, pageSize;
+//
+//        String sql = getSql(user);
+//        if (sql == null) {
+//            return null;
+//        }
+//
+//
+//        startPosition = FilterObject.OFFSETDEFULT;
+//        pageSize = FilterObject.PAGESIZEDEFULT;
+//
+//
+//        InsuranceResultObjectList = super.getBaseDao().getObjectListByHQL(sql, InsuranceResultObject.class, startPosition, pageSize);
+//        return InsuranceResultObjectList;
+        Map<String,String> result = new HashMap<String, String>();
+        result.put("result","success");
+        return result;
 
     }
 

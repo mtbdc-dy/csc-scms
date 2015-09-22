@@ -30,10 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static org.springframework.data.jpa.domain.Specifications.where;
 
@@ -64,7 +61,7 @@ public class ScholarshipXService extends ScholarshipXSpecs {
     private UserService userService;
 
     //生成奖学金评审清单
-    public List<ScholarshipXResultObject> getScholarshipXList(User user) {
+    public Map<String,String> getScholarshipXList(User user) {
 
         List listParameter = new ArrayList();
         List<ScholarshipXResultObject> ScholarshipXResultObjectList;
@@ -109,7 +106,9 @@ public class ScholarshipXService extends ScholarshipXSpecs {
 
         }
         operationLogService.saveOperationLog(operationLogs);//保存日志
-        return ScholarshipXResultObjectList;
+        Map<String,String> result = new HashMap<String, String>();
+        result.put("result","success");
+        return result;
 
     }
 
