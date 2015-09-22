@@ -27,6 +27,9 @@ public class AnnouncementService extends BaseService {
         }
     }
     public Announcement editAnnouncement(Announcement announcement) {
+        if(announcement.getId() == null){
+            announcement.setId(getBaseDao().getIdBySequence("SEQ_ANNOUNCEMENT"));
+        }
         return announcementRepository.save(announcement);
     }
 
