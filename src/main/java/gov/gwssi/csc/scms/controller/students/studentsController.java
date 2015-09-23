@@ -1,25 +1,20 @@
 package gov.gwssi.csc.scms.controller.students;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.query.StudentResultObject;
 import gov.gwssi.csc.scms.domain.student.Student;
-import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.students.StudentConverter;
 import gov.gwssi.csc.scms.service.students.StudentsService;
 import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Converter;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
 import java.util.Map;
@@ -33,11 +28,11 @@ import java.util.Map;
 @RequestMapping(value = "/students")
 public class studentsController {
 
-    @Autowired
-    private StudentService studentService;
+    private static final String HEADER_AUTHORIZATION = JWTUtil.HEADER_AUTHORIZATION;
 
     @Autowired
     private StudentsService studentsService;
+
 
     /**
      * 返回全部学生字段的所有信息
@@ -130,32 +125,40 @@ public class studentsController {
     /**
      * 返回全部学生字段的所有信息，并将集合根据偏离值、限定值分页
      * GET /api/students?field=cscId,gender,age&page=0&size=20
-     * @param fields      所需要的字段内容
+     *
+     * @param fields     所需要的字段内容
      * @param page       页数
      * @param size       每页显示条数
      * @param filterJSON filter查询对象
-     * @param mode     应用模块
+     * @param mode       应用模块
      */
     @RequestMapping(
             method = RequestMethod.GET,
             headers = {"Accept=application/json"},
             params = {"mode", "field", "page", "size", "filter"})
     public ResponseEntity<Page<Map<String, Object>>> getStudents(
+            @RequestHeader(value = HEADER_AUTHORIZATION) String header,
             @RequestParam(value = "mode") String mode,
             @RequestParam(value = "field") String[] fields,
             @RequestParam(value = "page") Integer page,
             @RequestParam(value = "size") Integer size,
             @RequestParam(value = "filter") String filterJSON) throws IOException {
-        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
-        Page<Student> studentPage = studentsService.getStudentsPageByFilter(filter, page, size, mode);
-        Page<Map<String, Object>> mapPage = studentPage.map(new StudentConverter(fields));
-        return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+        try {
+            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            Page<Student> studentPage = studentsService.getStudentsPageByFilter(filter, page, size, mode, header);
+            Page<Map<String, Object>> mapPage = studentPage.map(new StudentConverter(fields));
+            return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
     /**
      * 返回全部学生字段的所有信息，并将集合根据偏离值、限定值分页
      * GET /api/students?field=cscId,gender,age&page=0&size=20
-     * @param fields      所需要的字段内容
+     *
+     * @param fields     所需要的字段内容
      * @param page       页数
      * @param size       每页显示条数
      * @param filterJSON filter查询对象

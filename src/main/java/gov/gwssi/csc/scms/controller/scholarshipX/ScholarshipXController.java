@@ -1,8 +1,6 @@
 package gov.gwssi.csc.scms.controller.scholarshipX;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.controller.JsonBody;
 import gov.gwssi.csc.scms.controller.RequestHeaderError;
@@ -59,7 +57,7 @@ public class ScholarshipXController {
 
     //用户在前台点击生奖学金评审列表，返回列表
     @RequestMapping(value = "/new", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public List<ScholarshipXResultObject> getScholarshipXs(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
+    public Map<String,String> getScholarshipXs(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
         User user = null;
         List<OperationLog> operationLogs = null;
         try {
@@ -69,9 +67,9 @@ public class ScholarshipXController {
         } catch (UserIdentityError userIdentityError) {
             userIdentityError.printStackTrace();
         }
-        List<ScholarshipXResultObject> scholarshipXResultObjectList = scholarshipXService.getScholarshipXList(user);//保存日志
+        Map<String,String> result = scholarshipXService.getScholarshipXList(user);//保存日志
 
-        return scholarshipXResultObjectList;
+        return result;
     }
 
     //学校用户在前台点击查询，返回列表
@@ -455,8 +453,7 @@ public class ScholarshipXController {
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         try {
             Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
-            User user = userService.getUserByJWT(header);
-            Page<ScholarshipX> scholarshipXPage = scholarshipXService.getScholarshipXsPagingByFilter(filter, page, size, mode, user);
+            Page<ScholarshipX> scholarshipXPage = scholarshipXService.getScholarshipXsPagingByFilter(filter, page, size, mode, header);
             Page<Map<String, Object>> mapPage = scholarshipXPage.map(new ScholarshipXConverter());
             return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
         } catch (Exception e) {

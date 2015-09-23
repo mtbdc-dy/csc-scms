@@ -9,7 +9,6 @@ import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.AbnormalResultObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
-import gov.gwssi.csc.scms.domain.student.SchoolRoll;
 import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.abnormal.AbnormalConverter;
@@ -26,11 +25,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -182,16 +179,17 @@ public class AbnormalController {
             @RequestParam(value = "page") Integer page,
             @RequestParam(value = "size") Integer size,
             @RequestParam(value = "filter") String filterJSON) throws IOException {
+
         try {
             Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
-            User user = userService.getUserByJWT(header);
-            Page<Abnormal> abnormalPage = abnormalService.getAbnormalsPagingByFilter(filter, page, size, mode, user);
+            Page<Abnormal> abnormalPage = abnormalService.getAbnormalsPagingByFilter(filter, page, size, mode, header);
             Page<Map<String, Object>> mapPage = abnormalPage.map(new AbnormalConverter());
             return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
-        } catch (Exception e) {
+        }catch (Exception e){
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+
     }
 
 }
