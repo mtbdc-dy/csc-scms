@@ -242,6 +242,16 @@ public class TicketService extends TicketSpecs {
             throw new RuntimeException(e);
         }
     }
+    //生成机票管理清单
+    public String getStNo(User user) {
 
+        List listParameter = new ArrayList();
+
+        listParameter.add(user.getUserId());
+       String no = getBaseDao().doStatementForRtn("p_scms_airticket", listParameter);//调用存储生成当年需要预定的机票记录
+
+        return no;
+
+    }
 
 }

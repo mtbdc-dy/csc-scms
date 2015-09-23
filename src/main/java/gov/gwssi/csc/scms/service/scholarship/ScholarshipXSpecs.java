@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class ScholarshipXSpecs extends BaseService {
 
-    public static Specification<ScholarshipX> filterIsLike(final Filter filter, final User user) {
+    public static Specification<ScholarshipX> filterIsLike(final Filter filter, final User user, final String school) {
         return new Specification<ScholarshipX>() {
             @Override
             public Predicate toPredicate(Root<ScholarshipX> scholarshipX, CriteriaQuery<?> query, CriteriaBuilder cb) {
@@ -72,7 +72,7 @@ public class ScholarshipXSpecs extends BaseService {
                 if (filter.getSchResult() != null) {
                     predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.schResult), filter.getSchResult()));
                 }
-                predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.school), user.getNode().getNodeId()));
+                predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.school), school));
 
                 /**学生主表部分*/
                 if (needStudent) {

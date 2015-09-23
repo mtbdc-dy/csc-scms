@@ -74,7 +74,7 @@ public class TicketController extends BaseService {
 
     //学校用户在前台点击生成机票管理列表，返回列表
     @RequestMapping(value = "/new", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public List<TicketResultObject> getTickets(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
+    public Map<String,String> getTickets(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
         User user = null;
         try {
             user = userService.getUserByJWT(header);
@@ -83,8 +83,13 @@ public class TicketController extends BaseService {
         } catch (UserIdentityError userIdentityError) {
             userIdentityError.printStackTrace();
         }
-        List<TicketResultObject> ticketResultObjectList = ticketService.getTicketList(user);
-        return ticketResultObjectList;
+        Map<String,String> map = new HashMap<String, String>();
+        String no = ticketService.getStNo(user);
+
+//        List<Map<String,String>> list = new ArrayList<Map<String, String>>();
+//        list.add(map);
+        map.put("returnNo",no);
+        return map;
     }
 
     //学校用户在前台点击查询，返回列表
@@ -149,22 +154,12 @@ public class TicketController extends BaseService {
                     Ticket oldTicket = ticketService.getTicketById(ticket.getId());
                     Student student = oldTicket.getStudent();
 
-                    setNullByField(student.getBasicInfo(), "student", BasicInfo.class);
-                    setNullByField(student.getSchoolfellow(), "student", Schoolfellow.class);
-                    setNullByField(student.getDiscuss(), "student", Discuss.class);
-                    setNullByField(student.getProfilesHistory(), "student", ProfilesHistory.class);
-                    setNullByField(student.getRegistrationInfo(), "student", RegistrationInfo.class);
-                    setNullByField(student.getSchoolRoll(), "student", SchoolRoll.class);
-                    setNullByField(student.getWarning(), "student", Warning.class);
-                    setNullByField(student.getAccidents(), "student", Accident.class);
-                    setNullByField(student.getRelatedAddress(), "student", RelatedAddress.class);
-                    setNullByField(student.getGrades(), "student", Grade.class);
-                    setNullByField(student.getGradeAttachment(), "student", GradeAttachment.class);
-                    setNullByField(student.getAbnormals(), "student", Abnormal.class);
-                    setNullByField(student.getTickets(), "student", Ticket.class);
+                    Student student1 = new Student();
+                    student1.setId(student.getId());
+                    ticket.setStudent(student1);
 
-                    ticket.setStudent(student);
                     Ticket hqTicket = ticketService.saveTicket(ticket, null);
+                    hqTicket.setStudent(student1);
                     newTickets.add(hqTicket);
                 }
 
@@ -203,8 +198,11 @@ public class TicketController extends BaseService {
                     ticket.setState("AT0002");//订票状态待修改成对应的代码值
                     Ticket oldTicket = ticketService.getTicketById(ticket.getId());
                     Student student = oldTicket.getStudent();
-                    ticket.setStudent(student);
+                    Student student2 = new Student();
+                    student2.setId(student.getId());
+                    ticket.setStudent(student2);
                     Ticket hqTicket = ticketService.saveTicket(ticket, null);
+                    hqTicket.setStudent(student2);
                     newTickets.add(hqTicket);
                 }
 
@@ -431,4 +429,5 @@ public class TicketController extends BaseService {
             throw new RuntimeException(e);
         }
     }
+
 }

@@ -81,13 +81,15 @@ public class TicketSpecs extends BaseService {
                     currentYear = calendar.get(Calendar.YEAR);
                     SimpleDateFormat ds = new SimpleDateFormat("yyyy-MM-dd");
                     intialDate = ds.parse(currentYear + "-01-01");
-                    finalDate = ds.parse(currentYear + "-09-01");
+                    finalDate = ds.parse(currentYear + "-12-31");
 
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                predicate.getExpressions().add(cb.greaterThanOrEqualTo(cb.currentDate(),intialDate));
-                predicate.getExpressions().add(cb.lessThan(cb.currentDate(), finalDate));
+//                predicate.getExpressions().add(cb.greaterThanOrEqualTo(cb.currentDate(),intialDate));
+//                predicate.getExpressions().add(cb.lessThan(cb.currentDate(), finalDate));
+                predicate.getExpressions().add(cb.between(ticket.get(Ticket_.created), intialDate, finalDate));
+
 
                 if (filter.getTicketState() != null) {
                     predicate.getExpressions().add(cb.like(ticket.get(Ticket_.state), filter.getTicketState()));

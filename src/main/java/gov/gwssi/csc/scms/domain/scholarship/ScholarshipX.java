@@ -20,7 +20,7 @@ public class ScholarshipX {
     /**
      * 学生
      */
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "STUDENTID")
     private Student student;
 
