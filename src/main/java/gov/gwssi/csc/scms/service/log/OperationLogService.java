@@ -93,4 +93,10 @@ public class OperationLogService extends BaseService {
 //        System.out.println();
         return operationLogRepository.findAll(where(specA), new PageRequest(page, size, Sort.Direction.DESC,"createD"));
     }
+    public Page<OperationLog> getStudentChangeLogsPagingByFilter(Integer page,Integer size,String studengId) {
+        Specification<OperationLog> specA = filterIsLike(studengId);
+//        Specification<Ticket> specB = userIs(user);getOptLogsPagingByFilter
+//        System.out.println();
+        return operationLogRepository.findAll(where(specA), new PageRequest(page, size, Sort.Direction.DESC,"createD"));
+    }
 }

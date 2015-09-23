@@ -44,6 +44,9 @@ public class Filter {
     //报到进度统计 省和市字段
     private String province = null;//省市
     private String university = null;//学校
+    //代码维护模块 字段
+    private  String chinaName = null;
+    private  String tableName = null;
     /**
      * 隐藏查询条件
      */
@@ -546,5 +549,21 @@ public class Filter {
 
     public void setOptType(String optType) {
         this.optType = optType;
+    }
+
+    public String getChinaName() {
+        return chinaName;
+    }
+
+    public void setChinaName(String chinaName) {
+        this.chinaName = chinaName;
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
     }
 }
