@@ -55,7 +55,7 @@ public class CodeMainTenanceService extends CodeMainTenanceSpecs {
         return codeMainTenanceDAO.selectCode(codeDetailResult);
     }
 
-    public Page<CodeMainTenance> getDimUnivsPagingByFilter(Filter filter,Integer page,Integer size,String mode,User user) {
+    public Page<CodeMainTenance> getCodeMainTenancesPagingByFilter(Filter filter,Integer page,Integer size,User user) {
         Specification<CodeMainTenance> specA = filterIsLike(filter,user);
 //        Specification<Ticket> specB = userIs(user);
         return codeMainTenanceRepository.findAll(where(specA), new PageRequest(page, size, Sort.Direction.ASC, "seq"));
