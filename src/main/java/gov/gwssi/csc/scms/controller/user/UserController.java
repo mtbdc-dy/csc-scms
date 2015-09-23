@@ -30,13 +30,16 @@ public class UserController {
     private NodeService nodeService;
     @Autowired
     private MenuService menuService;
+    @Autowired
+    private ProjectService projectService ;
 
     @RequestMapping(value = "/node", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<Node> getNodeTree(@RequestHeader(value = HEADER_AUTHORIZATION) String header) {
         try {
             userService.getRootUser(header);
-
-            return nodeService.getNodeTree();
+            List<Node> nodes = nodeService.getNodeTree();
+            nodeService.setParentNull(nodes);
+            return nodes;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -50,6 +53,8 @@ public class UserController {
 
             Node node = new ObjectMapper().readValue(nodeStr, Node.class);
             node = nodeService.updateNode(node, user);
+            node.setChildren(null);
+            node.setParent(null);
             return node;
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,6 +69,8 @@ public class UserController {
 
             Node node = new ObjectMapper().readValue(nodeStr, Node.class);
             node = nodeService.addNode(node, user);
+            node.setChildren(null);
+            node.setParent(null);
             return node;
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,21 +82,37 @@ public class UserController {
     public Node deleteNode(@RequestHeader(value = HEADER_AUTHORIZATION) String header, @PathVariable String nodeId) {
         try {
             User user = userService.getRootUser(header);
-
-            return nodeService.deleteNodeByNodeId(nodeId, user);
+            Node node = nodeService.deleteNodeByNodeId(nodeId, user);
+            node.setChildren(null);
+            node.setParent(null);
+            return node;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
+
     // GET /menu/{userId}
     //获取所有菜单的API
     @RequestMapping(value = "/menu", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<Menu> getMenuTree(@RequestHeader(value = HEADER_AUTHORIZATION) String header) {
         try {
             userService.getRootUser(header);
+            List<Menu> root = menuService.getMenuTree();
+            return root;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 
-            return menuService.getMenuTree();
+    @RequestMapping(value = "/menu/{userId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public List<Menu> getMenusByUserId(@PathVariable String userId) {
+        try {
+            User user = userService.getUserByUserId(userId);
+            Role role = user.getRole();
+            List<Menu> menus = menuService.getMenuByRole(role);
+            return menus;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -100,8 +123,8 @@ public class UserController {
     public List<Role> getRole(@RequestHeader(value = HEADER_AUTHORIZATION) String header) {
         try {
             userService.getRootUser(header);
-
-            return roleService.getRolesByEnable(Role.ENABLE);
+            List<Role> roles = roleService.getRolesByEnable(Role.ENABLE);
+            return roles;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -114,7 +137,8 @@ public class UserController {
             User user = userService.getRootUser(header);
 
             Role role = new ObjectMapper().readValue(roleStr, Role.class);
-            return roleService.updateRole(role, user);
+            role = roleService.updateRole(role, user);
+            return role;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -145,12 +169,18 @@ public class UserController {
             throw new RuntimeException(e);
         }
     }
+
     @RequestMapping(value = "/user/{nodeId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<User> getUsers(@RequestHeader(value = HEADER_AUTHORIZATION) String header, @PathVariable String nodeId) {
         try {
             userService.getRootUser(header);
 
-            return userService.getUsersByNode(nodeId);
+            List<User> users = userService.getUsersByNode(nodeId);
+            userService.setUserNull(users);
+            for(User user:users){
+                projectService.setParentNull(user.getProjects());
+            }
+            return users;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -163,7 +193,9 @@ public class UserController {
             User user = userService.getRootUser(header);
 
             User user1 = new ObjectMapper().readValue(UserStr, User.class);
-            return userService.updateUser(user1, user);
+            User userRet = userService.updateUser(user1, user);
+            userService.setUserNull(userRet);
+            return userRet;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -176,7 +208,9 @@ public class UserController {
             User user = userService.getRootUser(header);
 
             User user1 = new ObjectMapper().readValue(userStr, User.class);
-            return userService.addUser(user1, user);
+            User userRet = userService.addUser(user1, user);
+            userService.setUserNull(userRet);
+            return userRet;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -197,14 +231,41 @@ public class UserController {
 
     //    GET /login/{userId} USER JSONObject
     @RequestMapping(value = "/login/{userId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public User login(@PathVariable(value = "userId") String userId) {
+    public PwdToken login(@PathVariable(value = "userId") String userId) {
         try {
+//            Date a = new Date();
+//            String pwd = userService.userLogin(userId);
+//            Map<String, String> map = new HashMap<String, String>();
+//            map.put("pwd", pwd);
+//            Date b = new Date();
+//            long c = b.getTime() - a.getTime();
+//            System.out.println("time for login one User = " + c + "ms");
+//            return map;
             Date a = new Date();
-            User user = userService.userLogin(userId);
+            PwdToken pwdToken = userService.userLogin(userId);
             Date b = new Date();
             long c = b.getTime() - a.getTime();
             System.out.println("time for login one User = " + c + "ms");
-            return user;
+            return pwdToken;
+        } catch (NoSuchUserException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @RequestMapping(value = "/loginAfter/{userId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public UserToken loginAfter(@PathVariable(value = "userId") String userId) {
+        try {
+            UserToken userToken = userService.userLoginAfter(userId);
+
+            userToken.getNode().setParent(null);
+            nodeService.setParentNull(userToken.getNode().getChildren());
+
+            Role role = userToken.getRole();
+            List<Menu> menus = menuService.getMenuByRole(role);
+            userToken.getRole().setMenus(menus);
+
+            return userToken;
         } catch (NoSuchUserException e) {
             e.printStackTrace();
             return null;
@@ -226,7 +287,7 @@ public class UserController {
     @RequestMapping(value = "/{userId}/getPwd", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public Map<String, String> getUserPwd(@PathVariable("userId") String userId) {
         try {
-            String pwd=userService.getUserByUserId(userId).getPassword();
+            String pwd = userService.getUserByUserId(userId).getPassword();
             Map<String, String> map = new HashMap<String, String>();
             map.put("pwd", pwd);
 //            String pwdJson = "{\"pwd\":\""+pwd+"\"}";

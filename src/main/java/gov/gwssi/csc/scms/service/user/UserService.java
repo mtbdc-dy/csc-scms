@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.*;
 
 /**
@@ -40,7 +41,7 @@ public class UserService extends BaseService {
         return userRepository.findUserByIdAndEnable(id, enable);
     }
 
-    public User getUserByUserIdAndEnable(String userId, String enable) throws NoSuchUserException{
+    public User getUserByUserIdAndEnable(String userId, String enable) throws NoSuchUserException {
         return userRepository.findUserByUserIdAndEnable(userId, enable);
     }
 
@@ -67,7 +68,7 @@ public class UserService extends BaseService {
 //        if (userId == null)
 //            throw new RequestHeaderError("can not read the invalid message!");
         User user = getUserByJWT(header);
-        if (checkRootUser(user)){
+        if (checkRootUser(user)) {
 
         }
 
@@ -119,12 +120,15 @@ public class UserService extends BaseService {
         user.setProjects(newProjects);
 
         user = doSave(user);
-        return initUser(user);
+
+//        return initUser(user);
+        return user;
     }
 
     private User doSave(User user) {
         return userRepository.save(user);
     }
+
 
     public void deleteUser(String id, User loginUser) throws NoSuchUserException, NoSuchNodeException, NoSuchRoleException {
         User user = getUserByUserIdAndEnable(id, User.ENABLE);
@@ -136,6 +140,7 @@ public class UserService extends BaseService {
         user.setUpdateBy(loginUser.getUserId());
         doSave(user);
     }
+
 
     public User updateUser(User user, User loginUser) throws NoSuchUserException, NoSuchNodeException, NoSuchRoleException {
         User u = getUserByUserIdAndEnable(user.getUserId(), User.ENABLE);
@@ -156,21 +161,39 @@ public class UserService extends BaseService {
         return userRepository.findUserByUserId(userId) != null;
     }
 
-    public User userLogin(String userId) throws NoSuchUserException {
+    public PwdToken userLogin(String userId) throws NoSuchUserException {
+//        Date a = new Date();
+//        User user = userRepository.findUserByUserId(userId);
+//        Date b = new Date();
+//        if (user == null)
+//            throw new NoSuchUserException();
+//        initUser(user);
+//        Date c = new Date();
+//        long findUser = b.getTime() - a.getTime();
+//        long initUser = c.getTime() - b.getTime();
+//
+//        System.out.println("findUser = " + findUser + "ms");
+//        System.out.println("initUser = " + initUser + "ms");
+//
+//        return user;
         Date a = new Date();
-        User user = userRepository.findUserByUserId(userId);
+
+//        String pwd = getBaseDao().getPWDByUserId(userId);
+        PwdToken pwdToken = userRepository.getPwdToken(userId);
+
         Date b = new Date();
-        if (user == null)
-            throw new NoSuchUserException();
-        initUser(user);
-        Date c = new Date();
         long findUser = b.getTime() - a.getTime();
-        long initUser = c.getTime() - b.getTime();
-
         System.out.println("findUser = " + findUser + "ms");
-        System.out.println("initUser = " + initUser + "ms");
+        return pwdToken;
 
-        return user;
+    }
+
+    @Transactional
+    public UserToken userLoginAfter(String userId) throws NoSuchUserException {
+        UserToken userToken = userRepository.getUserToken(userId);
+        nodeService.getChildren(userToken.getNode().getChildren());
+        return userToken;
+
     }
 
     public List<User> getUsersByRole(Role role) {
@@ -181,15 +204,37 @@ public class UserService extends BaseService {
         return userRepository.findUserByNodeAndEnable(node, User.ENABLE);
     }
 
+    @Transactional
     public List<User> getUsersByNode(String nodeId) throws NoSuchNodeException {
         Node node = nodeService.getNodeByNodeIdAndEnable(nodeId, Node.ENABLED);
         if (node == null)
             throw new NoSuchNodeException("can not find enabled node of the user with the nodeId:" + nodeId);
+
         List<User> users = userRepository.findUserByNodeAndEnable(node, User.ENABLE);
-        for (User u : users) {
-            initUser(u);
+//        for (User u : users) {
+//            initUser(u);
+//        }
+        for(User user:users){
+            projectService.getChildren(user.getProjects());
         }
         return users;
+
+
+    }
+
+    public void setUserNull(List<User> users){
+        for(User user:users){
+            user.getNode().setParent(null);
+            user.getNode().setChildren(null);
+            user.getRole().setMenus(null);
+        }
+    }
+
+    public void setUserNull(User user){
+            user.getNode().setParent(null);
+            user.getNode().setChildren(null);
+            user.getRole().setMenus(null);
+            user.setProjects(null);
     }
 
     private User initUser(User user) {
@@ -212,15 +257,16 @@ public class UserService extends BaseService {
         role.setMenus(menuService.getMenuByRole(role));
         return user;
     }
+
     //修改用户密码
     @Transactional
-    public void updateUserPwd(String userId, String newPwd1){
+    public void updateUserPwd(String userId, String newPwd1) {
         User user = userRepository.findUserByUserId(userId);
         user.setPassword(newPwd1);
         userRepository.save(user);
     }
 
-    public User getUserByUserId(String userId){
+    public User getUserByUserId(String userId) {
         return userRepository.findUserByUserId(userId);
     }
 }

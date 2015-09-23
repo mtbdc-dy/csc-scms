@@ -38,7 +38,7 @@ public class TicketConverter extends BaseService implements Converter<Ticket, Ma
         target.put("state",ticket.getState());
         target.put("remark",ticket.getRemark());
         target.put("createBy",ticket.getCreateBy());
-        target.put("created",ticket.getCreateBy());
+        target.put("created",ticket.getCreated());
         target.put("updateBy",ticket.getUpdateBy());
         target.put("updated",ticket.getUpdated());
         return target;

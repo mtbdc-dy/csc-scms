@@ -6,6 +6,7 @@ import gov.gwssi.csc.scms.repository.user.NodeRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,28 +23,34 @@ public class NodeService extends BaseService {
     @Autowired
     private UserService userService;
 
+    @Transactional
     public Node getNodeByNodeIdAndEnable(String nodeId, String enabled) {
         return nodeRepository.findNodeByNodeIdAndEnabled(nodeId, enabled);
     }
 
+    @Transactional
     public Node getNodeWithoutEnable(String nodeId) {
         return nodeRepository.findOne(nodeId);
     }
 
+
+    @Transactional
     public List<Node> getNodeTree() {
         List<Node> root = getRootNode();
-        setParentNull(root);
+//        setParentNull(root);
         return root;
     }
 
+    @Transactional
     public Node saveNode(Node node) {
         node = nodeRepository.save(node);
-        node.setChildren(null);
-        node.setParent(null);
+//        node.setChildren(null);
+//        node.setParent(null);
         return node;
     }
 
-    public Node addNode(Node node,User user) throws NoSuchNodeException {
+    @Transactional
+    public Node addNode(Node node, User user) throws NoSuchNodeException {
         Node parent = getNodeWithoutEnable(node.getNodeId());
         if (parent == null) {
             throw new NoSuchNodeException("cannot find the parent of the node:" + node.getParent().getNodeId());
@@ -52,10 +59,10 @@ public class NodeService extends BaseService {
             throw new NoSuchNodeException("the parent of the node is not enabled:" + node.getParent().getNodeId());
         }
 //        node.setNodeId(getBaseDao().getDicIdByClassType(node.getNodeType()));
-        if("P".equals(node.getNodeType())){
+        if ("P".equals(node.getNodeType())) {
             node.setNodeId(node.getNode());
             node.setNode(getBaseDao().getNameCHByRegionId(node.getNode()));
-        }else if("S".equals(node.getNodeType())){
+        } else if ("S".equals(node.getNodeType())) {
             node.setNodeId(node.getNode());
             node.setNode(getBaseDao().getUnivByUnivId(node.getNode()));
         } else {
@@ -65,7 +72,8 @@ public class NodeService extends BaseService {
         return saveNode(node);
     }
 
-    public Node updateNode(Node node,User user) throws NoSuchNodeException {
+    @Transactional
+    public Node updateNode(Node node, User user) throws NoSuchNodeException {
         Node node1 = getNodeWithoutEnable(node.getNodeId());
         if (node1 == null)
             throw new NoSuchNodeException("cannot find node by nodeId:" + node.getNodeId());
@@ -74,13 +82,15 @@ public class NodeService extends BaseService {
         return saveNode(node);
     }
 
-    public Node deleteNodeByNodeId(String nodeId,User user) throws NoSuchNodeException, NodeBeingUsedException {
+    @Transactional
+    public Node deleteNodeByNodeId(String nodeId, User user) throws NoSuchNodeException, NodeBeingUsedException {
         Node node = getNodeByNodeIdAndEnable(nodeId, Node.ENABLED);
         if (node == null)
             throw new NoSuchNodeException("cannot find node by nodeId:" + nodeId);
         return unEnableNode(node);
     }
 
+    @Transactional
     private Node unEnableNode(Node node) throws NodeBeingUsedException {
         List<User> users = userService.getUsersByNode(node);
         List<Node> childrenNode = node.getChildren();
@@ -91,11 +101,24 @@ public class NodeService extends BaseService {
             throw new NodeBeingUsedException("some user using the node:" + node.getNodeId());
     }
 
+    @Transactional
     private List<Node> getRootNode() {
-        return nodeRepository.findNodeByNodeLevelAndEnabled(Node.ROOT_LEVEL, Node.ENABLED);
+        List<Node> nodes = nodeRepository.findNodeByNodeLevelAndEnabled(Node.ROOT_LEVEL, Node.ENABLED);
+        getChildren(nodes);
+        return nodes;
     }
 
-    private void setParentNull(List<Node> nodes) {
+    @Transactional
+    public void getChildren(List<Node> nodes) {
+        if (nodes != null && nodes.size() > 0) {
+            for (int i = 0; i < nodes.size(); i++) {
+                getChildren(nodes.get(i).getChildren());
+            }
+
+        }
+    }
+
+    public void setParentNull(List<Node> nodes) {
         if (nodes != null && nodes.size() > 0) {
             setNullByField(nodes, "parent", Node.class);
             for (Node node : nodes) {

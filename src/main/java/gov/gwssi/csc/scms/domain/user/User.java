@@ -93,11 +93,12 @@ public class User implements Serializable {
     /**
      * 用户权限
      */
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "PUB_USER_PROJECT",
             joinColumns = {@JoinColumn(name = "USERID", referencedColumnName = "USERID")},
-            inverseJoinColumns = {@JoinColumn(name = "PROJECTID")})
+            inverseJoinColumns = {@JoinColumn(name = "PROJECTID")}
+    )
     private List<Project> projects = new ArrayList<Project>();
 
     public String getId() {

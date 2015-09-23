@@ -10,15 +10,19 @@ import gov.gwssi.csc.scms.domain.scholarship.ScholarshipX_;
 import gov.gwssi.csc.scms.domain.student.*;
 import gov.gwssi.csc.scms.domain.ticket.Ticket;
 import gov.gwssi.csc.scms.domain.ticket.Ticket_;
+import gov.gwssi.csc.scms.domain.user.Project;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.domain.warning.Warning;
+import org.hibernate.jpa.criteria.expression.EntityTypeExpression;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -49,10 +53,42 @@ public class StudentSpecs {
         };
     }
 
-    public static Specification<Student> userIs(final User user) {
+
+    public static Specification<Student> userIs(final User user,final String mode) {
         // TODO 实现根据用户所属项目或者所属院校进行查询
 
-        return null;
+        return new Specification<Student>() {
+            @Override
+            public Predicate toPredicate(Root<Student> student, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                Predicate predicate = cb.conjunction();
+
+                String userType = user.getUserType();
+                String identity = user.getRole().getIdentity();
+                String nodeId = user.getNode().getNodeId();
+                if("Y0002".equals(identity) && !"integratedquery".equals(mode)){    //基金委用户  Y0002主管 并且不是综合查询模块
+                    Join<Student, BasicInfo> basicInfo = student.join(Student_.basicInfo);
+                    List<Project> projects = user.getProjects();
+
+                    if(projects.size() == 1){
+                        predicate.getExpressions().add(cb.equal(basicInfo.get(BasicInfo_.projectName), projects.get(0).getProjectId()));
+                    }else if(projects.size() >1){
+                        Expression eSum = cb.equal(basicInfo.get(BasicInfo_.projectName), projects.get(0).getProjectId());
+                        for(int i=1;i<projects.size();i++){
+                            Expression e = cb.equal(basicInfo.get(BasicInfo_.projectName),projects.get(i).getProjectId());
+                            eSum = cb.or(eSum,e);
+                        }
+                        predicate.getExpressions().add(eSum);
+                    }else{
+                        predicate.getExpressions().add(cb.equal(basicInfo.get(BasicInfo_.projectName), "^_^"));
+                    }
+
+                }else if("2".equals(userType)){
+                    Join<Student, SchoolRoll> schoolRoll = student.join(Student_.schoolRoll);
+                    predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.currentUniversity), nodeId));
+                }
+                return predicate;
+            }
+        };
     }
 
     public static Specification<Student> isFreshRegister() {
@@ -171,6 +207,7 @@ public class StudentSpecs {
             }
         };
     }
+
     public static Specification<Student> isLeaveChina() {
         return new Specification<Student>() {
             @Override
@@ -178,11 +215,12 @@ public class StudentSpecs {
                 Predicate predicate = cb.conjunction();
                 Join<Student, SchoolRoll> schoolRoll = student.join(Student_.schoolRoll);
                 predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.registed), "AX0002"));
-                predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.leaveChina), "BA0001"));
+                predicate.getExpressions().add(cb.notEqual(schoolRoll.get(SchoolRoll_.leaveChina), "BA0002"));
                 return predicate;
             }
         };
     }
+
     public static Specification<Student> filterIsLike(final Filter filter) {
         return new Specification<Student>() {
             @Override

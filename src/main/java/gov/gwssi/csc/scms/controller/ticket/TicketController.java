@@ -74,7 +74,7 @@ public class TicketController extends BaseService {
 
     //学校用户在前台点击生成机票管理列表，返回列表
     @RequestMapping(value = "/new", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public List<TicketResultObject> getTickets(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
+    public Map<String,String> getTickets(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
         User user = null;
         try {
             user = userService.getUserByJWT(header);
@@ -83,8 +83,13 @@ public class TicketController extends BaseService {
         } catch (UserIdentityError userIdentityError) {
             userIdentityError.printStackTrace();
         }
-        List<TicketResultObject> ticketResultObjectList = ticketService.getTicketList(user);
-        return ticketResultObjectList;
+        Map<String,String> map = new HashMap<String, String>();
+        String no = ticketService.getStNo(user);
+
+//        List<Map<String,String>> list = new ArrayList<Map<String, String>>();
+//        list.add(map);
+        map.put("returnNo",no);
+        return map;
     }
 
     //学校用户在前台点击查询，返回列表
@@ -416,8 +421,7 @@ public class TicketController extends BaseService {
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         try {
             Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
-            User user = userService.getUserByJWT(header);
-            Page<Ticket> ticketPage = ticketService.getTicketsPagingByFilter(filter, page, size, mode, user);
+            Page<Ticket> ticketPage = ticketService.getTicketsPagingByFilter(filter, page, size, mode, header);
             Page<Map<String, Object>> mapPage = ticketPage.map(new TicketConverter());
             return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
         } catch (Exception e) {
@@ -425,4 +429,5 @@ public class TicketController extends BaseService {
             throw new RuntimeException(e);
         }
     }
+
 }
