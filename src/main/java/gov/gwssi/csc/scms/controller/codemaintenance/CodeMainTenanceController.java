@@ -2,14 +2,25 @@ package gov.gwssi.csc.scms.controller.codemaintenance;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.controller.JsonBody;
+import gov.gwssi.csc.scms.domain.codemaintenance.CodeMainTenance;
+import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.query.CodeDetailResult;
+import gov.gwssi.csc.scms.domain.user.User;
+import gov.gwssi.csc.scms.service.codemaintenance.CodeMainTenanceConverter;
 import gov.gwssi.csc.scms.service.codemaintenance.CodeMainTenanceService;
+import gov.gwssi.csc.scms.service.user.UserService;
+import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lzs on 2015/7/13.
@@ -20,6 +31,8 @@ import java.util.List;
 public class CodeMainTenanceController {
     @Autowired
     private CodeMainTenanceService codeMainTenanceService;
+    @Autowired
+    private UserService userService;
     //点击查询返回代码维护列表
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
     public List getALLCode(@RequestParam(value = "chinaName") String chinaName,@RequestParam(value = "tableName") String tableName) {
@@ -113,5 +126,27 @@ public class CodeMainTenanceController {
             throw new RuntimeException(e);
         }
         return codeDetailResult;
+    }
+    //分页查询
+    @RequestMapping(
+            value = "/newstu",
+            method = RequestMethod.GET,
+            headers = {"Accept=application/json"},
+            params = { "page", "size", "filter"})
+    public ResponseEntity<Page<Map<String, Object>>> getNewStuTimeSet(
+            @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size,
+            @RequestParam(value = "filter") String filterJSON) throws IOException {
+        try {
+            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            User user = userService.getUserByJWT(header);
+            Page<CodeMainTenance> codeMainTenancesPage = codeMainTenanceService.getCodeMainTenancesPagingByFilter(filter, page, size,  user);
+            Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceConverter());
+            return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 }

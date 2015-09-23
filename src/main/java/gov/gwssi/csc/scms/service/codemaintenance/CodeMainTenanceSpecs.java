@@ -11,6 +11,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 /**
  * Created by LiZhiSheng on 2015/9/10.
@@ -22,11 +24,17 @@ public class CodeMainTenanceSpecs extends BaseService {
             @Override
             public Predicate toPredicate(Root<CodeMainTenance> codeMainTenance, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 Predicate predicate = cb.conjunction();
-                if (!"".equals(filter.getChinaName())) {
-                    predicate.getExpressions().add(cb.equal(codeMainTenance.get(CodeMainTenance_.tableCh), filter.getChinaName()));
+                if (filter.getChinaName()!=null) {
+                    String chinaName = "";
+                    try {
+                         chinaName = URLDecoder.decode(filter.getChinaName(), "utf-8");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    predicate.getExpressions().add(cb.like(codeMainTenance.get(CodeMainTenance_.tableCh).as(String.class), "%"+chinaName+"%"));
                 }
-                if (!"".equals(filter.getTableName())) {
-                    predicate.getExpressions().add(cb.equal(codeMainTenance.get(CodeMainTenance_.tableEn), filter.getTableName()));
+                if (filter.getTableName()!=null) {
+                    predicate.getExpressions().add(cb.like(codeMainTenance.get(CodeMainTenance_.tableEn).as(String.class), "%"+filter.getTableName()+"%"));
                 }
                 return predicate;
             }
