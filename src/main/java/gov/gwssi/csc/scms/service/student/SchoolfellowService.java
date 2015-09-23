@@ -1,11 +1,16 @@
 package gov.gwssi.csc.scms.service.student;
 
+import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.student.Schoolfellow;
 import gov.gwssi.csc.scms.repository.student.SchoolfellowRepository;
 import gov.gwssi.csc.scms.service.BaseService;
+import gov.gwssi.csc.scms.service.log.OperationLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * Created by Murray on 2015/4/16.
@@ -16,6 +21,8 @@ public class SchoolfellowService extends BaseService {
     @Autowired
     @Qualifier("schoolfellowRepository")
     private SchoolfellowRepository schoolfellowRepository;
+    @Autowired
+    private OperationLogService operationLogService;
 
     public Schoolfellow getSchoolfellowById(String id) {
         return schoolfellowRepository.findOne(id);
@@ -31,6 +38,13 @@ public class SchoolfellowService extends BaseService {
     }
 
     public Schoolfellow updateSchoolfellow(Schoolfellow schoolfellow) {
+        schoolfellow.setStudent(getSchoolfellowById(schoolfellow.getId()).getStudent());
+        return saveSchoolfellow(schoolfellow);
+    }
+
+    @Transactional
+    public Schoolfellow updateSchoolfellow(Schoolfellow schoolfellow,List<OperationLog> operationLogs) {
+        operationLogService.saveOperationLog(operationLogs);
         schoolfellow.setStudent(getSchoolfellowById(schoolfellow.getId()).getStudent());
         return saveSchoolfellow(schoolfellow);
     }

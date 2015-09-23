@@ -136,15 +136,4 @@ public class AbnormalServiceTest  extends UnitTestBase {
          return list;
      }
 
-     @Test
-     public void abnormalPagingTest(){
-         AbnormalService ticketService = getBean(AbnormalService.class);
-         UserService userService = getBean(UserService.class);
-         User user = userService.getUserByUserId("q0922");
-         Filter filter = new Filter();
-         filter.setAbnormalState("AS0005");
-         Page<Abnormal> abnormalPage = ticketService.getAbnormalsPagingByFilter(filter, 0, 10, "abnormal", user);
-         System.out.println(abnormalPage);
-     }
-
 }

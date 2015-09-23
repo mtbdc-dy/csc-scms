@@ -322,7 +322,7 @@ em.getTransaction().begin();
             storedProcedureQuery.registerStoredProcedureParameter("avc_configid",String.class,ParameterMode.IN);
             storedProcedureQuery.registerStoredProcedureParameter("avc_result",String.class, ParameterMode.OUT);
 
-            storedProcedureQuery.setParameter("avc_conigid",in);
+            storedProcedureQuery.setParameter("avc_conigid", in);
             boolean execute = storedProcedureQuery.execute();
 
             String result = (String)storedProcedureQuery.getOutputParameterValue("avc_result");
@@ -331,6 +331,26 @@ em.getTransaction().begin();
 
         }finally {
             if(em != null){
+                em.close();
+            }
+        }
+    }
+
+    //得到用户密码
+    public String getPWDByUserId(String userId){
+        String sql = "select PASSWORD from PUB_USER where USERID='" + userId + "'";
+        EntityManager em = null;
+        try {
+            em = entityManagerFactory.createEntityManager();
+            Query query = em.createNativeQuery(sql);
+            if(query.getSingleResult()!=null){
+                return String.valueOf(query.getSingleResult());
+            }else{
+                return "-";
+            }
+
+        } finally {
+            if (em != null) {
                 em.close();
             }
         }

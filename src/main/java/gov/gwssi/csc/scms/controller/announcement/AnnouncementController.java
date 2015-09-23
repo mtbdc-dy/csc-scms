@@ -30,7 +30,6 @@ public class AnnouncementController {
         }
     }
 
-    //ÐÞ¸Ä
     @RequestMapping(method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public Announcement editGrade(@RequestBody String announcementJson) {
         try {
