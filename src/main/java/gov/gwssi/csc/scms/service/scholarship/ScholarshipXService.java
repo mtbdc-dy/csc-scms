@@ -15,8 +15,6 @@ import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.scholarshipX.ScholarshipDetailRepository;
 import gov.gwssi.csc.scms.repository.scholarshipX.ScholarshipRepository;
 import gov.gwssi.csc.scms.repository.scholarshipX.ScholarshipXRepository;
-import gov.gwssi.csc.scms.service.BaseService;
-import gov.gwssi.csc.scms.service.abnormal.NoSuchAbnormalException;
 import gov.gwssi.csc.scms.service.log.OperationLogService;
 import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.user.UserService;
@@ -27,7 +25,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -494,25 +491,28 @@ public class ScholarshipXService extends ScholarshipXSpecs {
     public Page<ScholarshipX> getScholarshipXsPagingByFilter(Filter filter,Integer page,Integer size,String mode,String header) {
         try {
             User user = userService.getUserByJWT(header);
-            Specification<ScholarshipX> specA = filterIsLike(filter, user);
+            String school = user.getNode().getNodeId();
+            Specification<ScholarshipX> specA = filterIsLike(filter, user, school);
             Specification<ScholarshipX> specB = userIs(user);
             return scholarshipXRepository.findAll(where(specA).and(specB), new PageRequest(page, size));
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-    public Page<ScholarshipX> getScholarshipXsPagingByFilter(Filter filter,Integer page,Integer size,String mode,User user) {
-        String school = user.getNode().getNodeId();
-        Specification<ScholarshipX> specA = filterIsLike(filter,user,school);
-//        Specification<ScholarshipX> specB = userIs(user);
-        return scholarshipXRepository.findAll(where(specA), new PageRequest(page, size));
     }
 
     //分页查询
-    public Page<ScholarshipX> getScholarshipXsPagingByFilterJ(Filter filter,Integer page,Integer size,String mode,User user,String school) {
-        Specification<ScholarshipX> specA = filterIsLike(filter,user,school);
-//        Specification<ScholarshipX> specB = userIs(user);
-        return scholarshipXRepository.findAll(where(specA), new PageRequest(page, size));
+    @Transactional
+    public Page<ScholarshipX> getScholarshipXsPagingByFilterJ(Filter filter,Integer page,Integer size,String mode,String header,String school) {
+            try {
+                User user = userService.getUserByJWT(header);
+                Specification<ScholarshipX> specA = filterIsLike(filter, user, school);
+                Specification<ScholarshipX> specB = userIs(user);
+                return scholarshipXRepository.findAll(where(specA).and(specB), new PageRequest(page, size));
+            }catch (Exception e){
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
     }
 
 }
