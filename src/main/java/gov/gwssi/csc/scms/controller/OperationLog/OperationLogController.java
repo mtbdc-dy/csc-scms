@@ -137,6 +137,31 @@ public class OperationLogController {
             throw new RuntimeException(e);
         }
     }
+    //学籍变化记录 分页
+    //分页查询
+    @RequestMapping(
+            value = "/changelog/{studentId}",
+            method = RequestMethod.GET,
+            headers = {"Accept=application/json"},
+            params = {"mode", "page", "size", "filter"})
+    public ResponseEntity<Page<Map<String, Object>>> getChangeLogPageList(
+            @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
+            @RequestParam(value = "mode") String mode,
+            @PathVariable(value = "studentId") String studentId,
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size,
+            @RequestParam(value = "filter") String filterJSON) throws IOException {
+        try {
+            //Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            //User user = userService.getUserByJWT(header);
+            Page<OperationLog> operationLogsPage = operationLogService.getStudentChangeLogsPagingByFilter(page, size, studentId);
+            Page<Map<String, Object>> mapPage = operationLogsPage.map(new OperationLogConverter());
+            return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 
     //分页查询
     @RequestMapping(
