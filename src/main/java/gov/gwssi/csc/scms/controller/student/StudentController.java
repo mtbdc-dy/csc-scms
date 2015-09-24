@@ -166,6 +166,9 @@ public class StudentController {
             Student student = studentService.getStudentById(id);
             student.setAbnormals(null);
             student.setTickets(null);
+            student.setInsurances(null);
+            student.setScholarshipXs(null);
+            student.setWarning(null);
             return student;
         } catch (Exception e) {
             e.printStackTrace();
