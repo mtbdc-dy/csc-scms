@@ -62,7 +62,7 @@ public class AbnormalSpecs extends BaseService {
                     predicate.getExpressions().add(cb.like(abnormal.get(Abnormal_.state), filter.getAbnormalState()));
                 } else {
                     if ("2".equals(user.getUserType())) {//1 基金委用户 2学校用户
-                        predicate.getExpressions().add(cb.in(abnormal.get(Abnormal_.state)).value("AS0001").value("AS0002").value("AS0003").value("AS0004"));
+                        predicate.getExpressions().add(cb.in(abnormal.get(Abnormal_.state)).value("AS0001").value("AS0003").value("AS0004").value("AS0005").value("AS0006").value("AS0007").value("AS0008"));
                     } else if ("1".equals(user.getUserType())) {
                         predicate.getExpressions().add(cb.in(abnormal.get(Abnormal_.state)).value("AS0003").value("AS0004").value("AS0005").value("AS0006").value("AS0007").value("AS0008"));
                     }
