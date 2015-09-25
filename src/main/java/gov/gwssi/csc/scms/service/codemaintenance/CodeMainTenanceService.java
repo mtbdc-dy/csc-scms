@@ -2,9 +2,11 @@ package gov.gwssi.csc.scms.service.codemaintenance;
 
 import gov.gwssi.csc.scms.dao.codemaintenance.CodeMainTenanceDAO;
 import gov.gwssi.csc.scms.domain.codemaintenance.CodeMainTenance;
+import gov.gwssi.csc.scms.domain.codemaintenance.CodemaintanenceRegionFirst;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.query.CodeDetailResult;
 import gov.gwssi.csc.scms.domain.user.User;
+import gov.gwssi.csc.scms.repository.codemaintenance.CodeMainTenanceRegion1Repository;
 import gov.gwssi.csc.scms.repository.codemaintenance.CodeMainTenanceRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,9 @@ public class CodeMainTenanceService extends CodeMainTenanceSpecs {
     @Autowired
     @Qualifier("codeMainTenanceRepository")
     private CodeMainTenanceRepository codeMainTenanceRepository;
+    @Autowired
+    @Qualifier("codeMainTenanceRegion1Repository")
+    private CodeMainTenanceRegion1Repository codeMainTenanceRegion1Repository;
     public List findAllCode(String tableName,String chinaName){
         return codeMainTenanceDAO.getAllCodeList(tableName,chinaName);
     }
@@ -59,6 +64,11 @@ public class CodeMainTenanceService extends CodeMainTenanceSpecs {
         Specification<CodeMainTenance> specA = filterIsLike(filter,user);
 //        Specification<Ticket> specB = userIs(user);
         return codeMainTenanceRepository.findAll(where(specA), new PageRequest(page, size, Sort.Direction.ASC, "seq"));
+    }
+    public Page<CodemaintanenceRegionFirst> getCodemaintanenceRegionFirstsPagingByFilter(Integer page,Integer size) {
+        Specification<CodemaintanenceRegionFirst> specA = filterIsLike();
+//        Specification<Ticket> specB = userIs(user);
+        return codeMainTenanceRegion1Repository.findAll(where(specA), new PageRequest(page, size, Sort.Direction.ASC, "id"));
     }
 }
 

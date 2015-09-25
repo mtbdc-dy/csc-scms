@@ -2,6 +2,7 @@ package gov.gwssi.csc.scms.service.codemaintenance;
 
 import gov.gwssi.csc.scms.domain.codemaintenance.CodeMainTenance;
 import gov.gwssi.csc.scms.domain.codemaintenance.CodeMainTenance_;
+import gov.gwssi.csc.scms.domain.codemaintenance.CodemaintanenceRegionFirst;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.BaseService;
@@ -36,6 +37,17 @@ public class CodeMainTenanceSpecs extends BaseService {
                 if (filter.getTableName()!=null) {
                     predicate.getExpressions().add(cb.like(codeMainTenance.get(CodeMainTenance_.tableEn).as(String.class), "%"+filter.getTableName()+"%"));
                 }
+                return predicate;
+            }
+        };
+    }
+    public static Specification<CodemaintanenceRegionFirst> filterIsLike() {
+        return new Specification<CodemaintanenceRegionFirst>() {
+
+            @Override
+            public Predicate toPredicate(Root<CodemaintanenceRegionFirst> codeMainTenance, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                Predicate predicate = cb.conjunction();
+
                 return predicate;
             }
         };

@@ -3,10 +3,12 @@ package gov.gwssi.csc.scms.controller.codemaintenance;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.controller.JsonBody;
 import gov.gwssi.csc.scms.domain.codemaintenance.CodeMainTenance;
+import gov.gwssi.csc.scms.domain.codemaintenance.CodemaintanenceRegionFirst;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.query.CodeDetailResult;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.codemaintenance.CodeMainTenanceConverter;
+import gov.gwssi.csc.scms.service.codemaintenance.CodeMainTenanceRegion1Converter;
 import gov.gwssi.csc.scms.service.codemaintenance.CodeMainTenanceService;
 import gov.gwssi.csc.scms.service.user.UserService;
 import gov.gwssi.csc.scms.utils.JWTUtil;
@@ -143,6 +145,29 @@ public class CodeMainTenanceController {
             User user = userService.getUserByJWT(header);
             Page<CodeMainTenance> codeMainTenancesPage = codeMainTenanceService.getCodeMainTenancesPagingByFilter(filter, page, size,  user);
             Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceConverter());
+            return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+    //分页查询
+    @RequestMapping(
+            value = "/region",
+            method = RequestMethod.GET,
+            headers = {"Accept=application/json"},
+            params = { "page", "size", "filter"})
+    public ResponseEntity<Page<Map<String, Object>>> getRegionFirst(
+            @RequestParam(value = "name") String name,
+            @RequestParam(value = "flag") String flag,
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size,
+            @RequestParam(value = "filter") String filterJSON) throws IOException {
+        try {
+            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+
+            Page<CodemaintanenceRegionFirst> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceRegionFirstsPagingByFilter(page, size);
+            Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceRegion1Converter());
             return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
