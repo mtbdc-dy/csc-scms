@@ -29,7 +29,7 @@ public interface UserRepository extends CrudRepository<User, String> {
     @Query("select new gov.gwssi.csc.scms.domain.user.PwdToken(u.userId,u.password,u.userType,u.role.identity) from User u where u.userId = ?1 and u.enable = '1'")
     PwdToken getPwdToken(String userId);
 
-    @Query("select new gov.gwssi.csc.scms.domain.user.UserToken(u.userId,u.userType,u.node,u.role) from User u where u.userId = ?1")
+    @Query("select new gov.gwssi.csc.scms.domain.user.UserToken(u.userId,u.userType,u.fullName,u.node,u.role) from User u where u.userId = ?1")
     UserToken getUserToken(String userId);
 
 }

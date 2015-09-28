@@ -6,6 +6,7 @@ package gov.gwssi.csc.scms.domain.user;
 public class UserToken {
     private String userId;
     private String userType;
+    private String fullName;
     private Node node;
     private Role role;
 
@@ -41,9 +42,18 @@ public class UserToken {
         this.role = role;
     }
 
-    public UserToken(String userId, String userType, Node node, Role role) {
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public UserToken(String userId, String userType, String fullName, Node node, Role role) {
         this.userId = userId;
         this.userType = userType;
+        this.fullName = fullName;
         this.node = node;
         this.role = role;
     }
