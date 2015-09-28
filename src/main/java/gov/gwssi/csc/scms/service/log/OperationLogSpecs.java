@@ -19,7 +19,7 @@ import java.util.Date;
  * Created by LiZhiSheng on 2015/9/6.
  */
 public class OperationLogSpecs extends BaseService {
-    public static Specification<OperationLog> filterIsLike(final Filter filter, final User user) {
+    public static Specification<OperationLog> filterIsLike(final Filter filter, final String userId) {
         return new Specification<OperationLog>() {
 
             @Override
@@ -54,6 +54,8 @@ public class OperationLogSpecs extends BaseService {
                     end = c.getTime();
                     predicate.getExpressions().add(cb.lessThanOrEqualTo(operationLog.get(OperationLog_.createD), end));
                 }
+                predicate.getExpressions().add(cb.equal(operationLog.get(OperationLog_.createBy), userId));
+
                 return predicate;
             }
         };
