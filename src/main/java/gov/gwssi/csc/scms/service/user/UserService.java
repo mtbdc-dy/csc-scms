@@ -148,7 +148,7 @@ public class UserService extends BaseService {
             throw new NoSuchUserException("cannot find the user for update : " + user.getUserId());
 
         if (user.getPassword() != null) {
-            user.setPassword(MD5Util.MD5(user.getPassword()));
+//            user.setPassword(MD5Util.MD5(user.getPassword()));
         } else {
             user.setPassword(u.getPassword());
         }
