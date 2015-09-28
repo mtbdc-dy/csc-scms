@@ -382,7 +382,7 @@ public class TicketController extends BaseService {
      *
      * @param id
      */
-    @RequestMapping(
+    @RequestMapping(value = "/export",
             method = RequestMethod.GET,
             params = {"id", "userType"},
             headers = "Accept=application/octet-stream")
