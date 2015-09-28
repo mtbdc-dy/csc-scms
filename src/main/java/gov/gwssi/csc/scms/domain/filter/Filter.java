@@ -47,6 +47,8 @@ public class Filter {
     //代码维护模块 字段
     private  String chinaName = null;
     private  String tableName = null;
+    //机票类型
+    private  String ticketType = null;
     /**
      * 隐藏查询条件
      */
@@ -486,6 +488,13 @@ public class Filter {
 
     }
 
+    public String getTicketType() {
+        return ticketType;
+    }
+
+    public void setTicketType(String ticketType) {
+        this.ticketType = ticketType;
+    }
 
     public String getProvince() {
         return province;
