@@ -39,17 +39,20 @@ public class DynamicReportServiceTest extends UnitTestBase {
     @Test
     public void testGenerateSQL() throws Exception {
         String configJSON = "{\n" +
-                "  \"title\": \"测试动态报表统计\",\n" +
-                "  \"description\": \"用于测试动态报表统计\",\n" +
+                "  \"title\": \"测试报表\",\n" +
+                "  \"description\": \"测试报表描述\",\n" +
                 "  \"accessState\": \"1\",\n" +
                 "  \"joinConditions\": [{\n" +
-                "    \"table\": \"1\",\n" +
-                "    \"joinType\": \"1\"\n" +
-                "  }, {\n" +
                 "    \"table\": \"2\",\n" +
                 "    \"joinType\": \"1\"\n" +
                 "  }, {\n" +
                 "    \"table\": \"3\",\n" +
+                "    \"joinType\": \"1\"\n" +
+                "  }, {\n" +
+                "    \"table\": \"4\",\n" +
+                "    \"joinType\": \"1\"\n" +
+                "  }, {\n" +
+                "    \"table\": \"5\",\n" +
                 "    \"joinType\": \"1\"\n" +
                 "  }],\n" +
                 "  \"whereConditions\": [{\n" +
@@ -57,15 +60,15 @@ public class DynamicReportServiceTest extends UnitTestBase {
                 "    \"table\": \"3\",\n" +
                 "    \"column\": \"21\",\n" +
                 "    \"operator\": \"2\",\n" +
-                "    \"condition\": \"E0348\",\n" +
+                "    \"condition\": \"E0356\",\n" +
                 "    \"rParenthese\": \"\",\n" +
-                "    \"logic\": \"2\"\n" +
+                "    \"logic\": \"1\"\n" +
                 "  }, {\n" +
                 "    \"lParenthese\": \"\",\n" +
-                "    \"table\": \"1\",\n" +
-                "    \"column\": \"2\",\n" +
+                "    \"table\": \"3\",\n" +
+                "    \"column\": \"21\",\n" +
                 "    \"operator\": \"2\",\n" +
-                "    \"condition\": \"M0066\",\n" +
+                "    \"condition\": \"E0230\",\n" +
                 "    \"rParenthese\": \"\",\n" +
                 "    \"logic\": \"\"\n" +
                 "  }],\n" +
@@ -73,13 +76,36 @@ public class DynamicReportServiceTest extends UnitTestBase {
                 "    \"table\": \"3\",\n" +
                 "    \"column\": \"18\"\n" +
                 "  }, {\n" +
-                "    \"table\": \"1\",\n" +
-                "    \"column\": \"2\"\n" +
+                "    \"table\": \"2\",\n" +
+                "    \"column\": \"7\"\n" +
                 "  }],\n" +
                 "  \"orderConditions\": [{\n" +
                 "    \"table\": \"3\",\n" +
                 "    \"column\": \"18\",\n" +
                 "    \"orderType\": \"1\"\n" +
+                "  }, {\n" +
+                "    \"table\": \"2\",\n" +
+                "    \"column\": \"7\",\n" +
+                "    \"orderType\": \"2\"\n" +
+                "  }],\n" +
+                "  \"selectConditions\": [{\n" +
+                "    \"table\": \"3\",\n" +
+                "    \"column\": \"18\",\n" +
+                "    \"calculateType\": \"1\",\n" +
+                "    \"level\": 1,\n" +
+                "    \"sumColumn\": false\n" +
+                "  }, {\n" +
+                "    \"table\": \"3\",\n" +
+                "    \"column\": \"26\",\n" +
+                "    \"calculateType\": \"1\",\n" +
+                "    \"level\": 2,\n" +
+                "    \"sumColumn\": true\n" +
+                "  }, {\n" +
+                "    \"table\": \"2\",\n" +
+                "    \"column\": \"8\",\n" +
+                "    \"calculateType\": \"1\",\n" +
+                "    \"level\": 1,\n" +
+                "    \"sumColumn\": true\n" +
                 "  }]\n" +
                 "}";
         OriginalConfiguration configuration = new ObjectMapper().readValue(configJSON, OriginalConfiguration.class);

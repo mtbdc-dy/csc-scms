@@ -14,6 +14,7 @@ public class OriginalConfiguration {
     private List<WhereCondition> whereConditions;
     private Set<GroupCondition> groupConditions;
     private Set<OrderCondition> orderConditions;
+    private List<SelectCondition> selectConditions;
 
     public String getTitle() {
         return title;
@@ -69,5 +70,13 @@ public class OriginalConfiguration {
 
     public void setOrderConditions(Set<OrderCondition> orderConditions) {
         this.orderConditions = orderConditions;
+    }
+
+    public List<SelectCondition> getSelectConditions() {
+        return selectConditions;
+    }
+
+    public void setSelectConditions(List<SelectCondition> selectConditions) {
+        this.selectConditions = selectConditions;
     }
 }

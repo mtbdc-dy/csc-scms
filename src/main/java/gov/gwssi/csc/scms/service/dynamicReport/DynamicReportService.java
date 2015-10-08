@@ -1,22 +1,22 @@
 package gov.gwssi.csc.scms.service.dynamicReport;
 
+import gov.gwssi.csc.scms.domain.dictionary.DictTreeJson;
 import gov.gwssi.csc.scms.domain.dynamicReport.*;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.repository.dynamicReport.ColumnRepository;
 import gov.gwssi.csc.scms.repository.dynamicReport.ReportConfigurationRepository;
 import gov.gwssi.csc.scms.repository.dynamicReport.TableRepository;
 import gov.gwssi.csc.scms.service.BaseService;
+import gov.gwssi.csc.scms.service.dictionary.TranslateDictService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sun.tools.jconsole.Tab;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by WangZhenghua on 2015/5/14.
@@ -35,6 +35,10 @@ public class DynamicReportService extends DynamicReportSpecs {
     @Qualifier("columnRepository")
     @Autowired
     private ColumnRepository columnRepository;
+
+    @Qualifier("translateDictService")
+    @Autowired
+    private TranslateDictService translateDictService;
 
     public Page<ReportConfiguration> getAllConfigurationsByFilter(Filter filter) {
 
@@ -73,15 +77,69 @@ public class DynamicReportService extends DynamicReportSpecs {
         return table;
     }
 
+    public String getSelectSQL(List<String> codeTableNames) {
+        String selectSQL = "";
+        int[] sizes = new int[codeTableNames.size()];
+        int max = 1;
+        for (int i = 0; i < codeTableNames.size(); i++) {
+            int codeTableSize = translateDictService.getCodeTableList(codeTableNames.get(i)).size();
+            max = max > codeTableSize ? max : codeTableSize;
+        }
+        String[][] matrix = new String[codeTableNames.size()][max];
+        for (int i = codeTableNames.size() - 1; i >= 0; i--) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                matrix[i][j] = i + "";
+            }
+        }
+        System.out.println("matrix = " + matrix);
+//        List<List<String>> matrix = new ArrayList<List<String>>();
+//        Map<Point, String> matrix = new HashMap<Point, String>();
+//        for (int i = 0; i < codeTableNames.size(); i++) {
+//            List<DictTreeJson> codeTables = translateDictService.getCodeTableList(codeTableNames.get(i));
+//            for (int j = 0; j < codeTables.size(); j++) {
+//                DictTreeJson codeTable = codeTables.get(j);
+//                matrix.put(new Point(i, j), codeTable.getCode());
+//            }
+//        }
+//        System.out.println("matrix = " + matrix);
+//        for (String codeTableName : codeTableNames) {
+//            for (DictTreeJson dictTreeJson : translateDictService.getCodeTableList(codeTableName)) {
+////                dictTreeJson.getCode()
+//            }
+//        }
+        return selectSQL;
+    }
+
     @Transactional
     public String generateSQL(OriginalConfiguration configuration) {
         String SQL = "\nselect \n";
-        // TODO 拼装 select 条件...
+        // 显示的分组列
         for (GroupCondition groupCondition : configuration.getGroupConditions()) {
             Column column = getColumn(groupCondition.getColumn());
             SQL += "  nvl(" + column.getTable().getTableEn() + "." + column.getColumnEn() + ", '-'),\n";
         }
-        SQL = SQL.substring(0, SQL.length() - 2) + "\n";
+
+        List<String> codeTables = new ArrayList<String>();
+        for (SelectCondition selectCondition : configuration.getSelectConditions()) {
+            Column column = getColumn(selectCondition.getColumn());
+            Table table = column.getTable();
+            if (column.getCodeTable() == null) {
+                System.out.println("codeTables = " + codeTables);
+                getSelectSQL(codeTables);
+                codeTables.clear();
+                SQL += "  nvl(count(" + table.getTableEn() + "." + column.getColumnEn() + "), 0),\n";
+            } else if (selectCondition.getLevel() == 1) {
+                System.out.println("codeTables = " + codeTables);
+                getSelectSQL(codeTables);
+                codeTables.clear();
+                codeTables.add(column.getCodeTable());
+            } else {
+                codeTables.add(column.getCodeTable());
+            }
+        }
+
+        // 显示的合计列
+        SQL += "  nvl(sum(CASE WHEN 1 = 1 THEN 1 END), 0)\n";
 
         SQL += "  from SCMS_STUDENT\n";
         for (JoinCondition joinCondition : configuration.getJoinConditions()) {
@@ -108,7 +166,7 @@ public class DynamicReportService extends DynamicReportSpecs {
             SQL += "\n";
         }
 
-        if (configuration.getOrderConditions().size() > 0){
+        if (configuration.getOrderConditions().size() > 0) {
             SQL += " order by ";
             for (OrderCondition orderCondition : configuration.getOrderConditions()) {
                 Column column = getColumn(orderCondition.getColumn());
@@ -140,7 +198,7 @@ public class DynamicReportService extends DynamicReportSpecs {
         return logic;
     }
 
-    private String getOrder(String id){
+    private String getOrder(String id) {
         String order = null;
         if (id.equals("1")) order = " ASC ";
         if (id.equals("2")) order = " DESC ";
@@ -148,4 +206,24 @@ public class DynamicReportService extends DynamicReportSpecs {
     }
 
 
+}
+
+class Point {
+    int x;
+    int y;
+
+    Point(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    @Override
+    public int hashCode() {
+        return x * 10 + y;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return this.hashCode() == o.hashCode();
+    }
 }
