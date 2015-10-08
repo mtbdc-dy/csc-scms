@@ -75,7 +75,14 @@ public class DynamicReportService extends DynamicReportSpecs {
 
     @Transactional
     public String generateSQL(OriginalConfiguration configuration) {
-        String SQL = "select *\n";
+        String SQL = "\nselect \n";
+        // TODO 拼装 select 条件...
+        for (GroupCondition groupCondition : configuration.getGroupConditions()) {
+            Column column = getColumn(groupCondition.getColumn());
+            SQL += "  nvl(" + column.getTable().getTableEn() + "." + column.getColumnEn() + ", '-'),\n";
+        }
+        SQL = SQL.substring(0, SQL.length() - 2) + "\n";
+
         SQL += "  from SCMS_STUDENT\n";
         for (JoinCondition joinCondition : configuration.getJoinConditions()) {
             Table table = getTable(joinCondition.getTable());
@@ -92,13 +99,13 @@ public class DynamicReportService extends DynamicReportSpecs {
 
         SQL += "\n";
         if (configuration.getGroupConditions().size() > 0) {
-            SQL += " group by grouping sets((),(";
+            SQL += " group by ";
             for (GroupCondition groupCondition : configuration.getGroupConditions()) {
                 Column column = getColumn(groupCondition.getColumn());
                 SQL += column.getTable().getTableEn() + "." + column.getColumnEn() + ", ";
             }
             SQL = SQL.substring(0, SQL.length() - 2);
-            SQL += "))\n";
+            SQL += "\n";
         }
 
         if (configuration.getOrderConditions().size() > 0){

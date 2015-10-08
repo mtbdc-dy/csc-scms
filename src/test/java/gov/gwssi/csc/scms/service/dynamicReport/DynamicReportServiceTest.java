@@ -39,40 +39,46 @@ public class DynamicReportServiceTest extends UnitTestBase {
     @Test
     public void testGenerateSQL() throws Exception {
         String configJSON = "{\n" +
-                "  \"title\": \"阿萨德发\",\n" +
-                "  \"description\": \"小弟弟\",\n" +
+                "  \"title\": \"测试动态报表统计\",\n" +
+                "  \"description\": \"用于测试动态报表统计\",\n" +
                 "  \"accessState\": \"1\",\n" +
                 "  \"joinConditions\": [{\n" +
-                "    \"table\": \"3\",\n" +
+                "    \"table\": \"1\",\n" +
                 "    \"joinType\": \"1\"\n" +
                 "  }, {\n" +
-                "    \"table\": \"5\",\n" +
+                "    \"table\": \"2\",\n" +
+                "    \"joinType\": \"1\"\n" +
+                "  }, {\n" +
+                "    \"table\": \"3\",\n" +
                 "    \"joinType\": \"1\"\n" +
                 "  }],\n" +
                 "  \"whereConditions\": [{\n" +
                 "    \"lParenthese\": \"\",\n" +
-                "    \"table\": \"5\",\n" +
-                "    \"column\": \"35\",\n" +
+                "    \"table\": \"3\",\n" +
+                "    \"column\": \"21\",\n" +
                 "    \"operator\": \"2\",\n" +
-                "    \"condition\": \"1234\",\n" +
+                "    \"condition\": \"E0348\",\n" +
                 "    \"rParenthese\": \"\",\n" +
                 "    \"logic\": \"2\"\n" +
                 "  }, {\n" +
                 "    \"lParenthese\": \"\",\n" +
-                "    \"table\": \"3\",\n" +
-                "    \"column\": \"18\",\n" +
-                "    \"operator\": \"1\",\n" +
-                "    \"condition\": \"AA0002\",\n" +
+                "    \"table\": \"1\",\n" +
+                "    \"column\": \"2\",\n" +
+                "    \"operator\": \"2\",\n" +
+                "    \"condition\": \"M0066\",\n" +
                 "    \"rParenthese\": \"\",\n" +
                 "    \"logic\": \"\"\n" +
                 "  }],\n" +
                 "  \"groupConditions\": [{\n" +
                 "    \"table\": \"3\",\n" +
-                "    \"column\": \"21\"\n" +
+                "    \"column\": \"18\"\n" +
+                "  }, {\n" +
+                "    \"table\": \"1\",\n" +
+                "    \"column\": \"2\"\n" +
                 "  }],\n" +
                 "  \"orderConditions\": [{\n" +
                 "    \"table\": \"3\",\n" +
-                "    \"column\": \"31\",\n" +
+                "    \"column\": \"18\",\n" +
                 "    \"orderType\": \"1\"\n" +
                 "  }]\n" +
                 "}";
