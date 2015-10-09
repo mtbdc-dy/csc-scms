@@ -119,26 +119,33 @@ public class StudentSpecs {
                 }
 
                 Expression e1 = cb.and(cb.greaterThanOrEqualTo(cb.currentDate(), intialDate),
-                        cb.lessThan(cb.currentDate(), finalDate),
-                        cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateBegin), intialDate),
+                        cb.lessThan(cb.currentDate(), finalDate));
+
+                Expression e2 = cb.and(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateBegin), intialDate),
                         cb.lessThan(schoolRoll.get(SchoolRoll_.cramDateBegin), finalDate));
 
-                Expression e2 = cb.and(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate),intialDate),
+
+                Expression e3 = cb.and(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), intialDate),
                         cb.lessThan(schoolRoll.get(SchoolRoll_.majorStartDate), finalDate));
 
-                Expression e3 = cb.and(cb.greaterThanOrEqualTo(cb.currentDate(), intialDate),
-                        cb.lessThanOrEqualTo(cb.currentDate(), nextIntialDate),
-                        cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateBegin), finalDate),
-                        cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateBegin), nextIntialDate)
-                        );
+                Expression e4 = cb.and(e1,cb.or(e2, e3));
 
-                Expression e4 = cb.and(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), finalDate),
-                        cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), nextIntialDate)
+                Expression e5 = cb.and(cb.greaterThanOrEqualTo(cb.currentDate(), finalDate),
+                        cb.lessThan(cb.currentDate(), nextIntialDate)
                 );
-                Expression e5 = cb.or(e1, e2);
-                Expression e6 = cb.or(e5, e3);
-                Expression e7 = cb.or(e6, e4);
-                predicate.getExpressions().add(e7);
+                Expression e6 = cb.and(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateBegin), finalDate),
+                        cb.lessThan(schoolRoll.get(SchoolRoll_.cramDateBegin), nextIntialDate)
+                );
+
+                Expression e7 = cb.and(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), finalDate),
+                        cb.lessThan(schoolRoll.get(SchoolRoll_.majorStartDate), nextIntialDate)
+                );
+
+                Expression e8 = cb.and(e5,cb.or(e6, e7));
+
+                Expression e9 = cb.or(e4,e8);
+
+                predicate.getExpressions().add(e9);
                 return predicate;
             }
         };
@@ -173,8 +180,8 @@ public class StudentSpecs {
 
                 predicate.getExpressions().add(cb.notEqual(schoolRoll.get(SchoolRoll_.registerYear), currentYear));
 
-                Expression e1 = cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateEnd), nextIntialDate);
-                Expression e2 = cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), nextIntialDate);
+                Expression e1 = cb.greaterThan(schoolRoll.get(SchoolRoll_.cramDateEnd), nextIntialDate);
+                Expression e2 = cb.lessThan(schoolRoll.get(SchoolRoll_.majorStartDate), nextIntialDate);
                 Expression e3 = cb.or(e1,e2);
                 predicate.getExpressions().add(e3);
                 return predicate;
