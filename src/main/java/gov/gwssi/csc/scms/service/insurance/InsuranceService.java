@@ -190,6 +190,10 @@ public class InsuranceService extends InsuranceSpecs {
 
     }
 
+    public List<Insurance> findInsuranceByStduentId(String studentId){
+        return insuranceRepository.findByStudentIdOrderByYearDesc(studentId);
+    }
+
 
     public int getStuInsurance(String studentid, int year) {
         return insuranceDAO.getStuInsurance(studentid, year);
