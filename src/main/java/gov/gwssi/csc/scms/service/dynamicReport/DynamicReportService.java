@@ -79,34 +79,36 @@ public class DynamicReportService extends DynamicReportSpecs {
 
     public String getSelectSQL(List<String> codeTableNames) {
         String selectSQL = "";
+        List<List<DictTreeJson>> lists = new ArrayList<List<DictTreeJson>>();
         int[] sizes = new int[codeTableNames.size()];
-        int max = 1;
+        int total = 1;
         for (int i = 0; i < codeTableNames.size(); i++) {
-            int codeTableSize = translateDictService.getCodeTableList(codeTableNames.get(i)).size();
-            max = max > codeTableSize ? max : codeTableSize;
+            List<DictTreeJson> codeTables = translateDictService.getCodeTableList(codeTableNames.get(i));
+            lists.add(codeTables);
+            sizes[i] = codeTables.size();
+            total *= sizes[i];
+//            total = max > sizes[i] ? max : sizes[i];
         }
-        String[][] matrix = new String[codeTableNames.size()][max];
-        for (int i = codeTableNames.size() - 1; i >= 0; i--) {
-            for (int j = 0; j < matrix[i].length; j++) {
-                matrix[i][j] = i + "";
-            }
-        }
-        System.out.println("matrix = " + matrix);
-//        List<List<String>> matrix = new ArrayList<List<String>>();
-//        Map<Point, String> matrix = new HashMap<Point, String>();
-//        for (int i = 0; i < codeTableNames.size(); i++) {
-//            List<DictTreeJson> codeTables = translateDictService.getCodeTableList(codeTableNames.get(i));
-//            for (int j = 0; j < codeTables.size(); j++) {
-//                DictTreeJson codeTable = codeTables.get(j);
-//                matrix.put(new Point(i, j), codeTable.getCode());
-//            }
-//        }
-//        System.out.println("matrix = " + matrix);
 //        for (String codeTableName : codeTableNames) {
-//            for (DictTreeJson dictTreeJson : translateDictService.getCodeTableList(codeTableName)) {
-////                dictTreeJson.getCode()
+//            List<DictTreeJson> codeTables = translateDictService.getCodeTableList(codeTableName);
+//            lists.add(codeTables);
+//            max = max > codeTables.size() ? max : codeTables.size();
+//        }
+//
+//        String[][] matrix = new String[codeTableNames.size()][max];
+//
+//        for (int i = 0; i < lists.size(); i++) {
+//            List<DictTreeJson> list = lists.get(i);
+//            for (DictTreeJson dictTreeJson : list) {
+//                String code = dictTreeJson.getCode();
+//                for (int i1 = 0; i1 < matrix.length; i1++) {
+//                    for (int j1 = 0; j1 < max; j1++) {
+//                        matrix[i1][j1] =
+//                    }
+//                }
 //            }
 //        }
+
         return selectSQL;
     }
 

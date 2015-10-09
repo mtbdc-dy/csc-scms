@@ -15,6 +15,7 @@ public class OriginalConfiguration {
     private Set<GroupCondition> groupConditions;
     private Set<OrderCondition> orderConditions;
     private List<SelectCondition> selectConditions;
+    private String rawConfig;
 
     public String getTitle() {
         return title;
@@ -78,5 +79,13 @@ public class OriginalConfiguration {
 
     public void setSelectConditions(List<SelectCondition> selectConditions) {
         this.selectConditions = selectConditions;
+    }
+
+    public String getRawConfig() {
+        return rawConfig;
+    }
+
+    public void setRawConfig(String rawConfig) {
+        this.rawConfig = rawConfig;
     }
 }

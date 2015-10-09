@@ -1,14 +1,8 @@
 package gov.gwssi.csc.scms.service.dynamicReport;
 
 import gov.gwssi.csc.scms.base.UnitTestBase;
-import gov.gwssi.csc.scms.domain.dynamicReport.ReportConfiguration;
-import gov.gwssi.csc.scms.domain.dynamicReport.TablesJson;
 import gov.gwssi.csc.scms.repository.dynamicReport.ReportConfigurationRepository;
-import gov.gwssi.csc.scms.service.dictionary.NoSuchDictTreeException;
-import gov.gwssi.csc.scms.service.dictionary.util.JsonMapper;
 import org.junit.Test;
-
-import java.util.List;
 
 
 /**
