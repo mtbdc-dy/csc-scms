@@ -153,7 +153,7 @@ public class DynamicReportService extends DynamicReportSpecs {
             SQL += " where ";
             for (WhereCondition whereCondition : configuration.getWhereConditions()) {
                 Column column = getColumn(whereCondition.getColumn());
-                SQL += whereCondition.getlParenthese() + column.getTable().getTableEn() + "." + column.getColumnEn() + getOperator(whereCondition.getOperator()) + "'" + whereCondition.getCondition() + "'" + whereCondition.getrParenthese() + getLogic(whereCondition.getLogic());
+                SQL += whereCondition.getLParenthese() + column.getTable().getTableEn() + "." + column.getColumnEn() + getOperator(whereCondition.getOperator()) + "'" + whereCondition.getCondition() + "'" + whereCondition.getRParenthese() + getLogic(whereCondition.getLogic());
             }
         }
 
@@ -208,24 +208,4 @@ public class DynamicReportService extends DynamicReportSpecs {
     }
 
 
-}
-
-class Point {
-    int x;
-    int y;
-
-    Point(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    @Override
-    public int hashCode() {
-        return x * 10 + y;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return this.hashCode() == o.hashCode();
-    }
 }

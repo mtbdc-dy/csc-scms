@@ -7,6 +7,7 @@ import gov.gwssi.csc.scms.domain.dynamicReport.ReportConfiguration;
 import gov.gwssi.csc.scms.domain.dynamicReport.Table;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.repository.dynamicReport.ColumnRepository;
+import gov.gwssi.csc.scms.repository.dynamicReport.ConfigurationRepository;
 import gov.gwssi.csc.scms.repository.dynamicReport.TableRepository;
 import org.junit.Test;
 import org.springframework.data.domain.Page;
@@ -29,11 +30,8 @@ public class DynamicReportServiceTest extends UnitTestBase {
 
     @Test
     public void test(){
-        DynamicReportService dynamicReportService = getBean(DynamicReportService.class);
-        dynamicReportService.getColumns();
-//        dynamicReportService.getTables();
-//        ColumnRepository columnRepository = getBean(ColumnRepository.class);
-//        columnRepository.findAll();
+        ConfigurationRepository configurationRepository = getBean(ConfigurationRepository.class);
+        System.out.println(configurationRepository.findAll());
     }
 
     @Test
