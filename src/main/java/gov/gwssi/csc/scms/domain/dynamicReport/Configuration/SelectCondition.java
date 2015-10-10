@@ -1,19 +1,23 @@
-package gov.gwssi.csc.scms.domain.dynamicReport;
+package gov.gwssi.csc.scms.domain.dynamicReport.Configuration;
 
 import javax.persistence.*;
 import javax.persistence.Column;
 import javax.persistence.Table;
+
 /**
- * Grpoup 配置条件
- * Created by wangzishi on 15/9/28.
+ * Select 配置条件
+ * Created by wangzishi on 15/10/8.
  */
 @Entity
-@Table(name = "SCMS_D_CFG_GROUP")
-public class GroupCondition {
+@Table(name = "SCMS_D_CFG_SELECT")
+public class SelectCondition {
     private String id;
     private Configuration config;
     private String table;
     private String column;
+    private String calculateType;
+    private Integer level;
+    private Boolean sumColumn;
 
     @Id
     public String getId() {
@@ -50,5 +54,32 @@ public class GroupCondition {
 
     public void setColumn(String column) {
         this.column = column;
+    }
+
+    @Column(name = "CALCULATE_TYPE")
+    public String getCalculateType() {
+        return calculateType;
+    }
+
+    public void setCalculateType(String calculateType) {
+        this.calculateType = calculateType;
+    }
+
+    @Column(name = "LVL")
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
+
+    @Column(name = "SUMABLE", columnDefinition = "VARCHAR2(1)")
+    public Boolean getSumColumn() {
+        return sumColumn;
+    }
+
+    public void setSumColumn(Boolean sumColumn) {
+        this.sumColumn = sumColumn;
     }
 }

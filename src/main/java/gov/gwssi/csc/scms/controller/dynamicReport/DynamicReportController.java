@@ -73,6 +73,30 @@ public class DynamicReportController extends BaseService {
     }
 
     @RequestMapping(
+            value = "/configurations/{id}",
+            method = RequestMethod.DELETE,
+            headers = "Accept=application/json;charset=utf-8"
+    )
+    public void deleteConfiguration(@PathVariable(value = "id") String id) {
+        try {
+            dynamicReportService.deleteConfigurations(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    @RequestMapping(
+            value = "/configurations/{id}/report",
+            method = RequestMethod.GET,
+            headers = "Accept=application/json;charset=utf-8"
+    )
+    public String getReport(@PathVariable(value = "id") String id){
+
+        return null;
+    }
+
+    @RequestMapping(
             value = {"/tables"},
             method = RequestMethod.GET,
             headers = {"Accept=application/json;charset=utf-8"}

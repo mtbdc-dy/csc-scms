@@ -1,6 +1,6 @@
 package gov.gwssi.csc.scms.repository.dynamicReport;
 
-import gov.gwssi.csc.scms.domain.dynamicReport.Configuration;
+import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.Configuration;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

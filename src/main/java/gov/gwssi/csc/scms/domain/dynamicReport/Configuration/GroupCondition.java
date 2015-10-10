@@ -1,22 +1,23 @@
-package gov.gwssi.csc.scms.domain.dynamicReport;
+package gov.gwssi.csc.scms.domain.dynamicReport.Configuration;
 
 import javax.persistence.*;
 import javax.persistence.Column;
 import javax.persistence.Table;
-
 /**
+ * Grpoup 配置条件
  * Created by wangzishi on 15/9/28.
  */
 @Entity
-@Table(name = "SCMS_D_CFG_ORDER")
-public class OrderCondition {
+@Table(name = "SCMS_D_CFG_GROUP")
+public class GroupCondition {
     private String id;
     private Configuration config;
     private String table;
     private String column;
-    private String orderType;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "configSeq")
+    @SequenceGenerator(name = "configSeq", sequenceName="SEQ_D_CFG")
     public String getId() {
         return id;
     }
@@ -52,14 +53,4 @@ public class OrderCondition {
     public void setColumn(String column) {
         this.column = column;
     }
-
-    @Column(name = "ORDER_TYPE")
-    public String getOrderType() {
-        return orderType;
-    }
-
-    public void setOrderType(String orderType) {
-        this.orderType = orderType;
-    }
 }
-

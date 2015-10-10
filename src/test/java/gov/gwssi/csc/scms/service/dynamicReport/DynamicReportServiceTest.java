@@ -2,6 +2,7 @@ package gov.gwssi.csc.scms.service.dynamicReport;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.base.UnitTestBase;
+import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.Configuration;
 import gov.gwssi.csc.scms.domain.dynamicReport.OriginalConfiguration;
 import gov.gwssi.csc.scms.domain.dynamicReport.ReportConfiguration;
 import gov.gwssi.csc.scms.domain.dynamicReport.Table;
@@ -11,6 +12,8 @@ import gov.gwssi.csc.scms.repository.dynamicReport.ConfigurationRepository;
 import gov.gwssi.csc.scms.repository.dynamicReport.TableRepository;
 import org.junit.Test;
 import org.springframework.data.domain.Page;
+
+import java.util.UUID;
 
 import static org.junit.Assert.*;
 
@@ -29,8 +32,13 @@ public class DynamicReportServiceTest extends UnitTestBase {
     }
 
     @Test
-    public void test(){
+    public void test() {
         ConfigurationRepository configurationRepository = getBean(ConfigurationRepository.class);
+        configurationRepository.deleteAll();
+        Configuration config = new Configuration();
+        config.setTitle("lalalala");
+        config.setId(UUID.randomUUID().toString());
+        configurationRepository.save(config);
         System.out.println(configurationRepository.findAll());
     }
 
@@ -110,6 +118,5 @@ public class DynamicReportServiceTest extends UnitTestBase {
         DynamicReportService service = getBean(DynamicReportService.class);
         String SQL = service.generateSQL(configuration);
         System.out.println("SQL = " + SQL);
-
     }
 }

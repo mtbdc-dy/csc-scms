@@ -1,4 +1,4 @@
-package gov.gwssi.csc.scms.domain.dynamicReport;
+package gov.gwssi.csc.scms.domain.dynamicReport.Configuration;
 
 import javax.persistence.*;
 import javax.persistence.Column;

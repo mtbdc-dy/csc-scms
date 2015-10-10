@@ -2,11 +2,11 @@ package gov.gwssi.csc.scms.service.dynamicReport;
 
 import gov.gwssi.csc.scms.domain.dictionary.DictTreeJson;
 import gov.gwssi.csc.scms.domain.dynamicReport.*;
+import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.*;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.repository.dynamicReport.ColumnRepository;
 import gov.gwssi.csc.scms.repository.dynamicReport.ReportConfigurationRepository;
 import gov.gwssi.csc.scms.repository.dynamicReport.TableRepository;
-import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.service.dictionary.TranslateDictService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,7 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sun.tools.jconsole.Tab;
 
 import java.util.*;
 
@@ -43,6 +42,10 @@ public class DynamicReportService extends DynamicReportSpecs {
     public Page<ReportConfiguration> getAllConfigurationsByFilter(Filter filter) {
 
         return reportConfigurationRepository.findAll(filterIsLike(filter), new PageRequest(0, 20));
+    }
+
+    public void deleteConfigurations(String id){
+        reportConfigurationRepository.delete(id);
     }
 
     @Transactional

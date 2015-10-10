@@ -1,5 +1,7 @@
 package gov.gwssi.csc.scms.domain.dynamicReport;
 
+import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.*;
+
 import java.util.List;
 import java.util.Set;
 

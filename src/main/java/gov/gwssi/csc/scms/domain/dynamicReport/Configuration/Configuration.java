@@ -1,4 +1,6 @@
-package gov.gwssi.csc.scms.domain.dynamicReport;
+package gov.gwssi.csc.scms.domain.dynamicReport.Configuration;
+
+import gov.gwssi.csc.scms.domain.dynamicReport.Report.Cell;
 
 import javax.persistence.*;
 import javax.persistence.Column;
@@ -24,12 +26,14 @@ public class Configuration {
     private Set<GroupCondition> groupConditions;
     private Set<OrderCondition> orderConditions;
     private List<SelectCondition> selectConditions;
+    private List<Cell> cells;
     private Calendar created;
     private String createBy;
     private Calendar updated;
     private String updateBy;
 
     @Id
+    @GeneratedValue
     public String getId() {
         return id;
     }
@@ -116,6 +120,15 @@ public class Configuration {
 
     public void setSelectConditions(List<SelectCondition> selectConditions) {
         this.selectConditions = selectConditions;
+    }
+
+    @OneToMany(mappedBy = "config")
+    public List<Cell> getCells() {
+        return cells;
+    }
+
+    public void setCells(List<Cell> cells) {
+        this.cells = cells;
     }
 
     public Calendar getCreated() {
