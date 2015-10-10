@@ -16,7 +16,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.*;
 
 
 import static org.springframework.data.jpa.domain.Specifications.where;
@@ -48,6 +48,42 @@ public class TimeSetService extends TimeSetSpecs {
     public Page<DimUniv> getDimUnivsPagingByFilter(Filter filter,Integer page,Integer size,String mode,User user) {
         Specification<DimUniv> specA = filterIsLike(filter,user);
 //        Specification<Ticket> specB = userIs(user);
-        return timeSetRepository.findAll(where(specA), new PageRequest(page, size, Sort.Direction.ASC,"province","univId"));
+        return timeSetRepository.findAll(where(specA), new PageRequest(page, size, Sort.Direction.ASC, "province", "univId"));
+    }
+    public Map<String,String> getFreshRegisterTimeSet(String nodeId){
+
+        Map<String,String> result = new HashMap<String, String>();
+        DimUniv univ = timeSetRepository.findByUnivId(nodeId);
+        if(univ.getNewBegin()!=null && univ.getNewEnd()!=null){
+            long newBegin = univ.getNewBegin().getTime();
+            long newEnd = univ.getNewEnd().getTime();
+            long sysTime = new Date().getTime();
+            if(sysTime >= newBegin && sysTime <= newEnd){
+                result.put("result","true");
+            }else{
+                result.put("result","false");
+            }
+        }else{
+            result.put("result","false");
+        }
+        return result;
+    }
+    public Map<String,String> getOldRegisterTimeSet(String nodeId){
+
+        Map<String,String> result = new HashMap<String, String>();
+        DimUniv univ = timeSetRepository.findByUnivId(nodeId);
+        if(univ.getOldBegin()!=null && univ.getOldEnd()!=null){
+            long oldBegin = univ.getOldBegin().getTime();
+            long oldEnd = univ.getOldEnd().getTime();
+            long sysTime = new Date().getTime();
+            if(sysTime >= oldBegin && sysTime <= oldEnd){
+                result.put("result","true");
+            }else{
+                result.put("result","false");
+            }
+        }else{
+            result.put("result","false");
+        }
+        return result;
     }
 }
