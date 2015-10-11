@@ -5,6 +5,9 @@ import gov.gwssi.csc.scms.base.UnitTestBase;
 import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.Configuration;
 import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.OriginalConfiguration;
 import gov.gwssi.csc.scms.domain.dynamicReport.Report.Cell;
+import gov.gwssi.csc.scms.domain.dynamicReport.Report.Report;
+import gov.gwssi.csc.scms.domain.dynamicReport.Report.ReportBody;
+import gov.gwssi.csc.scms.domain.dynamicReport.Report.ReportHead;
 import gov.gwssi.csc.scms.domain.dynamicReport.ReportConfiguration;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.repository.dynamicReport.CellRepository;
@@ -109,7 +112,9 @@ public class DynamicReportServiceTest extends UnitTestBase {
 
         Configuration configuration = new ObjectMapper().readValue(configJSON, Configuration.class);
         configuration = service.saveNewConfig(configuration);
-        System.out.println("configuration = " + configuration);
+//        System.out.println("configuration = " + configuration);
+        Report report = new Report(new ReportHead(configuration.getCells()), new ReportBody());
+        System.out.println("report = " + report);
 //        OriginalConfiguration configuration = new ObjectMapper().readValue(configJSON, OriginalConfiguration.class);
 
 //        String SQL = service.generateSQL(configuration);
