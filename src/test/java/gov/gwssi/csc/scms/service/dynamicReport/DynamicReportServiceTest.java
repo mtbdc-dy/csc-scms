@@ -4,19 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.base.UnitTestBase;
 import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.Configuration;
 import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.OriginalConfiguration;
-import gov.gwssi.csc.scms.domain.dynamicReport.Report.Cell;
 import gov.gwssi.csc.scms.domain.dynamicReport.Report.Report;
-import gov.gwssi.csc.scms.domain.dynamicReport.Report.ReportBody;
-import gov.gwssi.csc.scms.domain.dynamicReport.Report.ReportHead;
-import gov.gwssi.csc.scms.domain.dynamicReport.ReportConfiguration;
-import gov.gwssi.csc.scms.domain.filter.Filter;
-import gov.gwssi.csc.scms.repository.dynamicReport.CellRepository;
 import gov.gwssi.csc.scms.repository.dynamicReport.ConfigurationRepository;
 import org.junit.Test;
-import org.springframework.data.domain.Page;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by wangzishi on 15/8/31.
@@ -108,14 +98,14 @@ public class DynamicReportServiceTest extends UnitTestBase {
         ConfigurationRepository configurationRepository = getBean(ConfigurationRepository.class);
         configurationRepository.deleteAll();
         DynamicReportService service = getBean(DynamicReportService.class);
-//        CellRepository cellRepository = getBean(CellRepository.class);
-
-        Configuration configuration = new ObjectMapper().readValue(configJSON, Configuration.class);
+        ObjectMapper mapper = new ObjectMapper();
+//        Report report = new Report(/*new ReportHead(configuration.getCells()), new ReportBody()*/);
+//        System.out.println("report = " + report);
+//        mapper.writeValueAsString(report);
+        Configuration configuration = mapper.readValue(configJSON, Configuration.class);
         configuration = service.saveNewConfig(configuration);
-//        System.out.println("configuration = " + configuration);
-        Report report = new Report(new ReportHead(configuration.getCells()), new ReportBody());
-        System.out.println("report = " + report);
-//        OriginalConfiguration configuration = new ObjectMapper().readValue(configJSON, OriginalConfiguration.class);
+        System.out.println("configuration = " + configuration);
+
 
 //        String SQL = service.generateSQL(configuration);
 //        System.out.println("SQL = " + SQL);

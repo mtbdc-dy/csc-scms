@@ -239,7 +239,7 @@ public class DynamicReportService extends DynamicReportSpecs {
 
         for (GroupCondition groupCondition : configuration.getGroupConditions()) {
             Column column = columnRepository.findOne(groupCondition.getColumn());
-            Cell cell = new Cell(getId(), max, 1, column.getColumnCh());
+            Cell cell = new Cell(getId(), 1, max, 1, column.getColumnCh());
             cells.add(cell);
         }
 
@@ -253,7 +253,7 @@ public class DynamicReportService extends DynamicReportSpecs {
         for (Integer i = 1; i <= max; i++) {
             for (SelectCondition selectCondition : selectConditions) {
                 if (selectCondition.getLevel().equals(i)) {
-                    Integer turns = getTurns(selectCondition, selectConditions, i, max);
+                    Integer turns = getTurns(selectCondition, selectConditions, i);
                     for (Integer integer = 0; integer < turns; integer++) {
                         cells.addAll(getOneLevelSelectCells(selectCondition, selectConditions, i, max));
                     }
@@ -274,20 +274,21 @@ public class DynamicReportService extends DynamicReportSpecs {
             List<DictTreeJson> list = translateDictService.getCodeTableList(column.getCodeTable());
             for (DictTreeJson dictTreeJson : list) { // 遍历代码值
                 Integer colSpan = getColSpan(selectConditions, currentLevel, maxLevel);
-                cells.add(new Cell(getId(), 1, colSpan, dictTreeJson.getValue()));
+                cells.add(new Cell(getId(), currentLevel, 1, colSpan, dictTreeJson.getValue()));
             }
         } else { // 非代码列
-            cells.add(new Cell(getId(), maxLevel, 1, column.getColumnCh()));
+            cells.add(new Cell(getId(), 1, maxLevel, 1, column.getColumnCh()));
         }
         // 小计列
         if (selectCondition.getSumColumn()) {
-            cells.add(new Cell(getId(), maxLevel + 1 - currentLevel, 1, "小计"));
+            Integer rowSpan = maxLevel + 1 - currentLevel;
+            cells.add(new Cell(getId(), currentLevel,rowSpan, 1, "小计"));
         }
 
         return cells;
     }
 
-    private Integer getTurns(SelectCondition selectCondition, List<SelectCondition> selectConditions, Integer currentLevel, Integer maxLevel) {
+    private Integer getTurns(SelectCondition selectCondition, List<SelectCondition> selectConditions, Integer currentLevel) {
         Integer turns = 1;
         Column column = columnRepository.findOne(selectCondition.getColumn());
         if (column.getCodeTable() != null) {
