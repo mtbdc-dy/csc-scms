@@ -2,6 +2,7 @@ package gov.gwssi.csc.scms.repository.dynamicReport;
 
 import gov.gwssi.csc.scms.domain.dynamicReport.ReportConfiguration;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

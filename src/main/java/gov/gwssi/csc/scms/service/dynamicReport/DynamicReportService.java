@@ -3,10 +3,9 @@ package gov.gwssi.csc.scms.service.dynamicReport;
 import gov.gwssi.csc.scms.domain.dictionary.DictTreeJson;
 import gov.gwssi.csc.scms.domain.dynamicReport.*;
 import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.*;
+import gov.gwssi.csc.scms.domain.dynamicReport.Report.Cell;
 import gov.gwssi.csc.scms.domain.filter.Filter;
-import gov.gwssi.csc.scms.repository.dynamicReport.ColumnRepository;
-import gov.gwssi.csc.scms.repository.dynamicReport.ReportConfigurationRepository;
-import gov.gwssi.csc.scms.repository.dynamicReport.TableRepository;
+import gov.gwssi.csc.scms.repository.dynamicReport.*;
 import gov.gwssi.csc.scms.service.dictionary.TranslateDictService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,13 +22,22 @@ import java.util.*;
  */
 @Service("dConfigService")
 public class DynamicReportService extends DynamicReportSpecs {
-    @Qualifier("reportConfigurationRepository")
+
     @Autowired
+    @Qualifier("reportConfigurationRepository")
     private ReportConfigurationRepository reportConfigurationRepository;
+
+    @Autowired
+    @Qualifier("configurationRepository")
+    private ConfigurationRepository configurationRepository;
 
     @Qualifier("tableRepository")
     @Autowired
     private TableRepository tableRepository;
+
+    @Autowired
+    @Qualifier("cellRepository")
+    private CellRepository cellRepository;
 
     @Qualifier("columnRepository")
     @Autowired
@@ -44,7 +52,7 @@ public class DynamicReportService extends DynamicReportSpecs {
         return reportConfigurationRepository.findAll(filterIsLike(filter), new PageRequest(0, 20));
     }
 
-    public void deleteConfigurations(String id){
+    public void deleteConfigurations(String id) {
         reportConfigurationRepository.delete(id);
     }
 
@@ -210,5 +218,129 @@ public class DynamicReportService extends DynamicReportSpecs {
         return order;
     }
 
+    @Transactional
+    public List<Cell> generateHead(Configuration configuration) {
+        List<Cell> cells = new ArrayList<Cell>();
+        Integer max = getMaxHeight(configuration);
 
+        Cell number = new Cell(getId());
+        number.setRowSpan(max);
+        number.setValue("#");
+        cells.add(number);
+        cells.addAll(getGroupCells(configuration));
+        cells.addAll(getSelectCells(configuration));
+
+        return cells;
+    }
+
+    private List<Cell> getGroupCells(Configuration configuration) {
+        List<Cell> cells = new ArrayList<Cell>();
+        Integer max = getMaxHeight(configuration);
+
+        for (GroupCondition groupCondition : configuration.getGroupConditions()) {
+            Column column = columnRepository.findOne(groupCondition.getColumn());
+            Cell cell = new Cell(getId(), max, 1, column.getColumnCh());
+            cells.add(cell);
+        }
+
+        return cells;
+    }
+
+    private List<Cell> getSelectCells(Configuration configuration) {
+        List<Cell> cells = new ArrayList<Cell>();
+        List<SelectCondition> selectConditions = configuration.getSelectConditions();
+        Integer max = getMaxHeight(configuration);
+        for (Integer i = 1; i <= max; i++) {
+            for (SelectCondition selectCondition : selectConditions) {
+                if (selectCondition.getLevel().equals(i)) {
+                    Integer turns = getTurns(selectCondition, selectConditions, i, max);
+                    for (Integer integer = 0; integer < turns; integer++) {
+                        cells.addAll(getOneLevelSelectCells(selectCondition, selectConditions, i, max));
+                    }
+                }
+            }
+        }
+
+        return cells;
+    }
+
+    private List<Cell> getOneLevelSelectCells(
+            SelectCondition selectCondition,
+            List<SelectCondition> selectConditions,
+            Integer currentLevel, Integer maxLevel) {
+        List<Cell> cells = new ArrayList<Cell>();
+        Column column = columnRepository.findOne(selectCondition.getColumn());
+        if (column.getCodeTable() != null) { // 代码列
+            List<DictTreeJson> list = translateDictService.getCodeTableList(column.getCodeTable());
+            for (DictTreeJson dictTreeJson : list) { // 遍历代码值
+                Integer colSpan = getColSpan(selectConditions, currentLevel, maxLevel);
+                cells.add(new Cell(getId(), 1, colSpan, dictTreeJson.getValue()));
+            }
+        } else { // 非代码列
+            cells.add(new Cell(getId(), maxLevel, 1, column.getColumnCh()));
+        }
+        // 小计列
+        if (selectCondition.getSumColumn()) {
+            cells.add(new Cell(getId(), maxLevel + 1 - currentLevel, 1, "小计"));
+        }
+
+        return cells;
+    }
+
+    private Integer getTurns(SelectCondition selectCondition, List<SelectCondition> selectConditions, Integer currentLevel, Integer maxLevel) {
+        Integer turns = 1;
+        Column column = columnRepository.findOne(selectCondition.getColumn());
+        if (column.getCodeTable() != null) {
+            for (Integer level = 1; level < currentLevel; level++) {
+                for (SelectCondition condition : selectConditions) {
+                    if (condition.getLevel().equals(level)){
+                        Column col = columnRepository.findOne(condition.getColumn());
+                        List<DictTreeJson> list = translateDictService.getCodeTableList(col.getCodeTable());
+                        turns *= list.size();
+                    }
+                }
+            }
+        }
+        return turns;
+    }
+
+    private Integer getColSpan(List<SelectCondition> selectConditions, Integer currentLevel, Integer maxLevel) {
+        Integer colSpan = 1;
+        for (Integer level = maxLevel; level > currentLevel; level--) {
+            for (SelectCondition selectCondition : selectConditions) {
+                if (selectCondition.getLevel().equals(level)) {
+                    Column column = columnRepository.findOne(selectCondition.getColumn());
+                    List<DictTreeJson> list = translateDictService.getCodeTableList(column.getCodeTable());
+                    colSpan *= selectCondition.getSumColumn() ? list.size() + 1 : list.size();
+                }
+            }
+        }
+        return colSpan;
+    }
+
+    private Integer getMaxHeight(Configuration configuration) {
+        Integer max = 0;
+        for (SelectCondition selectCondition : configuration.getSelectConditions()) {
+            Integer level = selectCondition.getLevel();
+            max = max > level ? max : level;
+        }
+        return max;
+    }
+
+    private String getId() {
+        return configurationRepository.newId("SEQ_D_CFG");
+    }
+
+    @Transactional
+    public Configuration saveNewConfig(Configuration configuration){
+        List<Cell> cells = generateHead(configuration);
+        configuration.setId(getId());
+        configurationRepository.save(configuration);
+        for (Cell cell : cells) {
+            cell.setConfig(configuration);
+        }
+        cellRepository.save(cells);
+        configuration.setCells(cells);
+        return configuration;
+    }
 }

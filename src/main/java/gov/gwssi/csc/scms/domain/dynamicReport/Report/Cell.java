@@ -16,11 +16,21 @@ public class Cell {
     private Integer colSpan;
     private String value;
     private Configuration config;
+    public Cell() {}
 
+    public Cell(String id) {
+        this.id = id;
+        this.rowSpan = 1;
+        this.colSpan = 1;
+    }
+    public Cell(String id, Integer rowSpan, Integer colSpan, String value) {
+        this.id = id;
+        this.rowSpan = rowSpan;
+        this.colSpan = colSpan;
+        this.value = value;
+    }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "configSeq")
-    @SequenceGenerator(name = "configSeq", sequenceName="SEQ_D_CFG")
     public String getId() {
         return id;
     }

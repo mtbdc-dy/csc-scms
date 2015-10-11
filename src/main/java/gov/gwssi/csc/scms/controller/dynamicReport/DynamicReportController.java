@@ -1,9 +1,8 @@
 package gov.gwssi.csc.scms.controller.dynamicReport;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.domain.dynamicReport.Column;
-import gov.gwssi.csc.scms.domain.dynamicReport.OriginalConfiguration;
+import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.OriginalConfiguration;
 import gov.gwssi.csc.scms.domain.dynamicReport.ReportConfiguration;
 import gov.gwssi.csc.scms.domain.dynamicReport.Table;
 import gov.gwssi.csc.scms.domain.filter.Filter;

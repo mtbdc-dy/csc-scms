@@ -1,5 +1,7 @@
 package gov.gwssi.csc.scms.domain.dynamicReport.Configuration;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import javax.persistence.Column;
 
@@ -40,6 +42,7 @@ public class WhereCondition {
     }
 
     @Column(name = "L_PRTS")
+    @JsonProperty(value = "lParenthese")
     public String getLParenthese() {
         return lParenthese;
     }
@@ -83,6 +86,7 @@ public class WhereCondition {
     }
 
     @Column(name = "R_PRTS")
+    @JsonProperty(value = "rParenthese")
     public String getRParenthese() {
         return rParenthese;
     }

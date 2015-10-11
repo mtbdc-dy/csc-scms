@@ -15,11 +15,15 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "SCMS_D_CFG")
+@NamedStoredProcedureQuery(name = "Configuration.newId", procedureName = "P_SCMS_GEN_ID", parameters = {
+        @StoredProcedureParameter(name = "seqName", mode = ParameterMode.IN, type = String.class),
+        @StoredProcedureParameter(name = "id", mode = ParameterMode.OUT, type = String.class)
+})
 public class Configuration {
     private String id;
     private String title;
     private String description;
-    private String access;
+    private String accessState;
     private String rawConfig;
     private Set<JoinCondition> joinConditions;
     private List<WhereCondition> whereConditions;
@@ -33,7 +37,6 @@ public class Configuration {
     private String updateBy;
 
     @Id
-    @GeneratedValue
     public String getId() {
         return id;
     }
@@ -60,12 +63,12 @@ public class Configuration {
     }
 
     @Column(name = "ACCESS_TYPE")
-    public String getAccess() {
-        return access;
+    public String getAccessState() {
+        return accessState;
     }
 
-    public void setAccess(String access) {
-        this.access = access;
+    public void setAccessState(String access) {
+        this.accessState = access;
     }
 
     @Column(name = "RAW_CFG", columnDefinition = "CLOB")
@@ -122,7 +125,7 @@ public class Configuration {
         this.selectConditions = selectConditions;
     }
 
-    @OneToMany(mappedBy = "config")
+    @OneToMany(mappedBy = "config", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     public List<Cell> getCells() {
         return cells;
     }
