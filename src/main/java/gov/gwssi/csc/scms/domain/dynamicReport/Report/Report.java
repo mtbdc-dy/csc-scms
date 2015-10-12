@@ -1,5 +1,7 @@
 package gov.gwssi.csc.scms.domain.dynamicReport.Report;
 
+import org.springframework.data.repository.query.Param;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,11 +20,21 @@ public class Report {
 
     public Report(List<Cell> headerCells, List<Cell> bodyCells){
         this.header = new ArrayList<Row>();
-        
-//        Row row = new Row()
-//        for (Cell cell : headerCells) {
-//
-//        }
+        Row row = new Row();
+        Integer level = 1;
+        for (Cell cell : headerCells) {
+            if (cell.getRowNumber().equals(level)) {
+                row.add(cell);
+            } else {
+                this.header.add(row);
+                row = new Row();
+                level = cell.getRowNumber();
+                row.add(cell);
+            }
+        }
+        this.header.add(row);
+        this.body = new ArrayList<Row>();
+        this.body.add(new Row());
     }
 
     public List<Row> getHeader() {

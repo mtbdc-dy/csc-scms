@@ -18,7 +18,7 @@ public class DictTreeJson implements Serializable {
 
     public static List<DictTreeJson> formatTree(List<DictTreeJson> list){
         DictTreeJson root = new DictTreeJson();
-        DictTreeJson node = new DictTreeJson();
+        DictTreeJson node;
 
         // 拼凑好的json格式的数据
         List<DictTreeJson> treeList = new ArrayList<DictTreeJson>();
@@ -61,7 +61,7 @@ public class DictTreeJson implements Serializable {
             } else {
                 //如果不是父子关系，删除父节点栈里当前的节点，
                 //继续此次循环，直到确定父子关系或不存在退出for循环
-                parentNodes.remove(i);
+//                parentNodes.remove(i);
             }
         }
     }

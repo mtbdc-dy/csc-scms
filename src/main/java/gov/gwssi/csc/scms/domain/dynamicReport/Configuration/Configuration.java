@@ -5,9 +5,7 @@ import gov.gwssi.csc.scms.domain.dynamicReport.Report.Cell;
 import javax.persistence.*;
 import javax.persistence.Column;
 import javax.persistence.Table;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 动态报表配置
@@ -35,6 +33,13 @@ public class Configuration {
     private String createBy;
     private Calendar updated;
     private String updateBy;
+
+    @Transient
+    public List<Cell> getOrderedCells(){
+        List<Cell> cells = this.cells;
+        Collections.sort(cells);
+        return cells;
+    }
 
     @Id
     public String getId() {

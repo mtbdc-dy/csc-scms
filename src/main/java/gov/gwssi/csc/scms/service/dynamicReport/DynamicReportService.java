@@ -4,6 +4,7 @@ import gov.gwssi.csc.scms.domain.dictionary.DictTreeJson;
 import gov.gwssi.csc.scms.domain.dynamicReport.*;
 import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.*;
 import gov.gwssi.csc.scms.domain.dynamicReport.Report.Cell;
+import gov.gwssi.csc.scms.domain.dynamicReport.Report.Report;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.repository.dynamicReport.*;
 import gov.gwssi.csc.scms.service.dictionary.TranslateDictService;
@@ -343,5 +344,15 @@ public class DynamicReportService extends DynamicReportSpecs {
         cellRepository.save(cells);
         configuration.setCells(cells);
         return configuration;
+    }
+
+    public Configuration findOne(String id) {
+        return configurationRepository.findOne(id);
+    }
+
+    public Report getReport(String id){
+        Configuration config = findOne(id);
+        // TODO Body
+        return new Report(config.getOrderedCells(), new ArrayList<Cell>());
     }
 }

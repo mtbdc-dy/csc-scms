@@ -11,7 +11,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "SCMS_D_CELL")
-public class Cell {
+public class Cell implements Comparable<Cell>{
     private String id;
     private Integer rowNumber;
     private Integer rowSpan;
@@ -99,5 +99,11 @@ public class Cell {
 
     public void setConfig(Configuration config) {
         this.config = config;
+    }
+
+
+    @Override
+    public int compareTo(Cell cell) {
+        return this.getId().compareTo(cell.getId());
     }
 }

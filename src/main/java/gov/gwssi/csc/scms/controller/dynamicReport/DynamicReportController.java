@@ -1,7 +1,9 @@
 package gov.gwssi.csc.scms.controller.dynamicReport;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.domain.dynamicReport.Column;
+import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.Configuration;
 import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.OriginalConfiguration;
 import gov.gwssi.csc.scms.domain.dynamicReport.ReportConfiguration;
 import gov.gwssi.csc.scms.domain.dynamicReport.Table;
@@ -29,7 +31,7 @@ import java.util.Collection;
 public class DynamicReportController extends BaseService {
 
     @Autowired
-    private DynamicReportService dynamicReportService;
+    private DynamicReportService service;
 
 
     @RequestMapping(
@@ -46,7 +48,7 @@ public class DynamicReportController extends BaseService {
         Page<ReportConfiguration> reportConfigurations = null;
         try {
             Filter filter = new ObjectMapper().readValue(content, valueType);
-            reportConfigurations = dynamicReportService.getAllConfigurationsByFilter(filter);
+            reportConfigurations = service.getAllConfigurationsByFilter(filter);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -78,7 +80,7 @@ public class DynamicReportController extends BaseService {
     )
     public void deleteConfiguration(@PathVariable(value = "id") String id) {
         try {
-            dynamicReportService.deleteConfigurations(id);
+            service.deleteConfigurations(id);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -90,9 +92,10 @@ public class DynamicReportController extends BaseService {
             method = RequestMethod.GET,
             headers = "Accept=application/json;charset=utf-8"
     )
-    public String getReport(@PathVariable(value = "id") String id){
-
-        return null;
+    public String getReport(@PathVariable(value = "id") String id) throws JsonProcessingException {
+        id = "2015101100000000566";
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(service.getReport(id));
     }
 
     @RequestMapping(
@@ -101,7 +104,7 @@ public class DynamicReportController extends BaseService {
             headers = {"Accept=application/json;charset=utf-8"}
     )
     public ResponseEntity<Collection<Table>> getTables() {
-        Collection<Table> tables = dynamicReportService.getTables();
+        Collection<Table> tables = service.getTables();
         for (Table table : tables) {
             table.setColumns(null);
         }
@@ -114,7 +117,7 @@ public class DynamicReportController extends BaseService {
             headers = {"Accept=application/json;charset=utf-8"}
     )
     public ResponseEntity<Table> getTable(@PathVariable(value = "id") String id) {
-        Table table = dynamicReportService.getTable(id);
+        Table table = service.getTable(id);
         setNullByField(table.getColumns(), "table", Column.class);
         return new ResponseEntity<Table>(table, HttpStatus.OK);
     }
