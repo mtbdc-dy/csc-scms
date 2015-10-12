@@ -48,6 +48,22 @@ public class DynamicReportService extends DynamicReportSpecs {
     @Autowired
     private TranslateDictService translateDictService;
 
+    @Qualifier("groupConditionRepository")
+    @Autowired
+    private GroupConditionRepository groupConditionRepository;
+    @Qualifier("selectConditionRepository")
+    @Autowired
+    private SelectConditionRepository selectConditionRepository;
+    @Qualifier("orderConditionRepository")
+    @Autowired
+    private OrderConditionRepository orderConditionRepository;
+    @Qualifier("joinConditionRepository")
+    @Autowired
+    private JoinConditionRepository joinConditionRepository;
+    @Qualifier("whereConditionRepository")
+    @Autowired
+    private WhereConditionRepository whereConditionRepository;
+
     public Page<Configuration> getAllConfigurationsByFilter(Filter filter) {
 
         return configurationRepository.findAll(filterIsLike(filter), new PageRequest(0, 20));
@@ -338,6 +354,28 @@ public class DynamicReportService extends DynamicReportSpecs {
         List<Cell> cells = generateHead(configuration);
         configuration.setId(getId());
         configurationRepository.save(configuration);
+        for (GroupCondition groupCondition : configuration.getGroupConditions()) {
+            groupCondition.setId(getId());
+            groupCondition.setConfig(configuration);
+            groupConditionRepository.save(groupCondition);
+        }
+        groupConditionRepository.save(configuration.getGroupConditions());
+        for (JoinCondition joinCondition : configuration.getJoinConditions()) {
+            joinCondition.setId(getId());
+        }
+        joinConditionRepository.save(configuration.getJoinConditions());
+        for (OrderCondition orderCondition : configuration.getOrderConditions()) {
+            orderCondition.setId(getId());
+        }
+        orderConditionRepository.save(configuration.getOrderConditions());
+        for (SelectCondition selectCondition : configuration.getSelectConditions()) {
+            selectCondition.setId(getId());
+        }
+        selectConditionRepository.save(configuration.getSelectConditions());
+        for (WhereCondition whereCondition : configuration.getWhereConditions()) {
+            whereCondition.setId(getId());
+        }
+        whereConditionRepository.save(configuration.getWhereConditions());
         for (Cell cell : cells) {
             cell.setConfig(configuration);
         }

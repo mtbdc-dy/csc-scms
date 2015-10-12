@@ -10,7 +10,7 @@ import javax.persistence.*;
  * Created by wangzishi on 15/10/10.
  */
 @Entity
-@Table(name = "SCMS_D_CELL")
+@Table(name = "SCMS_D_CFG_CELL")
 public class Cell implements Comparable<Cell>{
     private String id;
     private Integer rowNumber;

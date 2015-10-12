@@ -88,7 +88,7 @@ public class Configuration implements Serializable {
         this.rawConfig = rawConfig;
     }
 
-    @OneToMany(mappedBy = "config", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "config", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     public Set<JoinCondition> getJoinConditions() {
         return joinConditions;
     }
@@ -97,7 +97,7 @@ public class Configuration implements Serializable {
         this.joinConditions = joinConditions;
     }
 
-    @OneToMany(mappedBy = "config", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "config", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     public List<WhereCondition> getWhereConditions() {
         return whereConditions;
     }
@@ -106,7 +106,7 @@ public class Configuration implements Serializable {
         this.whereConditions = whereConditions;
     }
 
-    @OneToMany(mappedBy = "config", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "config", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     public Set<GroupCondition> getGroupConditions() {
         return groupConditions;
     }
@@ -115,7 +115,7 @@ public class Configuration implements Serializable {
         this.groupConditions = groupConditions;
     }
 
-    @OneToMany(mappedBy = "config", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "config", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     public Set<OrderCondition> getOrderConditions() {
         return orderConditions;
     }
@@ -124,7 +124,7 @@ public class Configuration implements Serializable {
         this.orderConditions = orderConditions;
     }
 
-    @OneToMany(mappedBy = "config", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "config", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     public List<SelectCondition> getSelectConditions() {
         return selectConditions;
     }
