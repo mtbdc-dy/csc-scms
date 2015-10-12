@@ -1,5 +1,7 @@
 package gov.gwssi.csc.scms.domain.dynamicReport.Configuration;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.persistence.Table;
 import javax.persistence.Column;
@@ -27,6 +29,7 @@ public class JoinCondition {
 
     @ManyToOne
     @JoinColumn(name = "CFG_ID")
+    @JsonIgnore
     public Configuration getConfig() {
         return config;
     }

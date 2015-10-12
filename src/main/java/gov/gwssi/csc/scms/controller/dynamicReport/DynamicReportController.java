@@ -40,19 +40,19 @@ public class DynamicReportController extends BaseService {
             headers = {"Accept=application/json;charset=utf-8"},
             params = {"filter"}
     )
-    public ResponseEntity<Page<ReportConfiguration>> getConfigurations(
+    public ResponseEntity<Page<Configuration>> getConfigurations(
             @RequestParam(value = "filter") String filterJSON) throws UnsupportedEncodingException {
         String content = URLDecoder.decode(filterJSON, "UTF8");
         Class<Filter> valueType = Filter.class;
 
-        Page<ReportConfiguration> reportConfigurations = null;
+        Page<Configuration> configurations = null;
         try {
             Filter filter = new ObjectMapper().readValue(content, valueType);
-            reportConfigurations = service.getAllConfigurationsByFilter(filter);
+            configurations = service.getAllConfigurationsByFilter(filter);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new ResponseEntity<Page<ReportConfiguration>>(reportConfigurations, HttpStatus.OK);
+        return new ResponseEntity<Page<Configuration>>(configurations, HttpStatus.OK);
     }
 
     @RequestMapping(
@@ -64,7 +64,9 @@ public class DynamicReportController extends BaseService {
         System.out.println("DynamicReportController.createConfigurations");
         System.out.println("configJSON = [" + configJSON + "]");
         try {
-            OriginalConfiguration configuration = new ObjectMapper().readValue(configJSON, OriginalConfiguration.class);
+            Configuration configuration = new ObjectMapper().readValue(configJSON, Configuration.class);
+//            OriginalConfiguration configuration = new ObjectMapper().readValue(configJSON, OriginalConfiguration.class);
+            service.saveNewConfig(configuration);
             System.out.println("configuration = " + configuration);
         } catch (IOException e) {
             e.printStackTrace();
@@ -93,7 +95,6 @@ public class DynamicReportController extends BaseService {
             headers = "Accept=application/json;charset=utf-8"
     )
     public String getReport(@PathVariable(value = "id") String id) throws JsonProcessingException {
-        id = "2015101100000000566";
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(service.getReport(id));
     }

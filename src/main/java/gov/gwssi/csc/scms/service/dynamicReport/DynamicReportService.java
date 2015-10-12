@@ -24,9 +24,9 @@ import java.util.*;
 @Service("dConfigService")
 public class DynamicReportService extends DynamicReportSpecs {
 
-    @Autowired
-    @Qualifier("reportConfigurationRepository")
-    private ReportConfigurationRepository reportConfigurationRepository;
+//    @Autowired
+//    @Qualifier("reportConfigurationRepository")
+//    private ReportConfigurationRepository reportConfigurationRepository;
 
     @Autowired
     @Qualifier("configurationRepository")
@@ -48,13 +48,13 @@ public class DynamicReportService extends DynamicReportSpecs {
     @Autowired
     private TranslateDictService translateDictService;
 
-    public Page<ReportConfiguration> getAllConfigurationsByFilter(Filter filter) {
+    public Page<Configuration> getAllConfigurationsByFilter(Filter filter) {
 
-        return reportConfigurationRepository.findAll(filterIsLike(filter), new PageRequest(0, 20));
+        return configurationRepository.findAll(filterIsLike(filter), new PageRequest(0, 20));
     }
 
     public void deleteConfigurations(String id) {
-        reportConfigurationRepository.delete(id);
+        configurationRepository.delete(id);
     }
 
     @Transactional

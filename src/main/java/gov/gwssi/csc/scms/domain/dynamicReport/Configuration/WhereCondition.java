@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.domain.dynamicReport.Configuration;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
@@ -33,6 +34,7 @@ public class WhereCondition {
 
     @ManyToOne
     @JoinColumn(name = "CFG_ID")
+    @JsonIgnore
     public Configuration getConfig() {
         return config;
     }

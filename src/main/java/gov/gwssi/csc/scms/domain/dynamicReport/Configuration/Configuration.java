@@ -1,10 +1,12 @@
 package gov.gwssi.csc.scms.domain.dynamicReport.Configuration;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import gov.gwssi.csc.scms.domain.dynamicReport.Report.Cell;
 
 import javax.persistence.*;
 import javax.persistence.Column;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -17,7 +19,7 @@ import java.util.*;
         @StoredProcedureParameter(name = "seqName", mode = ParameterMode.IN, type = String.class),
         @StoredProcedureParameter(name = "id", mode = ParameterMode.OUT, type = String.class)
 })
-public class Configuration {
+public class Configuration implements Serializable {
     private String id;
     private String title;
     private String description;
@@ -35,6 +37,7 @@ public class Configuration {
     private String updateBy;
 
     @Transient
+    @JsonIgnore
     public List<Cell> getOrderedCells(){
         List<Cell> cells = this.cells;
         Collections.sort(cells);
@@ -85,7 +88,7 @@ public class Configuration {
         this.rawConfig = rawConfig;
     }
 
-    @OneToMany(mappedBy = "config")
+    @OneToMany(mappedBy = "config", fetch = FetchType.EAGER)
     public Set<JoinCondition> getJoinConditions() {
         return joinConditions;
     }
@@ -94,7 +97,7 @@ public class Configuration {
         this.joinConditions = joinConditions;
     }
 
-    @OneToMany(mappedBy = "config")
+    @OneToMany(mappedBy = "config", fetch = FetchType.EAGER)
     public List<WhereCondition> getWhereConditions() {
         return whereConditions;
     }
@@ -103,7 +106,7 @@ public class Configuration {
         this.whereConditions = whereConditions;
     }
 
-    @OneToMany(mappedBy = "config")
+    @OneToMany(mappedBy = "config", fetch = FetchType.EAGER)
     public Set<GroupCondition> getGroupConditions() {
         return groupConditions;
     }
@@ -112,7 +115,7 @@ public class Configuration {
         this.groupConditions = groupConditions;
     }
 
-    @OneToMany(mappedBy = "config")
+    @OneToMany(mappedBy = "config", fetch = FetchType.EAGER)
     public Set<OrderCondition> getOrderConditions() {
         return orderConditions;
     }
@@ -121,7 +124,7 @@ public class Configuration {
         this.orderConditions = orderConditions;
     }
 
-    @OneToMany(mappedBy = "config")
+    @OneToMany(mappedBy = "config", fetch = FetchType.EAGER)
     public List<SelectCondition> getSelectConditions() {
         return selectConditions;
     }
@@ -131,6 +134,7 @@ public class Configuration {
     }
 
     @OneToMany(mappedBy = "config", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonIgnore
     public List<Cell> getCells() {
         return cells;
     }
