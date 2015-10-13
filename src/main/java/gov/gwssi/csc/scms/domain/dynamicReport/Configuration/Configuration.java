@@ -1,12 +1,14 @@
 package gov.gwssi.csc.scms.domain.dynamicReport.Configuration;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.gwssi.csc.scms.domain.dynamicReport.Report.Cell;
 
 import javax.persistence.*;
 import javax.persistence.Column;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.sql.ResultSet;
 import java.util.*;
 
 /**
@@ -15,9 +17,15 @@ import java.util.*;
  */
 @Entity
 @Table(name = "SCMS_D_CFG")
-@NamedStoredProcedureQuery(name = "Configuration.newId", procedureName = "P_SCMS_GEN_ID", parameters = {
-        @StoredProcedureParameter(name = "seqName", mode = ParameterMode.IN, type = String.class),
-        @StoredProcedureParameter(name = "id", mode = ParameterMode.OUT, type = String.class)
+@NamedStoredProcedureQueries(value = {
+        @NamedStoredProcedureQuery(name = "Configuration.newId", procedureName = "P_SCMS_GEN_ID", parameters = {
+                @StoredProcedureParameter(name = "seqName", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "id", mode = ParameterMode.OUT, type = String.class)
+        }),
+        @NamedStoredProcedureQuery(name = "Configuration.test", procedureName = "PCK_SCMS_JOB.P_TEST", parameters = {
+                @StoredProcedureParameter(name = "in", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "out", mode = ParameterMode.OUT, type = List.class)
+        })
 })
 public class Configuration implements Serializable {
     private String id;
@@ -25,6 +33,7 @@ public class Configuration implements Serializable {
     private String description;
     private String accessState;
     private String rawConfig;
+    private String sql;
     private Set<JoinCondition> joinConditions;
     private List<WhereCondition> whereConditions;
     private Set<GroupCondition> groupConditions;
@@ -36,9 +45,10 @@ public class Configuration implements Serializable {
     private Calendar updated;
     private String updateBy;
 
-    public Configuration(){}
+    public Configuration() {
+    }
 
-    public Configuration(Configuration configuration){
+    public Configuration(Configuration configuration) {
         this.title = configuration.getTitle();
         this.description = configuration.getDescription();
         this.accessState = configuration.getAccessState();
@@ -51,7 +61,7 @@ public class Configuration implements Serializable {
 
     @Transient
     @JsonIgnore
-    public List<Cell> getOrderedCells(){
+    public List<Cell> getOrderedCells() {
         List<Cell> cells = this.cells;
         Collections.sort(cells);
         return cells;
@@ -101,53 +111,72 @@ public class Configuration implements Serializable {
         this.rawConfig = rawConfig;
     }
 
-    @OneToMany(mappedBy = "config", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @Lob
+    public String getSql() {
+        return sql;
+    }
+
+    public void setSql(String sql) {
+        this.sql = sql;
+    }
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "config", cascade = CascadeType.REMOVE)
     public Set<JoinCondition> getJoinConditions() {
         return joinConditions;
     }
 
+    @JsonProperty
     public void setJoinConditions(Set<JoinCondition> joinConditions) {
         this.joinConditions = joinConditions;
     }
 
-    @OneToMany(mappedBy = "config", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @JsonIgnore
+    @OneToMany(mappedBy = "config", cascade = CascadeType.REMOVE)
     public List<WhereCondition> getWhereConditions() {
         return whereConditions;
     }
 
+    @JsonProperty
     public void setWhereConditions(List<WhereCondition> whereConditions) {
         this.whereConditions = whereConditions;
     }
 
-    @OneToMany(mappedBy = "config", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @JsonIgnore
+    @OneToMany(mappedBy = "config", cascade = CascadeType.REMOVE)
     public Set<GroupCondition> getGroupConditions() {
         return groupConditions;
     }
 
+    @JsonProperty
     public void setGroupConditions(Set<GroupCondition> groupConditions) {
         this.groupConditions = groupConditions;
     }
 
-    @OneToMany(mappedBy = "config", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @JsonIgnore
+    @OneToMany(mappedBy = "config", cascade = CascadeType.REMOVE)
     public Set<OrderCondition> getOrderConditions() {
         return orderConditions;
     }
 
+    @JsonProperty
     public void setOrderConditions(Set<OrderCondition> orderConditions) {
         this.orderConditions = orderConditions;
     }
 
-    @OneToMany(mappedBy = "config", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @JsonIgnore
+    @OneToMany(mappedBy = "config", cascade = CascadeType.REMOVE)
     public List<SelectCondition> getSelectConditions() {
         return selectConditions;
     }
 
+    @JsonProperty
     public void setSelectConditions(List<SelectCondition> selectConditions) {
         this.selectConditions = selectConditions;
     }
 
-    @OneToMany(mappedBy = "config", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonIgnore
+    @OneToMany(mappedBy = "config", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     public List<Cell> getCells() {
         return cells;
     }

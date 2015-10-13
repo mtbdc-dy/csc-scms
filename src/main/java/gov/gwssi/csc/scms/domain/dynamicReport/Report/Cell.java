@@ -44,6 +44,12 @@ public class Cell extends Config implements Comparable<Cell>{
         this.value = value;
     }
 
+    public Cell(Integer rowSpan, Integer colSpan, String value){
+        this.rowSpan = rowSpan;
+        this.colSpan = colSpan;
+        this.value = value;
+    }
+
     @Id
     @JsonIgnore
     public String getId() {

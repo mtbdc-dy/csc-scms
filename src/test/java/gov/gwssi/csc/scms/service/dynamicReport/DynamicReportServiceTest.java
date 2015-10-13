@@ -47,6 +47,12 @@ public class DynamicReportServiceTest extends UnitTestBase {
 //        configuration.setWhereConditions(list);
 //        repository.save(configuration);
     }
+    @Test
+    public void testFindOne() throws Exception{
+        ConfigurationRepository repository = getBean(ConfigurationRepository.class);
+        Configuration configuration = repository.findOne("2015101300000002500");
+        System.out.println("configuration = " + configuration);
+    }
 
     @Test
     public void testGenerateSQL() throws Exception {

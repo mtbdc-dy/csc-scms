@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.service.dynamicReport;
 
+import gov.gwssi.csc.scms.dao.BaseDAO;
 import gov.gwssi.csc.scms.domain.dictionary.DictTreeJson;
 import gov.gwssi.csc.scms.domain.dynamicReport.*;
 import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.*;
@@ -403,7 +404,10 @@ public class DynamicReportService extends DynamicReportSpecs {
 
     public Report getReport(String id) {
         Configuration config = findOne(id);
+        String sql = config.getSql();
+        BaseDAO dao = getBaseDao();
+        List<Map> body = dao.queryListBySql(sql);
         // TODO Body
-        return new Report(config.getOrderedCells(), new ArrayList<Cell>());
+        return new Report(config.getOrderedCells(), body);
     }
 }

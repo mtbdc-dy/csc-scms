@@ -4,6 +4,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 报表数据
@@ -18,7 +19,7 @@ public class Report {
         this.header.add(new Row());
     }
 
-    public Report(List<Cell> headerCells, List<Cell> bodyCells){
+    public Report(List<Cell> headerCells, List<Map> bodyMaps){
         this.header = new ArrayList<Row>();
         Row row = new Row();
         Integer level = 1;
@@ -33,8 +34,16 @@ public class Report {
             }
         }
         this.header.add(row);
+
         this.body = new ArrayList<Row>();
-        this.body.add(new Row());
+        for (Map rowMap : bodyMaps) {
+            row = new Row();
+            for (Integer i = 1; i <= rowMap.size(); i++) {
+                row.add(new Cell(1,1, rowMap.get("COL_" + i.toString()).toString()));
+            }
+            this.body.add(row);
+        }
+
     }
 
     public List<Row> getHeader() {
