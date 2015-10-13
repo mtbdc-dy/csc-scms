@@ -24,10 +24,6 @@ import java.util.*;
 @Service("dConfigService")
 public class DynamicReportService extends DynamicReportSpecs {
 
-//    @Autowired
-//    @Qualifier("reportConfigurationRepository")
-//    private ReportConfigurationRepository reportConfigurationRepository;
-
     @Autowired
     @Qualifier("configurationRepository")
     private ConfigurationRepository configurationRepository;
@@ -289,8 +285,9 @@ public class DynamicReportService extends DynamicReportSpecs {
         Column column = columnRepository.findOne(selectCondition.getColumn());
         if (column.getCodeTable() != null) { // 代码列
             List<DictTreeJson> list = translateDictService.getCodeTableList(column.getCodeTable());
+            Integer colSpan = 0;
             for (DictTreeJson dictTreeJson : list) { // 遍历代码值
-                Integer colSpan = getColSpan(selectConditions, currentLevel, maxLevel);
+                colSpan = colSpan.equals(0) ? getColSpan(selectConditions, currentLevel, maxLevel) : colSpan;
                 cells.add(new Cell(getId(), currentLevel, 1, colSpan, dictTreeJson.getValue()));
             }
         } else { // 非代码列
@@ -299,7 +296,7 @@ public class DynamicReportService extends DynamicReportSpecs {
         // 小计列
         if (selectCondition.getSumColumn()) {
             Integer rowSpan = maxLevel + 1 - currentLevel;
-            cells.add(new Cell(getId(), currentLevel,rowSpan, 1, "小计"));
+            cells.add(new Cell(getId(), currentLevel, rowSpan, 1, "小计"));
         }
 
         return cells;
@@ -311,7 +308,7 @@ public class DynamicReportService extends DynamicReportSpecs {
         if (column.getCodeTable() != null) {
             for (Integer level = 1; level < currentLevel; level++) {
                 for (SelectCondition condition : selectConditions) {
-                    if (condition.getLevel().equals(level)){
+                    if (condition.getLevel().equals(level)) {
                         Column col = columnRepository.findOne(condition.getColumn());
                         List<DictTreeJson> list = translateDictService.getCodeTableList(col.getCodeTable());
                         turns *= list.size();
@@ -345,50 +342,66 @@ public class DynamicReportService extends DynamicReportSpecs {
         return max;
     }
 
-    private String getId() {
+    public String getId() {
         return configurationRepository.newId("SEQ_D_CFG");
     }
 
+    public <E extends Collection<? extends Condition>> void setIds(E collection) {
+        for (Condition condition : collection) condition.setId(getId());
+    }
+
+    public <E extends Collection<? extends Condition>> void setIds(E ...collections){
+        for (E collection : collections) setIds(collection);
+    }
+
+    public <E extends Collection<? extends Config>> void setConfig(Configuration config, E collection) {
+        for (Config configuration : collection) configuration.setConfig(config);
+    }
+
+    public <E extends Collection<? extends Config>> void setConfig(Configuration config, E... collections) {
+        for (E collection : collections) setConfig(config, collection);
+    }
+
+    @SuppressWarnings("unchecked")
     @Transactional
-    public Configuration saveNewConfig(Configuration configuration){
+    public Configuration saveNewConfig(Configuration configuration) {
+        Configuration newConfiguration = new Configuration(configuration);
+
+        newConfiguration.setId(getId());
+        configurationRepository.save(newConfiguration);
+
         List<Cell> cells = generateHead(configuration);
-        configuration.setId(getId());
-        configurationRepository.save(configuration);
-        for (GroupCondition groupCondition : configuration.getGroupConditions()) {
-            groupCondition.setId(getId());
-            groupCondition.setConfig(configuration);
-            groupConditionRepository.save(groupCondition);
-        }
-        groupConditionRepository.save(configuration.getGroupConditions());
-        for (JoinCondition joinCondition : configuration.getJoinConditions()) {
-            joinCondition.setId(getId());
-        }
-        joinConditionRepository.save(configuration.getJoinConditions());
-        for (OrderCondition orderCondition : configuration.getOrderConditions()) {
-            orderCondition.setId(getId());
-        }
-        orderConditionRepository.save(configuration.getOrderConditions());
-        for (SelectCondition selectCondition : configuration.getSelectConditions()) {
-            selectCondition.setId(getId());
-        }
-        selectConditionRepository.save(configuration.getSelectConditions());
-        for (WhereCondition whereCondition : configuration.getWhereConditions()) {
-            whereCondition.setId(getId());
-        }
-        whereConditionRepository.save(configuration.getWhereConditions());
-        for (Cell cell : cells) {
-            cell.setConfig(configuration);
-        }
+        Set<JoinCondition> joins = configuration.getJoinConditions();
+        List<WhereCondition> wheres = configuration.getWhereConditions();
+        Set<GroupCondition> groups = configuration.getGroupConditions();
+        Set<OrderCondition> orders = configuration.getOrderConditions();
+        List<SelectCondition> selects = configuration.getSelectConditions();
+
+        setIds(joins, wheres, groups, orders, selects);
+        setConfig(newConfiguration, cells, joins, wheres, groups, orders, selects);
+
+        joinConditionRepository.save(joins);
+        whereConditionRepository.save(wheres);
+        groupConditionRepository.save(groups);
+        orderConditionRepository.save(orders);
+        selectConditionRepository.save(selects);
         cellRepository.save(cells);
-        configuration.setCells(cells);
-        return configuration;
+
+        newConfiguration.setCells(cells);
+        newConfiguration.setJoinConditions(joins);
+        newConfiguration.setWhereConditions(wheres);
+        newConfiguration.setGroupConditions(groups);
+        newConfiguration.setOrderConditions(orders);
+        newConfiguration.setSelectConditions(selects);
+
+        return newConfiguration;
     }
 
     public Configuration findOne(String id) {
         return configurationRepository.findOne(id);
     }
 
-    public Report getReport(String id){
+    public Report getReport(String id) {
         Configuration config = findOne(id);
         // TODO Body
         return new Report(config.getOrderedCells(), new ArrayList<Cell>());

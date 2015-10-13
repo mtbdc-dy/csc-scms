@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.base.UnitTestBase;
 import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.Configuration;
 import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.OriginalConfiguration;
+import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.WhereCondition;
 import gov.gwssi.csc.scms.domain.dynamicReport.Report.Cell;
 import gov.gwssi.csc.scms.domain.dynamicReport.Report.Report;
 import gov.gwssi.csc.scms.repository.dynamicReport.ConfigurationRepository;
+import gov.gwssi.csc.scms.repository.dynamicReport.WhereConditionRepository;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -18,45 +20,33 @@ import java.util.List;
  */
 public class DynamicReportServiceTest extends UnitTestBase {
 
-//    @Test
-//    public void testGetAllConfigurationsByFilter() throws Exception {
-//        DynamicReportService dynamicReportService = getBean(DynamicReportService.class);
-//        Filter filter = new Filter();
-//        filter.setTitle("大");
-//        Page<ReportConfiguration> reportConfigurations = dynamicReportService.getAllConfigurationsByFilter(filter);
-//        System.out.println("reportConfigurations = " + reportConfigurations);
-//    }
-//
-//    @Test
-//    public void test() {
-//        ConfigurationRepository configurationRepository = getBean(ConfigurationRepository.class);
-//        CellRepository cellRepository = getBean(CellRepository.class);
-//
-//        configurationRepository.deleteAll();
-//        String seqName = "SEQ_D_CFG";
-//        Configuration config = new Configuration();
-//        config.setTitle("test report");
-//
-//        config.setId(configurationRepository.newId(seqName));
-//        configurationRepository.save(config);
-//        List<Cell> cells = new ArrayList<Cell>();
-//        Cell cell1 = new Cell(configurationRepository.newId(seqName), 1,1,"lady");
-//        Cell cell2 = new Cell(configurationRepository.newId(seqName), 1,1,"gentleman");
-//        Cell cell3 = new Cell(configurationRepository.newId(seqName), 1,1,"body");
-//        cells.add(cell1);
-//        cells.add(cell2);
-//        cells.add(cell3);
-//
-//        cell1.setConfig(config);
-//        cell2.setConfig(config);
-//        cell3.setConfig(config);
-//        cellRepository.save(cells);
-////        config.setCells(cells);
-//
-//
-//
-//        configurationRepository.findAll();
-//    }
+    @Test
+    public void testSaveConfig() throws Exception {
+        DynamicReportService service = getBean(DynamicReportService.class);
+        ConfigurationRepository repository = getBean(ConfigurationRepository.class);
+        WhereConditionRepository whereConditionRepository = getBean(WhereConditionRepository.class);
+
+        Configuration configuration = new Configuration();
+        configuration.setId(service.getId());
+        configuration.setTitle("lalalala");
+        repository.save(configuration);
+
+        WhereCondition condition1 = new WhereCondition();
+        WhereCondition condition2 = new WhereCondition();
+        condition1.setId(service.getId());
+        condition1.setConfig(configuration);
+        condition2.setId(service.getId());
+        condition2.setConfig(configuration);
+
+        List<WhereCondition> list = new ArrayList<WhereCondition>();
+        list.add(condition1);
+        list.add(condition2);
+        whereConditionRepository.save(list);
+
+
+//        configuration.setWhereConditions(list);
+//        repository.save(configuration);
+    }
 
     @Test
     public void testGenerateSQL() throws Exception {

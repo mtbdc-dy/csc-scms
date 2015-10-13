@@ -11,15 +11,13 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "SCMS_D_CFG_GROUP")
-public class GroupCondition {
+public class GroupCondition extends Condition{
     private String id;
     private Configuration config;
     private String table;
     private String column;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "configSeq")
-    @SequenceGenerator(name = "configSeq", sequenceName="SEQ_D_CFG")
     public String getId() {
         return id;
     }

@@ -36,6 +36,19 @@ public class Configuration implements Serializable {
     private Calendar updated;
     private String updateBy;
 
+    public Configuration(){}
+
+    public Configuration(Configuration configuration){
+        this.title = configuration.getTitle();
+        this.description = configuration.getDescription();
+        this.accessState = configuration.getAccessState();
+        this.rawConfig = configuration.getRawConfig();
+        this.created = configuration.getCreated();
+        this.createBy = configuration.getCreateBy();
+        this.updated = configuration.getUpdated();
+        this.updateBy = configuration.getUpdateBy();
+    }
+
     @Transient
     @JsonIgnore
     public List<Cell> getOrderedCells(){

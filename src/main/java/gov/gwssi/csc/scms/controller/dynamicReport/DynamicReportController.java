@@ -65,7 +65,7 @@ public class DynamicReportController extends BaseService {
         System.out.println("configJSON = [" + configJSON + "]");
         try {
             Configuration configuration = new ObjectMapper().readValue(configJSON, Configuration.class);
-            service.saveNewConfig(configuration);
+            configuration = service.saveNewConfig(configuration);
             System.out.println("configuration = " + configuration);
         } catch (IOException e) {
             e.printStackTrace();

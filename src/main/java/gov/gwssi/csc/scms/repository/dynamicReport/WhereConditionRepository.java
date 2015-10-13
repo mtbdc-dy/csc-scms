@@ -5,6 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 /**
+ *
  * Created by wangzishi on 15/10/12.
  */
 @Repository

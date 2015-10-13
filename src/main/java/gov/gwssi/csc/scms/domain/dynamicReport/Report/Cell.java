@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.domain.dynamicReport.Report;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import gov.gwssi.csc.scms.domain.dynamicReport.Config;
 import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.Configuration;
 
 import javax.persistence.*;
@@ -11,7 +12,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "SCMS_D_CFG_CELL")
-public class Cell implements Comparable<Cell>{
+public class Cell extends Config implements Comparable<Cell>{
     private String id;
     private Integer rowNumber;
     private Integer rowSpan;

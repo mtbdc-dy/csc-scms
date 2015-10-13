@@ -12,7 +12,7 @@ import javax.persistence.Column;
  */
 @Entity
 @Table(name = "SCMS_D_CFG_JOIN")
-public class JoinCondition {
+public class JoinCondition extends Condition {
     private String id;
     private Configuration config;
     private String table;

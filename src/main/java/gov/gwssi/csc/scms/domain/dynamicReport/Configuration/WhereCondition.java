@@ -12,7 +12,7 @@ import javax.persistence.Column;
  */
 @Entity
 @javax.persistence.Table(name = "SCMS_D_CFG_WHERE")
-public class WhereCondition {
+public class WhereCondition extends Condition {
     private String id;
     private Configuration config;
     private String lParenthese;

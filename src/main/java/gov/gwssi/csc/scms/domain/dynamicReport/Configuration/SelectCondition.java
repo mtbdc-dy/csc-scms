@@ -12,7 +12,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "SCMS_D_CFG_SELECT")
-public class SelectCondition {
+public class SelectCondition extends Condition {
     private String id;
     private Configuration config;
     private String table;
