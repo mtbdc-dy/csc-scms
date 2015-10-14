@@ -26,4 +26,5 @@ public abstract class DimUniv_ {
     public static volatile SingularAttribute<DimUniv, Date> oldBegin;
     public static volatile SingularAttribute<DimUniv, Date> oldEnd;
     public static volatile SingularAttribute<DimUniv, Date> oldSeted;
+    public static volatile SingularAttribute<DimUniv, String> enabled;
 }

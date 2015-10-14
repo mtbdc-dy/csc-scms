@@ -41,11 +41,16 @@ public class DimUniv {
     @Column(name = "OLDSETED")
     private Date oldSeted;
 
+    @Column(name = "ENABLED")
+    private String enabled;
+
+    public String getEnabled() {
+        return enabled;
+    }
+
     public String getUnivId() {
         return univId;
     }
-
-
 
     public String getProvince() {
         return province;
@@ -70,8 +75,6 @@ public class DimUniv {
     public Date getNewSeted() {
         return newSeted;
     }
-
-
 
     public Date getOldBegin() {
         return oldBegin;
