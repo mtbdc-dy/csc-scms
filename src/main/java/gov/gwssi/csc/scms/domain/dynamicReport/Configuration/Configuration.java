@@ -22,6 +22,10 @@ import java.util.*;
                 @StoredProcedureParameter(name = "seqName", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "id", mode = ParameterMode.OUT, type = String.class)
         }),
+        @NamedStoredProcedureQuery(name = "Configuration.generateSQL", procedureName = "P_SCMS_D_STATISTICS", parameters = {
+                @StoredProcedureParameter(name = "configId", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "sql", mode = ParameterMode.OUT, type = String.class)
+        }),
         @NamedStoredProcedureQuery(name = "Configuration.test", procedureName = "PCK_SCMS_JOB.P_TEST", parameters = {
                 @StoredProcedureParameter(name = "in", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "out", mode = ParameterMode.OUT, type = List.class)
@@ -30,6 +34,7 @@ import java.util.*;
 public class Configuration implements Serializable {
     private String id;
     private String title;
+    private String reportType;
     private String description;
     private String accessState;
     private String rawConfig;
@@ -53,6 +58,7 @@ public class Configuration implements Serializable {
         this.description = configuration.getDescription();
         this.accessState = configuration.getAccessState();
         this.rawConfig = configuration.getRawConfig();
+        this.sql = configuration.getSql();
         this.created = configuration.getCreated();
         this.createBy = configuration.getCreateBy();
         this.updated = configuration.getUpdated();
@@ -82,6 +88,16 @@ public class Configuration implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+//    @Transient
+    @Column(name = "REPORT_TYPE")
+    public String getReportType() {
+        return reportType;
+    }
+
+    public void setReportType(String reportType) {
+        this.reportType = reportType;
     }
 
     @Column(columnDefinition = "CLOB")

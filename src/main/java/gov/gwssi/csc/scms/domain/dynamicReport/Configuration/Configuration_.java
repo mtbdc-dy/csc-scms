@@ -16,6 +16,7 @@ import java.util.Calendar;
 public class Configuration_ {
     public static volatile SingularAttribute<Configuration, String> id;
     public static volatile SingularAttribute<Configuration, String> title;
+    public static volatile SingularAttribute<Configuration, String> reportType;
     public static volatile SingularAttribute<Configuration, String> description;
     public static volatile SingularAttribute<Configuration, String> accessState;
     public static volatile SingularAttribute<Configuration, String> rawConfig;

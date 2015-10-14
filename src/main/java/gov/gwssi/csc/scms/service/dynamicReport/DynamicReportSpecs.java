@@ -32,6 +32,9 @@ public class DynamicReportSpecs extends BaseService{
                     expressions.add(cb.equal(root.get(Configuration_.accessState), filter.getAccessState()));
                 }
 
+                if (filter.getMode() != null){
+                    expressions.add(cb.equal(root.get(Configuration_.reportType), filter.getMode()));
+                }
 //                if (filter.getPublishState() != null){
 //                    expressions.add(cb.equal(root.get(Configuration_.publishState), filter.getPublishState()));
 //                }

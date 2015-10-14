@@ -388,6 +388,7 @@ public class DynamicReportService extends DynamicReportSpecs {
         selectConditionRepository.save(selects);
         cellRepository.save(cells);
 
+//        configurationRepository.generateSQL(newConfiguration.getId());
         newConfiguration.setCells(cells);
         newConfiguration.setJoinConditions(joins);
         newConfiguration.setWhereConditions(wheres);
