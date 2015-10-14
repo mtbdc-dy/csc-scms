@@ -46,7 +46,7 @@ public class CodeTableDAO extends BaseDAO {
 
 
     public List<DictTreeJson> getCodeTableByLevel(String codeTableName, String level) {
-        String sql = "select " + codeTableName + ", nameCh, parentId, enabled from " + level;
+        String sql = "select " + codeTableName + ", nameCh, parentId, enabled from " + level + " order by " + codeTableName;
         List<Map> codeTableList = super.queryListBySql(sql);
         List<DictTreeJson> codeTable = Lists.newArrayList();
 
@@ -56,7 +56,7 @@ public class CodeTableDAO extends BaseDAO {
     }
 
     public List<DictTreeJson> getCodeTable(String classId) {
-        String sql = "select classId, translateId, nameCh, nameEn, enabled from dim_translate where classId='" + classId + "'";
+        String sql = "select classId, translateId, nameCh, nameEn, enabled from dim_translate where classId='" + classId + "'" + " order by translateId";
         List<Map> codeTableList = super.queryListBySql(sql);
         List<DictTreeJson> codeTable = Lists.newArrayList();
 
