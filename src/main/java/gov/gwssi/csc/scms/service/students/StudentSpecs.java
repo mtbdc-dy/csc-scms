@@ -10,15 +10,19 @@ import gov.gwssi.csc.scms.domain.scholarship.ScholarshipX_;
 import gov.gwssi.csc.scms.domain.student.*;
 import gov.gwssi.csc.scms.domain.ticket.Ticket;
 import gov.gwssi.csc.scms.domain.ticket.Ticket_;
+import gov.gwssi.csc.scms.domain.user.Project;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.domain.warning.Warning;
+import org.hibernate.jpa.criteria.expression.EntityTypeExpression;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -49,10 +53,42 @@ public class StudentSpecs {
         };
     }
 
-    public static Specification<Student> userIs(final User user) {
+
+    public static Specification<Student> userIs(final User user,final String mode) {
         // TODO 实现根据用户所属项目或者所属院校进行查询
 
-        return null;
+        return new Specification<Student>() {
+            @Override
+            public Predicate toPredicate(Root<Student> student, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                Predicate predicate = cb.conjunction();
+
+                String userType = user.getUserType();
+                String identity = user.getRole().getIdentity();
+                String nodeId = user.getNode().getNodeId();
+                if("Y0002".equals(identity) && !"integratedquery".equals(mode)){    //基金委用户  Y0002主管 并且不是综合查询模块
+                    Join<Student, BasicInfo> basicInfo = student.join(Student_.basicInfo);
+                    List<Project> projects = user.getProjects();
+
+                    if(projects.size() == 1){
+                        predicate.getExpressions().add(cb.equal(basicInfo.get(BasicInfo_.projectName), projects.get(0).getProjectId()));
+                    }else if(projects.size() >1){
+                        Expression eSum = cb.equal(basicInfo.get(BasicInfo_.projectName), projects.get(0).getProjectId());
+                        for(int i=1;i<projects.size();i++){
+                            Expression e = cb.equal(basicInfo.get(BasicInfo_.projectName),projects.get(i).getProjectId());
+                            eSum = cb.or(eSum,e);
+                        }
+                        predicate.getExpressions().add(eSum);
+                    }else{
+                        predicate.getExpressions().add(cb.equal(basicInfo.get(BasicInfo_.projectName), "^_^"));
+                    }
+
+                }else if("2".equals(userType)){
+                    Join<Student, SchoolRoll> schoolRoll = student.join(Student_.schoolRoll);
+                    predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.currentUniversity), nodeId));
+                }
+                return predicate;
+            }
+        };
     }
 
     public static Specification<Student> isFreshRegister() {
@@ -83,26 +119,33 @@ public class StudentSpecs {
                 }
 
                 Expression e1 = cb.and(cb.greaterThanOrEqualTo(cb.currentDate(), intialDate),
-                        cb.lessThan(cb.currentDate(), finalDate),
-                        cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateBegin), intialDate),
+                        cb.lessThan(cb.currentDate(), finalDate));
+
+                Expression e2 = cb.and(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateBegin), intialDate),
                         cb.lessThan(schoolRoll.get(SchoolRoll_.cramDateBegin), finalDate));
 
-                Expression e2 = cb.and(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate),intialDate),
+
+                Expression e3 = cb.and(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), intialDate),
                         cb.lessThan(schoolRoll.get(SchoolRoll_.majorStartDate), finalDate));
 
-                Expression e3 = cb.and(cb.greaterThanOrEqualTo(cb.currentDate(), intialDate),
-                        cb.lessThanOrEqualTo(cb.currentDate(), nextIntialDate),
-                        cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateBegin), finalDate),
-                        cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateBegin), nextIntialDate)
-                        );
+                Expression e4 = cb.and(e1,cb.or(e2, e3));
 
-                Expression e4 = cb.and(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), finalDate),
-                        cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), nextIntialDate)
+                Expression e5 = cb.and(cb.greaterThanOrEqualTo(cb.currentDate(), finalDate),
+                        cb.lessThan(cb.currentDate(), nextIntialDate)
                 );
-                Expression e5 = cb.or(e1, e2);
-                Expression e6 = cb.or(e5, e3);
-                Expression e7 = cb.or(e6, e4);
-                predicate.getExpressions().add(e7);
+                Expression e6 = cb.and(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateBegin), finalDate),
+                        cb.lessThan(schoolRoll.get(SchoolRoll_.cramDateBegin), nextIntialDate)
+                );
+
+                Expression e7 = cb.and(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), finalDate),
+                        cb.lessThan(schoolRoll.get(SchoolRoll_.majorStartDate), nextIntialDate)
+                );
+
+                Expression e8 = cb.and(e5,cb.or(e6, e7));
+
+                Expression e9 = cb.or(e4,e8);
+
+                predicate.getExpressions().add(e9);
                 return predicate;
             }
         };
@@ -137,8 +180,8 @@ public class StudentSpecs {
 
                 predicate.getExpressions().add(cb.notEqual(schoolRoll.get(SchoolRoll_.registerYear), currentYear));
 
-                Expression e1 = cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateEnd),nextIntialDate);
-                Expression e2 = cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), nextIntialDate);
+                Expression e1 = cb.greaterThan(schoolRoll.get(SchoolRoll_.cramDateEnd), nextIntialDate);
+                Expression e2 = cb.lessThan(schoolRoll.get(SchoolRoll_.majorStartDate), nextIntialDate);
                 Expression e3 = cb.or(e1,e2);
                 predicate.getExpressions().add(e3);
                 return predicate;
@@ -167,6 +210,19 @@ public class StudentSpecs {
                 Join<Student, SchoolRoll> schoolRoll = student.join(Student_.schoolRoll);
                 predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.registed), "AX0002"));
                 predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.leaveChina), "BA0002"));
+                return predicate;
+            }
+        };
+    }
+
+    public static Specification<Student> isLeaveChina() {
+        return new Specification<Student>() {
+            @Override
+            public Predicate toPredicate(Root<Student> student, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                Predicate predicate = cb.conjunction();
+                Join<Student, SchoolRoll> schoolRoll = student.join(Student_.schoolRoll);
+                predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.registed), "AX0002"));
+                predicate.getExpressions().add(cb.notEqual(schoolRoll.get(SchoolRoll_.leaveChina), "BA0002"));
                 return predicate;
             }
         };

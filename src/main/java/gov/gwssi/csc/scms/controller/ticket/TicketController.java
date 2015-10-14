@@ -5,13 +5,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.controller.JsonBody;
 import gov.gwssi.csc.scms.controller.RequestHeaderError;
 import gov.gwssi.csc.scms.dao.ticket.TicketDAO;
+
+import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
+
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.TicketResultObject;
-import gov.gwssi.csc.scms.domain.student.Student;
+import gov.gwssi.csc.scms.domain.student.*;
 import gov.gwssi.csc.scms.domain.ticket.Ticket;
 import gov.gwssi.csc.scms.domain.user.User;
+import gov.gwssi.csc.scms.domain.warning.Warning;
+import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.service.export.ExportService;
 import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.ticket.NoSuchTicketException;
@@ -49,7 +54,7 @@ import java.util.*;
  */
 @RestController
 @RequestMapping(value = "/ticket")
-public class TicketController {
+public class TicketController extends BaseService {
     @Autowired
     private UserService userService;
     @Autowired
@@ -69,7 +74,7 @@ public class TicketController {
 
     //学校用户在前台点击生成机票管理列表，返回列表
     @RequestMapping(value = "/new", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public List<TicketResultObject> getTickets(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
+    public Map<String,String> getTickets(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
         User user = null;
         try {
             user = userService.getUserByJWT(header);
@@ -78,8 +83,13 @@ public class TicketController {
         } catch (UserIdentityError userIdentityError) {
             userIdentityError.printStackTrace();
         }
-        List<TicketResultObject> ticketResultObjectList = ticketService.getTicketList(user);
-        return ticketResultObjectList;
+        Map<String,String> map = new HashMap<String, String>();
+        String no = ticketService.getStNo(user);
+
+//        List<Map<String,String>> list = new ArrayList<Map<String, String>>();
+//        list.add(map);
+        map.put("returnNo",no);
+        return map;
     }
 
     //学校用户在前台点击查询，返回列表
@@ -143,8 +153,13 @@ public class TicketController {
                     ticket.setUpdated(ts);
                     Ticket oldTicket = ticketService.getTicketById(ticket.getId());
                     Student student = oldTicket.getStudent();
-                    ticket.setStudent(student);
+
+                    Student student1 = new Student();
+                    student1.setId(student.getId());
+                    ticket.setStudent(student1);
+
                     Ticket hqTicket = ticketService.saveTicket(ticket, null);
+                    hqTicket.setStudent(student1);
                     newTickets.add(hqTicket);
                 }
 
@@ -183,8 +198,11 @@ public class TicketController {
                     ticket.setState("AT0002");//订票状态待修改成对应的代码值
                     Ticket oldTicket = ticketService.getTicketById(ticket.getId());
                     Student student = oldTicket.getStudent();
-                    ticket.setStudent(student);
+                    Student student2 = new Student();
+                    student2.setId(student.getId());
+                    ticket.setStudent(student2);
                     Ticket hqTicket = ticketService.saveTicket(ticket, null);
+                    hqTicket.setStudent(student2);
                     newTickets.add(hqTicket);
                 }
 
@@ -364,7 +382,7 @@ public class TicketController {
      *
      * @param id
      */
-    @RequestMapping(
+    @RequestMapping(value = "/export",
             method = RequestMethod.GET,
             params = {"id", "userType"},
             headers = "Accept=application/octet-stream")
@@ -403,8 +421,7 @@ public class TicketController {
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         try {
             Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
-            User user = userService.getUserByJWT(header);
-            Page<Ticket> ticketPage = ticketService.getTicketsPagingByFilter(filter, page, size, mode, user);
+            Page<Ticket> ticketPage = ticketService.getTicketsPagingByFilter(filter, page, size, mode, header);
             Page<Map<String, Object>> mapPage = ticketPage.map(new TicketConverter());
             return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
         } catch (Exception e) {
@@ -412,4 +429,5 @@ public class TicketController {
             throw new RuntimeException(e);
         }
     }
+
 }

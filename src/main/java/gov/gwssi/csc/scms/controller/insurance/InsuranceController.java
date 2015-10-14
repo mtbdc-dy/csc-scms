@@ -85,7 +85,7 @@ public class InsuranceController {
 
     //用户在前台点击生成机票管理列表，返回列表
     @RequestMapping(value = "/new", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public List<InsuranceResultObject> getInsurances(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
+    public Map<String,String> getInsurances(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
         User user = null;
         try {
             user = userService.getUserByJWT(header);
@@ -94,8 +94,8 @@ public class InsuranceController {
         } catch (UserIdentityError userIdentityError) {
             userIdentityError.printStackTrace();
         }
-        List<InsuranceResultObject> insuranceResultObjectList = insuranceService.getInsuranceList(user);
-        return insuranceResultObjectList;
+        Map<String,String> result = insuranceService.getInsuranceList(user);
+        return result;
     }
 
     //学校用户在前台点击查询，返回列表
@@ -302,13 +302,13 @@ public class InsuranceController {
             @RequestParam(value = "page") Integer page,
             @RequestParam(value = "size") Integer size,
             @RequestParam(value = "filter") String filterJSON) throws IOException {
+
         try {
             Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
-            User user = userService.getUserByJWT(header);
-            Page<Insurance> insurancePage = insuranceService.getInsurancesPagingByFilter(filter, page, size, mode, user);
+            Page<Insurance> insurancePage = insuranceService.getInsurancesPagingByFilter(filter, page, size, mode, header);
             Page<Map<String, Object>> mapPage = insurancePage.map(new InsuranceConverter());
             return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
-        } catch (Exception e) {
+        }catch (Exception e){
             e.printStackTrace();
             throw new RuntimeException(e);
         }

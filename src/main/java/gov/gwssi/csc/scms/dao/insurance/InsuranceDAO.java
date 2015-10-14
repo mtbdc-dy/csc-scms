@@ -293,8 +293,8 @@ public class InsuranceDAO extends BaseDAO {
     }
     @Transactional
     public void saveDate(String cscNo,String elcregisteNo,int year){
-        String sql = "update SCMS_INSURANCE t set t.INSURNO = '"+elcregisteNo+"' " +
-                " where t.YEAR = "+year+" and t.studentid = (select s.id from scms_student s" +
+        String sql = "update SCMS_INSURANCE t set t.INSURNO = '"+elcregisteNo+"',t.PRESTA = 'AV0003'  " +
+                " where t.YEAR = "+year+"  and t.studentid = (select s.id from scms_student s" +
                 "  where s.cscid = '"+cscNo+"')";
 
         super.updateBySql(sql);

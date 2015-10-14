@@ -2,6 +2,7 @@ package gov.gwssi.csc.scms.controller.student;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.gwssi.csc.scms.domain.insurance.Insurance;
 import gov.gwssi.csc.scms.service.export.ExportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -27,9 +28,13 @@ import gov.gwssi.csc.scms.utils.JWTUtil;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
 import java.net.URLDecoder;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by WangZishi on 3/27/2015.
@@ -166,6 +171,28 @@ public class StudentController {
             Student student = studentService.getStudentById(id);
             student.setAbnormals(null);
             student.setTickets(null);
+//            student.setInsurances(null);
+            List<Insurance> insuranceList = student.getInsurances();
+            if(insuranceList != null && insuranceList.size()>0){
+                List<Insurance> insurances = new ArrayList<Insurance>();
+                long max = insuranceList.get(0).getYear();
+                for(int i=1;i<insuranceList.size();i++){
+                    if(insuranceList.get(i).getYear()>max){
+                        max = insuranceList.get(i).getYear();
+                    }
+                }
+                for(int j=0;j<insuranceList.size();j++){
+                    Insurance insurance = insuranceList.get(j);
+                    if(insurance.getInsurSta().equals("1")&&insurance.getYear() == max){
+                        insurance.setStudent(null);
+                        insurances.add(insurance);
+                        break;
+                    }
+                }
+                student.setInsurances(insurances);
+            }
+            student.setScholarshipXs(null);
+            student.setWarning(null);
             return student;
         } catch (Exception e) {
             e.printStackTrace();

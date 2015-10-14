@@ -1,8 +1,6 @@
 package gov.gwssi.csc.scms.controller.scholarshipX;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.controller.JsonBody;
 import gov.gwssi.csc.scms.controller.RequestHeaderError;
@@ -30,16 +28,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by gc on 2015/7/17.
@@ -59,7 +55,7 @@ public class ScholarshipXController {
 
     //用户在前台点击生奖学金评审列表，返回列表
     @RequestMapping(value = "/new", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public List<ScholarshipXResultObject> getScholarshipXs(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
+    public Map<String,String> getScholarshipXs(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
         User user = null;
         List<OperationLog> operationLogs = null;
         try {
@@ -69,9 +65,9 @@ public class ScholarshipXController {
         } catch (UserIdentityError userIdentityError) {
             userIdentityError.printStackTrace();
         }
-        List<ScholarshipXResultObject> scholarshipXResultObjectList = scholarshipXService.getScholarshipXList(user);//保存日志
+        Map<String,String> result = scholarshipXService.getScholarshipXList(user);//保存日志
 
-        return scholarshipXResultObjectList;
+        return result;
     }
 
     //学校用户在前台点击查询，返回列表
@@ -137,33 +133,37 @@ public class ScholarshipXController {
                     String id = scholarshipXService.saveScholarshipDetail(scholarshipDetail, user);
                 }
                 //子表全部保存完成后，对主表的合格，不合格人数进行重新统计并更新主表
-                Iterable scholarshipXlist = scholarshipXService.findScholarshipXAll();
+
                 int qualNum = 0;//合格人数
                 int unqualNum = 0;//不合格人数
                 Timestamp ts = new Timestamp(System.currentTimeMillis());
-                int year = ts.getYear() + 1900;
-                if (user.getUserType().equals("2")) {//学校用户
+//                int year = ts.getYear() + 1900;
+                int year = Calendar.getInstance().get(Calendar.YEAR);
+                if(user.getUserType().equals("2")){
                     school = user.getNode().getNodeId();
+                }
+                List<ScholarshipX> scholarshipXlist = scholarshipXService.findScholarshipXBySchoolAndYear(school,year);
+                if (user.getUserType().equals("2")) {//学校用户
                     for (Iterator iter = scholarshipXlist.iterator(); iter.hasNext(); ) {
                         ScholarshipX strX = (ScholarshipX) iter.next();
-                        if (strX.getYear() == year && strX.getSchool().equals(school)) {
+//                        if (strX.getYear() == year && strX.getSchool().equals(school)) {
                             if (strX.getSchReview().equals("AQ0001")) {
                                 qualNum++;
                             } else {
                                 unqualNum++;
                             }
-                        }
+//                        }
                     }
                 } else {
                     for (Iterator iter = scholarshipXlist.iterator(); iter.hasNext(); ) {
                         ScholarshipX strX = (ScholarshipX) iter.next();
-                        if (strX.getYear() == year && strX.getSchool().equals(school)) {
+//                        if (strX.getYear() == year && strX.getSchool().equals(school)) {
                             if (strX.getCscReview().equals("AQ0001")) {
                                 qualNum++;
                             } else {
                                 unqualNum++;
                             }
-                        }
+//                        }
                     }
                 }
 
@@ -228,7 +228,8 @@ public class ScholarshipXController {
                 int qualNum = 0;//合格人数
                 int unqualNum = 0;//不合格人数
                 Timestamp ts = new Timestamp(System.currentTimeMillis());
-                int year = ts.getYear() + 1900;
+//                int year = ts.getYear() + 1900;
+                int year = Calendar.getInstance().get(Calendar.YEAR);
                 String school = user.getNode().getNodeId();
 
                 for (Iterator iter = scholarshipXlist.iterator(); iter.hasNext(); ) {
@@ -277,23 +278,24 @@ public class ScholarshipXController {
                 }
             }
             //子表全部保存完成后，对主表的合格，不合格人数进行重新统计并更新主表
-            Iterable scholarshipXlist = scholarshipXService.findScholarshipXAll();
+
             int qualNum = 0;//合格人数
             int unqualNum = 0;//不合格人数
             Timestamp ts = new Timestamp(System.currentTimeMillis());
-            int year = ts.getYear() + 1900;
+//            int year = ts.getYear() + 1900;
+            int year = Calendar.getInstance().get(Calendar.YEAR);
             String school = user.getNode().getNodeId();
+            List<ScholarshipX> scholarshipXlist = scholarshipXService.findScholarshipXBySchoolAndYear(school,year);
 
             for (Iterator iter = scholarshipXlist.iterator(); iter.hasNext(); ) {
                 ScholarshipX strX = (ScholarshipX) iter.next();
-
-                if (strX.getYear() == year && strX.getSchool().equals(school)) {
+//                if (strX.getYear() == year && strX.getSchool().equals(school)) {
                     if (strX.getSchReview().equals("AQ0001")) {
                         qualNum++;
                     } else {
                         unqualNum++;
                     }
-                }
+//                }
             }
             Scholarship scholarship = scholarshipXService.findScholarshipOne(scholarshipId);
             scholarship.setSchoolQual((long) qualNum);
@@ -336,25 +338,25 @@ public class ScholarshipXController {
                     String id = scholarshipXService.saveScholarshipDetail(scholarshipDetail, user);//保存记录日志
                 }
                 //子表全部保存完成后，对主表的合格，不合格人数进行重新统计并更新主表
-                Iterable scholarshipXlist = scholarshipXService.findScholarshipXAll();
+                String school = user.getNode().getNodeId();
                 int qualNum = 0;//合格人数
                 int unqualNum = 0;//不合格人数
                 String scholarshipId = "";
-                int year = ts.getYear() + 1900;
-                String school = user.getNode().getNodeId();
-
+//                int year = ts.getYear() + 1900;
+                int year = Calendar.getInstance().get(Calendar.YEAR);
+                List<ScholarshipX> scholarshipXlist = scholarshipXService.findScholarshipXBySchoolAndYear(school, year);
                 for (Iterator iter = scholarshipXlist.iterator(); iter.hasNext(); ) {
                     ScholarshipX strX = (ScholarshipX) iter.next();
-
-                    if (strX.getYear() == year && strX.getSchool().equals(school)) {
-                        scholarshipId = strX.getScholarshipId();
+//                    if (strX.getYear() == year && strX.getSchool().equals(school)) {
+//                        scholarshipId = strX.getScholarshipId();
                         if (strX.getSchReview().equals("AQ0001")) {
                             qualNum++;
                         } else {
                             unqualNum++;
                         }
-                    }
+//                    }
                 }
+                scholarshipId = scholarshipXlist.get(0).getScholarshipId();
                 Scholarship scholarship = scholarshipXService.findScholarshipOne(scholarshipId);
                 scholarship.setSchoolQual((long) qualNum);
                 scholarship.setSchoolUnQual((long) unqualNum);
@@ -441,6 +443,8 @@ public class ScholarshipXController {
     }
 
     //分页查询
+    //学校用户在前台点击查询，返回列表
+    @Transactional
     @RequestMapping(
             method = RequestMethod.GET,
             headers = {"Accept=application/json"},
@@ -454,8 +458,35 @@ public class ScholarshipXController {
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         try {
             Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
-            User user = userService.getUserByJWT(header);
-            Page<ScholarshipX> scholarshipXPage = scholarshipXService.getScholarshipXsPagingByFilter(filter, page, size, mode, user);
+            Page<ScholarshipX> scholarshipXPage = scholarshipXService.getScholarshipXsPagingByFilter(filter, page, size, mode, header);
+            Page<Map<String, Object>> mapPage = scholarshipXPage.map(new ScholarshipXConverter());
+            return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    //分页查询
+    //基金委跳转进来的相关操作
+    //基金委用户在前台点击查询，返回列表
+    @Transactional
+    @RequestMapping(
+            value = "/scholarshipJ/{school}",
+            method = RequestMethod.GET,
+            headers = {"Accept=application/json"},
+            params = {"mode", "field", "page", "size", "filter"})
+    public ResponseEntity<Page<Map<String, Object>>> getScholarshipXsByConditionsJ(
+            @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
+            @PathVariable("school") String school,
+            @RequestParam(value = "mode") String mode,
+            @RequestParam(value = "field") String[] fields,
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size,
+            @RequestParam(value = "filter") String filterJSON) throws IOException {
+        try {
+            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            Page<ScholarshipX> scholarshipXPage = scholarshipXService.getScholarshipXsPagingByFilterJ(filter, page, size, mode, header, school);
             Page<Map<String, Object>> mapPage = scholarshipXPage.map(new ScholarshipXConverter());
             return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
         } catch (Exception e) {

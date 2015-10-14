@@ -4,6 +4,7 @@ import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.student.*;
 import gov.gwssi.csc.scms.domain.ticket.Ticket;
 import gov.gwssi.csc.scms.domain.ticket.Ticket_;
+import gov.gwssi.csc.scms.domain.user.Project;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.data.jpa.domain.Specification;
@@ -13,6 +14,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by tianj on 2015/8/29.
@@ -79,13 +81,15 @@ public class TicketSpecs extends BaseService {
                     currentYear = calendar.get(Calendar.YEAR);
                     SimpleDateFormat ds = new SimpleDateFormat("yyyy-MM-dd");
                     intialDate = ds.parse(currentYear + "-01-01");
-                    finalDate = ds.parse(currentYear + "-09-01");
+                    finalDate = ds.parse(currentYear + "-12-31");
 
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                predicate.getExpressions().add(cb.greaterThanOrEqualTo(cb.currentDate(),intialDate));
-                predicate.getExpressions().add(cb.lessThan(cb.currentDate(), finalDate));
+//                predicate.getExpressions().add(cb.greaterThanOrEqualTo(cb.currentDate(),intialDate));
+//                predicate.getExpressions().add(cb.lessThan(cb.currentDate(), finalDate));
+                predicate.getExpressions().add(cb.between(ticket.get(Ticket_.created), intialDate, finalDate));
+
 
                 if (filter.getTicketState() != null) {
                     predicate.getExpressions().add(cb.like(ticket.get(Ticket_.state), filter.getTicketState()));
@@ -96,7 +100,10 @@ public class TicketSpecs extends BaseService {
                         predicate.getExpressions().add(cb.in(ticket.get(Ticket_.state)).value("AT0002").value("AT0005").value("AT0003").value("AT0004"));
                     }
                 }
+if(filter.getTicketType() != null){
+    predicate.getExpressions().add(cb.like(ticket.get(Ticket_.type), filter.getTicketType()));
 
+}
                 /**学生主表部分*/
                 if (needStudent) {
                     Join<Ticket, Student> student = ticket.join(Ticket_.student);
@@ -232,6 +239,43 @@ public class TicketSpecs extends BaseService {
                 }
 
 
+                return predicate;
+            }
+        };
+    }
+
+    public static Specification<Ticket> userIs(final User user) {
+        // TODO 实现根据用户所属项目或者所属院校进行查询
+
+        return new Specification<Ticket>() {
+            @Override
+            public Predicate toPredicate(Root<Ticket> ticketRoot, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                Predicate predicate = cb.conjunction();
+
+                String userType = user.getUserType();
+                String identity = user.getRole().getIdentity();
+                String nodeId = user.getNode().getNodeId();
+                if("Y0002".equals(identity)){    //基金委用户  Y0002主管
+                    Join<Ticket, Student> student = ticketRoot.join(Ticket_.student);
+                    Join<Student, BasicInfo> basicInfo = student.join(Student_.basicInfo);
+                    List<Project> projects = user.getProjects();
+
+                    if(projects.size() == 1){
+                        predicate.getExpressions().add(cb.equal(basicInfo.get(BasicInfo_.projectName), projects.get(0).getProjectId()));
+                    }else if(projects.size() >1){
+                        Expression eSum = cb.equal(basicInfo.get(BasicInfo_.projectName), projects.get(0).getProjectId());
+                        for(int i=1;i<projects.size();i++){
+                            Expression e = cb.equal(basicInfo.get(BasicInfo_.projectName),projects.get(i).getProjectId());
+                            eSum = cb.or(eSum,e);
+                        }
+                        predicate.getExpressions().add(eSum);
+                    }
+
+                }else if("2".equals(userType)){
+                    Join<Ticket, Student> student = ticketRoot.join(Ticket_.student);
+                    Join<Student, SchoolRoll> schoolRoll = student.join(Student_.schoolRoll);
+                    predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.currentUniversity), nodeId));
+                }
                 return predicate;
             }
         };

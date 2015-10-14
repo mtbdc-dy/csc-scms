@@ -15,10 +15,9 @@ import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.scholarshipX.ScholarshipDetailRepository;
 import gov.gwssi.csc.scms.repository.scholarshipX.ScholarshipRepository;
 import gov.gwssi.csc.scms.repository.scholarshipX.ScholarshipXRepository;
-import gov.gwssi.csc.scms.service.BaseService;
-import gov.gwssi.csc.scms.service.abnormal.NoSuchAbnormalException;
 import gov.gwssi.csc.scms.service.log.OperationLogService;
 import gov.gwssi.csc.scms.service.student.StudentService;
+import gov.gwssi.csc.scms.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -26,13 +25,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static org.springframework.data.jpa.domain.Specifications.where;
 
@@ -59,9 +54,11 @@ public class ScholarshipXService extends ScholarshipXSpecs {
     private ScholarshipJService scholarshipJService;
     @Autowired
     private ScholarshipXDAO scholarshipXDAO;
+    @Autowired
+    private UserService userService;
 
     //生成奖学金评审清单
-    public List<ScholarshipXResultObject> getScholarshipXList(User user) {
+    public Map<String,String> getScholarshipXList(User user) {
 
         List listParameter = new ArrayList();
         List<ScholarshipXResultObject> ScholarshipXResultObjectList;
@@ -106,7 +103,9 @@ public class ScholarshipXService extends ScholarshipXSpecs {
 
         }
         operationLogService.saveOperationLog(operationLogs);//保存日志
-        return ScholarshipXResultObjectList;
+        Map<String,String> result = new HashMap<String, String>();
+        result.put("result","success");
+        return result;
 
     }
 
@@ -183,7 +182,8 @@ public class ScholarshipXService extends ScholarshipXSpecs {
     private String getSqlbycscid(String cscId) {
         StringBuilder sb = new StringBuilder();
         Timestamp ts = new Timestamp(System.currentTimeMillis());
-        int year = ts.getYear() + 1900;
+//        int year = ts.getYear() + 1900;
+        int year = Calendar.getInstance().get(Calendar.YEAR);
         sb.append(ScholarshipXResultObject.getResultObject());
         String tempSql = " from ScholarshipX ScholarshipX,Student student,BasicInfo basicInfo, SchoolRoll schoolRoll" +
                 " where student.id = basicInfo.student " +
@@ -198,7 +198,8 @@ public class ScholarshipXService extends ScholarshipXSpecs {
         StringBuilder sb = new StringBuilder();
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String schoolId = user.getNode().getNodeId();
-        int year = ts.getYear() + 1900;
+//        int year = ts.getYear() + 1900;
+        int year = Calendar.getInstance().get(Calendar.YEAR);
         sb.append(ScholarshipXResultObject.getResultObject());
         String tempSql = " from ScholarshipX ScholarshipX,Student student,BasicInfo basicInfo, SchoolRoll schoolRoll" +
                 " where student.id = basicInfo.student " +
@@ -242,8 +243,6 @@ public class ScholarshipXService extends ScholarshipXSpecs {
     //保存修改后奖学金字表的值
     @Transactional
     public String saveScholarshipDetail(ScholarshipDetail scholarshipDetail, User user) {
-
-
         //记录日志
         List<OperationLog> operationLogs = new ArrayList<OperationLog>();
         ScholarshipX scholarshipX = findOne(scholarshipDetail.getId());
@@ -251,7 +250,7 @@ public class ScholarshipXService extends ScholarshipXSpecs {
         operationLog.setOptType("2");//修改
         operationLog.setModule("奖学金年度评审管理");
         operationLog.setModuleId("BG0006");
-        operationLog.setStudentId(scholarshipX.getStudent().getId());
+        operationLog.setStudentId(scholarshipDetail.getStudent().getId());
         operationLog.setCscId(scholarshipX.getCscId());
         operationLog.setPassportName(scholarshipX.getPassportName());
         //区分基金委用户还是学校用户
@@ -318,7 +317,8 @@ public class ScholarshipXService extends ScholarshipXSpecs {
             operationLog.setModule("奖学金年度评审管理");
             operationLog.setModuleId("BG0006");
             ScholarshipX scholarshipX = findOne((String) strD.get("ID"));
-            operationLog.setStudentId(scholarshipX.getStudent().getId());
+//            operationLog.setStudentId(scholarshipX.getStudent().getId());
+            operationLog.setStudentId((String) strD.get("STUDENTID"));
             operationLog.setCscId(scholarshipX.getCscId());
             operationLog.setPassportName(scholarshipX.getPassportName());
             if (type.equals("1")) {//提交
@@ -341,8 +341,6 @@ public class ScholarshipXService extends ScholarshipXSpecs {
         }
 
         operationLogService.saveOperationLog(operationLogs);//保存日志
-
-
         scholarshipRepository.save(scholarship);
         return scholarship.getId();
     }
@@ -368,8 +366,17 @@ public class ScholarshipXService extends ScholarshipXSpecs {
         return scholarshipXRepository.findAll();
     }
 
+    public List<ScholarshipX> findScholarshipXBySchoolAndYearAndSchReview(String school,int year,String schReview) {//找到所有视图记录
+        long yearC = Long.valueOf(year);
+        return scholarshipXRepository.findBySchoolAndYearAndSchReview(school, year, schReview);
+    }
+    public List<ScholarshipX> findScholarshipXBySchoolAndYear(String school,int year) {//找到所有视图记录
+        long yearC = Long.valueOf(year);
+        return scholarshipXRepository.findBySchoolAndYear(school,year);
+    }
+
     //保存新增的奖学金详细记录,保存日志
-    @Transactional
+//    @Transactional
     public String savenewScholarshipDetail(ScholarshipDetail scholarshipDetail, User user) {
 
 
@@ -411,7 +418,8 @@ public class ScholarshipXService extends ScholarshipXSpecs {
         //返回界面包含学生信息 根据保险id查出
         StringBuilder sb = new StringBuilder();
         Timestamp ts = new Timestamp(System.currentTimeMillis());
-        int year = ts.getYear() + 1900;
+//        int year = ts.getYear() + 1900;
+        int year = Calendar.getInstance().get(Calendar.YEAR);
         sb.append(ScholarshipXResultObject.getResultObject());
         String tempSql = " from ScholarshipX ScholarshipX,Student student,BasicInfo basicInfo, SchoolRoll schoolRoll" +
                 " where student.id = basicInfo.student " +
@@ -433,7 +441,8 @@ public class ScholarshipXService extends ScholarshipXSpecs {
         //返回界面包含学生信息 根据保险id查出
         StringBuilder sb = new StringBuilder();
         Timestamp ts = new Timestamp(System.currentTimeMillis());
-        int year = ts.getYear() + 1900;
+//        int year = ts.getYear() + 1900;
+        int year = Calendar.getInstance().get(Calendar.YEAR);
         sb.append(ScholarshipXResultObject.getResultObject());
         String tempSql = " from ScholarshipX ScholarshipX,Student student,BasicInfo basicInfo, SchoolRoll schoolRoll" +
                 " where student.id = basicInfo.student " +
@@ -450,7 +459,7 @@ public class ScholarshipXService extends ScholarshipXSpecs {
         return scholarshipXResultObject;
     }
 
-    //删除保险子表记录
+    //删除奖学金子表记录
     public ScholarshipDetail deleteScholarshipDetailById(User user, String id) {
         ScholarshipDetail scholarshipDetail = getScholarshipDetailById(id);
         if (scholarshipDetail == null)
@@ -462,7 +471,7 @@ public class ScholarshipXService extends ScholarshipXSpecs {
         operationLog.setOptType("3");
         operationLog.setModule("奖学金年度评审管理");
         operationLog.setModuleId("BG0006");
-        operationLog.setStudentId(scholarshipX.getStudent().getId());
+        operationLog.setStudentId(scholarshipDetail.getStudent().getId());
         operationLog.setCscId(scholarshipX.getCscId());
         operationLog.setPassportName(scholarshipX.getPassportName());
         String reason = (scholarshipX.getSchReason() != null) ? scholarshipX.getSchReason() : "-";//对null的情况进行转化
@@ -488,10 +497,32 @@ public class ScholarshipXService extends ScholarshipXSpecs {
     }
 
     //分页查询
-    public Page<ScholarshipX> getScholarshipXsPagingByFilter(Filter filter,Integer page,Integer size,String mode,User user) {
-        Specification<ScholarshipX> specA = filterIsLike(filter,user);
-//        Specification<ScholarshipX> specB = userIs(user);
-        return scholarshipXRepository.findAll(where(specA), new PageRequest(page, size));
+    @Transactional
+    public Page<ScholarshipX> getScholarshipXsPagingByFilter(Filter filter,Integer page,Integer size,String mode,String header) {
+        try {
+            User user = userService.getUserByJWT(header);
+            String school = user.getNode().getNodeId();
+            Specification<ScholarshipX> specA = filterIsLike(filter, user, school);
+            Specification<ScholarshipX> specB = userIs(user);
+            return scholarshipXRepository.findAll(where(specA).and(specB), new PageRequest(page, size));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    //分页查询
+    @Transactional
+    public Page<ScholarshipX> getScholarshipXsPagingByFilterJ(Filter filter,Integer page,Integer size,String mode,String header,String school) {
+            try {
+                User user = userService.getUserByJWT(header);
+                Specification<ScholarshipX> specA = filterIsLike(filter, user, school);
+                Specification<ScholarshipX> specB = userIs(user);
+                return scholarshipXRepository.findAll(where(specA).and(specB), new PageRequest(page, size));
+            }catch (Exception e){
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
     }
 
 }

@@ -158,4 +158,32 @@ public class TimeSetController {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * 新生注册前查询操作人员（学校用户）的报到期限设置，若系统时间不在之内，则返回false,否则返回true
+     */
+    @RequestMapping(value = "/freshRegister/{nodeId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public Map<String,String> getFreshRegisterTimeSet(@PathVariable(value = "nodeId") String nodeId) {
+        try {
+            Map<String,String> result = timeSetService.getFreshRegisterTimeSet(nodeId);
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 老生注册前查询操作人员（学校用户）的报到期限设置，若系统时间不在之内，则返回false,否则返回true
+     */
+    @RequestMapping(value = "/oldRegister/{nodeId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public Map<String,String> getOldRegisterTimeSet(@PathVariable(value = "nodeId") String nodeId) {
+        try {
+            Map<String,String> result = timeSetService.getOldRegisterTimeSet(nodeId);
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 }

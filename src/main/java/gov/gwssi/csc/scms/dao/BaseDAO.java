@@ -214,10 +214,57 @@ public class BaseDAO {
     }
 
     /**
+     * 根据nameCH查询dim_region表得到regionId
+     */
+    public String getNameCHByRegionId(String regionId) {
+        String sql = "select NAMECH from DIM_REGION where REGIONID='" + regionId + "'";
+        EntityManager em = null;
+        try {
+            em = entityManagerFactory.createEntityManager();
+            Query query = em.createNativeQuery(sql);
+            if(query.getSingleResult()!=null){
+                return String.valueOf(query.getSingleResult());
+            }else{
+                return "-";
+            }
+
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+
+    }
+
+    /**
+     * 根据univId查询dim_univ表得到univ
+     */
+    public String getUnivByUnivId(String univId) {
+        String sql = "select UNIV from DIM_UNIV where UNIVID='" + univId + "'";
+        EntityManager em = null;
+        try {
+            em = entityManagerFactory.createEntityManager();
+            Query query = em.createNativeQuery(sql);
+            if(query.getSingleResult()!=null){
+                return String.valueOf(query.getSingleResult());
+            }else{
+                return "-";
+            }
+
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+
+    }
+
+
+    /**
      * 根据TranslateId查询dim_translate表得到中文名称
      */
     public String getNameCHByTranslateId(String translateId) {
-        System.out.println(translateId);
+//        System.out.println(translateId);
         String sql = "select NAMECH from DIM_TRANSLATE where TRANSLATEID='" + translateId + "'";
         EntityManager em = null;
         try {
@@ -275,7 +322,7 @@ em.getTransaction().begin();
             storedProcedureQuery.registerStoredProcedureParameter("avc_configid",String.class,ParameterMode.IN);
             storedProcedureQuery.registerStoredProcedureParameter("avc_result",String.class, ParameterMode.OUT);
 
-            storedProcedureQuery.setParameter("avc_conigid",in);
+            storedProcedureQuery.setParameter("avc_conigid", in);
             boolean execute = storedProcedureQuery.execute();
 
             String result = (String)storedProcedureQuery.getOutputParameterValue("avc_result");
@@ -284,6 +331,26 @@ em.getTransaction().begin();
 
         }finally {
             if(em != null){
+                em.close();
+            }
+        }
+    }
+
+    //得到用户密码
+    public String getPWDByUserId(String userId){
+        String sql = "select PASSWORD from PUB_USER where USERID='" + userId + "'";
+        EntityManager em = null;
+        try {
+            em = entityManagerFactory.createEntityManager();
+            Query query = em.createNativeQuery(sql);
+            if(query.getSingleResult()!=null){
+                return String.valueOf(query.getSingleResult());
+            }else{
+                return "-";
+            }
+
+        } finally {
+            if (em != null) {
                 em.close();
             }
         }

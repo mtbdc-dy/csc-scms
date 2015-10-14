@@ -19,7 +19,7 @@ import java.util.Date;
  * Created by LiZhiSheng on 2015/9/6.
  */
 public class OperationLogSpecs extends BaseService {
-    public static Specification<OperationLog> filterIsLike(final Filter filter, final User user) {
+    public static Specification<OperationLog> filterIsLike(final Filter filter, final String userId) {
         return new Specification<OperationLog>() {
 
             @Override
@@ -53,6 +53,23 @@ public class OperationLogSpecs extends BaseService {
                     c.add(Calendar.DATE, 1); //日期加1天
                     end = c.getTime();
                     predicate.getExpressions().add(cb.lessThanOrEqualTo(operationLog.get(OperationLog_.createD), end));
+                }
+                predicate.getExpressions().add(cb.equal(operationLog.get(OperationLog_.createBy), userId));
+
+                return predicate;
+            }
+        };
+    }
+//重载一个 供 学籍变化记录 分页查询
+    public static Specification<OperationLog> filterIsLike(final String studentId) {
+        return new Specification<OperationLog>() {
+
+            @Override
+            public Predicate toPredicate(Root<OperationLog> operationLog, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                Predicate predicate = cb.conjunction();
+                if(!"".equals(studentId)){
+                    predicate.getExpressions().add(cb.equal(operationLog.get(OperationLog_.studentId), studentId));
+
                 }
                 return predicate;
             }

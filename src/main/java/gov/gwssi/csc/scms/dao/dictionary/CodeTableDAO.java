@@ -38,6 +38,10 @@ public class CodeTableDAO extends BaseDAO {
     public static final String UNIVERSITIES_LEVEL_ONE = "v_dim_univ_1";
     public static final String UNIVERSITIES_LEVEL_TWO = "v_dim_univ_2";
 
+    public static final String DEPT = "deptId";
+    public static final String DEPT_LEVEL_ONE = "v_dim_dept_1";
+    public static final String DEPT_LEVEL_TWO = "v_dim_dept_2";
+
     public static final String TRANSLATE = "translateId";
 
 

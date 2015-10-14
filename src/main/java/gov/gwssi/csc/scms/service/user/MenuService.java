@@ -6,6 +6,7 @@ import gov.gwssi.csc.scms.repository.user.MenuRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -29,11 +30,11 @@ public class MenuService extends BaseService {
 
     public List<Menu> getMenuTree() {
         List<Menu> root = menuRepository.findMenuByMenuType(Menu.ROOT_LEVEL);
-
         return setParentNull(root);
+
     }
 
-    private List<Menu> setParentNull(List<Menu> root) {
+    public List<Menu> setParentNull(List<Menu> root) {
         if (root == null || root.size() == 0)
             return null;
         for (Menu menu : root) {
@@ -48,14 +49,19 @@ public class MenuService extends BaseService {
         String sql = "select * from PUB_MENU where menuid in" +
                 " (select menuid from PUB_ROLE_MENU where roleid = '"+role.getRoleId()+"')" +
                 " and menutype = '1'";
-        List<Menu> root = getBaseDao().queryTListBySql(sql,Menu.class);
+        List<Menu> root = getBaseDao().queryTListBySql(sql, Menu.class);
         root = getChildrenMenuByRole(root, role);
         return root;
     }
 
+
+
     private List<Menu> getChildrenMenuByRole(Menu parentMenu, Role role) {
-        return menuRepository.findMenuByRoleAndParent(role, parentMenu);
+        List<Menu> menus = menuRepository.findMenuByRoleAndParent(role, parentMenu);
+        return menus;
     }
+
+
 
     private List<Menu> getChildrenMenuByRole(List<Menu> menus, Role role) {
         if (menus == null || menus.size() == 0)

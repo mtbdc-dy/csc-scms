@@ -7,6 +7,7 @@ import gov.gwssi.csc.scms.repository.user.RoleRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -83,8 +84,10 @@ public class RoleService extends BaseService {
             throw new RoleBeingUsedException("role is used by user:" + role.getRoleId());
     }
 
+
     private Role initMenu(Role role) {
-        role.setMenus(menuService.getMenuByRole(role));
+        List<Menu> menus = menuService.getMenuByRole(role);
+        role.setMenus(menus);
         return role;
     }
 

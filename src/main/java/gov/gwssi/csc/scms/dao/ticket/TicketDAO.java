@@ -243,7 +243,7 @@ public class TicketDAO extends BaseDAO {
     @Transactional
     public void saveDate(String id,String ticketLine,String airNo,BigDecimal priceSave,String time){
         String sql = "update SCMS_AIRTICKET t " +
-                " set t.TICKETNO = '"+airNo+"',t.AIRLINE = '"+ticketLine+"'," +
+                " set t.TICKETNO = '"+airNo+"',t.AIRLINE = '"+ticketLine+"',t.state = 'AT0003', " +
                 " t.PRICE = '"+priceSave+"',t.FLIGHTDATE =to_date('"+time+"','yyyy-MM-dd') where t.id='"+id+"'";
 
         super.updateBySql(sql);

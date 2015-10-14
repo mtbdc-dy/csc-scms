@@ -29,6 +29,7 @@ public class TimeSetSpecs extends BaseService {
                 if (filter.getUniv()!=null||"null".equals(filter.getUniv())) {
                     predicate.getExpressions().add(cb.equal(dimUniv.get(DimUniv_.univId), filter.getUniv()));
                 }
+                predicate.getExpressions().add(cb.equal(dimUniv.get(DimUniv_.enabled),"1"));
                 return predicate;
             }
         };

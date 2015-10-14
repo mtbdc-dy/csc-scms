@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.service.student;
 
+import gov.gwssi.csc.scms.domain.insurance.Insurance;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.FilterObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilter;
@@ -9,6 +10,7 @@ import gov.gwssi.csc.scms.domain.student.*;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.student.StudentRepository;
 import gov.gwssi.csc.scms.service.BaseService;
+import gov.gwssi.csc.scms.service.insurance.InsuranceService;
 import gov.gwssi.csc.scms.service.log.OperationLogService;
 import gov.gwssi.csc.scms.utils.TablesAndColumnsMap;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +54,8 @@ public class StudentService extends BaseService {
     private GradeAttachmentService gradeAttachmentService;
     @Autowired
     private OperationLogService operationLogService;
+    @Autowired
+    private InsuranceService insuranceService;
 
 
     public Student getStudentById(String id) throws Exception{
@@ -244,22 +248,38 @@ public class StudentService extends BaseService {
         operationLogs.add(operationLog);
         operationLogService.saveOperationLog(operationLogs);
         Map tableMap = TablesAndColumnsMap.tableMap;
-        String sql = " update "+tableMap.get(operationLog.getTableEN())+" set "+operationLog.getColumnEN()+" = ";
-        //判断数据类型
-        if(dbType.equals("number")){
-            sql+=operationLog.getAfter();
-        }else if(dbType.equals("string")){
-            sql+="'"+operationLog.getAfter()+"'";
-        }else if(dbType.equals("date")){
+        if("insurance".equals(operationLog.getTableEN())){
+            String insuranceId = "";
+            List<Insurance> insurances = insuranceService.findInsuranceByStduentId(operationLog.getStudentId());
+            if(insurances!=null){
+                for(int i=0;i<insurances.size();i++){
+                    if(insurances.get(i).getInsurSta().equals("1")){
+                        insuranceId = insurances.get(i).getId();
+                        break;
+                    }
+                }
+            }
+            if(!insuranceId.equals("")){
+                Insurance insurance = insuranceService.getInsuranceById(insuranceId);
+                insurance.setInsurNo(operationLog.getAfter());
+            }
+
+        }else{
+            String sql = " update "+tableMap.get(operationLog.getTableEN())+" set "+operationLog.getColumnEN()+" = ";
+            //判断数据类型
+            if(dbType.equals("number")){
+                sql+=operationLog.getAfter();
+            }else if(dbType.equals("string")){
+                sql+="'"+operationLog.getAfter()+"'";
+            }else if(dbType.equals("date")){
 //            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            String after = operationLog.getAfter().substring(0,10);
-            sql+="to_date('" + after + "','yyyy-mm-dd')" ;
+                String after = operationLog.getAfter().substring(0,10);
+                sql+="to_date('" + after + "','yyyy-mm-dd')" ;
+            }
+            sql+= " where studentid ='" + operationLog.getStudentId()+"'";
+            System.out.println(sql);
+            getBaseDao().updateBySql(sql);
         }
-        sql+= " where studentid ='" + operationLog.getStudentId()+"'";
-        System.out.println(sql);
-        getBaseDao().updateBySql(sql);
-
-
         return operationLog.getAfter().toString();
     }
     @Transactional
@@ -407,40 +427,40 @@ public class StudentService extends BaseService {
         return des;
     }
 
-    @Transactional
+//    @Transactional
     public Object updateGroupByName(String studentId, String groupName, Object groupObj, List<OperationLog> operationLogs) throws Exception {
         //记录日志
-        operationLogService.saveOperationLog(operationLogs);
+//        operationLogService.saveOperationLog(operationLogs);
         Object des = getGroupByStudentId(studentId, groupName);
         System.out.println("obj===============" + des);
         if ("basicInfo".equalsIgnoreCase(groupName)) {
             BasicInfo basicInfo = (BasicInfo) transObj(des, groupObj);
-            basicInfo = basicInfoService.updateBasicInfo(basicInfo);
+            basicInfo = basicInfoService.updateBasicInfo(basicInfo,operationLogs);
             return setNullByField(basicInfo, "student", BasicInfo.class);
         }
         if ("schoolRoll".equalsIgnoreCase(groupName)) {
             SchoolRoll schoolRoll = (SchoolRoll) transObj(des, groupObj);
-            schoolRoll = schoolRollService.updateSchoolRoll(schoolRoll);
+            schoolRoll = schoolRollService.updateSchoolRoll(schoolRoll,operationLogs);
             return setNullByField(schoolRoll, "student", SchoolRoll.class);
         }
         if ("registrationInfo".equalsIgnoreCase(groupName)) {
             RegistrationInfo registrationInfo = (RegistrationInfo) transObj(des, groupObj);
-            registrationInfo = registrationInfoService.updateRegistrationInfo(registrationInfo);
+            registrationInfo = registrationInfoService.updateRegistrationInfo(registrationInfo,operationLogs);
             return setNullByField(registrationInfo, "student", RegistrationInfo.class);
         }
         if ("profilesHistory".equalsIgnoreCase(groupName)) {
             ProfilesHistory profilesHistory = (ProfilesHistory) transObj(des, groupObj);
-            profilesHistory = profilesHistoryService.updateProfilesHistory(profilesHistory);
+            profilesHistory = profilesHistoryService.updateProfilesHistory(profilesHistory,operationLogs);
             return setNullByField(profilesHistory, "student", ProfilesHistory.class);
         }
         if ("discuss".equalsIgnoreCase(groupName)) {
             Discuss discuss = (Discuss) transObj(des, groupObj);
-            discuss = discussService.updateDiscuss(discuss);
+            discuss = discussService.updateDiscuss(discuss,operationLogs);
             return setNullByField(discuss, "student", Discuss.class);
         }
         if ("schoolfellow".equalsIgnoreCase(groupName)) {
             Schoolfellow schoolfellow = (Schoolfellow) transObj(des, groupObj);
-            schoolfellow = schoolfellowService.updateSchoolfellow(schoolfellow);
+            schoolfellow = schoolfellowService.updateSchoolfellow(schoolfellow,operationLogs);
             return setNullByField(schoolfellow, "student", Schoolfellow.class);
         }
 

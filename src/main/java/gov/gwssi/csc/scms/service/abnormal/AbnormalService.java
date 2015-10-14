@@ -12,6 +12,7 @@ import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.abnormal.AbnormalRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.service.log.OperationLogService;
+import gov.gwssi.csc.scms.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -35,6 +36,8 @@ public class AbnormalService extends AbnormalSpecs {
     private AbnormalRepository abnormalRepository;
     @Autowired
     private OperationLogService operationLogService;
+    @Autowired
+    private UserService userService;
     public Abnormal getAbnormalById(String id) {
         return abnormalRepository.findById(id);
     }
@@ -145,9 +148,16 @@ public class AbnormalService extends AbnormalSpecs {
     }
 
     //分页查询
-    public Page<Abnormal> getAbnormalsPagingByFilter(Filter filter,Integer page,Integer size,String mode,User user) {
-        Specification<Abnormal> specA = filterIsLike(filter, user);
-//        Specification<Abnormal> specB = userIs(user);
-        return abnormalRepository.findAll(where(specA), new PageRequest(page, size));
+    @Transactional
+    public Page<Abnormal> getAbnormalsPagingByFilter(Filter filter,Integer page,Integer size,String mode,String header) {
+        try {
+            User user = userService.getUserByJWT(header);
+            Specification<Abnormal> specA = filterIsLike(filter, user);
+            Specification<Abnormal> specB = userIs(user);
+            return abnormalRepository.findAll(where(specA).and(specB), new PageRequest(page, size));
+        }catch(Exception e){
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 }

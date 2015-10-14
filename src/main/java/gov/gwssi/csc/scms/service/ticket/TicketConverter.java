@@ -21,6 +21,7 @@ public class TicketConverter extends BaseService implements Converter<Ticket, Ma
         SchoolRoll schoolRoll = student.getSchoolRoll();
         target.put("id",ticket.getId());
         target.put("studentId",student.getId());
+        target.put("currentUniversity",schoolRoll.getCurrentUniversity());
         target.put("cscId",student.getCscId());
         target.put("passportName",basicInfo.getPassportName());
         target.put("gender",basicInfo.getGender());
@@ -38,7 +39,7 @@ public class TicketConverter extends BaseService implements Converter<Ticket, Ma
         target.put("state",ticket.getState());
         target.put("remark",ticket.getRemark());
         target.put("createBy",ticket.getCreateBy());
-        target.put("created",ticket.getCreateBy());
+        target.put("created",ticket.getCreated());
         target.put("updateBy",ticket.getUpdateBy());
         target.put("updated",ticket.getUpdated());
         return target;

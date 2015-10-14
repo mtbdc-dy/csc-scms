@@ -28,7 +28,6 @@ public class TranslateDictService {
 
     public List<DictTreeJson> getCodeTableList(String codeTableName){
         List<DictTreeJson> list;
-
         try {
             if ("continents".equals(codeTableName)) {
 
@@ -53,6 +52,10 @@ public class TranslateDictService {
             } else if ("abnormalTypes".equals(codeTableName)) {
 
                 list = getAbnormalReasonsWithType();
+
+            }else if ("belongings".equals(codeTableName)) {
+
+                list = getBelongings();
 
             } else if ("tables".equals(codeTableName)) {
 
@@ -189,6 +192,14 @@ public class TranslateDictService {
 
     private List<DictTreeJson> getUniversities() throws NoSuchDictTreeException {
         List<DictTreeJson> jsonList = codeTableDAO.getCodeTableByLevel(CodeTableDAO.UNIVERSITIES, CodeTableDAO.UNIVERSITIES_LEVEL_TWO);
+        if (jsonList == null) {
+            throw new NoSuchDictTreeException("");
+        }
+        return jsonList;
+    }
+
+    private List<DictTreeJson> getBelongings() throws NoSuchDictTreeException {
+        List<DictTreeJson> jsonList = codeTableDAO.getCodeTableByLevel(CodeTableDAO.DEPT, CodeTableDAO.DEPT_LEVEL_TWO);
         if (jsonList == null) {
             throw new NoSuchDictTreeException("");
         }

@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.domain.user;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,7 +45,7 @@ public class Project {
     /**
      *子节点
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent", fetch = FetchType.LAZY)
     @org.hibernate.annotations.Where(clause = "enabled = '1'")
     private List<Project> children;
 

@@ -4,12 +4,14 @@ import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
 import gov.gwssi.csc.scms.domain.abnormal.Abnormal_;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.student.*;
+import gov.gwssi.csc.scms.domain.user.Project;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by tianj on 2015/8/31.
@@ -57,10 +59,17 @@ public class AbnormalSpecs extends BaseService {
                 /**异动部分*/
 
                 if (filter.getAbnormalState() != null) {
-                    predicate.getExpressions().add(cb.like(abnormal.get(Abnormal_.state), filter.getAbnormalState()));
+                    if("AS0002".equals(filter.getAbnormalState())){
+                        predicate.getExpressions().add(cb.in(abnormal.get(Abnormal_.state)).value("AS0006").value("AS0007"));
+                    }else if("AS0004".equals(filter.getAbnormalState())&&"2".equals(user.getUserType())){
+                        predicate.getExpressions().add(cb.in(abnormal.get(Abnormal_.state)).value("AS0005").value("AS0008"));
+                    }else{
+                        predicate.getExpressions().add(cb.like(abnormal.get(Abnormal_.state), filter.getAbnormalState()));
+                    }
+
                 } else {
                     if ("2".equals(user.getUserType())) {//1 基金委用户 2学校用户
-                        predicate.getExpressions().add(cb.in(abnormal.get(Abnormal_.state)).value("AS0001").value("AS0002").value("AS0003").value("AS0004"));
+                        predicate.getExpressions().add(cb.in(abnormal.get(Abnormal_.state)).value("AS0001").value("AS0003").value("AS0004").value("AS0005").value("AS0006").value("AS0007").value("AS0008"));
                     } else if ("1".equals(user.getUserType())) {
                         predicate.getExpressions().add(cb.in(abnormal.get(Abnormal_.state)).value("AS0003").value("AS0004").value("AS0005").value("AS0006").value("AS0007").value("AS0008"));
                     }
@@ -213,6 +222,43 @@ public class AbnormalSpecs extends BaseService {
                 }
 
 
+                return predicate;
+            }
+        };
+    }
+
+    public static Specification<Abnormal> userIs(final User user) {
+        // TODO 实现根据用户所属项目或者所属院校进行查询
+
+        return new Specification<Abnormal>() {
+            @Override
+            public Predicate toPredicate(Root<Abnormal> abnormalRoot, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                Predicate predicate = cb.conjunction();
+
+                String userType = user.getUserType();
+                String identity = user.getRole().getIdentity();
+                String nodeId = user.getNode().getNodeId();
+                if("Y0002".equals(identity)){    //基金委用户  Y0002主管
+                    Join<Abnormal, Student> student = abnormalRoot.join(Abnormal_.student);
+                    Join<Student, BasicInfo> basicInfo = student.join(Student_.basicInfo);
+                    List<Project> projects = user.getProjects();
+
+                    if(projects.size() == 1){
+                        predicate.getExpressions().add(cb.equal(basicInfo.get(BasicInfo_.projectName), projects.get(0).getProjectId()));
+                    }else if(projects.size() >1){
+                        Expression eSum = cb.equal(basicInfo.get(BasicInfo_.projectName), projects.get(0).getProjectId());
+                        for(int i=1;i<projects.size();i++){
+                            Expression e = cb.equal(basicInfo.get(BasicInfo_.projectName),projects.get(i).getProjectId());
+                            eSum = cb.or(eSum,e);
+                        }
+                        predicate.getExpressions().add(eSum);
+                    }
+
+                }else if("2".equals(userType)){
+                    Join<Abnormal, Student> student = abnormalRoot.join(Abnormal_.student);
+                    Join<Student, SchoolRoll> schoolRoll = student.join(Student_.schoolRoll);
+                    predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.currentUniversity), nodeId));
+                }
                 return predicate;
             }
         };

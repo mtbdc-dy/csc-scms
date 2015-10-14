@@ -4,6 +4,8 @@ import gov.gwssi.csc.scms.domain.insurance.Insurance;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.List;
+
 /**
  * Created by gc on 2015/7/17.
  * 保险管理接口
@@ -12,4 +14,5 @@ public interface InsuranceRepository extends CrudRepository<Insurance,String> , 
 
 
     Insurance findById(String id);
+    List<Insurance> findByStudentIdOrderByYearDesc(String studentId);
 }

@@ -81,7 +81,7 @@ public class InsurancejController {
     }
     //用户在前台点击生成机票管理列表，返回列表
     @RequestMapping(value = "/new", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public List<InsuranceResultObject> getInsurances(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
+    public Map<String,String> getInsurances(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
         User user = null;
         try {
             user = userService.getUserByJWT(header);
@@ -90,8 +90,8 @@ public class InsurancejController {
         } catch (UserIdentityError userIdentityError) {
             userIdentityError.printStackTrace();
         }
-        List<InsuranceResultObject> insuranceResultObjectList = insurancejService.getInsuranceList(user);
-        return insuranceResultObjectList;
+        Map<String,String> result = insurancejService.getInsuranceList(user);
+        return result;
     }
 
     //学校用户在前台点击查询，返回列表
