@@ -68,9 +68,6 @@ public class TranslateDictService {
 
             }
 
-
-            System.out.println("list = " + list);
-
         } catch (Exception e) {
 
             e.printStackTrace();

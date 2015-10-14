@@ -1,13 +1,14 @@
 package gov.gwssi.csc.scms.controller.dynamicReport;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.domain.dynamicReport.Column;
+import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.Configuration;
+import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.OriginalConfiguration;
 import gov.gwssi.csc.scms.domain.dynamicReport.ReportConfiguration;
 import gov.gwssi.csc.scms.domain.dynamicReport.Table;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.service.BaseService;
-import gov.gwssi.csc.scms.service.dynamicReport.DStatisticsHandlerService;
-import gov.gwssi.csc.scms.service.dynamicReport.DimTableService;
 import gov.gwssi.csc.scms.service.dynamicReport.DynamicReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,7 +20,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Created by WangZhenghua on 2015/5/28.
@@ -28,10 +28,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/dynamic")
-public class DynamicReportController extends BaseService{
+public class DynamicReportController extends BaseService {
 
     @Autowired
-    private DynamicReportService dynamicReportService;
+    private DynamicReportService service;
 
 
     @RequestMapping(
@@ -40,19 +40,62 @@ public class DynamicReportController extends BaseService{
             headers = {"Accept=application/json;charset=utf-8"},
             params = {"filter"}
     )
-    public ResponseEntity<Page<ReportConfiguration>> getConfigurations(
+    public ResponseEntity<Page<Configuration>> getConfigurations(
             @RequestParam(value = "filter") String filterJSON) throws UnsupportedEncodingException {
         String content = URLDecoder.decode(filterJSON, "UTF8");
         Class<Filter> valueType = Filter.class;
 
-        Page<ReportConfiguration> reportConfigurations = null;
+        Page<Configuration> configurations = null;
         try {
             Filter filter = new ObjectMapper().readValue(content, valueType);
-            reportConfigurations = dynamicReportService.getAllConfigurationsByFilter(filter);
+            configurations = service.getAllConfigurationsByFilter(filter);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new ResponseEntity<Page<ReportConfiguration>>(reportConfigurations, HttpStatus.OK);
+        return new ResponseEntity<Page<Configuration>>(configurations, HttpStatus.OK);
+    }
+
+    @RequestMapping(
+            value = "/configurations",
+            method = {RequestMethod.PUT, RequestMethod.POST},
+            headers = "Accept=application/json;charset=utf-8"
+    )
+    public String createConfigurations(@RequestBody String configJSON) throws IOException {
+        System.out.println("DynamicReportController.createConfigurations");
+        System.out.println("configJSON = [" + configJSON + "]");
+        try {
+            Configuration configuration = new ObjectMapper().readValue(configJSON, Configuration.class);
+            configuration = service.saveNewConfig(configuration);
+            System.out.println("configuration = " + configuration);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw e;
+        }
+        return null;
+    }
+
+    @RequestMapping(
+            value = "/configurations/{id}",
+            method = RequestMethod.DELETE,
+            headers = "Accept=application/json;charset=utf-8"
+    )
+    public void deleteConfiguration(@PathVariable(value = "id") String id) {
+        try {
+            service.deleteConfigurations(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    @RequestMapping(
+            value = "/configurations/{id}/report",
+            method = RequestMethod.GET,
+            headers = "Accept=application/json;charset=utf-8"
+    )
+    public String getReport(@PathVariable(value = "id") String id) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(service.getReport(id));
     }
 
     @RequestMapping(
@@ -60,8 +103,8 @@ public class DynamicReportController extends BaseService{
             method = RequestMethod.GET,
             headers = {"Accept=application/json;charset=utf-8"}
     )
-    public ResponseEntity<Collection<Table>> getTables(){
-        Collection<Table> tables = dynamicReportService.getTables();
+    public ResponseEntity<Collection<Table>> getTables() {
+        Collection<Table> tables = service.getTables();
         for (Table table : tables) {
             table.setColumns(null);
         }
@@ -73,55 +116,9 @@ public class DynamicReportController extends BaseService{
             method = RequestMethod.GET,
             headers = {"Accept=application/json;charset=utf-8"}
     )
-    public ResponseEntity<Table> getTable(@PathVariable(value = "id") String id){
-        Table table = dynamicReportService.getTable(id);
+    public ResponseEntity<Table> getTable(@PathVariable(value = "id") String id) {
+        Table table = service.getTable(id);
         setNullByField(table.getColumns(), "table", Column.class);
         return new ResponseEntity<Table>(table, HttpStatus.OK);
     }
-
-
-//    /**
-//     * 动态查询统计中初始化的table列表以及对应表下的column列表
-//     */
-//    @RequestMapping(value="tables",method = RequestMethod.GET, headers = "Accept=application/json;charset=utf-8")
-//    public List<TablesJson> getTables(){
-//        List<TablesJson> tablesJson = null;
-//        try{
-//            tablesJson = dimTableService.getTables();
-//        } catch (Exception e){
-//            e.printStackTrace();
-//            throw new RuntimeException(e);
-//        }
-//        return tablesJson;
-//    }
-//
-//    /**
-//     * 接收动态查询统计配置Json
-//     */
-//    @RequestMapping(method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
-//    public ReturnStatistics putStatistics(@RequestBody String statisticsJson){
-//        ObjectMapper mapper = new ObjectMapper();
-//        try {
-//            JsonBody jsonBody = new ObjectMapper().readValue(statisticsJson, JsonBody.class);
-//
-//            ReportConfiguration dConfig = new ObjectMapper().readValue(jsonBody.getDConfig(),ReportConfiguration.class);
-//
-//            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, DTableList.class);
-//            List<DTableList> dTableList = mapper.readValue(jsonBody.getDTableList(), javaType);
-//
-//            javaType = mapper.getTypeFactory().constructParametricType(List.class, DCondition.class);
-//            List<DCondition> dConditions = mapper.readValue(jsonBody.getDConditions(), javaType);
-//
-//            javaType = mapper.getTypeFactory().constructParametricType(List.class, DDisplay.class);
-//            List<DDisplay> dDisplays = mapper.readValue(jsonBody.getDDisplays(), javaType);
-//
-//            // 将读取的dConfig dTableList dConditions dDisplays 依次入库,并返回ReturnStatistics
-//            return dStatisticsHandlerService.save(dConfig,dTableList,dConditions,dDisplays);
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            throw new RuntimeException(e);
-//        }
-//    }
-
 }

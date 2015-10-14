@@ -13,12 +13,9 @@ public class Column{
     private String id;
     private String columnEn;
     private String columnCh;
-    private String DataType;
-    private String keyType;
-    private String referenceTableEn;
-    private String referenceTableCh;
-    private String referenceColumnEn;
-    private String referenceColumnCh;
+    private String dataType;
+    private String inputType;
+    private String codeTable;
     private Table table;
 
     @Id
@@ -47,51 +44,27 @@ public class Column{
     }
 
     public String getDataType() {
-        return DataType;
+        return dataType;
     }
 
     public void setDataType(String dataType) {
-        DataType = dataType;
+        this.dataType = dataType;
     }
 
-    public String getKeyType() {
-        return keyType;
+    public String getInputType() {
+        return inputType;
     }
 
-    public void setKeyType(String keyType) {
-        this.keyType = keyType;
+    public void setInputType(String inputType) {
+        this.inputType = inputType;
     }
 
-    public String getReferenceTableEn() {
-        return referenceTableEn;
+    public String getCodeTable() {
+        return codeTable;
     }
 
-    public void setReferenceTableEn(String referenceTableEn) {
-        this.referenceTableEn = referenceTableEn;
-    }
-
-    public String getReferenceTableCh() {
-        return referenceTableCh;
-    }
-
-    public void setReferenceTableCh(String referenceTableCh) {
-        this.referenceTableCh = referenceTableCh;
-    }
-
-    public String getReferenceColumnEn() {
-        return referenceColumnEn;
-    }
-
-    public void setReferenceColumnEn(String referenceColumnEn) {
-        this.referenceColumnEn = referenceColumnEn;
-    }
-
-    public String getReferenceColumnCh() {
-        return referenceColumnCh;
-    }
-
-    public void setReferenceColumnCh(String referenceColumnCh) {
-        this.referenceColumnCh = referenceColumnCh;
+    public void setCodeTable(String codeTable) {
+        this.codeTable = codeTable;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)

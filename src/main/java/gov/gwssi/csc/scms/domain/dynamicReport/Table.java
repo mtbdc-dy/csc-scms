@@ -15,7 +15,7 @@ public class Table {
     private String id;
     private String tableEn;
     private String tableCh;
-    private String tableType;
+    private String describe;
     private List<Column> columns;
 
     @Id
@@ -43,12 +43,12 @@ public class Table {
         this.tableCh = tableCh;
     }
 
-    public String getTableType() {
-        return tableType;
+    public String getDescribe() {
+        return describe;
     }
 
-    public void setTableType(String tableType) {
-        this.tableType = tableType;
+    public void setDescribe(String describe) {
+        this.describe = describe;
     }
 
     @OneToMany(mappedBy = "table", fetch = FetchType.LAZY)
