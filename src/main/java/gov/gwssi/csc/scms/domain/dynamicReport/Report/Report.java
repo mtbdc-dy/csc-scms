@@ -38,7 +38,7 @@ public class Report {
         this.body = new ArrayList<Row>();
         for (Map rowMap : bodyMaps) {
             row = new Row();
-            for (Integer i = 1; i <= rowMap.size(); i++) {
+            for (Integer i = 0; i < rowMap.size(); i++) {
                 row.add(new Cell(1,1, rowMap.get("COL" + i.toString()).toString()));
             }
             this.body.add(row);
