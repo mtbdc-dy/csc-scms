@@ -57,6 +57,7 @@ public class Configuration implements Serializable {
         this.title = configuration.getTitle();
         this.description = configuration.getDescription();
         this.accessState = configuration.getAccessState();
+        this.reportType = configuration.getReportType();
         this.rawConfig = configuration.getRawConfig();
         this.sql = configuration.getSql();
         this.created = configuration.getCreated();
