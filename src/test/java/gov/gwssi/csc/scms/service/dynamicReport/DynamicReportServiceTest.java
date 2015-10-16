@@ -11,9 +11,7 @@ import gov.gwssi.csc.scms.repository.dynamicReport.ConfigurationRepository;
 import gov.gwssi.csc.scms.repository.dynamicReport.WhereConditionRepository;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by wangzishi on 15/8/31.
@@ -56,6 +54,7 @@ public class DynamicReportServiceTest extends UnitTestBase {
 
     @Test
     public void testGenerateSQL() throws Exception {
-
+        Calendar calendar = Calendar.getInstance(Locale.CHINA);
+//        calendar.
     }
 }

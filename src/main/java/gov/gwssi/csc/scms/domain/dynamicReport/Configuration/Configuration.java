@@ -54,6 +54,7 @@ public class Configuration implements Serializable {
     }
 
     public Configuration(Configuration configuration) {
+        this.id = configuration.getId();
         this.title = configuration.getTitle();
         this.description = configuration.getDescription();
         this.accessState = configuration.getAccessState();

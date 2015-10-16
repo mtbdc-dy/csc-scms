@@ -233,13 +233,26 @@ public class DynamicReportService extends DynamicReportSpecs {
         for (E collection : collections) setConfig(config, collection);
     }
 
+    public Configuration createConfig(Configuration configuration) {
+        configuration.setId(getId());
+        configuration = saveConfig(configuration);
+        configurationRepository.generateSQL(configuration.getId());
+        return configuration;
+    }
+
+    public Configuration updateConfig(Configuration configuration, String id) {
+        configuration.setId(id);
+        configuration = saveConfig(configuration);
+        configurationRepository.generateSQL(configuration.getId());
+        return configuration;
+    }
+
     @SuppressWarnings("unchecked")
     @Transactional
-    public Configuration saveNewConfig(Configuration configuration) {
-        Configuration newConfiguration = new Configuration(configuration);
+    public Configuration saveConfig(Configuration configuration){
+        Configuration tempConfig = new Configuration(configuration);
 
-        newConfiguration.setId(getId());
-        configurationRepository.save(newConfiguration);
+        configurationRepository.save(tempConfig);
 
         List<Cell> cells = generateHead(configuration);
         Set<JoinCondition> joins = configuration.getJoinConditions();
@@ -249,7 +262,7 @@ public class DynamicReportService extends DynamicReportSpecs {
         List<SelectCondition> selects = configuration.getSelectConditions();
 
         setIds(joins, wheres, groups, orders, selects);
-        setConfig(newConfiguration, cells, joins, wheres, groups, orders, selects);
+        setConfig(tempConfig, cells, joins, wheres, groups, orders, selects);
 
         joinConditionRepository.save(joins);
         whereConditionRepository.save(wheres);
@@ -258,15 +271,14 @@ public class DynamicReportService extends DynamicReportSpecs {
         selectConditionRepository.save(selects);
         cellRepository.save(cells);
 
-        configurationRepository.generateSQL(newConfiguration.getId());
-        newConfiguration.setCells(cells);
-        newConfiguration.setJoinConditions(joins);
-        newConfiguration.setWhereConditions(wheres);
-        newConfiguration.setGroupConditions(groups);
-        newConfiguration.setOrderConditions(orders);
-        newConfiguration.setSelectConditions(selects);
+        tempConfig.setCells(cells);
+        tempConfig.setJoinConditions(joins);
+        tempConfig.setWhereConditions(wheres);
+        tempConfig.setGroupConditions(groups);
+        tempConfig.setOrderConditions(orders);
+        tempConfig.setSelectConditions(selects);
 
-        return newConfiguration;
+        return tempConfig;
     }
 
     public Configuration findOne(String id) {
