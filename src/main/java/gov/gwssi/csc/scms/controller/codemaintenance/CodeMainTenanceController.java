@@ -2,14 +2,11 @@ package gov.gwssi.csc.scms.controller.codemaintenance;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.controller.JsonBody;
-import gov.gwssi.csc.scms.domain.codemaintenance.CodeMainTenance;
-import gov.gwssi.csc.scms.domain.codemaintenance.CodemaintanenceRegionFirst;
+import gov.gwssi.csc.scms.domain.codemaintenance.*;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.query.CodeDetailResult;
 import gov.gwssi.csc.scms.domain.user.User;
-import gov.gwssi.csc.scms.service.codemaintenance.CodeMainTenanceConverter;
-import gov.gwssi.csc.scms.service.codemaintenance.CodeMainTenanceRegion1Converter;
-import gov.gwssi.csc.scms.service.codemaintenance.CodeMainTenanceService;
+import gov.gwssi.csc.scms.service.codemaintenance.*;
 import gov.gwssi.csc.scms.service.user.UserService;
 import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -159,16 +156,89 @@ public class CodeMainTenanceController {
             params = { "page", "size", "filter"})
     public ResponseEntity<Page<Map<String, Object>>> getRegionFirst(
             @RequestParam(value = "name") String name,
-            @RequestParam(value = "flag") String flag,
+            @RequestParam(value = "type") String type,
             @RequestParam(value = "page") Integer page,
             @RequestParam(value = "size") Integer size,
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         try {
             Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+if("dim_region".equals(name)&&"A".equals(type)){
+    Page<CodemaintanenceRegionFirst> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceRegionFirstsPagingByFilter(page, size);
+    Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceRegion1Converter());
+    return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+}else if("dim_region".equals(name)&&"E".equals(type)){
+    Page<CodemaintanenceRegionSecond> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceRegionSecondsPagingByFilter(page, size);
+    Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceRegion2Converter());
+    return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
 
-            Page<CodemaintanenceRegionFirst> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceRegionFirstsPagingByFilter(page, size);
-            Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceRegion1Converter());
-            return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+}else if("dim_region".equals(name)&&"P".equals(type)){
+    Page<CodemaintanenceRegionThird> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceRegionThirdsPagingByFilter(page, size);
+    Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceRegion3Converter());
+    return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+
+}else if("dim_univ".equals(name)&&"S".equals(type)){
+    Page<CodemaintanenceUniv> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceUnivsPagingByFilter(page, size);
+    Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceUnivConverter());
+    return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+
+}else if("dim_project".equals(name)&&"BC".equals(type)){
+    Page<CodemaintanenceProjectFirst> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceProjectFirstsPagingByFilter(page, size);
+    Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceProject1Converter());
+    return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+
+}else if("dim_project".equals(name)&&"T".equals(type)){
+    Page<CodemaintanenceProjectSecond> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceProjectSecondsPagingByFilter(page, size);
+    Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceProject2Converter());
+    return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+
+}else if("dim_project".equals(name)&&"U".equals(type)){
+    Page<CodemaintanenceProjectThird> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceProjectThirdsPagingByFilter(page, size);
+    Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceProject3Converter());
+    return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+
+}else if("dim_anml".equals(name)&&"AB".equals(type)){
+    Page<CodemaintanenceAnmlFirst> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceAnmlFirstsPagingByFilter(page, size);
+    Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceAnml1Converter());
+    return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+
+}else if("dim_anml".equals(name)&&"AC".equals(type)){
+    Page<CodemaintanenceAnmlSecond> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceAnmlSecondsPagingByFilter(page, size);
+    Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceAnml2Converter());
+    return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+
+}else if("dim_subject".equals(name)&&"V".equals(type)){
+    Page<CodemaintanenceSubjectFirst> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceSubjectFirstsPagingByFilter(page, size);
+    Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceSubject1Converter());
+    return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+
+}else if("dim_subject".equals(name)&&"W".equals(type)){
+    Page<CodemaintanenceSubjectSecond> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceSubjectSecondsPagingByFilter(page, size);
+    Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceSubject2Converter());
+    return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+
+}else if("dim_subject".equals(name)&&"X".equals(type)){
+    Page<CodemaintanenceSubjectThird> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceSubjectThirdsPagingByFilter(page, size);
+    Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceSubject3Converter());
+    return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+
+}else if("dim_dept".equals(name)&&"BI".equals(type)){
+    Page<CodemaintanenceDeptFirst> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceDeptFirstsPagingByFilter(page, size);
+    Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceDept1Converter());
+    return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+
+}else if("dim_dept".equals(name)&&"BJ".equals(type)){
+    Page<CodemaintanenceDeptSecond> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceDeptSecondsPagingByFilter(page, size);
+    Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceDept2Converter());
+    return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+
+}else{
+    Page<CodemaintanenceTranslate> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceTranslatesPagingByFilter(page, size,type);
+    Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceTranslateConverter());
+    return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+}
+//            Page<CodemaintanenceRegionFirst> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceRegionFirstsPagingByFilter(page, size);
+//            Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceRegion1Converter());
+//            return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
