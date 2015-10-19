@@ -21,7 +21,10 @@ public interface ConfigurationRepository extends CrudRepository<Configuration, S
     String newId(@Param("seqName") String seqName);
 
     @Procedure
-    String generateSQL(@Param("configId") String configId);
+    String generateStatisticsSQL(@Param("configId") String configId);
+
+    @Procedure
+    String generateQuerySQL(@Param("configId") String configId);
 
     @Procedure
     List test(@Param("in") String in);
