@@ -8,6 +8,7 @@ import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.OriginalConfigurati
 import gov.gwssi.csc.scms.domain.dynamicReport.ReportConfiguration;
 import gov.gwssi.csc.scms.domain.dynamicReport.Table;
 import gov.gwssi.csc.scms.domain.filter.Filter;
+import gov.gwssi.csc.scms.repository.dynamicReport.ConfigurationRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.service.dynamicReport.DynamicReportService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,9 @@ public class DynamicReportController extends BaseService {
     @Autowired
     private DynamicReportService service;
 
+    @Autowired
+    private ConfigurationRepository repository;
+
 
     @RequestMapping(
             value = "/configurations",
@@ -57,20 +61,38 @@ public class DynamicReportController extends BaseService {
 
     @RequestMapping(
             value = "/configurations",
-            method = {RequestMethod.PUT, RequestMethod.POST},
+            method = RequestMethod.POST,
             headers = "Accept=application/json;charset=utf-8"
     )
-    public String createConfigurations(@RequestBody String configJSON) throws IOException {
+    public Configuration createConfigurations(@RequestBody String configJSON) throws IOException {
         System.out.println("DynamicReportController.createConfigurations");
         System.out.println("configJSON = [" + configJSON + "]");
+        Configuration configuration;
         try {
-            Configuration configuration = new ObjectMapper().readValue(configJSON, Configuration.class);
-            service.saveNewConfig(configuration);
+            configuration = new ObjectMapper().readValue(configJSON, Configuration.class);
+            configuration = service.createConfig(configuration);
         } catch (IOException e) {
             e.printStackTrace();
             throw e;
         }
-        return null;
+        return configuration;
+    }
+
+    @RequestMapping(
+            value = "/configurations/{id}",
+            method = RequestMethod.PUT,
+            headers = "Accept=application/json;charset=utf-8"
+    )
+    public Configuration updateConfigurations(@PathVariable(value = "id")String id, @RequestBody String configJSON) throws IOException {
+        Configuration configuration;
+        try {
+            configuration = new ObjectMapper().readValue(configJSON, Configuration.class);
+            configuration = service.updateConfig(configuration, id);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw e;
+        }
+        return configuration;
     }
 
     @RequestMapping(
