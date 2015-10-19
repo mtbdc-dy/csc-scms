@@ -22,7 +22,11 @@ import java.util.*;
                 @StoredProcedureParameter(name = "seqName", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "id", mode = ParameterMode.OUT, type = String.class)
         }),
-        @NamedStoredProcedureQuery(name = "Configuration.generateSQL", procedureName = "P_SCMS_D_STATISTICS", parameters = {
+        @NamedStoredProcedureQuery(name = "Configuration.generateStatisticsSQL", procedureName = "P_SCMS_D_STATISTICS", parameters = {
+                @StoredProcedureParameter(name = "configId", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "sql", mode = ParameterMode.OUT, type = String.class)
+        }),
+        @NamedStoredProcedureQuery(name = "Configuration.generateQuerySQL", procedureName = "P_SCMS_D_QUERY", parameters = {
                 @StoredProcedureParameter(name = "configId", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "sql", mode = ParameterMode.OUT, type = String.class)
         }),

@@ -236,7 +236,11 @@ public class DynamicReportService extends DynamicReportSpecs {
     public Configuration createConfig(Configuration configuration) {
         configuration.setId(getId());
         configuration = saveConfig(configuration);
-        configurationRepository.generateSQL(configuration.getId());
+        if (configuration.getReportType().equals("statistics")) {
+            configurationRepository.generateStatisticsSQL(configuration.getId());
+        } else {
+            configurationRepository.generateQuerySQL(configuration.getId());
+        }
         return configuration;
     }
 
@@ -244,7 +248,11 @@ public class DynamicReportService extends DynamicReportSpecs {
         configurationRepository.delete(id);
         configuration.setId(id);
         configuration = saveConfig(configuration);
-        configurationRepository.generateSQL(configuration.getId());
+        if (configuration.getReportType().equals("statistics")) {
+            configurationRepository.generateStatisticsSQL(configuration.getId());
+        } else {
+            configurationRepository.generateQuerySQL(configuration.getId());
+        }
         return configuration;
     }
 
