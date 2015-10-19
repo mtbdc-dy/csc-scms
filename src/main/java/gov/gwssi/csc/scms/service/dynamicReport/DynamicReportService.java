@@ -154,14 +154,14 @@ public class DynamicReportService extends DynamicReportSpecs {
             Integer currentLevel, Integer maxLevel) {
         List<Cell> cells = new ArrayList<Cell>();
         Column column = columnRepository.findOne(selectCondition.getColumn());
-        if (column.getCodeTable() != null) { // 代码列
+        if (column.getCodeTable() != null && selectCondition.getCalculateType().equals("2")) { // 代码列
             List<DictTreeJson> list = translateDictService.getCodeTableList(column.getCodeTable());
             Integer colSpan = 0;
             for (DictTreeJson dictTreeJson : list) { // 遍历代码值
                 colSpan = colSpan.equals(0) ? getColSpan(selectConditions, currentLevel, maxLevel) : colSpan;
                 cells.add(new Cell(getId(), currentLevel, 1, colSpan, dictTreeJson.getValue()));
             }
-        } else { // 非代码列
+        } else { // 非代码列或非代码计数列
             cells.add(new Cell(getId(), 1, maxLevel, 1, column.getColumnCh()));
         }
         // 小计列
@@ -221,7 +221,7 @@ public class DynamicReportService extends DynamicReportSpecs {
         for (Condition condition : collection) condition.setId(getId());
     }
 
-    public <E extends Collection<? extends Condition>> void setIds(E ...collections){
+    public <E extends Collection<? extends Condition>> void setIds(E... collections) {
         for (E collection : collections) setIds(collection);
     }
 
@@ -241,6 +241,7 @@ public class DynamicReportService extends DynamicReportSpecs {
     }
 
     public Configuration updateConfig(Configuration configuration, String id) {
+        configurationRepository.delete(id);
         configuration.setId(id);
         configuration = saveConfig(configuration);
         configurationRepository.generateSQL(configuration.getId());
@@ -249,7 +250,7 @@ public class DynamicReportService extends DynamicReportSpecs {
 
     @SuppressWarnings("unchecked")
     @Transactional
-    public Configuration saveConfig(Configuration configuration){
+    public Configuration saveConfig(Configuration configuration) {
         Configuration tempConfig = new Configuration(configuration);
 
         configurationRepository.save(tempConfig);
