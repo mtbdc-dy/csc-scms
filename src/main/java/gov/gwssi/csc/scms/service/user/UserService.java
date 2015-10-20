@@ -129,16 +129,15 @@ public class UserService extends BaseService {
         return userRepository.save(user);
     }
 
-
+    @Transactional
     public void deleteUser(String id, User loginUser) throws NoSuchUserException, NoSuchNodeException, NoSuchRoleException {
-        User user = getUserByUserIdAndEnable(id, User.ENABLE);
+        User user = userRepository.findUserByUserIdAndEnable(id, User.ENABLE);
         if (user == null)
             throw new NoSuchUserException("can not find enable user for delete:" + id);
 
         user.setEnable(User.UNENABLE);
         user.setUpdateDate(new Date());
         user.setUpdateBy(loginUser.getUserId());
-        doSave(user);
     }
 
 
