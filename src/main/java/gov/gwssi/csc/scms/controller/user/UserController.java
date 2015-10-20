@@ -159,11 +159,11 @@ public class UserController {
     }
 
     @RequestMapping(value = "/role/{roleId}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
-    public Role deleteRole(@RequestHeader(value = HEADER_AUTHORIZATION) String header, @PathVariable String roleId) {
+    public Map<String,String> deleteRole(@RequestHeader(value = HEADER_AUTHORIZATION) String header, @PathVariable String roleId) {
         try {
             User user = userService.getRootUser(header);
-
-            return roleService.deleteRole(roleId, user);
+            Map<String,String> result = roleService.deleteRole(roleId, user);
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
