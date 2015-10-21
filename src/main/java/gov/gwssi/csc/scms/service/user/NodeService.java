@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Lei on 2015/5/5.
@@ -83,7 +85,7 @@ public class NodeService extends BaseService {
     }
 
     @Transactional
-    public Node deleteNodeByNodeId(String nodeId, User user) throws NoSuchNodeException, NodeBeingUsedException {
+    public Map<String,String> deleteNodeByNodeId(String nodeId, User user) throws NoSuchNodeException, NodeBeingUsedException {
         Node node = getNodeByNodeIdAndEnable(nodeId, Node.ENABLED);
         if (node == null)
             throw new NoSuchNodeException("cannot find node by nodeId:" + nodeId);
@@ -91,14 +93,19 @@ public class NodeService extends BaseService {
     }
 
     @Transactional
-    private Node unEnableNode(Node node) throws NodeBeingUsedException {
+    private Map<String,String> unEnableNode(Node node) throws NodeBeingUsedException {
+        Map<String,String> result = new HashMap<String, String>();
         List<User> users = userService.getUsersByNode(node);
         List<Node> childrenNode = node.getChildren();
         if ((users == null || users.size() == 0) && (childrenNode == null || childrenNode.size() == 0)) {
             node.setEnabled(Node.UNENABLED);
-            return saveNode(node);
-        } else
-            throw new NodeBeingUsedException("some user using the node:" + node.getNodeId());
+            saveNode(node);
+            result.put("result","success");
+        } else{
+//            throw new NodeBeingUsedException("some user using the node:" + node.getNodeId());
+            result.put("result","failed");
+        }
+        return result;
     }
 
     @Transactional

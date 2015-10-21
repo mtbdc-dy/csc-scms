@@ -79,13 +79,11 @@ public class UserController {
     }
 
     @RequestMapping(value = "/node/{nodeId}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
-    public Node deleteNode(@RequestHeader(value = HEADER_AUTHORIZATION) String header, @PathVariable String nodeId) {
+    public Map<String,String> deleteNode(@RequestHeader(value = HEADER_AUTHORIZATION) String header, @PathVariable String nodeId) {
         try {
             User user = userService.getRootUser(header);
-            Node node = nodeService.deleteNodeByNodeId(nodeId, user);
-            node.setChildren(null);
-            node.setParent(null);
-            return node;
+            Map<String,String> result = nodeService.deleteNodeByNodeId(nodeId, user);
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -195,6 +193,18 @@ public class UserController {
             User user1 = new ObjectMapper().readValue(UserStr, User.class);
             User userRet = userService.updateUser(user1, user);
             userService.setUserNull(userRet);
+            return userRet;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    @RequestMapping(value = "/user/updateProjects", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
+    public User putUser(@RequestBody String UserStr) {
+        try {
+            User user = new ObjectMapper().readValue(UserStr, User.class);
+            User userRet = userService.updateUserProjects(user);
             return userRet;
         } catch (Exception e) {
             e.printStackTrace();
