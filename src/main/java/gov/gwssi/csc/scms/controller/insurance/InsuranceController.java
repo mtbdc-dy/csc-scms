@@ -38,6 +38,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletContext;
@@ -291,6 +292,7 @@ public class InsuranceController {
 //        return new ResponseEntity(httpHeaders, HttpStatus.OK);
 //    }
 //分页查询
+    @Transactional
     @RequestMapping(
             method = RequestMethod.GET,
             headers = {"Accept=application/json"},
@@ -312,6 +314,13 @@ public class InsuranceController {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    //统计保险状态 已导出 未导出 已反馈
+    @RequestMapping(value = "/statusNum", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public Map<String,Integer> getInsurancesStatusNum(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
+        Map<String,Integer> result = insuranceService.getInsurancesStatusNum();
+        return result;
     }
 
 

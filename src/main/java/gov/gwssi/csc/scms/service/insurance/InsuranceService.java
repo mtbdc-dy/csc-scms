@@ -24,10 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.springframework.data.jpa.domain.Specifications.where;
 
@@ -75,7 +72,7 @@ public class InsuranceService extends InsuranceSpecs {
 
     }
 
-    //查询获取机票管理列表
+    //查询获取保险列表
     public List<InsuranceResultObject> getInsuranceListByFilter(FilterObject filterObject, User user) {
 
         List<InsuranceResultObject> InsuranceResultObjectList;
@@ -211,5 +208,32 @@ public class InsuranceService extends InsuranceSpecs {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    //统计保险状态 已导出 未导出 已反馈
+    public Map<String,Integer> getInsurancesStatusNum(){
+        int zs=0;
+        int yfk=0;
+        int jjwwdc=0;
+        int jjwydc=0;
+        Iterable insurances = insuranceRepository.findAll();
+        Iterator iterator = insurances.iterator();
+        while (iterator.hasNext()){
+            Insurance insurance = (Insurance)iterator.next();
+            zs++;
+            if(insurance.getPreSta().equals("AV0003")){
+                yfk++;
+            }else if(insurance.getPreSta().equals("AV0001")){
+                jjwwdc++;
+            }else if(insurance.getPreSta().equals("AV0002")){
+                jjwydc++;
+            }
+        }
+        Map<String,Integer> result = new HashMap<String, Integer>();
+        result.put("zs",zs);
+        result.put("yfk",yfk);
+        result.put("jjwwdc",jjwwdc);
+        result.put("jjwydc",jjwydc);
+        return result;
     }
 }
