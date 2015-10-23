@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.domain.dynamicReport.Column;
 import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.Configuration;
 import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.OriginalConfiguration;
+import gov.gwssi.csc.scms.domain.dynamicReport.Report.Report;
+import gov.gwssi.csc.scms.domain.dynamicReport.Report.Row;
 import gov.gwssi.csc.scms.domain.dynamicReport.ReportConfiguration;
 import gov.gwssi.csc.scms.domain.dynamicReport.Table;
 import gov.gwssi.csc.scms.domain.filter.Filter;
@@ -13,14 +15,17 @@ import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.service.dynamicReport.DynamicReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Pageable;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * Created by WangZhenghua on 2015/5/28.
@@ -34,8 +39,6 @@ public class DynamicReportController extends BaseService {
     @Autowired
     private DynamicReportService service;
 
-    @Autowired
-    private ConfigurationRepository repository;
 
 
     @RequestMapping(
@@ -83,7 +86,7 @@ public class DynamicReportController extends BaseService {
             method = RequestMethod.PUT,
             headers = "Accept=application/json;charset=utf-8"
     )
-    public Configuration updateConfigurations(@PathVariable(value = "id")String id, @RequestBody String configJSON) throws IOException {
+    public Configuration updateConfigurations(@PathVariable(value = "id") String id, @RequestBody String configJSON) throws IOException {
         Configuration configuration;
         try {
             configuration = new ObjectMapper().readValue(configJSON, Configuration.class);
@@ -116,8 +119,52 @@ public class DynamicReportController extends BaseService {
     )
     public String getReport(@PathVariable(value = "id") String id) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(service.getReport(id));
+        Report report = service.getReport(id);
+        return mapper.writeValueAsString(report);
     }
+
+    @RequestMapping(
+            value = "/configurations/{id}/report/header",
+            method = RequestMethod.GET,
+            headers = "Accept=application/json;charset=utf-8"
+    )
+    public ResponseEntity<List<Row>> getReportHeader(@PathVariable(value = "id") String id){
+        return new ResponseEntity<List<Row>>(service.getReportHeader(id), HttpStatus.OK);
+    }
+
+    @RequestMapping(
+            value = "/configurations/{id}/report/body",
+            params = {"page", "size"},
+            method = RequestMethod.GET,
+            headers = "Accept=application/json;charset=utf-8"
+    )
+    public ResponseEntity<Page<Row>> getReportBody(
+            @PathVariable(value = "id") String id,
+            @RequestParam(value = "page") Integer pageNumber,
+            @RequestParam(value = "size") Integer pageSize) {
+        List<Row> content = service.getReportBody(id);
+        Integer fromIndex = pageNumber * pageSize;
+        Integer toIndex = fromIndex + pageSize;
+        toIndex = toIndex < content.size() ? toIndex : content.size();
+        List<Row> subContent = content.subList(fromIndex, toIndex);
+        Page<Row> page = new PageImpl<Row>(subContent, new PageRequest(pageNumber, pageSize), content.size());
+        return new ResponseEntity<Page<Row>>(page, HttpStatus.OK);
+    }
+
+
+
+//    @RequestMapping(
+//            value = "/configurations/{id}/report",
+//            params = {"page", "size"},
+//            method = RequestMethod.GET
+//    )
+//    public String getReport(
+//            @PathVariable(value = "id") String id,
+//            @RequestParam(value = "page") Integer page,
+//            @RequestParam(value = "size") Integer size) {
+//        Page<String> page1 = new PageImpl<String>(new ArrayList<String>(), new PageRequest(page, size), 1000);
+//        return null;
+//    }
 
     @RequestMapping(
             value = {"/tables"},
