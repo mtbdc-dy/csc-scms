@@ -84,7 +84,7 @@ public class InsuranceController {
 
     }
 
-    //用户在前台点击生成机票管理列表，返回列表
+    //用户在前台点击生成保险管理列表，返回列表
     @RequestMapping(value = "/new", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public Map<String,String> getInsurances(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
         User user = null;
@@ -176,18 +176,12 @@ public class InsuranceController {
             List<OperationLog> operationLogs = mapper.readValue(log, javaType);
             String[] id1;
             id1 = id.split(",");
-            Insurance insurance = new Insurance();
             List<InsuranceResultObject> insuranceResultObjectList = new ArrayList<InsuranceResultObject>();
             for (int i = 1; i < id1.length; i++) {
                 InsuranceResultObject insuranceResult = insuranceService.getInsuranceAndStu(id1[i]);
                 insuranceResultObjectList.add(insuranceResult);
-                insurance = insuranceService.deleteInsuranceById(id1[i], operationLogs);
-                if (insurance == null) {
-                    throw new NoSuchAbnormalException("cannot delete the insurance,id=" + id1[i]);
-                }
-
+                insuranceService.deleteInsuranceById(id1[i], operationLogs);
             }
-
             return insuranceResultObjectList;
         } catch (Exception e) {
             e.printStackTrace();
@@ -282,15 +276,16 @@ public class InsuranceController {
         return new ResponseEntity<List<String>>(list1, HttpStatus.OK);
     }
 
-    //    @RequestMapping(
-//            method = RequestMethod.OPTIONS
-//    )
-//    public ResponseEntity options(){
-//        HttpHeaders httpHeaders = new HttpHeaders();
-//        httpHeaders.add("Access-Control-Allow-Origin","*");
-//        httpHeaders.add("Allow", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH");
-//        return new ResponseEntity(httpHeaders, HttpStatus.OK);
-//    }
+/*    @RequestMapping(
+            method = RequestMethod.OPTIONS
+    )
+    public ResponseEntity options() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Access-Control-Allow-Origin", "*");
+        httpHeaders.add("Allow", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH");
+        return new ResponseEntity(httpHeaders, HttpStatus.OK);
+    }*/
+
 //分页查询
     @Transactional
     @RequestMapping(
@@ -321,6 +316,18 @@ public class InsuranceController {
     public Map<String,Integer> getInsurancesStatusNum(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
         Map<String,Integer> result = insuranceService.getInsurancesStatusNum();
         return result;
+    }
+
+    //新增学生时首先校验该学生是否已经存在于保险列表中
+    @RequestMapping(value = "/{studentId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public Map<String,String> verifyInsuranceStudent(@PathVariable(value = "studentId") String studentId) {
+        try {
+           Map<String,String> result = insuranceService.verifyInsuranceStudent(studentId);
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
 

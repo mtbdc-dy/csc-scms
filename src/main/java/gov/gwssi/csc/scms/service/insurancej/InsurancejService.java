@@ -19,10 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by gc on 2015/7/17.
@@ -176,8 +173,45 @@ public class InsurancejService extends BaseService {
 
     }
 
-
    public int getStuInsurance(String studentid,int year) {
         return insuranceDAO.getStuInsurance(studentid,year);
+    }
+    //统计预计保险状态 已导出 未导出 已反馈
+    public Map<String,Integer> getInsurancesJStatusNum(){
+        int zs=0;
+        int yfk=0;
+        int jjwwdc=0;
+        int jjwydc=0;
+        List<Insurance> insurances = insuranceRepository.findByInsurSta("0");
+        Iterator iterator = insurances.iterator();
+        while (iterator.hasNext()){
+            Insurance insurance = (Insurance)iterator.next();
+            zs++;
+            if(insurance.getPreSta().equals("AV0003")){
+                yfk++;
+            }else if(insurance.getPreSta().equals("AV0001")){
+                jjwwdc++;
+            }else if(insurance.getPreSta().equals("AV0002")){
+                jjwydc++;
+            }
+        }
+        Map<String,Integer> result = new HashMap<String, Integer>();
+        result.put("zs",zs);
+        result.put("yfk",yfk);
+        result.put("jjwwdc",jjwwdc);
+        result.put("jjwydc",jjwydc);
+        return result;
+    }
+
+    //新增学生时首先校验该学生是否已经存在于预计保险列表中
+    public Map<String,String> verifyInsuranceJStudent(String studentId){
+        Map<String,String> result = new HashMap<String, String>();
+        Insurance insurance = insuranceRepository.findByStudentIdAndInsurSta(studentId,"0");
+        if(insurance != null){
+            result.put("result","failed");
+        }else{
+            result.put("result","success");
+        }
+        return result;
     }
    }

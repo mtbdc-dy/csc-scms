@@ -166,14 +166,11 @@ public class InsuranceService extends InsuranceSpecs {
     }
 
     //删除保险记录
-    public Insurance deleteInsuranceById(String id, List<OperationLog> operationLogs) {
+    public void deleteInsuranceById(String id, List<OperationLog> operationLogs) {
         Insurance insurance = getInsuranceById(id);
-        if (insurance == null)
-            return null;
         //记录日志
         operationLogService.saveOperationLog(operationLogs);
         insuranceRepository.delete(insurance);
-        return insurance;
     }
 
     //导出后更新保险导出状态
@@ -216,7 +213,7 @@ public class InsuranceService extends InsuranceSpecs {
         int yfk=0;
         int jjwwdc=0;
         int jjwydc=0;
-        Iterable insurances = insuranceRepository.findAll();
+        List<Insurance> insurances = insuranceRepository.findByInsurSta("1");
         Iterator iterator = insurances.iterator();
         while (iterator.hasNext()){
             Insurance insurance = (Insurance)iterator.next();
@@ -236,4 +233,16 @@ public class InsuranceService extends InsuranceSpecs {
         result.put("jjwydc",jjwydc);
         return result;
     }
+
+    //新增学生时首先校验该学生是否已经存在于保险列表中
+   public Map<String,String> verifyInsuranceStudent(String studentId){
+       Map<String,String> result = new HashMap<String, String>();
+       Insurance insurance = insuranceRepository.findByStudentIdAndInsurSta(studentId,"1");
+       if(insurance != null){
+           result.put("result","failed");
+       }else{
+           result.put("result","success");
+       }
+       return result;
+   }
 }
