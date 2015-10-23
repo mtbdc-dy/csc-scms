@@ -6,6 +6,7 @@ import gov.gwssi.csc.scms.domain.dynamicReport.*;
 import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.*;
 import gov.gwssi.csc.scms.domain.dynamicReport.Report.Cell;
 import gov.gwssi.csc.scms.domain.dynamicReport.Report.Report;
+import gov.gwssi.csc.scms.domain.dynamicReport.Report.Row;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.repository.dynamicReport.*;
 import gov.gwssi.csc.scms.service.dictionary.TranslateDictService;
@@ -245,7 +246,9 @@ public class DynamicReportService extends DynamicReportSpecs {
     }
 
     public Configuration updateConfig(Configuration configuration, String id) {
-        configurationRepository.delete(id);
+        if (configurationRepository.exists(id)) {
+            configurationRepository.delete(id);
+        }
         configuration.setId(id);
         configuration = saveConfig(configuration);
         if (configuration.getReportType().equals("statistics")) {
@@ -292,6 +295,21 @@ public class DynamicReportService extends DynamicReportSpecs {
 
     public Configuration findOne(String id) {
         return configurationRepository.findOne(id);
+    }
+
+    public List<Row> getReportHeader(String id) {
+        Configuration config = findOne(id);
+        Report report = new Report(config.getOrderedCells(), new ArrayList<Map>());
+        return report.getHeader();
+    }
+
+    public List<Row> getReportBody(String id){
+        Configuration config = findOne(id);
+        String sql = config.getSql();
+        BaseDAO dao = getBaseDao();
+        List<Map> body = dao.queryListBySql(sql);
+        Report report = new Report(new ArrayList<Cell>(), body);
+        return report.getBody();
     }
 
     public Report getReport(String id) {
