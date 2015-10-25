@@ -17,6 +17,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.springframework.data.jpa.domain.Specifications.where;
+
 import java.util.*;
 
 /**
@@ -65,6 +67,15 @@ public class DynamicReportService extends DynamicReportSpecs {
     public Page<Configuration> getAllConfigurationsByFilter(Filter filter) {
 
         return configurationRepository.findAll(filterIsLike(filter), new PageRequest(0, 20));
+    }
+
+    public Page<Configuration> getAllConfigurationsByFilterAndUserName(Filter filter, String userName) {
+        return configurationRepository.findAll(
+                where(
+                        where(isPublic()).and(filterIsLike(filter))
+                ).or(
+                        where(userNameIsLike(userName)).and(filterIsLike(filter))
+                ), new PageRequest(0, 20));
     }
 
     public void deleteConfigurations(String id) {
@@ -308,7 +319,7 @@ public class DynamicReportService extends DynamicReportSpecs {
         return report.getHeader();
     }
 
-    public List<Row> getReportBody(String id){
+    public List<Row> getReportBody(String id) {
         Configuration config = findOne(id);
         String sql = config.getSql();
         BaseDAO dao = getBaseDao();

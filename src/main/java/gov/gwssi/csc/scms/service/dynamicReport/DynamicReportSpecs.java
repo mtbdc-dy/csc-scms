@@ -17,6 +17,28 @@ import java.util.Locale;
  * JPA 查询时所需使用的 Specs
  */
 public class DynamicReportSpecs extends BaseService{
+    public static Specification<Configuration> isPublic(){
+        return new Specification<Configuration>() {
+            @Override
+            public Predicate toPredicate(Root<Configuration> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                Predicate predicate = cb.conjunction();
+                predicate.getExpressions().add(cb.equal(root.get(Configuration_.accessState), "2"));
+                return predicate;
+            }
+        };
+    }
+
+    public static Specification<Configuration> userNameIsLike(final String userName){
+        return new Specification<Configuration>() {
+            @Override
+            public Predicate toPredicate(Root<Configuration> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                Predicate predicate = cb.conjunction();
+                predicate.getExpressions().add(cb.like(root.get(Configuration_.createBy), userName));
+                return predicate;
+            }
+        };
+    }
+
     public static Specification<Configuration> filterIsLike(final Filter filter) {
         return new Specification<Configuration>() {
             @Override
