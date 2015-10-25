@@ -241,6 +241,10 @@ public class DynamicReportService extends DynamicReportSpecs {
             configurationRepository.generateStatisticsSQL(configuration.getId());
         } else {
             configurationRepository.generateQuerySQL(configuration.getId());
+            List<Cell> cells = generateHead(configuration);
+            setConfig(configuration, cells);
+            cellRepository.save(cells);
+            configuration.setCells(cells);
         }
         return configuration;
     }
@@ -255,6 +259,10 @@ public class DynamicReportService extends DynamicReportSpecs {
             configurationRepository.generateStatisticsSQL(configuration.getId());
         } else {
             configurationRepository.generateQuerySQL(configuration.getId());
+            List<Cell> cells = generateHead(configuration);
+            setConfig(configuration, cells);
+            cellRepository.save(cells);
+            configuration.setCells(cells);
         }
         return configuration;
     }
@@ -266,7 +274,6 @@ public class DynamicReportService extends DynamicReportSpecs {
 
         configurationRepository.save(tempConfig);
 
-        List<Cell> cells = generateHead(configuration);
         Set<JoinCondition> joins = configuration.getJoinConditions();
         List<WhereCondition> wheres = configuration.getWhereConditions();
         Set<GroupCondition> groups = configuration.getGroupConditions();
@@ -274,16 +281,14 @@ public class DynamicReportService extends DynamicReportSpecs {
         List<SelectCondition> selects = configuration.getSelectConditions();
 
         setIds(joins, wheres, groups, orders, selects);
-        setConfig(tempConfig, cells, joins, wheres, groups, orders, selects);
+        setConfig(tempConfig, joins, wheres, groups, orders, selects);
 
         joinConditionRepository.save(joins);
         whereConditionRepository.save(wheres);
         groupConditionRepository.save(groups);
         orderConditionRepository.save(orders);
         selectConditionRepository.save(selects);
-        cellRepository.save(cells);
 
-        tempConfig.setCells(cells);
         tempConfig.setJoinConditions(joins);
         tempConfig.setWhereConditions(wheres);
         tempConfig.setGroupConditions(groups);
