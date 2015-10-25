@@ -252,10 +252,11 @@ public class DynamicReportService extends DynamicReportSpecs {
             String result = configurationRepository.generateStatisticsSQL(configuration.getId());
             if(!result.equals("1")){
                 configurationRepository.delete(configuration.getId());
-            } else if (result.equals("4")){
-                throw new Exception("配置失败，报表统计列数过多！");
-            } else {
-                throw new Exception("配置失败！");
+                if (result.equals("4")){
+                    throw new Exception("配置失败，报表统计列数过多！");
+                } else {
+                    throw new Exception("配置失败！");
+                }
             }
         } else {
             configurationRepository.generateQuerySQL(configuration.getId());
@@ -277,10 +278,11 @@ public class DynamicReportService extends DynamicReportSpecs {
             String result = configurationRepository.generateStatisticsSQL(configuration.getId());
             if(!result.equals("1")){
                 configurationRepository.delete(configuration.getId());
-            } else if (result.equals("4")){
-                throw new Exception("配置失败，报表统计列数过多！");
-            } else {
-                throw new Exception("配置失败！");
+                if (result.equals("4")){
+                    throw new Exception("配置失败，报表统计列数过多！");
+                } else {
+                    throw new Exception("配置失败！");
+                }
             }
         } else {
             configurationRepository.generateQuerySQL(configuration.getId());
