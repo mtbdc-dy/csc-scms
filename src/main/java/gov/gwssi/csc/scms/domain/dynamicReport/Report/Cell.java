@@ -111,6 +111,8 @@ public class Cell extends Config implements Comparable<Cell>{
 
     @Override
     public int compareTo(Cell cell) {
-        return this.getId().compareTo(cell.getId());
+        Long thisCellId = new Long(this.getId());
+        Long thatCellId = new Long(cell.getId());
+        return thisCellId.compareTo(thatCellId);
     }
 }
