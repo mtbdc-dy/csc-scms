@@ -245,11 +245,18 @@ public class DynamicReportService extends DynamicReportSpecs {
         for (E collection : collections) setConfig(config, collection);
     }
 
-    public Configuration createConfig(Configuration configuration) {
+    public Configuration createConfig(Configuration configuration) throws Exception {
         configuration.setId(getId());
         configuration = saveConfig(configuration);
         if (configuration.getReportType().equals("statistics")) {
-            configurationRepository.generateStatisticsSQL(configuration.getId());
+            String result = configurationRepository.generateStatisticsSQL(configuration.getId());
+            if(!result.equals("1")){
+                configurationRepository.delete(configuration.getId());
+            } else if (result.equals("4")){
+                throw new Exception("配置失败，报表统计列数过多！");
+            } else {
+                throw new Exception("配置失败！");
+            }
         } else {
             configurationRepository.generateQuerySQL(configuration.getId());
             List<Cell> cells = generateHead(configuration);
@@ -260,14 +267,21 @@ public class DynamicReportService extends DynamicReportSpecs {
         return configuration;
     }
 
-    public Configuration updateConfig(Configuration configuration, String id) {
+    public Configuration updateConfig(Configuration configuration, String id) throws Exception {
         if (configurationRepository.exists(id)) {
             configurationRepository.delete(id);
         }
         configuration.setId(id);
         configuration = saveConfig(configuration);
         if (configuration.getReportType().equals("statistics")) {
-            configurationRepository.generateStatisticsSQL(configuration.getId());
+            String result = configurationRepository.generateStatisticsSQL(configuration.getId());
+            if(!result.equals("1")){
+                configurationRepository.delete(configuration.getId());
+            } else if (result.equals("4")){
+                throw new Exception("配置失败，报表统计列数过多！");
+            } else {
+                throw new Exception("配置失败！");
+            }
         } else {
             configurationRepository.generateQuerySQL(configuration.getId());
             List<Cell> cells = generateHead(configuration);
