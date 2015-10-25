@@ -13,6 +13,7 @@ import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.repository.dynamicReport.ConfigurationRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.service.dynamicReport.DynamicReportService;
+import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -48,14 +49,18 @@ public class DynamicReportController extends BaseService {
             params = {"filter"}
     )
     public ResponseEntity<Page<Configuration>> getConfigurations(
+            @RequestHeader(value = "Authorization")  String jwt,
             @RequestParam(value = "filter") String filterJSON) throws UnsupportedEncodingException {
+        Map<String, Object> user = JWTUtil.decode(jwt);
+        assert user != null;
+        String userName = String.valueOf(user.get("fullName"));
         String content = URLDecoder.decode(filterJSON, "UTF8");
         Class<Filter> valueType = Filter.class;
 
         Page<Configuration> configurations = null;
         try {
             Filter filter = new ObjectMapper().readValue(content, valueType);
-            configurations = service.getAllConfigurationsByFilter(filter);
+            configurations = service.getAllConfigurationsByFilterAndUserName(filter, userName);
         } catch (IOException e) {
             e.printStackTrace();
         }
