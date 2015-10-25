@@ -72,7 +72,7 @@ public class DynamicReportController extends BaseService {
             method = RequestMethod.POST,
             headers = "Accept=application/json;charset=utf-8"
     )
-    public Configuration createConfigurations(@RequestBody String configJSON) throws IOException {
+    public Configuration createConfigurations(@RequestBody String configJSON) throws Exception {
         System.out.println("DynamicReportController.createConfigurations");
         System.out.println("configJSON = [" + configJSON + "]");
         Configuration configuration;
@@ -91,7 +91,7 @@ public class DynamicReportController extends BaseService {
             method = RequestMethod.PUT,
             headers = "Accept=application/json;charset=utf-8"
     )
-    public Configuration updateConfigurations(@PathVariable(value = "id") String id, @RequestBody String configJSON) throws IOException {
+    public Configuration updateConfigurations(@PathVariable(value = "id") String id, @RequestBody String configJSON) throws Exception {
         Configuration configuration;
         try {
             configuration = new ObjectMapper().readValue(configJSON, Configuration.class);
