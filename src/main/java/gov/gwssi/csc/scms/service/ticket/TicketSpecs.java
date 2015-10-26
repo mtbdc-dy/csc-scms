@@ -100,10 +100,10 @@ public class TicketSpecs extends BaseService {
                         predicate.getExpressions().add(cb.in(ticket.get(Ticket_.state)).value("AT0002").value("AT0005").value("AT0003").value("AT0004"));
                     }
                 }
-if(filter.getTicketType() != null){
-    predicate.getExpressions().add(cb.like(ticket.get(Ticket_.type), filter.getTicketType()));
+                if (filter.getTicketType() != null) {
+                    predicate.getExpressions().add(cb.like(ticket.get(Ticket_.type), filter.getTicketType()));
 
-}
+                }
                 /**学生主表部分*/
                 if (needStudent) {
                     Join<Ticket, Student> student = ticket.join(Ticket_.student);

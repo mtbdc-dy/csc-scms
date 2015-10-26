@@ -12,6 +12,7 @@ import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.InsuranceResultObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.student.Student;
+import gov.gwssi.csc.scms.domain.user.Project;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.abnormal.NoSuchAbnormalException;
 import gov.gwssi.csc.scms.service.export.ExportService;
@@ -33,6 +34,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.beans.factory.support.ManagedMap;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -314,7 +316,12 @@ public class InsuranceController {
     //统计保险状态 已导出 未导出 已反馈
     @RequestMapping(value = "/statusNum", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public Map<String,Integer> getInsurancesStatusNum(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
-        Map<String,Integer> result = insuranceService.getInsurancesStatusNum();
+        Map<String, Integer> result=new HashMap<String, Integer>();
+        try {
+            result = insuranceService.getInsurancesStatusNum(header);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return result;
     }
 

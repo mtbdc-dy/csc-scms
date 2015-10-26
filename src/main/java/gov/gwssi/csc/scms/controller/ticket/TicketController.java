@@ -430,4 +430,16 @@ public class TicketController extends BaseService {
         }
     }
 
+    //统计机票状态
+    @RequestMapping(value = "/ticketStateNum", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public Map<String,Integer> getTicketsStatusNum(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
+        Map<String, Integer> result=new HashMap<String, Integer>();
+        try {
+            result = ticketService.getTicketsStatusNum(header);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
 }

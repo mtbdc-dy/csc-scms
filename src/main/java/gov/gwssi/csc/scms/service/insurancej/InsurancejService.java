@@ -1,6 +1,7 @@
 
 package gov.gwssi.csc.scms.service.insurancej;
 
+import gov.gwssi.csc.scms.dao.BaseDAO;
 import gov.gwssi.csc.scms.dao.insurance.InsuranceDAO;
 import gov.gwssi.csc.scms.domain.insurance.Insurance;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
@@ -8,11 +9,13 @@ import gov.gwssi.csc.scms.domain.query.FilterObject;
 import gov.gwssi.csc.scms.domain.query.InsuranceResultObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilter;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
+import gov.gwssi.csc.scms.domain.user.Project;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.insurance.InsuranceRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.service.abnormal.NoSuchAbnormalException;
 import gov.gwssi.csc.scms.service.log.OperationLogService;
+import gov.gwssi.csc.scms.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -34,14 +37,19 @@ public class InsurancejService extends BaseService {
     private OperationLogService operationLogService;
     @Autowired
     private InsuranceDAO insuranceDAO;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private BaseDAO baseDAO;
+
     //生成保险管理清单
-    public Map<String,String> getInsuranceList(User user) {
+    public Map<String, String> getInsuranceList(User user) {
         List listParameter = new ArrayList();
         List<InsuranceResultObject> InsuranceResultObjectList;
         listParameter.add("0");//传入“0”：预计
         String userId = user.getUserId();
         listParameter.add(userId);
-        insuranceDAO.doSt("p_scms_insurance",listParameter);//调用存储生成当年需要投保的保单记录
+        insuranceDAO.doSt("p_scms_insurance", listParameter);//调用存储生成当年需要投保的保单记录
 //        int startPosition, pageSize;
 //
 //        String sql = getSql(user);
@@ -56,16 +64,16 @@ public class InsurancejService extends BaseService {
 //
 //        InsuranceResultObjectList = super.getBaseDao().getObjectListByHQL(sql, InsuranceResultObject.class, startPosition, pageSize);
 //        return InsuranceResultObjectList;
-        Map<String,String> result = new HashMap<String, String>();
-        result.put("result","success");
+        Map<String, String> result = new HashMap<String, String>();
+        result.put("result", "success");
         return result;
 
     }
+
     //查询获取机票管理列表
-    public List<InsuranceResultObject> getInsuranceListByFilter(FilterObject filterObject,User user) {
+    public List<InsuranceResultObject> getInsuranceListByFilter(FilterObject filterObject, User user) {
 
         List<InsuranceResultObject> InsuranceResultObjectList;
-
 
 
         int startPosition, pageSize;
@@ -80,8 +88,8 @@ public class InsurancejService extends BaseService {
             pageSize = Integer.parseInt(filterObject.getPageSize());
         } catch (NumberFormatException ne) {
             ne.printStackTrace();
-            startPosition =FilterObject.OFFSETDEFULT;
-            pageSize =FilterObject.PAGESIZEDEFULT;
+            startPosition = FilterObject.OFFSETDEFULT;
+            pageSize = FilterObject.PAGESIZEDEFULT;
         }
 
         InsuranceResultObjectList = super.getBaseDao().getObjectListByHQL(sql, InsuranceResultObject.class, startPosition, pageSize);
@@ -89,12 +97,13 @@ public class InsurancejService extends BaseService {
 
 
     }
+
     //获取当前用户下的保险管理对应的字段数据 不加查询条件的sql
     private String getSql(User user) {
         StringBuilder sb = new StringBuilder();
         sb.append(InsuranceResultObject.getResultObject());
         Timestamp ts = new Timestamp(System.currentTimeMillis());
-        int year=ts.getYear()+1900;
+        int year = ts.getYear() + 1900;
         String tempSql = " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll,Insurance Insurance " +
                 "where student.id = basicInfo.student  " +
                 "and student.id = schoolRoll.student   and student.id = Insurance.student.id and  Insurance.insurSta ='0'";//预计的
@@ -102,13 +111,14 @@ public class InsurancejService extends BaseService {
         sb.append(" and Insurance.year = '").append(year).append("'");//只显示当前年份的
         return sb.toString();
     }
+
     //获取机票管理列表对应的字段数据
     private String getSqlByBody(FilterObject filterObject, User user) {
         if (filterObject == null)
             return null;
         StringBuilder sb = new StringBuilder();
         Timestamp ts = new Timestamp(System.currentTimeMillis());
-        int year=ts.getYear()+1900;
+        int year = ts.getYear() + 1900;
         sb.append(InsuranceResultObject.getResultObject());
         String tempSql = " from Student student,BasicInfo basicInfo, SchoolRoll schoolRoll,Insurance Insurance " +
                 "where student.id = basicInfo.student  " +
@@ -128,8 +138,9 @@ public class InsurancejService extends BaseService {
         insuranceRepository.save(insurance);
         return insurance.getId();
     }
+
     // 根据id查询insuranceAndStu
-    public InsuranceResultObject getInsuranceAndStu(String id) throws Exception{
+    public InsuranceResultObject getInsuranceAndStu(String id) throws Exception {
         //返回界面包含学生信息 根据保险id查出
         StringBuilder sb = new StringBuilder();
         sb.append(InsuranceResultObject.getResultObject());
@@ -140,9 +151,9 @@ public class InsurancejService extends BaseService {
         sb.append(" and Insurance.id = '").append(id).append("'");
         List<InsuranceResultObject> insuranceList = super.getBaseDao().getObjectListByHQL(sb.toString(), InsuranceResultObject.class, 0, 1);
         InsuranceResultObject insuranceResultObject = null;
-        if(null == insuranceList || insuranceList.size()==0){
-            throw new NoSuchAbnormalException("cannot find the insurance, please refresh the page!" );
-        }else{
+        if (null == insuranceList || insuranceList.size() == 0) {
+            throw new NoSuchAbnormalException("cannot find the insurance, please refresh the page!");
+        } else {
             insuranceResultObject = insuranceList.get(0);
         }
         return insuranceResultObject;
@@ -151,6 +162,7 @@ public class InsurancejService extends BaseService {
     public Insurance getInsuranceById(String id) {
         return insuranceRepository.findById(id);
     }
+
     //删除保险记录
     public Insurance deleteInsuranceById(String id, List<OperationLog> operationLogs) {
         Insurance insurance = getInsuranceById(id);
@@ -164,7 +176,7 @@ public class InsurancejService extends BaseService {
 
     //导出后更新保险导出状态
     public void updateInsurancePresta(String[] id) {
-        for (int i=0;i<id.length;i++){
+        for (int i = 0; i < id.length; i++) {
             Insurance insurance = getInsuranceById(id[i]);
             insurance.setPreSta("AV0002");
             insuranceRepository.save(insurance);
@@ -173,45 +185,54 @@ public class InsurancejService extends BaseService {
 
     }
 
-   public int getStuInsurance(String studentid,int year) {
-        return insuranceDAO.getStuInsurance(studentid,year);
+    public int getStuInsurance(String studentid, int year) {
+        return insuranceDAO.getStuInsurance(studentid, year);
     }
+
     //统计预计保险状态 已导出 未导出 已反馈
-    public Map<String,Integer> getInsurancesJStatusNum(){
-        int zs=0;
-        int yfk=0;
-        int jjwwdc=0;
-        int jjwydc=0;
-        List<Insurance> insurances = insuranceRepository.findByInsurSta("0");
-        Iterator iterator = insurances.iterator();
-        while (iterator.hasNext()){
-            Insurance insurance = (Insurance)iterator.next();
-            zs++;
-            if(insurance.getPreSta().equals("AV0003")){
-                yfk++;
-            }else if(insurance.getPreSta().equals("AV0001")){
-                jjwwdc++;
-            }else if(insurance.getPreSta().equals("AV0002")){
-                jjwydc++;
+    @Transactional
+    public Map<String, Integer> getInsurancesJStatusNum(String header) {
+        int zs = 0;
+        int yfk = 0;
+        int jjwwdc = 0;
+        int jjwydc = 0;
+        try {
+            User user = userService.getUserByJWT(header);
+            if ("Y0002".equals(user.getRole().getIdentity())) {    //主管用户
+                List<Project> projects = user.getProjects();
+                if (projects != null || projects.size() > 0) {
+                    yfk = baseDAO.getInsuranceStatusNumZG(projects, "AV0003", "0");
+                    jjwwdc = baseDAO.getInsuranceStatusNumZG(projects, "AV0001", "0");
+                    jjwydc = baseDAO.getInsuranceStatusNumZG(projects, "AV0002", "0");
+                    zs = jjwwdc + jjwydc;
+                }
+            } else {
+                yfk = baseDAO.getInsuranceStatusNum("AV0003", "0");
+                jjwwdc = baseDAO.getInsuranceStatusNum("AV0001", "0");
+                jjwydc = baseDAO.getInsuranceStatusNum("AV0002", "0");
+                zs = jjwwdc + jjwydc;
             }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        Map<String,Integer> result = new HashMap<String, Integer>();
-        result.put("zs",zs);
-        result.put("yfk",yfk);
-        result.put("jjwwdc",jjwwdc);
-        result.put("jjwydc",jjwydc);
+        Map<String, Integer> result = new HashMap<String, Integer>();
+        result.put("zs", zs);
+        result.put("yfk", yfk);
+        result.put("jjwwdc", jjwwdc);
+        result.put("jjwydc", jjwydc);
         return result;
     }
 
     //新增学生时首先校验该学生是否已经存在于预计保险列表中
-    public Map<String,String> verifyInsuranceJStudent(String studentId){
-        Map<String,String> result = new HashMap<String, String>();
-        Insurance insurance = insuranceRepository.findByStudentIdAndInsurSta(studentId,"0");
-        if(insurance != null){
-            result.put("result","failed");
-        }else{
-            result.put("result","success");
+    public Map<String, String> verifyInsuranceJStudent(String studentId) {
+        Map<String, String> result = new HashMap<String, String>();
+        Insurance insurance = insuranceRepository.findByStudentIdAndInsurSta(studentId, "0");
+        if (insurance != null) {
+            result.put("result", "failed");
+        } else {
+            result.put("result", "success");
         }
         return result;
     }
-   }
+}

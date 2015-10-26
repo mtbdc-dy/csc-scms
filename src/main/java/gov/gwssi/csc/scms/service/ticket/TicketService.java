@@ -10,6 +10,7 @@ import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.TicketResultObject;
 import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.domain.ticket.Ticket;
+import gov.gwssi.csc.scms.domain.user.Project;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.ticket.TicketRepository;
 import gov.gwssi.csc.scms.service.BaseService;
@@ -26,7 +27,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.data.jpa.domain.Specifications.where;
 
@@ -232,27 +235,76 @@ public class TicketService extends TicketSpecs {
 
     //分页查询
     @Transactional
-    public Page<Ticket> getTicketsPagingByFilter(Filter filter,Integer page,Integer size,String mode,String header) {
+    public Page<Ticket> getTicketsPagingByFilter(Filter filter, Integer page, Integer size, String mode, String header) {
         try {
             User user = userService.getUserByJWT(header);
             Specification<Ticket> specA = filterIsLike(filter, user);
             Specification<Ticket> specB = userIs(user);
             return ticketRepository.findAll(where(specA).and(specB), new PageRequest(page, size));
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
+
     //生成机票管理清单
     public String getStNo(User user) {
-
         List listParameter = new ArrayList();
-
         listParameter.add(user.getUserId());
-       String no = getBaseDao().doStatementForRtn("p_scms_airticket", listParameter);//调用存储生成当年需要预定的机票记录
-
+        String no = getBaseDao().doStatementForRtn("p_scms_airticket", listParameter);//调用存储生成当年需要预定的机票记录
         return no;
+    }
 
+    @Transactional
+    //统计机票状态
+    public Map<String, Integer> getTicketsStatusNum(String header) {
+        int zs = 0;
+        int wtj = 0;
+        int ytj = 0;
+        int yfk = 0;
+        int jjwwdc = 0;
+        int jjwydc = 0;
+        try {
+            User user = userService.getUserByJWT(header);
+            if ("Y0002".equals(user.getRole().getIdentity())) {    //主管用户
+                List<Project> projects = user.getProjects();
+                if (projects != null || projects.size() > 0) {
+                    wtj = baseDAO.getTicketStatusNumZG(projects, "AT0001");
+                    yfk = baseDAO.getTicketStatusNumZG(projects,"AT0003");
+                    jjwwdc = baseDAO.getTicketStatusNumZG(projects,"AT0002");
+                    jjwydc = baseDAO.getTicketStatusNumZG(projects,"AT0005");
+                    ytj = jjwwdc + jjwydc;
+                    zs = jjwwdc + jjwydc;
+                }
+            } else if ("2".equals(user.getUserType())) {    //学校用户
+                String school = user.getNode().getNodeId();
+                wtj = baseDAO.getTicketStatusNumS(school, "AT0001");
+                yfk = baseDAO.getTicketStatusNumS(school, "AT0003");
+                jjwwdc = baseDAO.getTicketStatusNumS(school,"AT0002");
+                jjwydc = baseDAO.getTicketStatusNumS(school, "AT0005");
+                ytj = jjwwdc + jjwydc;
+                zs = wtj + ytj;
+
+            } else {
+                wtj = baseDAO.getTicketStatusNum("AT0001");
+                yfk = baseDAO.getTicketStatusNum("AT0003");
+                jjwwdc = baseDAO.getTicketStatusNum("AT0002");
+                jjwydc = baseDAO.getTicketStatusNum("AT0005");
+                ytj = jjwwdc + jjwydc;
+                zs = jjwwdc + jjwydc;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Map<String, Integer> result = new HashMap<String, Integer>();
+        result.put("zs", zs);
+        result.put("wtj", wtj);
+        result.put("ytj", ytj);
+        result.put("yfk", yfk);
+        result.put("jjwwdc", jjwwdc);
+        result.put("jjwydc", jjwydc);
+        return result;
     }
 
 }

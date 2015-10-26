@@ -1,6 +1,7 @@
 
 package gov.gwssi.csc.scms.service.insurance;
 
+import gov.gwssi.csc.scms.dao.BaseDAO;
 import gov.gwssi.csc.scms.dao.insurance.InsuranceDAO;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
@@ -9,6 +10,7 @@ import gov.gwssi.csc.scms.domain.query.StudentFilter;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.InsuranceResultObject;
 import gov.gwssi.csc.scms.domain.insurance.Insurance;
+import gov.gwssi.csc.scms.domain.user.Project;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.insurance.InsuranceRepository;
 import gov.gwssi.csc.scms.service.BaseService;
@@ -43,9 +45,11 @@ public class InsuranceService extends InsuranceSpecs {
     private UserService userService;
     @Autowired
     private InsuranceDAO insuranceDAO;
+    @Autowired
+    private BaseDAO baseDAO;
 
     //生成保险管理清单
-    public Map<String,String> getInsuranceList(User user) {
+    public Map<String, String> getInsuranceList(User user) {
         List listParameter = new ArrayList();
         String userId = user.getUserId();
         listParameter.add(userId);
@@ -66,8 +70,8 @@ public class InsuranceService extends InsuranceSpecs {
 //
 //        InsuranceResultObjectList = super.getBaseDao().getObjectListByHQL(sql, InsuranceResultObject.class, startPosition, pageSize);
 //        return InsuranceResultObjectList;
-        Map<String,String> result = new HashMap<String, String>();
-        result.put("result","success");
+        Map<String, String> result = new HashMap<String, String>();
+        result.put("result", "success");
         return result;
 
     }
@@ -184,7 +188,7 @@ public class InsuranceService extends InsuranceSpecs {
 
     }
 
-    public List<Insurance> findInsuranceByStduentId(String studentId){
+    public List<Insurance> findInsuranceByStduentId(String studentId) {
         return insuranceRepository.findByStudentIdOrderByYearDesc(studentId);
     }
 
@@ -195,54 +199,62 @@ public class InsuranceService extends InsuranceSpecs {
 
     //分页查询
     @Transactional
-    public Page<Insurance> getInsurancesPagingByFilter(Filter filter,Integer page,Integer size,String mode,String header) {
+    public Page<Insurance> getInsurancesPagingByFilter(Filter filter, Integer page, Integer size, String mode, String header) {
         try {
             User user = userService.getUserByJWT(header);
             Specification<Insurance> specA = filterIsLike(filter, user, mode);
             Specification<Insurance> specB = userIs(user);
             return insuranceRepository.findAll(where(specA).and(specB), new PageRequest(page, size));
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
 
+    @Transactional
     //统计保险状态 已导出 未导出 已反馈
-    public Map<String,Integer> getInsurancesStatusNum(){
-        int zs=0;
-        int yfk=0;
-        int jjwwdc=0;
-        int jjwydc=0;
-        List<Insurance> insurances = insuranceRepository.findByInsurSta("1");
-        Iterator iterator = insurances.iterator();
-        while (iterator.hasNext()){
-            Insurance insurance = (Insurance)iterator.next();
-            zs++;
-            if(insurance.getPreSta().equals("AV0003")){
-                yfk++;
-            }else if(insurance.getPreSta().equals("AV0001")){
-                jjwwdc++;
-            }else if(insurance.getPreSta().equals("AV0002")){
-                jjwydc++;
+    public Map<String, Integer> getInsurancesStatusNum(String header) {
+        int zs = 0;
+        int yfk = 0;
+        int jjwwdc = 0;
+        int jjwydc = 0;
+        try {
+            User user = userService.getUserByJWT(header);
+            if ("Y0002".equals(user.getRole().getIdentity())) {    //主管用户
+                List<Project> projects = user.getProjects();
+                if (projects != null || projects.size() > 0) {
+                    yfk = baseDAO.getInsuranceStatusNumZG(projects, "AV0003", "1");
+                    jjwwdc = baseDAO.getInsuranceStatusNumZG(projects, "AV0001", "1");
+                    jjwydc = baseDAO.getInsuranceStatusNumZG(projects, "AV0002", "1");
+                    zs = jjwwdc + jjwydc;
+                }
+            } else {
+                yfk = baseDAO.getInsuranceStatusNum("AV0003", "1");
+                jjwwdc = baseDAO.getInsuranceStatusNum("AV0001", "1");
+                jjwydc = baseDAO.getInsuranceStatusNum("AV0002", "1");
+                zs = jjwwdc + jjwydc;
             }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        Map<String,Integer> result = new HashMap<String, Integer>();
-        result.put("zs",zs);
-        result.put("yfk",yfk);
-        result.put("jjwwdc",jjwwdc);
-        result.put("jjwydc",jjwydc);
+        Map<String, Integer> result = new HashMap<String, Integer>();
+        result.put("zs", zs);
+        result.put("yfk", yfk);
+        result.put("jjwwdc", jjwwdc);
+        result.put("jjwydc", jjwydc);
         return result;
     }
 
     //新增学生时首先校验该学生是否已经存在于保险列表中
-   public Map<String,String> verifyInsuranceStudent(String studentId){
-       Map<String,String> result = new HashMap<String, String>();
-       Insurance insurance = insuranceRepository.findByStudentIdAndInsurSta(studentId,"1");
-       if(insurance != null){
-           result.put("result","failed");
-       }else{
-           result.put("result","success");
-       }
-       return result;
-   }
+    public Map<String, String> verifyInsuranceStudent(String studentId) {
+        Map<String, String> result = new HashMap<String, String>();
+        Insurance insurance = insuranceRepository.findByStudentIdAndInsurSta(studentId, "1");
+        if (insurance != null) {
+            result.put("result", "failed");
+        } else {
+            result.put("result", "success");
+        }
+        return result;
+    }
 }

@@ -280,7 +280,7 @@ public class InsurancejController {
     //统计预计保险状态 已导出 未导出 已反馈
     @RequestMapping(value = "/statusNum", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public Map<String, Integer> getInsurancesStatusNum(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
-        Map<String, Integer> result = insurancejService.getInsurancesJStatusNum();
+        Map<String, Integer> result = insurancejService.getInsurancesJStatusNum(header);
         return result;
     }
 
