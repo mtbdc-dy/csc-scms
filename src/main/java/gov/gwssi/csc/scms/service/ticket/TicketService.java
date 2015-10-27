@@ -256,48 +256,29 @@ public class TicketService extends TicketSpecs {
     }
 
     @Transactional
-    //统计机票状态
-    public Map<String, Integer> getTicketsStatusNum(String header) {
-        int zs = 0;
-        int wtj = 0;
-        int ytj = 0;
-        int yfk = 0;
-        int jjwwdc = 0;
-        int jjwydc = 0;
+    public Map<String,Long> getTicketsStateSum(String header,Filter filter){
+        long zs = 0;
+        long wtj = 0;
+        long ytj = 0;
+        long yfk = 0;
+        long jjwwdc = 0;
+        long jjwydc = 0;
         try {
             User user = userService.getUserByJWT(header);
-            if ("Y0002".equals(user.getRole().getIdentity())) {    //主管用户
-                List<Project> projects = user.getProjects();
-                if (projects != null || projects.size() > 0) {
-                    wtj = baseDAO.getTicketStatusNumZG(projects, "AT0001");
-                    yfk = baseDAO.getTicketStatusNumZG(projects,"AT0003");
-                    jjwwdc = baseDAO.getTicketStatusNumZG(projects,"AT0002");
-                    jjwydc = baseDAO.getTicketStatusNumZG(projects,"AT0005");
-                    ytj = jjwwdc + jjwydc;
-                    zs = jjwwdc + jjwydc;
-                }
-            } else if ("2".equals(user.getUserType())) {    //学校用户
-                String school = user.getNode().getNodeId();
-                wtj = baseDAO.getTicketStatusNumS(school, "AT0001");
-                yfk = baseDAO.getTicketStatusNumS(school, "AT0003");
-                jjwwdc = baseDAO.getTicketStatusNumS(school,"AT0002");
-                jjwydc = baseDAO.getTicketStatusNumS(school, "AT0005");
-                ytj = jjwwdc + jjwydc;
-                zs = wtj + ytj;
-
-            } else {
-                wtj = baseDAO.getTicketStatusNum("AT0001");
-                yfk = baseDAO.getTicketStatusNum("AT0003");
-                jjwwdc = baseDAO.getTicketStatusNum("AT0002");
-                jjwydc = baseDAO.getTicketStatusNum("AT0005");
-                ytj = jjwwdc + jjwydc;
-                zs = jjwwdc + jjwydc;
-            }
+            Specification<Ticket> specA = filterIsLike(filter, user);
+            Specification<Ticket> specB = userIs(user);
+            zs = ticketRepository.count(where(specA).and(specB));
+            wtj = ticketRepository.count(where(specA).and(specB).and(stateIs("AT0001")));
+            yfk = ticketRepository.count(where(specA).and(specB).and(stateIs("AT0003")));
+            jjwwdc = ticketRepository.count(where(specA).and(specB).and(stateIs("AT0002")));
+            jjwydc = ticketRepository.count(where(specA).and(specB).and(stateIs("AT0005")));
+            ytj = jjwwdc + jjwydc;
 
         } catch (Exception e) {
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        Map<String, Integer> result = new HashMap<String, Integer>();
+        Map<String, Long> result = new HashMap<String, Long>();
         result.put("zs", zs);
         result.put("wtj", wtj);
         result.put("ytj", ytj);
