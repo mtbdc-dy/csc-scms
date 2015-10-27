@@ -219,7 +219,9 @@ public class UserController {
 
             User user1 = new ObjectMapper().readValue(userStr, User.class);
             User userRet = userService.addUser(user1, user);
-            userService.setUserNull(userRet);
+            if(userRet != null) {
+                userService.setUserNull(userRet);
+            }
             return userRet;
         } catch (Exception e) {
             e.printStackTrace();

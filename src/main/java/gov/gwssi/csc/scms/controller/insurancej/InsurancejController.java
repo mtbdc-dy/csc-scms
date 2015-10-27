@@ -277,15 +277,17 @@ public class InsurancejController {
         return new ResponseEntity<List<String>>(list1, HttpStatus.OK);
     }
 
-//    @RequestMapping(
-//            method = RequestMethod.OPTIONS
-//    )
-//    public ResponseEntity options(){
-//        HttpHeaders httpHeaders = new HttpHeaders();
-//        httpHeaders.add("Access-Control-Allow-Origin","*");
-//        httpHeaders.add("Allow", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH");
-//        return new ResponseEntity(httpHeaders, HttpStatus.OK);
-//    }
+    //新增学生时首先校验该学生是否已经存在于预计保险列表中
+    @RequestMapping(value = "/{studentId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public Map<String,String> verifyInsuranceJStudent(@PathVariable(value = "studentId") String studentId) {
+        try {
+            Map<String,String> result = insurancejService.verifyInsuranceJStudent(studentId);
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 
 
 }

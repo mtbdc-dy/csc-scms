@@ -15,4 +15,7 @@ public interface InsuranceRepository extends CrudRepository<Insurance,String> , 
 
     Insurance findById(String id);
     List<Insurance> findByStudentIdOrderByYearDesc(String studentId);
+    List<Insurance> findByPreSta(String preSta);
+    List<Insurance> findByInsurSta(String insurSta);
+    Insurance findByStudentIdAndInsurSta(String studentId,String insurSta);
 }

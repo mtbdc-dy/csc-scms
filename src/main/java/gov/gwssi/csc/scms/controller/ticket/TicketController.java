@@ -430,4 +430,23 @@ public class TicketController extends BaseService {
         }
     }
 
+    //统计机票状态
+    @RequestMapping(
+            value = "/ticketStateNum",
+            method = RequestMethod.GET,
+            headers = {"Accept=application/json"},
+            params = {"filter"})
+    public Map<String,Long> getInsurancesStateSum(
+            @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
+            @RequestParam(value = "filter") String filterJSON) throws IOException {
+        Map<String, Long> result=new HashMap<String,Long >();
+        try {
+            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            result = ticketService.getTicketsStateSum(header, filter);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return result;
+    }
+
 }

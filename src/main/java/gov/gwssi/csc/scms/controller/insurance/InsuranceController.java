@@ -12,6 +12,7 @@ import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.InsuranceResultObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.student.Student;
+import gov.gwssi.csc.scms.domain.user.Project;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.abnormal.NoSuchAbnormalException;
 import gov.gwssi.csc.scms.service.export.ExportService;
@@ -33,11 +34,13 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.beans.factory.support.ManagedMap;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletContext;
@@ -83,7 +86,7 @@ public class InsuranceController {
 
     }
 
-    //用户在前台点击生成机票管理列表，返回列表
+    //用户在前台点击生成保险管理列表，返回列表
     @RequestMapping(value = "/new", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public Map<String,String> getInsurances(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
         User user = null;
@@ -175,18 +178,12 @@ public class InsuranceController {
             List<OperationLog> operationLogs = mapper.readValue(log, javaType);
             String[] id1;
             id1 = id.split(",");
-            Insurance insurance = new Insurance();
             List<InsuranceResultObject> insuranceResultObjectList = new ArrayList<InsuranceResultObject>();
             for (int i = 1; i < id1.length; i++) {
                 InsuranceResultObject insuranceResult = insuranceService.getInsuranceAndStu(id1[i]);
                 insuranceResultObjectList.add(insuranceResult);
-                insurance = insuranceService.deleteInsuranceById(id1[i], operationLogs);
-                if (insurance == null) {
-                    throw new NoSuchAbnormalException("cannot delete the insurance,id=" + id1[i]);
-                }
-
+                insuranceService.deleteInsuranceById(id1[i], operationLogs);
             }
-
             return insuranceResultObjectList;
         } catch (Exception e) {
             e.printStackTrace();
@@ -281,16 +278,18 @@ public class InsuranceController {
         return new ResponseEntity<List<String>>(list1, HttpStatus.OK);
     }
 
-    //    @RequestMapping(
-//            method = RequestMethod.OPTIONS
-//    )
-//    public ResponseEntity options(){
-//        HttpHeaders httpHeaders = new HttpHeaders();
-//        httpHeaders.add("Access-Control-Allow-Origin","*");
-//        httpHeaders.add("Allow", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH");
-//        return new ResponseEntity(httpHeaders, HttpStatus.OK);
-//    }
+/*    @RequestMapping(
+            method = RequestMethod.OPTIONS
+    )
+    public ResponseEntity options() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Access-Control-Allow-Origin", "*");
+        httpHeaders.add("Allow", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH");
+        return new ResponseEntity(httpHeaders, HttpStatus.OK);
+    }*/
+
 //分页查询
+    @Transactional
     @RequestMapping(
             method = RequestMethod.GET,
             headers = {"Accept=application/json"},
@@ -309,6 +308,38 @@ public class InsuranceController {
             Page<Map<String, Object>> mapPage = insurancePage.map(new InsuranceConverter());
             return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
         }catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    //统计保险状态 已导出 未导出 已反馈
+    @RequestMapping(
+            value = "/statusNum",
+            method = RequestMethod.GET,
+            headers = {"Accept=application/json"},
+            params = {"mode", "filter"})
+    public Map<String,Long> getInsurancesStateSum(
+            @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
+            @RequestParam(value = "mode") String mode,
+            @RequestParam(value = "filter") String filterJSON) throws IOException {
+        Map<String, Long> result=new HashMap<String,Long >();
+        try {
+            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            result = insuranceService.getInsurancesStateSum(header,filter,mode);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    //新增学生时首先校验该学生是否已经存在于保险列表中
+    @RequestMapping(value = "/{studentId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public Map<String,String> verifyInsuranceStudent(@PathVariable(value = "studentId") String studentId) {
+        try {
+           Map<String,String> result = insuranceService.verifyInsuranceStudent(studentId);
+            return result;
+        } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }

@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.dao;
 
+import gov.gwssi.csc.scms.domain.user.Project;
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,10 @@ import javax.sql.DataSource;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -59,7 +64,7 @@ public class BaseDAO {
         try {
             em = entityManagerFactory.createEntityManager();
             //创建原生SQL查询QUERY实例
-            return (List<T>)em.createNativeQuery(sql, clazz).getResultList();
+            return (List<T>) em.createNativeQuery(sql, clazz).getResultList();
 
         } finally {
             if (em != null) {
@@ -118,6 +123,7 @@ public class BaseDAO {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         return jdbcTemplate;
     }
+
     /**
      * add by lzs 20150603
      * 调用存储过程
@@ -126,13 +132,13 @@ public class BaseDAO {
      */
 
     public void doStatement(String name, List list) {
-        JdbcTemplate jdbcTemplate =getJdbcTemplate();
+        JdbcTemplate jdbcTemplate = getJdbcTemplate();
         String callName = "{ call " + name + " (\'"; // call存储过程名
-        for (int i = 0; i < list.size()-1; i++) { // 取参数的问号
-            callName = callName + list.get(i)+"\',\'";
+        for (int i = 0; i < list.size() - 1; i++) { // 取参数的问号
+            callName = callName + list.get(i) + "\',\'";
 //            System.out.println(callName);
         }
-        callName = callName +list.get(list.size()-1)+ "\') }";
+        callName = callName + list.get(list.size() - 1) + "\') }";
 
         jdbcTemplate.execute(callName);
 
@@ -144,8 +150,8 @@ public class BaseDAO {
             callName = callName + "?, ";
         }
         callName = callName + "?) }";
-        System.out.println("callName==="+callName);
-        Object returnValue =  getJdbcTemplate().execute(callName,
+        System.out.println("callName===" + callName);
+        Object returnValue = getJdbcTemplate().execute(callName,
                 new CallableStatementCallback() {
                     public Object doInCallableStatement(CallableStatement cs)
                             throws SQLException, DataAccessException {
@@ -181,7 +187,7 @@ public class BaseDAO {
                     }
                 });
 
-        return  (String)returnValue;
+        return (String) returnValue;
     }
 
 
@@ -199,7 +205,7 @@ public class BaseDAO {
         }
     }
 
-    public String getDicIdByClassType(String classType){
+    public String getDicIdByClassType(String classType) {
         String sql = "select f_scms_dim_id('" + classType + "') from dual ";
         EntityManager em = null;
         try {
@@ -222,9 +228,9 @@ public class BaseDAO {
         try {
             em = entityManagerFactory.createEntityManager();
             Query query = em.createNativeQuery(sql);
-            if(query.getSingleResult()!=null){
+            if (query.getSingleResult() != null) {
                 return String.valueOf(query.getSingleResult());
-            }else{
+            } else {
                 return "-";
             }
 
@@ -245,9 +251,9 @@ public class BaseDAO {
         try {
             em = entityManagerFactory.createEntityManager();
             Query query = em.createNativeQuery(sql);
-            if(query.getSingleResult()!=null){
+            if (query.getSingleResult() != null) {
                 return String.valueOf(query.getSingleResult());
-            }else{
+            } else {
                 return "-";
             }
 
@@ -270,9 +276,9 @@ public class BaseDAO {
         try {
             em = entityManagerFactory.createEntityManager();
             Query query = em.createNativeQuery(sql);
-            if(query.getSingleResult()!=null){
+            if (query.getSingleResult() != null) {
                 return String.valueOf(query.getSingleResult());
-            }else{
+            } else {
                 return "-";
             }
 
@@ -296,11 +302,11 @@ public class BaseDAO {
             em = entityManagerFactory.createEntityManager();
             //em.joinTransaction();
             //创建原生SQL查询QUERY实例
-em.getTransaction().begin();
+            em.getTransaction().begin();
             Query query = em.createNativeQuery(sql);
             int num = query.executeUpdate();
             em.getTransaction().commit();
-           // em.flush();
+            // em.flush();
             return num;
         } finally {
             if (em != null) {
@@ -311,42 +317,171 @@ em.getTransaction().begin();
 
 
     /**
-     *  调用存储过程procedure p_scms_d_Statistics(avc_configid in varchar2,avc_result out varchar2)
+     * 调用存储过程procedure p_scms_d_Statistics(avc_configid in varchar2,avc_result out varchar2)
      */
-    public String invokeProcedureByProcedureName(String in,String procedureName){
+    public String invokeProcedureByProcedureName(String in, String procedureName) {
         EntityManager em = null;
         em = entityManagerFactory.createEntityManager();
-        try{
+        try {
             StoredProcedureQuery storedProcedureQuery = em.createStoredProcedureQuery(procedureName);
 
-            storedProcedureQuery.registerStoredProcedureParameter("avc_configid",String.class,ParameterMode.IN);
-            storedProcedureQuery.registerStoredProcedureParameter("avc_result",String.class, ParameterMode.OUT);
+            storedProcedureQuery.registerStoredProcedureParameter("avc_configid", String.class, ParameterMode.IN);
+            storedProcedureQuery.registerStoredProcedureParameter("avc_result", String.class, ParameterMode.OUT);
 
             storedProcedureQuery.setParameter("avc_conigid", in);
             boolean execute = storedProcedureQuery.execute();
 
-            String result = (String)storedProcedureQuery.getOutputParameterValue("avc_result");
+            String result = (String) storedProcedureQuery.getOutputParameterValue("avc_result");
 
             return result;
 
-        }finally {
-            if(em != null){
+        } finally {
+            if (em != null) {
                 em.close();
             }
         }
     }
 
     //得到用户密码
-    public String getPWDByUserId(String userId){
+    public String getPWDByUserId(String userId) {
         String sql = "select PASSWORD from PUB_USER where USERID='" + userId + "'";
         EntityManager em = null;
         try {
             em = entityManagerFactory.createEntityManager();
             Query query = em.createNativeQuery(sql);
-            if(query.getSingleResult()!=null){
+            if (query.getSingleResult() != null) {
                 return String.valueOf(query.getSingleResult());
-            }else{
+            } else {
                 return "-";
+            }
+
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
+    //统计机票 主管用户
+    public int getTicketStatusNumZG(List<Project> projects,String state) {
+        String proSql = "";
+        for (int i = 0; i < projects.size(); i++) {
+            proSql = proSql + "'" + projects.get(i).getProjectId() + "',";
+        }
+        String pSql = proSql.substring(0, proSql.length() - 1) + ")";
+        String sql = "select count(t.ID) from SCMS_AIRTICKET t,SCMS_BASIC_INFO b where t.studentid = b.studentid and b.projectname in (" + pSql + " and t.STATE = '"+ state +"'";
+        EntityManager em = null;
+        try {
+            em = entityManagerFactory.createEntityManager();
+            Query query = em.createNativeQuery(sql);
+            if (query.getSingleResult() != null) {
+                return Integer.valueOf(String.valueOf(query.getSingleResult()));
+            } else {
+                return 0;
+            }
+
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
+    //统计机票 学校用户
+    public int getTicketStatusNumS(String school,String state) {
+        String sql = "select count(t.ID) from SCMS_AIRTICKET t,SCMS_SCHOOLROLL b where t.studentid = b.studentid and b.CURRENTUNIVERSITY ='" + school + "' and t.STATE = '"+ state +"'";
+        EntityManager em = null;
+        try {
+            em = entityManagerFactory.createEntityManager();
+            Query query = em.createNativeQuery(sql);
+            if (query.getSingleResult() != null) {
+                return Integer.valueOf(String.valueOf(query.getSingleResult()));
+            } else {
+                return 0;
+            }
+
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+    //统计机票
+    public int getTicketStatusNum(String state) {
+        String sql = "select count(t.ID) from SCMS_AIRTICKET t where t.STATE = '"+ state +"'";
+        EntityManager em = null;
+        try {
+            em = entityManagerFactory.createEntityManager();
+            Query query = em.createNativeQuery(sql);
+            if (query.getSingleResult() != null) {
+                return Integer.valueOf(String.valueOf(query.getSingleResult()));
+            } else {
+                return 0;
+            }
+
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
+    //统计异动  主管用户
+    public int getAbnormalZG(List<Project> projects,String state){
+        String proSql = "";
+        for (int i = 0; i < projects.size(); i++) {
+            proSql = proSql + "'" + projects.get(i).getProjectId() + "',";
+        }
+        String pSql = proSql.substring(0, proSql.length() - 1) + ")";
+        String sql = "select count(t.ID) from SCMS_ABNORMAL t,SCMS_BASIC_INFO b where t.studentid = b.studentid and b.projectname in (" + pSql + " and t.STATE = '"+ state + "'";
+        EntityManager em = null;
+        try {
+            em = entityManagerFactory.createEntityManager();
+            Query query = em.createNativeQuery(sql);
+            if (query.getSingleResult() != null) {
+                return Integer.valueOf(String.valueOf(query.getSingleResult()));
+            } else {
+                return 0;
+            }
+
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
+    //统计异动  基金委非主管用户
+    public int getAbnormal(String state){
+        String sql = "select count(t.ID) from SCMS_ABNORMAL t where t.STATE = '"+ state + "'";
+        EntityManager em = null;
+        try {
+            em = entityManagerFactory.createEntityManager();
+            Query query = em.createNativeQuery(sql);
+            if (query.getSingleResult() != null) {
+                return Integer.valueOf(String.valueOf(query.getSingleResult()));
+            } else {
+                return 0;
+            }
+
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
+    //统计奖学金审批已上报数量
+    public int getScholarshipSubmited(){
+        String sql = "select count(t.ID) from SCMS_SCHOLARSHIP t where t.schoolsta = '1' and t.cscsta = '0' and t.schoolqual + t.schoolunqual <> 0";
+        EntityManager em = null;
+        try {
+            em = entityManagerFactory.createEntityManager();
+            Query query = em.createNativeQuery(sql);
+            if (query.getSingleResult() != null) {
+                return Integer.valueOf(String.valueOf(query.getSingleResult()));
+            } else {
+                return 0;
             }
 
         } finally {
