@@ -211,40 +211,33 @@ public class InsuranceService extends InsuranceSpecs {
         }
     }
 
-    @Transactional
     //统计保险状态 已导出 未导出 已反馈
-    public Map<String, Integer> getInsurancesStatusNum(String header) {
-        int zs = 0;
-        int yfk = 0;
-        int jjwwdc = 0;
-        int jjwydc = 0;
+    @Transactional
+    public Map<String, Long> getInsurancesStateSum(String header,Filter filter,String mode) {
+        long zs = 0;
+        long yfk = 0;
+        long jjwwdc = 0;
+        long jjwydc = 0;
         try {
             User user = userService.getUserByJWT(header);
-            if ("Y0002".equals(user.getRole().getIdentity())) {    //主管用户
-                List<Project> projects = user.getProjects();
-                if (projects != null || projects.size() > 0) {
-                    yfk = baseDAO.getInsuranceStatusNumZG(projects, "AV0003", "1");
-                    jjwwdc = baseDAO.getInsuranceStatusNumZG(projects, "AV0001", "1");
-                    jjwydc = baseDAO.getInsuranceStatusNumZG(projects, "AV0002", "1");
-                    zs = jjwwdc + jjwydc;
-                }
-            } else {
-                yfk = baseDAO.getInsuranceStatusNum("AV0003", "1");
-                jjwwdc = baseDAO.getInsuranceStatusNum("AV0001", "1");
-                jjwydc = baseDAO.getInsuranceStatusNum("AV0002", "1");
-                zs = jjwwdc + jjwydc;
-            }
-
-        } catch (Exception e) {
+            Specification<Insurance> specA = filterIsLike(filter, user, mode);
+            Specification<Insurance> specB = userIs(user);
+            zs = insuranceRepository.count(where(specA).and(specB));
+            yfk = insuranceRepository.count(where(specA).and(specB).and(stateIs("AV0003")));
+            jjwwdc = insuranceRepository.count(where(specA).and(specB).and(stateIs("AV0001")));
+            jjwydc = insuranceRepository.count(where(specA).and(specB).and(stateIs("AV0002")));
+        }catch (Exception e){
             e.printStackTrace();
         }
-        Map<String, Integer> result = new HashMap<String, Integer>();
+        Map<String, Long> result = new HashMap<String, Long>();
         result.put("zs", zs);
         result.put("yfk", yfk);
         result.put("jjwwdc", jjwwdc);
         result.put("jjwydc", jjwydc);
         return result;
+
     }
+
 
     //新增学生时首先校验该学生是否已经存在于保险列表中
     public Map<String, String> verifyInsuranceStudent(String studentId) {

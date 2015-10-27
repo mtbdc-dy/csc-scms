@@ -30,6 +30,12 @@ public class Filter {
     private String qualified = null;         //奖学金是否有不合格人数
     private String currentProvince = null;
     private String currentUniversity = null;
+
+    private String school = null;
+    private String insuranceState = null;
+    private String schoolReviews = null;
+    private String schoolResults = null;
+
 /**
  * LZS 自定义的查询条件 非公共条件
  */
@@ -574,5 +580,37 @@ public class Filter {
 
     public void setTableName(String tableName) {
         this.tableName = tableName;
+    }
+
+    public String getSchool() {
+        return school;
+    }
+
+    public void setSchool(String school) {
+        this.school = school;
+    }
+
+    public String getInsuranceState() {
+        return insuranceState;
+    }
+
+    public void setInsuranceState(String insuranceState) {
+        this.insuranceState = insuranceState;
+    }
+
+    public String getSchoolReviews() {
+        return schoolReviews;
+    }
+
+    public void setSchoolReviews(String schoolReviews) {
+        this.schoolReviews = schoolReviews;
+    }
+
+    public String getSchoolResults() {
+        return schoolResults;
+    }
+
+    public void setSchoolResults(String schoolResults) {
+        this.schoolResults = schoolResults;
     }
 }

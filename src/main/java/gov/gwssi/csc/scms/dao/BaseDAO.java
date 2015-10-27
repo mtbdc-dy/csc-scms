@@ -361,50 +361,6 @@ public class BaseDAO {
             }
         }
     }
-    //统计保险/预计保险 未导出 已导出 已反馈 人数 主管用户
-    public int getInsuranceStatusNumZG(List<Project> projects,String preSta,String insurSta) {
-        String proSql = "";
-        for (int i = 0; i < projects.size(); i++) {
-            proSql = proSql + "'" + projects.get(i).getProjectId() + "',";
-        }
-        String pSql = proSql.substring(0, proSql.length() - 1) + ")";
-        String sql = "select count(t.ID) from SCMS_INSURANCE t,SCMS_BASIC_INFO b where t.studentid = b.studentid and b.projectname in (" + pSql + " and t.PRESTA = '"+ preSta + "' and t.INSURSTA ='" + insurSta +"'";
-        EntityManager em = null;
-        try {
-            em = entityManagerFactory.createEntityManager();
-            Query query = em.createNativeQuery(sql);
-            if (query.getSingleResult() != null) {
-                return Integer.valueOf(String.valueOf(query.getSingleResult()));
-            } else {
-                return 0;
-            }
-
-        } finally {
-            if (em != null) {
-                em.close();
-            }
-        }
-    }
-
-    //统计保险/预计保险 未导出 已导出 已反馈 人数
-    public int getInsuranceStatusNum(String preSta,String insurSta) {
-        String sql = "select count(t.ID) from SCMS_INSURANCE t where t.PRESTA = '"+ preSta + "' and t.INSURSTA ='" + insurSta +"'";
-        EntityManager em = null;
-        try {
-            em = entityManagerFactory.createEntityManager();
-            Query query = em.createNativeQuery(sql);
-            if (query.getSingleResult() != null) {
-                return Integer.valueOf(String.valueOf(query.getSingleResult()));
-            } else {
-                return 0;
-            }
-
-        } finally {
-            if (em != null) {
-                em.close();
-            }
-        }
-    }
 
     //统计机票 主管用户
     public int getTicketStatusNumZG(List<Project> projects,String state) {
@@ -453,6 +409,71 @@ public class BaseDAO {
     //统计机票
     public int getTicketStatusNum(String state) {
         String sql = "select count(t.ID) from SCMS_AIRTICKET t where t.STATE = '"+ state +"'";
+        EntityManager em = null;
+        try {
+            em = entityManagerFactory.createEntityManager();
+            Query query = em.createNativeQuery(sql);
+            if (query.getSingleResult() != null) {
+                return Integer.valueOf(String.valueOf(query.getSingleResult()));
+            } else {
+                return 0;
+            }
+
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
+    //统计异动  主管用户
+    public int getAbnormalZG(List<Project> projects,String state){
+        String proSql = "";
+        for (int i = 0; i < projects.size(); i++) {
+            proSql = proSql + "'" + projects.get(i).getProjectId() + "',";
+        }
+        String pSql = proSql.substring(0, proSql.length() - 1) + ")";
+        String sql = "select count(t.ID) from SCMS_ABNORMAL t,SCMS_BASIC_INFO b where t.studentid = b.studentid and b.projectname in (" + pSql + " and t.STATE = '"+ state + "'";
+        EntityManager em = null;
+        try {
+            em = entityManagerFactory.createEntityManager();
+            Query query = em.createNativeQuery(sql);
+            if (query.getSingleResult() != null) {
+                return Integer.valueOf(String.valueOf(query.getSingleResult()));
+            } else {
+                return 0;
+            }
+
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
+    //统计异动  基金委非主管用户
+    public int getAbnormal(String state){
+        String sql = "select count(t.ID) from SCMS_ABNORMAL t where t.STATE = '"+ state + "'";
+        EntityManager em = null;
+        try {
+            em = entityManagerFactory.createEntityManager();
+            Query query = em.createNativeQuery(sql);
+            if (query.getSingleResult() != null) {
+                return Integer.valueOf(String.valueOf(query.getSingleResult()));
+            } else {
+                return 0;
+            }
+
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
+    //统计奖学金审批已上报数量
+    public int getScholarshipSubmited(){
+        String sql = "select count(t.ID) from SCMS_SCHOLARSHIP t where t.schoolsta = '1' and t.cscsta = '0' and t.schoolqual + t.schoolunqual <> 0";
         EntityManager em = null;
         try {
             em = entityManagerFactory.createEntityManager();

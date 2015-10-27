@@ -314,12 +314,20 @@ public class InsuranceController {
     }
 
     //统计保险状态 已导出 未导出 已反馈
-    @RequestMapping(value = "/statusNum", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public Map<String,Integer> getInsurancesStatusNum(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
-        Map<String, Integer> result=new HashMap<String, Integer>();
+    @RequestMapping(
+            value = "/statusNum",
+            method = RequestMethod.GET,
+            headers = {"Accept=application/json"},
+            params = {"mode", "filter"})
+    public Map<String,Long> getInsurancesStateSum(
+            @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
+            @RequestParam(value = "mode") String mode,
+            @RequestParam(value = "filter") String filterJSON) throws IOException {
+        Map<String, Long> result=new HashMap<String,Long >();
         try {
-            result = insuranceService.getInsurancesStatusNum(header);
-        } catch (Exception e) {
+            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            result = insuranceService.getInsurancesStateSum(header,filter,mode);
+        }catch (Exception e){
             e.printStackTrace();
         }
         return result;

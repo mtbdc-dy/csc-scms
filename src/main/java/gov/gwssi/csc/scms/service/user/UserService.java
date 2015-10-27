@@ -91,8 +91,12 @@ public class UserService extends BaseService {
     }
 
     public User addUser(User user, User loginUser) throws UserIdBeingUsedException, NoSuchRoleException, NoSuchNodeException {
-        if (userExists(user.getUserId()))
-            throw new UserIdBeingUsedException("this username for new user is used :" + user.getUserId());
+        if (userExists(user.getUserId())){
+        //            throw new UserIdBeingUsedException("this username for new user is used :" + user.getUserId());
+
+            return null;
+        }
+
         user.setId(getBaseDao().getIdBySequence("seq_user"));
         user.setPassword(user.getPassword());
         user.setCreateBy(loginUser.getUserId());

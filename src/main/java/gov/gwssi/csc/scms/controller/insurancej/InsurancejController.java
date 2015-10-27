@@ -277,13 +277,6 @@ public class InsurancejController {
         return new ResponseEntity<List<String>>(list1, HttpStatus.OK);
     }
 
-    //统计预计保险状态 已导出 未导出 已反馈
-    @RequestMapping(value = "/statusNum", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public Map<String, Integer> getInsurancesStatusNum(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
-        Map<String, Integer> result = insurancejService.getInsurancesJStatusNum(header);
-        return result;
-    }
-
     //新增学生时首先校验该学生是否已经存在于预计保险列表中
     @RequestMapping(value = "/{studentId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public Map<String,String> verifyInsuranceJStudent(@PathVariable(value = "studentId") String studentId) {

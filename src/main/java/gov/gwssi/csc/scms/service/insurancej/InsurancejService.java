@@ -189,41 +189,6 @@ public class InsurancejService extends BaseService {
         return insuranceDAO.getStuInsurance(studentid, year);
     }
 
-    //统计预计保险状态 已导出 未导出 已反馈
-    @Transactional
-    public Map<String, Integer> getInsurancesJStatusNum(String header) {
-        int zs = 0;
-        int yfk = 0;
-        int jjwwdc = 0;
-        int jjwydc = 0;
-        try {
-            User user = userService.getUserByJWT(header);
-            if ("Y0002".equals(user.getRole().getIdentity())) {    //主管用户
-                List<Project> projects = user.getProjects();
-                if (projects != null || projects.size() > 0) {
-                    yfk = baseDAO.getInsuranceStatusNumZG(projects, "AV0003", "0");
-                    jjwwdc = baseDAO.getInsuranceStatusNumZG(projects, "AV0001", "0");
-                    jjwydc = baseDAO.getInsuranceStatusNumZG(projects, "AV0002", "0");
-                    zs = jjwwdc + jjwydc;
-                }
-            } else {
-                yfk = baseDAO.getInsuranceStatusNum("AV0003", "0");
-                jjwwdc = baseDAO.getInsuranceStatusNum("AV0001", "0");
-                jjwydc = baseDAO.getInsuranceStatusNum("AV0002", "0");
-                zs = jjwwdc + jjwydc;
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Map<String, Integer> result = new HashMap<String, Integer>();
-        result.put("zs", zs);
-        result.put("yfk", yfk);
-        result.put("jjwwdc", jjwwdc);
-        result.put("jjwydc", jjwydc);
-        return result;
-    }
-
     //新增学生时首先校验该学生是否已经存在于预计保险列表中
     public Map<String, String> verifyInsuranceJStudent(String studentId) {
         Map<String, String> result = new HashMap<String, String>();
