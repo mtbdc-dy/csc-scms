@@ -372,7 +372,7 @@ public class ScholarshipXService extends ScholarshipXSpecs {
     }
     public List<ScholarshipX> findScholarshipXBySchoolAndYear(String school,int year) {//找到所有视图记录
         long yearC = Long.valueOf(year);
-        return scholarshipXRepository.findBySchoolAndYear(school,year);
+        return scholarshipXRepository.findBySchoolAndYear(school, year);
     }
 
     //保存新增的奖学金详细记录,保存日志
@@ -523,6 +523,18 @@ public class ScholarshipXService extends ScholarshipXSpecs {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
+    }
+
+    //新增学生时首先校验该学生是否已经存在于奖学金列表中
+    public Map<String,String> verifyScholarshipXStudent(String studentId){
+        Map<String,String> result = new HashMap<String, String>();
+        List<ScholarshipX> scholarshipXs= scholarshipXRepository.findByStudentId(studentId);
+        if(scholarshipXs.size()>0){
+            result.put("result","failed");
+        }else{
+            result.put("result","success");
+        }
+        return result;
     }
 
 }

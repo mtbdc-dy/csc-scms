@@ -495,4 +495,16 @@ public class ScholarshipXController {
         }
     }
 
+    //新增学生时首先校验该学生是否已经存在于奖学金列表中
+    @RequestMapping(value = "/{studentId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public Map<String,String> verifyInsuranceStudent(@PathVariable(value = "studentId") String studentId) {
+        try {
+            Map<String,String> result = scholarshipXService.verifyScholarshipXStudent(studentId);
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
 }
