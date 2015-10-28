@@ -18,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -158,18 +160,22 @@ public class DynamicReportController extends BaseService {
 
 
 
-//    @RequestMapping(
-//            value = "/configurations/{id}/report",
-//            params = {"page", "size"},
-//            method = RequestMethod.GET
-//    )
-//    public String getReport(
-//            @PathVariable(value = "id") String id,
-//            @RequestParam(value = "page") Integer page,
-//            @RequestParam(value = "size") Integer size) {
-//        Page<String> page1 = new PageImpl<String>(new ArrayList<String>(), new PageRequest(page, size), 1000);
-//        return null;
-//    }
+    @RequestMapping(
+            value = "/configurations/{id}/report",
+            headers = "Accept=application/octet-stream",
+            method = RequestMethod.GET
+    )
+    public ResponseEntity<byte[]> exportReport(
+            @PathVariable(value = "id") String id) {
+        byte[] bytes = null;
+
+//        bytes = service.export(id);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        httpHeaders.setContentDispositionFormData("attachment", "attachment");
+        return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
+    }
 
     @RequestMapping(
             value = {"/tables"},

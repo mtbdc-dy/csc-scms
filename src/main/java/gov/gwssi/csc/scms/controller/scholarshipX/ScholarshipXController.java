@@ -412,8 +412,8 @@ public class ScholarshipXController {
     }
 
 
-    //基金委跳转进来的相关操作
-//基金委用户在前台点击查询，返回列表
+    // 基金委跳转进来的相关操作
+    // 基金委用户在前台点击查询，返回列表
     @RequestMapping(value = "/select/{school}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<ScholarshipXResultObject> getScholarshipXsByConditionsJ(@PathVariable("school") String school, @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
                                                                         @RequestParam(value = "filter") String filter) throws NoSuchUserException {

@@ -3,6 +3,7 @@ package gov.gwssi.csc.scms.domain.dynamicReport.Configuration;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.gwssi.csc.scms.domain.dynamicReport.Report.Cell;
+import gov.gwssi.csc.scms.domain.dynamicReport.Report.ExcelCell;
 
 import javax.persistence.*;
 import javax.persistence.Column;
@@ -45,10 +46,11 @@ public class Configuration implements Serializable {
     private String sql;
     private Set<JoinCondition> joinConditions;
     private List<WhereCondition> whereConditions;
-    private Set<GroupCondition> groupConditions;
-    private Set<OrderCondition> orderConditions;
+    private List<GroupCondition> groupConditions;
+    private List<OrderCondition> orderConditions;
     private List<SelectCondition> selectConditions;
     private List<Cell> cells;
+    private List<ExcelCell> excelCells;
     private Calendar created;
     private String createBy;
     private Calendar updated;
@@ -166,23 +168,23 @@ public class Configuration implements Serializable {
 
     @JsonIgnore
     @OneToMany(mappedBy = "config", cascade = CascadeType.REMOVE)
-    public Set<GroupCondition> getGroupConditions() {
+    public List<GroupCondition> getGroupConditions() {
         return groupConditions;
     }
 
     @JsonProperty
-    public void setGroupConditions(Set<GroupCondition> groupConditions) {
+    public void setGroupConditions(List<GroupCondition> groupConditions) {
         this.groupConditions = groupConditions;
     }
 
     @JsonIgnore
     @OneToMany(mappedBy = "config", cascade = CascadeType.REMOVE)
-    public Set<OrderCondition> getOrderConditions() {
+    public List<OrderCondition> getOrderConditions() {
         return orderConditions;
     }
 
     @JsonProperty
-    public void setOrderConditions(Set<OrderCondition> orderConditions) {
+    public void setOrderConditions(List<OrderCondition> orderConditions) {
         this.orderConditions = orderConditions;
     }
 
@@ -205,6 +207,16 @@ public class Configuration implements Serializable {
 
     public void setCells(List<Cell> cells) {
         this.cells = cells;
+    }
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "config", cascade = CascadeType.REMOVE)
+    public List<ExcelCell> getExcelCells() {
+        return excelCells;
+    }
+
+    public void setExcelCells(List<ExcelCell> excelCells) {
+        this.excelCells = excelCells;
     }
 
     public Calendar getCreated() {

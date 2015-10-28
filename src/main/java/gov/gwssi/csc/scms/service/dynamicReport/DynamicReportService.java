@@ -5,11 +5,16 @@ import gov.gwssi.csc.scms.domain.dictionary.DictTreeJson;
 import gov.gwssi.csc.scms.domain.dynamicReport.*;
 import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.*;
 import gov.gwssi.csc.scms.domain.dynamicReport.Report.Cell;
+import gov.gwssi.csc.scms.domain.dynamicReport.Report.ExcelCell;
 import gov.gwssi.csc.scms.domain.dynamicReport.Report.Report;
 import gov.gwssi.csc.scms.domain.dynamicReport.Report.Row;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.repository.dynamicReport.*;
 import gov.gwssi.csc.scms.service.dictionary.TranslateDictService;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -19,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.data.jpa.domain.Specifications.where;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.*;
 
 /**
@@ -250,9 +257,9 @@ public class DynamicReportService extends DynamicReportSpecs {
         configuration = saveConfig(configuration);
         if (configuration.getReportType().equals("statistics")) {
             String result = configurationRepository.generateStatisticsSQL(configuration.getId());
-            if(!result.equals("1")){
+            if (!result.equals("1")) {
                 configurationRepository.delete(configuration.getId());
-                if (result.equals("4")){
+                if (result.equals("4")) {
                     throw new Exception("配置失败，报表统计列数过多！");
                 } else {
                     throw new Exception("配置失败！");
@@ -276,9 +283,9 @@ public class DynamicReportService extends DynamicReportSpecs {
         configuration = saveConfig(configuration);
         if (configuration.getReportType().equals("statistics")) {
             String result = configurationRepository.generateStatisticsSQL(configuration.getId());
-            if(!result.equals("1")){
+            if (!result.equals("1")) {
                 configurationRepository.delete(configuration.getId());
-                if (result.equals("4")){
+                if (result.equals("4")) {
                     throw new Exception("配置失败，报表统计列数过多！");
                 } else {
                     throw new Exception("配置失败！");
@@ -303,8 +310,8 @@ public class DynamicReportService extends DynamicReportSpecs {
 
         Set<JoinCondition> joins = configuration.getJoinConditions();
         List<WhereCondition> wheres = configuration.getWhereConditions();
-        Set<GroupCondition> groups = configuration.getGroupConditions();
-        Set<OrderCondition> orders = configuration.getOrderConditions();
+        List<GroupCondition> groups = configuration.getGroupConditions();
+        List<OrderCondition> orders = configuration.getOrderConditions();
         List<SelectCondition> selects = configuration.getSelectConditions();
 
         setIds(joins, wheres, groups, orders, selects);
@@ -344,12 +351,120 @@ public class DynamicReportService extends DynamicReportSpecs {
         return report.getBody();
     }
 
+    @Transactional
     public Report getReport(String id) {
         Configuration config = findOne(id);
         String sql = config.getSql();
         BaseDAO dao = getBaseDao();
         List<Map> body = dao.queryListBySql(sql);
-        // TODO Body
         return new Report(config.getOrderedCells(), body);
+    }
+
+    @Transactional
+    public List<ExcelCell> getExcelCells(String id){
+        return configurationRepository.findOne(id).getExcelCells();
+    }
+
+    @Transactional
+    public byte[] export(String id, OutputStream outputStream) throws IOException {
+        Report report = getReport(id);
+        List<ExcelCell> header = getExcelCells(id);
+        Workbook workbook = new HSSFWorkbook();
+        Sheet sheet = workbook.createSheet("sheet1");
+        sheet.setDisplayGridlines(false);
+
+        createExportHeader(header, sheet, workbook);
+        Font font = workbook.createFont();
+//        font.setBoldweight();
+
+//        HSSFRow row = sheet.createRow(0);
+//        HSSFCell excelCell = row.createCell(0);
+//        excelCell.setCellValue("标题");
+//        sheet.addMergedRegion(new CellRangeAddress(
+//                0, //first row (0-based)
+//                0, //last row  (0-based)
+//                0, //first column (0-based)
+//                5  //last column  (0-based)
+//        ));
+        CellStyle style = workbook.createCellStyle();
+        style.setBorderBottom(CellStyle.BORDER_MEDIUM);
+        style.setBorderLeft(CellStyle.BORDER_MEDIUM);
+        style.setBorderRight(CellStyle.BORDER_MEDIUM);
+        style.setBorderTop(CellStyle.BORDER_MEDIUM);
+        short black = IndexedColors.BLACK.getIndex();
+        style.setBottomBorderColor(black);
+        style.setLeftBorderColor(black);
+        style.setRightBorderColor(black);
+        style.setTopBorderColor(black);
+
+//        excelCell.setCellStyle(style);
+
+        workbook.write(outputStream);
+        return ((HSSFWorkbook)workbook).getBytes();
+    }
+
+    private void createExportHeader(List<ExcelCell> header, Sheet sheet, Workbook workbook) {
+        org.apache.poi.ss.usermodel.Row.MissingCellPolicy policy = HSSFRow.RETURN_BLANK_AS_NULL;
+        org.apache.poi.ss.usermodel.Row row;
+        org.apache.poi.ss.usermodel.Cell cell;
+        List<CellRangeAddress> regions = new ArrayList<CellRangeAddress>();
+        CellStyle headerContentStyle = workbook.createCellStyle();
+        headerContentStyle.setBorderBottom(CellStyle.BORDER_THIN);
+        headerContentStyle.setBorderLeft(CellStyle.BORDER_THIN);
+        headerContentStyle.setBorderTop(CellStyle.BORDER_THIN);
+        headerContentStyle.setBorderRight(CellStyle.BORDER_THIN);
+        headerContentStyle.setBottomBorderColor(HSSFColor.GREY_40_PERCENT.index);
+        headerContentStyle.setLeftBorderColor(HSSFColor.GREY_40_PERCENT.index);
+        headerContentStyle.setTopBorderColor(HSSFColor.GREY_40_PERCENT.index);
+        headerContentStyle.setRightBorderColor(HSSFColor.GREY_40_PERCENT.index);
+        headerContentStyle.setFillBackgroundColor(HSSFColor.GREY_25_PERCENT.index);
+
+        int x, y, m, n;
+        for (ExcelCell excelCell : header) {
+            x = excelCell.getFirstRow();
+            y = excelCell.getFirstColumn();
+            m = excelCell.getLastRow();
+            n = excelCell.getLastColumn();
+            row = sheet.getRow(x) == null ? sheet.createRow(x) : sheet.getRow(x);
+            cell = row.getCell(y, policy) == null ? row.createCell(y) : row.getCell(y, policy);
+            cell.setCellValue(excelCell.getValue());
+//            cell.setCellStyle(headerContentStyle);
+            regions.add(new CellRangeAddress(x, m, y, n));
+        }
+        for (CellRangeAddress region : regions) {
+            sheet.addMergedRegion(region);
+        }
+        // Decide which rows to process
+        int rowStart = Math.min(15, sheet.getFirstRowNum());
+        int rowEnd = Math.max(1400, sheet.getLastRowNum());
+
+        for (int rowNum = rowStart; rowNum < rowEnd; rowNum++) {
+            org.apache.poi.ss.usermodel.Row r = sheet.getRow(rowNum);
+            if (r == null) {
+                // This whole row is empty
+                // Handle it as needed
+                continue;
+            }
+
+            int lastColumn = Math.max(r.getLastCellNum(), 1);
+
+            for (int cn = 0; cn < lastColumn; cn++) {
+                org.apache.poi.ss.usermodel.Cell c = r.getCell(cn, org.apache.poi.ss.usermodel.Row.RETURN_BLANK_AS_NULL);
+                if (c == null) {
+                    c = r.createCell(cn);
+                    c.setCellStyle(headerContentStyle); // The spreadsheet is empty in this cell
+                } else {
+                    c.setCellStyle(headerContentStyle);
+                    // Do something useful with the cell's contents
+                }
+            }
+        }
+//        for (org.apache.poi.ss.usermodel.Row row1 : sheet) {
+//            for (org.apache.poi.ss.usermodel.Cell cell1 : row1) {
+//                System.out.println("cell1 = " + cell1);
+//                cell1.setCellStyle(headerContentStyle);
+//            }
+//        }
+        System.out.println("regions = " + regions);
     }
 }
