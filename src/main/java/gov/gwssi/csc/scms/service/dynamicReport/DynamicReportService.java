@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.service.dynamicReport;
 
 import gov.gwssi.csc.scms.dao.BaseDAO;
+import gov.gwssi.csc.scms.domain.dictionary.Code;
 import gov.gwssi.csc.scms.domain.dictionary.DictTreeJson;
 import gov.gwssi.csc.scms.domain.dynamicReport.*;
 import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.*;
@@ -361,110 +362,163 @@ public class DynamicReportService extends DynamicReportSpecs {
     }
 
     @Transactional
-    public List<ExcelCell> getExcelCells(String id){
+    public List<ExcelCell> getExcelHeader(String id) {
         return configurationRepository.findOne(id).getExcelCells();
     }
 
     @Transactional
     public byte[] export(String id, OutputStream outputStream) throws IOException {
-        Report report = getReport(id);
-        List<ExcelCell> header = getExcelCells(id);
+        List<ExcelCell> header = getExcelHeader(id);
+        List<Row> body = getReportBody(id);
         Workbook workbook = new HSSFWorkbook();
         Sheet sheet = workbook.createSheet("sheet1");
         sheet.setDisplayGridlines(false);
 
-        createExportHeader(header, sheet, workbook);
-        Font font = workbook.createFont();
-//        font.setBoldweight();
-
-//        HSSFRow row = sheet.createRow(0);
-//        HSSFCell excelCell = row.createCell(0);
-//        excelCell.setCellValue("标题");
-//        sheet.addMergedRegion(new CellRangeAddress(
-//                0, //first row (0-based)
-//                0, //last row  (0-based)
-//                0, //first column (0-based)
-//                5  //last column  (0-based)
-//        ));
-        CellStyle style = workbook.createCellStyle();
-        style.setBorderBottom(CellStyle.BORDER_MEDIUM);
-        style.setBorderLeft(CellStyle.BORDER_MEDIUM);
-        style.setBorderRight(CellStyle.BORDER_MEDIUM);
-        style.setBorderTop(CellStyle.BORDER_MEDIUM);
-        short black = IndexedColors.BLACK.getIndex();
-        style.setBottomBorderColor(black);
-        style.setLeftBorderColor(black);
-        style.setRightBorderColor(black);
-        style.setTopBorderColor(black);
-
-//        excelCell.setCellStyle(style);
+        Integer columnHeaderCount = createExportHeader(header, sheet, workbook);
+        createExportBody(body, columnHeaderCount, sheet, workbook);
 
         workbook.write(outputStream);
-        return ((HSSFWorkbook)workbook).getBytes();
+        return ((HSSFWorkbook) workbook).getBytes();
     }
 
-    private void createExportHeader(List<ExcelCell> header, Sheet sheet, Workbook workbook) {
-        org.apache.poi.ss.usermodel.Row.MissingCellPolicy policy = HSSFRow.RETURN_BLANK_AS_NULL;
-        org.apache.poi.ss.usermodel.Row row;
-        org.apache.poi.ss.usermodel.Cell cell;
-        List<CellRangeAddress> regions = new ArrayList<CellRangeAddress>();
-        CellStyle headerContentStyle = workbook.createCellStyle();
-        headerContentStyle.setBorderBottom(CellStyle.BORDER_THIN);
-        headerContentStyle.setBorderLeft(CellStyle.BORDER_THIN);
-        headerContentStyle.setBorderTop(CellStyle.BORDER_THIN);
-        headerContentStyle.setBorderRight(CellStyle.BORDER_THIN);
-        headerContentStyle.setBottomBorderColor(HSSFColor.GREY_40_PERCENT.index);
-        headerContentStyle.setLeftBorderColor(HSSFColor.GREY_40_PERCENT.index);
-        headerContentStyle.setTopBorderColor(HSSFColor.GREY_40_PERCENT.index);
-        headerContentStyle.setRightBorderColor(HSSFColor.GREY_40_PERCENT.index);
-        headerContentStyle.setFillBackgroundColor(HSSFColor.GREY_25_PERCENT.index);
+    private short getColorIndex(short index, byte red, byte green, byte blue, Workbook workbook) {
+        HSSFColor color;
+        HSSFPalette palette = ((HSSFWorkbook) workbook).getCustomPalette();
+        if (palette.findColor(red, green, blue) == null) {
+            palette.setColorAtIndex(index, red, green, blue);
+        }
+        color = palette.findColor(red, green, blue);
+        return color.getIndex();
+    }
 
-        int x, y, m, n;
+    private CellStyle createContentStyle(Workbook workbook) {
+        CellStyle style = workbook.createCellStyle();
+
+        Font font = workbook.createFont();
+        font.setFontName("微软雅黑");
+
+        final short GREY_35_PERCENT = getColorIndex((short) 56, (byte) 166, (byte) 166, (byte) 166, workbook);
+        style.setFont(font);
+        style.setAlignment(CellStyle.ALIGN_RIGHT);
+        style.setBorderBottom(CellStyle.BORDER_THIN);
+        style.setBorderLeft(CellStyle.BORDER_THIN);
+        style.setBorderTop(CellStyle.BORDER_THIN);
+        style.setBorderRight(CellStyle.BORDER_THIN);
+        style.setBottomBorderColor(GREY_35_PERCENT);
+        style.setLeftBorderColor(GREY_35_PERCENT);
+        style.setTopBorderColor(GREY_35_PERCENT);
+        style.setRightBorderColor(GREY_35_PERCENT);
+
+        return style;
+    }
+
+    private CellStyle createHeaderContentStyle(Workbook workbook, CellStyle contentStyle) {
+        CellStyle style = workbook.createCellStyle();
+        style.cloneStyleFrom(contentStyle);
+
+        Font font = workbook.createFont();
+        font.setFontName("微软雅黑");
+        font.setBold(true);
+
+        style.setFont(font);
+        style.setAlignment(CellStyle.ALIGN_CENTER);
+        style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
+        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        return style;
+    }
+
+    private CellStyle createBottomHeaderContentStyle(Workbook workbook, CellStyle headerContentStyle) {
+        CellStyle style = workbook.createCellStyle();
+        style.cloneStyleFrom(headerContentStyle);
+        style.setBottomBorderColor(HSSFColor.GREY_80_PERCENT.index);
+        return style;
+    }
+
+    private CellStyle createColumnHeaderContentStyle(Workbook workbook, CellStyle contentStyle) {
+        CellStyle style = workbook.createCellStyle();
+        style.cloneStyleFrom(contentStyle);
+
+        final short GREY_15_PERCENT = getColorIndex((short) 57, (byte) 220, (byte) 220, (byte) 220, workbook);
+        Font font = workbook.createFont();
+        font.setFontName("微软雅黑");
+        font.setBold(true);
+
+        style.setFont(font);
+        style.setAlignment(CellStyle.ALIGN_CENTER);
+        style.setFillForegroundColor(GREY_15_PERCENT);
+        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        return style;
+    }
+
+    private CellStyle createRightColumnHeaderContentStyle(Workbook workbook, CellStyle columnHeaderContentStyle) {
+        CellStyle style = workbook.createCellStyle();
+        style.cloneStyleFrom(columnHeaderContentStyle);
+        style.setRightBorderColor(HSSFColor.GREY_80_PERCENT.index);
+        return style;
+    }
+
+    private void createExportBody(List<Row> body, Integer columnHeaderCount, Sheet sheet, Workbook workbook) {
+        CellStyle contentStyle = createContentStyle(workbook);
+        CellStyle columnHeaderContentStyle = createColumnHeaderContentStyle(workbook, contentStyle);
+        CellStyle rightColumnHeaderContentStyle = createRightColumnHeaderContentStyle(workbook, columnHeaderContentStyle);
+        Map<String, String> allCode = translateDictService.getAllCode();
+        int xOff = sheet.getPhysicalNumberOfRows(), yOff = columnHeaderCount;
+        Row row;
+        sheet.createFreezePane(yOff, xOff);
+        for (int x = xOff; x < body.size() + xOff; x++) {
+            row = body.get(x - xOff);
+            for (int y = 0; y < row.getCells().size(); y++) {
+                String value = row.getCells().get(y).getValue();
+                String codeValue = allCode.get(value);
+                value = codeValue != null ? codeValue : value;
+                getCell(x, y, sheet).setCellValue(value);
+                getCell(x, y, sheet).setCellStyle(contentStyle);
+                if (y < yOff - 1) {
+                    getCell(x, y, sheet).setCellStyle(columnHeaderContentStyle);
+                }
+                if (y == yOff - 1) {
+                    getCell(x, y, sheet).setCellStyle(rightColumnHeaderContentStyle);
+                }
+            }
+        }
+        System.out.println(sheet.getPhysicalNumberOfRows());
+    }
+
+
+    private Integer createExportHeader(List<ExcelCell> header, Sheet sheet, Workbook workbook) {
+        CellStyle contentStyle = createContentStyle(workbook);
+        CellStyle headerContentStyle = createHeaderContentStyle(workbook, contentStyle);
+        CellStyle bottomHeaderContentStyle = createBottomHeaderContentStyle(workbook, headerContentStyle);
+
+        int x, y, m, n, xMax = 0, yMax = 0, columnHeaderCount = 0;
         for (ExcelCell excelCell : header) {
             x = excelCell.getFirstRow();
             y = excelCell.getFirstColumn();
             m = excelCell.getLastRow();
             n = excelCell.getLastColumn();
-            row = sheet.getRow(x) == null ? sheet.createRow(x) : sheet.getRow(x);
-            cell = row.getCell(y, policy) == null ? row.createCell(y) : row.getCell(y, policy);
-            cell.setCellValue(excelCell.getValue());
-//            cell.setCellStyle(headerContentStyle);
-            regions.add(new CellRangeAddress(x, m, y, n));
+            xMax = m > xMax ? m : xMax;
+            yMax = n > yMax ? n : yMax;
+            columnHeaderCount += excelCell.getColumnHeader().equalsIgnoreCase("Y") ? 1 : 0;
+            getCell(x, y, sheet).setCellValue(excelCell.getValue());
+            sheet.addMergedRegion(new CellRangeAddress(x, m, y, n));
         }
-        for (CellRangeAddress region : regions) {
-            sheet.addMergedRegion(region);
-        }
-        // Decide which rows to process
-        int rowStart = Math.min(15, sheet.getFirstRowNum());
-        int rowEnd = Math.max(1400, sheet.getLastRowNum());
-
-        for (int rowNum = rowStart; rowNum < rowEnd; rowNum++) {
-            org.apache.poi.ss.usermodel.Row r = sheet.getRow(rowNum);
-            if (r == null) {
-                // This whole row is empty
-                // Handle it as needed
-                continue;
-            }
-
-            int lastColumn = Math.max(r.getLastCellNum(), 1);
-
-            for (int cn = 0; cn < lastColumn; cn++) {
-                org.apache.poi.ss.usermodel.Cell c = r.getCell(cn, org.apache.poi.ss.usermodel.Row.RETURN_BLANK_AS_NULL);
-                if (c == null) {
-                    c = r.createCell(cn);
-                    c.setCellStyle(headerContentStyle); // The spreadsheet is empty in this cell
-                } else {
-                    c.setCellStyle(headerContentStyle);
-                    // Do something useful with the cell's contents
-                }
+        for (x = 0; x < xMax; x++) {
+            for (y = 0; y <= yMax; y++) {
+                getCell(x, y, sheet).setCellStyle(headerContentStyle);
             }
         }
-//        for (org.apache.poi.ss.usermodel.Row row1 : sheet) {
-//            for (org.apache.poi.ss.usermodel.Cell cell1 : row1) {
-//                System.out.println("cell1 = " + cell1);
-//                cell1.setCellStyle(headerContentStyle);
-//            }
-//        }
-        System.out.println("regions = " + regions);
+        for (y = 0; y <= yMax; y++) {
+            getCell(xMax, y, sheet).setCellStyle(bottomHeaderContentStyle);
+        }
+        return columnHeaderCount;
+    }
+
+    private org.apache.poi.ss.usermodel.Cell getCell(int x, int y, Sheet sheet) {
+        org.apache.poi.ss.usermodel.Row.MissingCellPolicy policy = HSSFRow.RETURN_BLANK_AS_NULL;
+        org.apache.poi.ss.usermodel.Row row;
+        org.apache.poi.ss.usermodel.Cell cell;
+        row = sheet.getRow(x) == null ? sheet.createRow(x) : sheet.getRow(x);
+        cell = row.getCell(y, policy) == null ? row.createCell(y) : row.getCell(y, policy);
+        return cell;
     }
 }

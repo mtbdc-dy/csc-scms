@@ -16,6 +16,7 @@ public class ExcelCell {
     private Integer firstColumn;
     private Integer lastRow;
     private Integer lastColumn;
+    private String columnHeader;
     private String value;
     private Configuration config;
 
@@ -73,6 +74,16 @@ public class ExcelCell {
     public void setLastRow(Integer lastRow) {
         this.lastRow = lastRow;
     }
+
+    @Column(name = "COLUMN_HEADER", columnDefinition = "CHAR(1)")
+    public String getColumnHeader() {
+        return columnHeader;
+    }
+
+    public void setColumnHeader(String columnHeader) {
+        this.columnHeader = columnHeader;
+    }
+
 
     public String getValue() {
         return value;
