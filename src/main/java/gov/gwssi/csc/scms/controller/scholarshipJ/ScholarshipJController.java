@@ -162,14 +162,32 @@ public class ScholarshipJController {
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         try {
             Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
-            User user = userService.getUserByJWT(header);
-            Page<ScholarshipJ> scholarshipJPage = scholarshipJService.getScholarshipJsPagingByFilter(filter, page, size, mode, user);
+            Page<ScholarshipJ> scholarshipJPage = scholarshipJService.getScholarshipJsPagingByFilter(filter, page, size, mode);
             Page<Map<String, Object>> mapPage = scholarshipJPage.map(new ScholarshipJConverter());
             return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    //统计未上报已上报学校数量
+    @RequestMapping(
+            value = "/scholarshipJSchoolNum",
+            method = RequestMethod.GET,
+            headers = {"Accept=application/json"},
+            params = {"filter"})
+    public Map<String,Long> getScholarshipJSchoolNum(
+            @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
+            @RequestParam(value = "filter") String filterJSON) throws IOException {
+        Map<String, Long> result=new HashMap<String,Long >();
+        try {
+            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            result = scholarshipJService.getScholarshipJSchoolNum(filter);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return result;
     }
 
 
