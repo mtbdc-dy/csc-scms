@@ -1,7 +1,6 @@
 package gov.gwssi.csc.scms.service.dynamicReport;
 
 import gov.gwssi.csc.scms.dao.BaseDAO;
-import gov.gwssi.csc.scms.domain.dictionary.Code;
 import gov.gwssi.csc.scms.domain.dictionary.DictTreeJson;
 import gov.gwssi.csc.scms.domain.dynamicReport.*;
 import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.*;
@@ -253,8 +252,7 @@ public class DynamicReportService extends DynamicReportSpecs {
         for (E collection : collections) setConfig(config, collection);
     }
 
-    public Configuration createConfig(Configuration configuration) throws Exception {
-        configuration.setId(getId());
+    private Configuration saveConfigration(Configuration configuration) throws Exception{
         configuration = saveConfig(configuration);
         if (configuration.getReportType().equals("statistics")) {
             String result = configurationRepository.generateStatisticsSQL(configuration.getId());
@@ -276,30 +274,17 @@ public class DynamicReportService extends DynamicReportSpecs {
         return configuration;
     }
 
+    public Configuration createConfig(Configuration configuration) throws Exception {
+        configuration.setId(getId());
+        return saveConfigration(configuration);
+    }
+
     public Configuration updateConfig(Configuration configuration, String id) throws Exception {
         if (configurationRepository.exists(id)) {
             configurationRepository.delete(id);
         }
         configuration.setId(id);
-        configuration = saveConfig(configuration);
-        if (configuration.getReportType().equals("statistics")) {
-            String result = configurationRepository.generateStatisticsSQL(configuration.getId());
-            if (!result.equals("1")) {
-                configurationRepository.delete(configuration.getId());
-                if (result.equals("4")) {
-                    throw new Exception("配置失败，报表统计列数过多！");
-                } else {
-                    throw new Exception("配置失败！");
-                }
-            }
-        } else {
-            configurationRepository.generateQuerySQL(configuration.getId());
-            List<Cell> cells = generateHead(configuration);
-            setConfig(configuration, cells);
-            cellRepository.save(cells);
-            configuration.setCells(cells);
-        }
-        return configuration;
+        return saveConfigration(configuration);
     }
 
     @SuppressWarnings("unchecked")
@@ -374,11 +359,18 @@ public class DynamicReportService extends DynamicReportSpecs {
         Sheet sheet = workbook.createSheet("sheet1");
         sheet.setDisplayGridlines(false);
 
-        Integer columnHeaderCount = createExportHeader(header, sheet, workbook);
-        createExportBody(body, columnHeaderCount, sheet, workbook);
+        createExportHeader(header, sheet, workbook);
+        createExportBody(body, sheet, workbook);
 
-        workbook.write(outputStream);
+        if (outputStream != null) {
+            workbook.write(outputStream);
+        }
         return ((HSSFWorkbook) workbook).getBytes();
+    }
+
+    @Transactional
+    public byte[] export(String id) throws IOException {
+        return export(id, null);
     }
 
     private short getColorIndex(short index, byte red, byte green, byte blue, Workbook workbook) {
@@ -457,11 +449,15 @@ public class DynamicReportService extends DynamicReportSpecs {
         return style;
     }
 
-    private void createExportBody(List<Row> body, Integer columnHeaderCount, Sheet sheet, Workbook workbook) {
+    private void createExportBody(List<Row> body, Sheet sheet, Workbook workbook) {
         CellStyle contentStyle = createContentStyle(workbook);
         CellStyle columnHeaderContentStyle = createColumnHeaderContentStyle(workbook, contentStyle);
         CellStyle rightColumnHeaderContentStyle = createRightColumnHeaderContentStyle(workbook, columnHeaderContentStyle);
         Map<String, String> allCode = translateDictService.getAllCode();
+        Integer columnHeaderCount = 1;
+        for (Cell cell : body.get(body.size() - 1).getCells()) {
+            if (cell.getValue().equals("合计") || cell.getValue().equals("-")) columnHeaderCount++;
+        }
         int xOff = sheet.getPhysicalNumberOfRows(), yOff = columnHeaderCount;
         Row row;
         sheet.createFreezePane(yOff, xOff);
@@ -485,12 +481,12 @@ public class DynamicReportService extends DynamicReportSpecs {
     }
 
 
-    private Integer createExportHeader(List<ExcelCell> header, Sheet sheet, Workbook workbook) {
+    private void createExportHeader(List<ExcelCell> header, Sheet sheet, Workbook workbook) {
         CellStyle contentStyle = createContentStyle(workbook);
         CellStyle headerContentStyle = createHeaderContentStyle(workbook, contentStyle);
         CellStyle bottomHeaderContentStyle = createBottomHeaderContentStyle(workbook, headerContentStyle);
 
-        int x, y, m, n, xMax = 0, yMax = 0, columnHeaderCount = 0;
+        int x, y, m, n, xMax = 0, yMax = 0;
         for (ExcelCell excelCell : header) {
             x = excelCell.getFirstRow();
             y = excelCell.getFirstColumn();
@@ -498,7 +494,6 @@ public class DynamicReportService extends DynamicReportSpecs {
             n = excelCell.getLastColumn();
             xMax = m > xMax ? m : xMax;
             yMax = n > yMax ? n : yMax;
-            columnHeaderCount += excelCell.getColumnHeader().equalsIgnoreCase("Y") ? 1 : 0;
             getCell(x, y, sheet).setCellValue(excelCell.getValue());
             sheet.addMergedRegion(new CellRangeAddress(x, m, y, n));
         }
@@ -510,7 +505,6 @@ public class DynamicReportService extends DynamicReportSpecs {
         for (y = 0; y <= yMax; y++) {
             getCell(xMax, y, sheet).setCellStyle(bottomHeaderContentStyle);
         }
-        return columnHeaderCount;
     }
 
     private org.apache.poi.ss.usermodel.Cell getCell(int x, int y, Sheet sheet) {

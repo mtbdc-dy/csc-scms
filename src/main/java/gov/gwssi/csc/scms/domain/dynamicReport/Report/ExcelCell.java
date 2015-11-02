@@ -9,7 +9,7 @@ import javax.persistence.*;
  * Created by wangzishi on 15/10/28.
  */
 @Entity
-@Table(name = "SCMS_D_HEADERMERGE")
+@Table(name = "V_D_HEADERMERGE")
 public class ExcelCell {
     private String id;
     private Integer firstRow;
@@ -39,7 +39,7 @@ public class ExcelCell {
         this.config = config;
     }
 
-    @Column(name = "YCOORDINATE1")
+    @Column(name = "YCOORDINATE1", columnDefinition = "VARCHAR2(3)")
     public Integer getFirstColumn() {
         return firstColumn;
     }
@@ -48,7 +48,7 @@ public class ExcelCell {
         this.firstColumn = firstColumn;
     }
 
-    @Column(name = "XCOORDINATE1")
+    @Column(name = "XCOORDINATE1", columnDefinition = "VARCHAR2(3)")
     public Integer getFirstRow() {
         return firstRow;
     }
@@ -57,7 +57,7 @@ public class ExcelCell {
         this.firstRow = firstRow;
     }
 
-    @Column(name = "YCOORDINATE2")
+    @Column(name = "YCOORDINATE2", columnDefinition = "VARCHAR2(3)")
     public Integer getLastColumn() {
         return lastColumn;
     }
@@ -66,7 +66,7 @@ public class ExcelCell {
         this.lastColumn = lastColumn;
     }
 
-    @Column(name = "XCOORDINATE2")
+    @Column(name = "XCOORDINATE2", columnDefinition = "VARCHAR2(3)")
     public Integer getLastRow() {
         return lastRow;
     }

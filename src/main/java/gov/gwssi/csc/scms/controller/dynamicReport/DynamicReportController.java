@@ -98,7 +98,7 @@ public class DynamicReportController extends BaseService {
         try {
             configuration = new ObjectMapper().readValue(configJSON, Configuration.class);
             configuration = service.updateConfig(configuration, id);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw e;
         }
@@ -158,10 +158,8 @@ public class DynamicReportController extends BaseService {
         return new ResponseEntity<Page<Row>>(page, HttpStatus.OK);
     }
 
-
-
     @RequestMapping(
-            value = "/configurations/{id}/report",
+            value = "/configurations/{id}/report/excel",
             headers = "Accept=application/octet-stream",
             method = RequestMethod.GET
     )
@@ -169,7 +167,11 @@ public class DynamicReportController extends BaseService {
             @PathVariable(value = "id") String id) {
         byte[] bytes = null;
 
-//        bytes = service.export(id);
+        try {
+            bytes = service.export(id);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);

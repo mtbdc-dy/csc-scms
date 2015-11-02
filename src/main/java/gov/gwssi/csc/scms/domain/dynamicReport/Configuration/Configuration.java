@@ -210,7 +210,7 @@ public class Configuration implements Serializable {
     }
 
     @JsonIgnore
-    @OneToMany(mappedBy = "config", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "config", cascade = CascadeType.REFRESH)
     public List<ExcelCell> getExcelCells() {
         return excelCells;
     }

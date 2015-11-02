@@ -43,8 +43,6 @@ public class DynamicReportServiceTest extends UnitTestBase {
         whereConditionRepository.save(list);
 
 
-//        configuration.setWhereConditions(list);
-//        repository.save(configuration);
     }
     @Test
     public void testFindOne() throws Exception{
@@ -57,7 +55,7 @@ public class DynamicReportServiceTest extends UnitTestBase {
     public void testExport() throws Exception{
         DynamicReportService service = getBean(DynamicReportService.class);
         FileOutputStream fileOutputStream = new FileOutputStream("/Users/wangzishi/Test/test.xls");
-        fileOutputStream.write(service.export("2015102500000007741", fileOutputStream));
+        fileOutputStream.write(service.export("2015102800000007750", fileOutputStream));
         fileOutputStream.close();
     }
 }
