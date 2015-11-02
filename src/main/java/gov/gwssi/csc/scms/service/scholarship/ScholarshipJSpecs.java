@@ -15,27 +15,38 @@ import javax.persistence.criteria.*;
  */
 public class ScholarshipJSpecs extends BaseService {
 
-    public static Specification<ScholarshipJ> filterIsLike(final Filter filter, final User user) {
+    public static Specification<ScholarshipJ> filterIsLike(final Filter filter) {
         return new Specification<ScholarshipJ>() {
             @Override
             public Predicate toPredicate(Root<ScholarshipJ> scholarshipJ, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 Predicate predicate = cb.conjunction();
-                if (filter.getPro()!=null||"null".equals(filter.getPro())) {
+                if (filter.getPro()!=null) {
                    predicate.getExpressions().add(cb.equal(scholarshipJ.get(ScholarshipJ_.province), filter.getPro()));
                 }
-                if (filter.getUniv()!=null||"null".equals(filter.getUniv())) {
+                if (filter.getUniv()!=null) {
                     predicate.getExpressions().add(cb.equal(scholarshipJ.get(ScholarshipJ_.univ), filter.getUniv()));
                 }
                 if(filter.getYear()!=0){
                     predicate.getExpressions().add(cb.equal(scholarshipJ.get(ScholarshipJ_.year), filter.getYear()));
                 }
-                if(filter.getQualified() != null || "null".equals(filter.getQualified())){
+                if(filter.getQualified() != null && !"".equals(filter.getQualified())){
                     predicate.getExpressions().add(cb.like(scholarshipJ.get(ScholarshipJ_.qualified), filter.getQualified()));
                 }
-                if(filter.getState() != null || "null".equals(filter.getState())){
+                if(filter.getState() != null){
                     predicate.getExpressions().add(cb.equal(scholarshipJ.get(ScholarshipJ_.state), filter.getState()));
                 }
 
+                return predicate;
+            }
+        };
+    }
+
+    public static Specification<ScholarshipJ> stateIs(final Character schoolSta) {
+        return new Specification<ScholarshipJ>() {
+            @Override
+            public Predicate toPredicate(Root<ScholarshipJ> scholarshipJ, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                Predicate predicate = cb.conjunction();
+                predicate.getExpressions().add(cb.equal(scholarshipJ.get(ScholarshipJ_.state),schoolSta));
                 return predicate;
             }
         };
