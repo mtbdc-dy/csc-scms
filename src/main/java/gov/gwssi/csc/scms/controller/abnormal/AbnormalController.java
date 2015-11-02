@@ -99,7 +99,7 @@ public class AbnormalController {
                 throw new NoSuchAbnormalException("cannot generate the abnormal");
             }
 
-            String reason = "学校意见:" + abnormal.getReason();
+            String reason = "学校意见:\n" + abnormal.getReason() + "\n基金委主管意见:\n";
             abnormal.setReason(reason);
 
 //            abnormal.setStudentId(studentId);

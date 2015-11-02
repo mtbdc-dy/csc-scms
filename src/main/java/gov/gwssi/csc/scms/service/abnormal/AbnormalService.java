@@ -131,16 +131,6 @@ public class AbnormalService extends AbnormalSpecs {
     //更新异动申请状态
     @Transactional
     public Abnormal updateAbnormal(Abnormal abnormal, List<OperationLog> operationLogs) {
-
-        //主管用户可以更改异动说明
-        Abnormal abnormalYuan = abnormalRepository.findOne(abnormal.getId());
-        if(abnormalYuan!=null){
-           if(!abnormalYuan.getReason().equals(abnormal.getReason())){
-
-               String reason = abnormal.getReason().substring(0,abnormalYuan.getReason().length()-1) + "\n主管意见:" + abnormal.getReason().substring(abnormalYuan.getReason().length());
-               abnormal.setReason(reason);
-           }
-        }
         //记录日志
         operationLogService.saveOperationLog(operationLogs);
 

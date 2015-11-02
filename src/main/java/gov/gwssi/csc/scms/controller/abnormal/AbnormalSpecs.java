@@ -76,8 +76,10 @@ public class AbnormalSpecs extends BaseService {
                 }
                 if (filter.getAbnormalDateBegin() != null && filter.getAbnormalDateEnd() != null) {
                     Date begin = filter.getAbnormalDateBegin();
-                    Date end = filter.getArrivalDateEnd();
-                    predicate.getExpressions().add(cb.between(abnormal.get(Abnormal_.applyTime), begin, end));
+                    Date end = filter.getAbnormalDateEnd();
+                    if(begin != null && end != null){
+                        predicate.getExpressions().add(cb.between(abnormal.get(Abnormal_.applyTime), begin, end));
+                    }
                 } else if (filter.getAbnormalDateBegin() != null) {
                     Date begin = filter.getAbnormalDateBegin();
                     predicate.getExpressions().add(cb.greaterThanOrEqualTo(abnormal.get(Abnormal_.applyTime), begin));
