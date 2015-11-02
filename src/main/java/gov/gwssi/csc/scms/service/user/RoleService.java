@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Lei on 2015/5/5.
@@ -71,17 +69,25 @@ public class RoleService extends BaseService {
         return doUpdateRole(role, user);
     }
 
-    public Role deleteRole(String roleId, User user) throws RoleBeingUsedException, NoSuchRoleException {
-        Role role = getRoleByRoleIdAndEnable(roleId, Role.ENABLE);
+    @Transactional
+    public Map<String,String> deleteRole(String roleId, User user) throws RoleBeingUsedException, NoSuchRoleException {
+        Role role = roleRepository.findRoleByRoleIdAndEnable(roleId, Role.ENABLE);
         if (role == null)
             throw new NoSuchRoleException("can not find the enabled role for delete:" + roleId);
 
         List<User> users = userService.getUsersByRole(role);
+        Map<String,String> result = new HashMap<String, String>();
         if (users == null || users.size() == 0) {
             role.setEnable(Role.UNENABLE);
-            return doUpdateRole(role, user);
-        } else
-            throw new RoleBeingUsedException("role is used by user:" + role.getRoleId());
+            role.setUpdateBy(user.getUserId());
+            role.setUpdateDate(new Date());
+            result.put("result","success");
+        } else{
+//            throw new RoleBeingUsedException("role is used by user:" + role.getRoleId());
+            result.put("result","failed");
+        }
+        return result;
+
     }
 
 

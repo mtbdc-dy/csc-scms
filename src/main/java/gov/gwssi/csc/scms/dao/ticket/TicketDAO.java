@@ -97,10 +97,12 @@ public class TicketDAO extends BaseDAO {
         String time = "";
         String id = "";
         BigDecimal priceSave ;
+        String remark = "";//备注
         String checkcscNo = "CSC登记号有空行：";
         String cscNoIsNull = "CSC登记号不存在：";
         String ticketIdIsError = "机票编号不存在：";
         String ticketIsError = "导入的订票信息存在错误行：";
+        String remarkIsToLong = "导入的订票信息备注太长对应的行：";
 
 //String linTime = "";
         //Map<String, String> check = new HashMap<String, String>();
@@ -109,6 +111,7 @@ public class TicketDAO extends BaseDAO {
             cscNo = String.valueOf(decodeNull(sheet.getCell(1, m).getContents()));
             ticketLine = String.valueOf(decodeNull(sheet.getCell(13, m).getContents()));
             airNo= String.valueOf(decodeNull(sheet.getCell(15, m).getContents()));
+            remark= String.valueOf(decodeNull(sheet.getCell(16, m).getContents()));
             price= String.valueOf(decodeNull(sheet.getCell(14, m).getContents()));
             time= String.valueOf(decodeNull(sheet.getCell(12, m).getContents()));
             if("".equals(time)||"".equals(ticketLine)||"".equals(airNo)||"".equals(price)){
@@ -123,6 +126,7 @@ public class TicketDAO extends BaseDAO {
                     time = ds.format(date);
                 }
             }
+
             if(!"".equals(price)){
                 priceSave = new BigDecimal(price);
             }
@@ -138,6 +142,11 @@ public class TicketDAO extends BaseDAO {
                 String studentId = select(id);
                 if(studentId.equals(student.getId())){
                     i =1;
+                }
+            }
+            if(!"".equals(remark)){
+                if(remark.length()>300){
+                    remarkIsToLong = remarkIsToLong +"第"+(m+1)+"行,";
                 }
             }
             if ("".equals(cscNo)) {
@@ -168,6 +177,9 @@ public class TicketDAO extends BaseDAO {
 //        String ticketIsError = "导入的订票信息存在错误行：";
         if(!"导入的订票信息存在错误行：".equals(ticketIsError)){
             stringList.add(ticketIsError);
+        }
+        if(!"导入的订票信息备注太长对应的行：".equals(ticketIsError)){
+            stringList.add(remarkIsToLong);
         }
         if(stringList.size()==0){
             stringList.clear();
@@ -210,6 +222,7 @@ public class TicketDAO extends BaseDAO {
         String airNo = "";
         String price = "";
         String time = "";
+        String remark = "";//备注
         BigDecimal priceSave = new BigDecimal(0) ;
         //Map<String, String> check = new HashMap<String, String>();
         for (int m = 2; m < sheet.getRows(); m++) {
@@ -219,7 +232,8 @@ public class TicketDAO extends BaseDAO {
             ticketLine = String.valueOf(decodeNull(sheet.getCell(13, m).getContents()));
             airNo= String.valueOf(decodeNull(sheet.getCell(15, m).getContents()));
             price= String.valueOf(decodeNull(sheet.getCell(14, m).getContents()));
-            time= String.valueOf(decodeNull(sheet.getCell(12, m).getContents()));;
+            time= String.valueOf(decodeNull(sheet.getCell(12, m).getContents()));
+            remark= String.valueOf(decodeNull(sheet.getCell(16, m).getContents()));
             if(!"".equals(time)){
                 if(sheet.getCell(12, m).getType() == CellType.DATE){
                     DateCell dc = (DateCell)sheet.getCell(12, m);
@@ -231,7 +245,7 @@ public class TicketDAO extends BaseDAO {
             if(!"".equals(price)){
                 priceSave = new BigDecimal(price);
             }
-            saveDate(id,ticketLine,airNo,priceSave,time);
+            saveDate(id,ticketLine,airNo,priceSave,time,remark);
 
             stringList.add(cscNo);
 
@@ -241,9 +255,9 @@ public class TicketDAO extends BaseDAO {
 
     }
     @Transactional
-    public void saveDate(String id,String ticketLine,String airNo,BigDecimal priceSave,String time){
+    public void saveDate(String id,String ticketLine,String airNo,BigDecimal priceSave,String time,String remark){
         String sql = "update SCMS_AIRTICKET t " +
-                " set t.TICKETNO = '"+airNo+"',t.AIRLINE = '"+ticketLine+"',t.state = 'AT0003', " +
+                " set t.TICKETNO = '"+airNo+"',t.AIRLINE = '"+ticketLine+"',t.state = 'AT0003', t.remark = '"+remark+"'" +
                 " t.PRICE = '"+priceSave+"',t.FLIGHTDATE =to_date('"+time+"','yyyy-MM-dd') where t.id='"+id+"'";
 
         super.updateBySql(sql);

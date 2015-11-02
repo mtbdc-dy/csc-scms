@@ -251,4 +251,16 @@ public class InsuranceSpecs extends BaseService {
             }
         };
     }
+
+    public static Specification<Insurance> stateIs(final String state){
+        return new Specification<Insurance>() {
+            @Override
+            public Predicate toPredicate(Root<Insurance> insuranceRoot, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                Predicate predicate = cb.conjunction();
+                predicate.getExpressions().add(cb.like(insuranceRoot.get(Insurance_.preSta), state));
+                return predicate;
+            }
+        };
+    }
+
 }
