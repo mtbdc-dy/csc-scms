@@ -11,6 +11,7 @@ import gov.gwssi.csc.scms.repository.dynamicReport.ConfigurationRepository;
 import gov.gwssi.csc.scms.repository.dynamicReport.WhereConditionRepository;
 import org.junit.Test;
 
+import java.io.FileOutputStream;
 import java.util.*;
 
 /**
@@ -42,8 +43,6 @@ public class DynamicReportServiceTest extends UnitTestBase {
         whereConditionRepository.save(list);
 
 
-//        configuration.setWhereConditions(list);
-//        repository.save(configuration);
     }
     @Test
     public void testFindOne() throws Exception{
@@ -53,8 +52,10 @@ public class DynamicReportServiceTest extends UnitTestBase {
     }
 
     @Test
-    public void testGenerateSQL() throws Exception {
-        Calendar calendar = Calendar.getInstance(Locale.CHINA);
-//        calendar.
+    public void testExport() throws Exception{
+        DynamicReportService service = getBean(DynamicReportService.class);
+        FileOutputStream fileOutputStream = new FileOutputStream("/Users/wangzishi/Test/test.xls");
+        fileOutputStream.write(service.export("2015102800000007750", fileOutputStream));
+        fileOutputStream.close();
     }
 }

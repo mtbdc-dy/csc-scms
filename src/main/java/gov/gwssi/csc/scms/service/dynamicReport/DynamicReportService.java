@@ -5,11 +5,16 @@ import gov.gwssi.csc.scms.domain.dictionary.DictTreeJson;
 import gov.gwssi.csc.scms.domain.dynamicReport.*;
 import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.*;
 import gov.gwssi.csc.scms.domain.dynamicReport.Report.Cell;
+import gov.gwssi.csc.scms.domain.dynamicReport.Report.ExcelCell;
 import gov.gwssi.csc.scms.domain.dynamicReport.Report.Report;
 import gov.gwssi.csc.scms.domain.dynamicReport.Report.Row;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.repository.dynamicReport.*;
 import gov.gwssi.csc.scms.service.dictionary.TranslateDictService;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -19,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.data.jpa.domain.Specifications.where;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.*;
 
 /**
@@ -245,14 +252,13 @@ public class DynamicReportService extends DynamicReportSpecs {
         for (E collection : collections) setConfig(config, collection);
     }
 
-    public Configuration createConfig(Configuration configuration) throws Exception {
-        configuration.setId(getId());
+    private Configuration saveConfigration(Configuration configuration) throws Exception{
         configuration = saveConfig(configuration);
         if (configuration.getReportType().equals("statistics")) {
             String result = configurationRepository.generateStatisticsSQL(configuration.getId());
-            if(!result.equals("1")){
+            if (!result.equals("1")) {
                 configurationRepository.delete(configuration.getId());
-                if (result.equals("4")){
+                if (result.equals("4")) {
                     throw new Exception("配置失败，报表统计列数过多！");
                 } else {
                     throw new Exception("配置失败！");
@@ -268,30 +274,17 @@ public class DynamicReportService extends DynamicReportSpecs {
         return configuration;
     }
 
+    public Configuration createConfig(Configuration configuration) throws Exception {
+        configuration.setId(getId());
+        return saveConfigration(configuration);
+    }
+
     public Configuration updateConfig(Configuration configuration, String id) throws Exception {
         if (configurationRepository.exists(id)) {
             configurationRepository.delete(id);
         }
         configuration.setId(id);
-        configuration = saveConfig(configuration);
-        if (configuration.getReportType().equals("statistics")) {
-            String result = configurationRepository.generateStatisticsSQL(configuration.getId());
-            if(!result.equals("1")){
-                configurationRepository.delete(configuration.getId());
-                if (result.equals("4")){
-                    throw new Exception("配置失败，报表统计列数过多！");
-                } else {
-                    throw new Exception("配置失败！");
-                }
-            }
-        } else {
-            configurationRepository.generateQuerySQL(configuration.getId());
-            List<Cell> cells = generateHead(configuration);
-            setConfig(configuration, cells);
-            cellRepository.save(cells);
-            configuration.setCells(cells);
-        }
-        return configuration;
+        return saveConfigration(configuration);
     }
 
     @SuppressWarnings("unchecked")
@@ -303,8 +296,8 @@ public class DynamicReportService extends DynamicReportSpecs {
 
         Set<JoinCondition> joins = configuration.getJoinConditions();
         List<WhereCondition> wheres = configuration.getWhereConditions();
-        Set<GroupCondition> groups = configuration.getGroupConditions();
-        Set<OrderCondition> orders = configuration.getOrderConditions();
+        List<GroupCondition> groups = configuration.getGroupConditions();
+        List<OrderCondition> orders = configuration.getOrderConditions();
         List<SelectCondition> selects = configuration.getSelectConditions();
 
         setIds(joins, wheres, groups, orders, selects);
@@ -344,12 +337,182 @@ public class DynamicReportService extends DynamicReportSpecs {
         return report.getBody();
     }
 
+    @Transactional
     public Report getReport(String id) {
         Configuration config = findOne(id);
         String sql = config.getSql();
         BaseDAO dao = getBaseDao();
         List<Map> body = dao.queryListBySql(sql);
-        // TODO Body
         return new Report(config.getOrderedCells(), body);
+    }
+
+    @Transactional
+    public List<ExcelCell> getExcelHeader(String id) {
+        return configurationRepository.findOne(id).getExcelCells();
+    }
+
+    @Transactional
+    public byte[] export(String id, OutputStream outputStream) throws IOException {
+        List<ExcelCell> header = getExcelHeader(id);
+        List<Row> body = getReportBody(id);
+        Workbook workbook = new HSSFWorkbook();
+        Sheet sheet = workbook.createSheet("sheet1");
+        sheet.setDisplayGridlines(false);
+
+        createExportHeader(header, sheet, workbook);
+        createExportBody(body, sheet, workbook);
+
+        if (outputStream != null) {
+            workbook.write(outputStream);
+        }
+        return ((HSSFWorkbook) workbook).getBytes();
+    }
+
+    @Transactional
+    public byte[] export(String id) throws IOException {
+        return export(id, null);
+    }
+
+    private short getColorIndex(short index, byte red, byte green, byte blue, Workbook workbook) {
+        HSSFColor color;
+        HSSFPalette palette = ((HSSFWorkbook) workbook).getCustomPalette();
+        if (palette.findColor(red, green, blue) == null) {
+            palette.setColorAtIndex(index, red, green, blue);
+        }
+        color = palette.findColor(red, green, blue);
+        return color.getIndex();
+    }
+
+    private CellStyle createContentStyle(Workbook workbook) {
+        CellStyle style = workbook.createCellStyle();
+
+        Font font = workbook.createFont();
+        font.setFontName("微软雅黑");
+
+        final short GREY_35_PERCENT = getColorIndex((short) 56, (byte) 166, (byte) 166, (byte) 166, workbook);
+        style.setFont(font);
+        style.setAlignment(CellStyle.ALIGN_RIGHT);
+        style.setBorderBottom(CellStyle.BORDER_THIN);
+        style.setBorderLeft(CellStyle.BORDER_THIN);
+        style.setBorderTop(CellStyle.BORDER_THIN);
+        style.setBorderRight(CellStyle.BORDER_THIN);
+        style.setBottomBorderColor(GREY_35_PERCENT);
+        style.setLeftBorderColor(GREY_35_PERCENT);
+        style.setTopBorderColor(GREY_35_PERCENT);
+        style.setRightBorderColor(GREY_35_PERCENT);
+
+        return style;
+    }
+
+    private CellStyle createHeaderContentStyle(Workbook workbook, CellStyle contentStyle) {
+        CellStyle style = workbook.createCellStyle();
+        style.cloneStyleFrom(contentStyle);
+
+        Font font = workbook.createFont();
+        font.setFontName("微软雅黑");
+        font.setBold(true);
+
+        style.setFont(font);
+        style.setAlignment(CellStyle.ALIGN_CENTER);
+        style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
+        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        return style;
+    }
+
+    private CellStyle createBottomHeaderContentStyle(Workbook workbook, CellStyle headerContentStyle) {
+        CellStyle style = workbook.createCellStyle();
+        style.cloneStyleFrom(headerContentStyle);
+        style.setBottomBorderColor(HSSFColor.GREY_80_PERCENT.index);
+        return style;
+    }
+
+    private CellStyle createColumnHeaderContentStyle(Workbook workbook, CellStyle contentStyle) {
+        CellStyle style = workbook.createCellStyle();
+        style.cloneStyleFrom(contentStyle);
+
+        final short GREY_15_PERCENT = getColorIndex((short) 57, (byte) 220, (byte) 220, (byte) 220, workbook);
+        Font font = workbook.createFont();
+        font.setFontName("微软雅黑");
+        font.setBold(true);
+
+        style.setFont(font);
+        style.setAlignment(CellStyle.ALIGN_CENTER);
+        style.setFillForegroundColor(GREY_15_PERCENT);
+        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        return style;
+    }
+
+    private CellStyle createRightColumnHeaderContentStyle(Workbook workbook, CellStyle columnHeaderContentStyle) {
+        CellStyle style = workbook.createCellStyle();
+        style.cloneStyleFrom(columnHeaderContentStyle);
+        style.setRightBorderColor(HSSFColor.GREY_80_PERCENT.index);
+        return style;
+    }
+
+    private void createExportBody(List<Row> body, Sheet sheet, Workbook workbook) {
+        CellStyle contentStyle = createContentStyle(workbook);
+        CellStyle columnHeaderContentStyle = createColumnHeaderContentStyle(workbook, contentStyle);
+        CellStyle rightColumnHeaderContentStyle = createRightColumnHeaderContentStyle(workbook, columnHeaderContentStyle);
+        Map<String, String> allCode = translateDictService.getAllCode();
+        Integer columnHeaderCount = 1;
+        for (Cell cell : body.get(body.size() - 1).getCells()) {
+            if (cell.getValue().equals("合计") || cell.getValue().equals("-")) columnHeaderCount++;
+        }
+        int xOff = sheet.getPhysicalNumberOfRows(), yOff = columnHeaderCount;
+        Row row;
+        sheet.createFreezePane(yOff, xOff);
+        for (int x = xOff; x < body.size() + xOff; x++) {
+            row = body.get(x - xOff);
+            for (int y = 0; y < row.getCells().size(); y++) {
+                String value = row.getCells().get(y).getValue();
+                String codeValue = allCode.get(value);
+                value = codeValue != null ? codeValue : value;
+                getCell(x, y, sheet).setCellValue(value);
+                getCell(x, y, sheet).setCellStyle(contentStyle);
+                if (y < yOff - 1) {
+                    getCell(x, y, sheet).setCellStyle(columnHeaderContentStyle);
+                }
+                if (y == yOff - 1) {
+                    getCell(x, y, sheet).setCellStyle(rightColumnHeaderContentStyle);
+                }
+            }
+        }
+        System.out.println(sheet.getPhysicalNumberOfRows());
+    }
+
+
+    private void createExportHeader(List<ExcelCell> header, Sheet sheet, Workbook workbook) {
+        CellStyle contentStyle = createContentStyle(workbook);
+        CellStyle headerContentStyle = createHeaderContentStyle(workbook, contentStyle);
+        CellStyle bottomHeaderContentStyle = createBottomHeaderContentStyle(workbook, headerContentStyle);
+
+        int x, y, m, n, xMax = 0, yMax = 0;
+        for (ExcelCell excelCell : header) {
+            x = excelCell.getFirstRow();
+            y = excelCell.getFirstColumn();
+            m = excelCell.getLastRow();
+            n = excelCell.getLastColumn();
+            xMax = m > xMax ? m : xMax;
+            yMax = n > yMax ? n : yMax;
+            getCell(x, y, sheet).setCellValue(excelCell.getValue());
+            sheet.addMergedRegion(new CellRangeAddress(x, m, y, n));
+        }
+        for (x = 0; x < xMax; x++) {
+            for (y = 0; y <= yMax; y++) {
+                getCell(x, y, sheet).setCellStyle(headerContentStyle);
+            }
+        }
+        for (y = 0; y <= yMax; y++) {
+            getCell(xMax, y, sheet).setCellStyle(bottomHeaderContentStyle);
+        }
+    }
+
+    private org.apache.poi.ss.usermodel.Cell getCell(int x, int y, Sheet sheet) {
+        org.apache.poi.ss.usermodel.Row.MissingCellPolicy policy = HSSFRow.RETURN_BLANK_AS_NULL;
+        org.apache.poi.ss.usermodel.Row row;
+        org.apache.poi.ss.usermodel.Cell cell;
+        row = sheet.getRow(x) == null ? sheet.createRow(x) : sheet.getRow(x);
+        cell = row.getCell(y, policy) == null ? row.createCell(y) : row.getCell(y, policy);
+        return cell;
     }
 }

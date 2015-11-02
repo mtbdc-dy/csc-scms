@@ -22,8 +22,8 @@ public class Configuration_ {
     public static volatile SingularAttribute<Configuration, String> rawConfig;
     public static volatile SetAttribute<Configuration, JoinCondition> joinCondition;
     public static volatile ListAttribute<Configuration, WhereCondition> whereCondition;
-    public static volatile SetAttribute<Configuration, GroupCondition> groupCondition;
-    public static volatile SetAttribute<Configuration, OrderCondition> orderCondition;
+    public static volatile ListAttribute<Configuration, GroupCondition> groupCondition;
+    public static volatile ListAttribute<Configuration, OrderCondition> orderCondition;
     public static volatile ListAttribute<Configuration, SelectCondition> selectCondition;
     public static volatile ListAttribute<Configuration, Cell> cells;
     public static volatile SingularAttribute<Configuration, Calendar> created;
