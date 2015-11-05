@@ -60,11 +60,7 @@ public class ScholarshipXSpecs extends BaseService {
 
                 /**奖学金部分*/
                 if (filter.getSchReview() != null) {
-                    if(user.getUserType().equals("2")){
-                        predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.schReview), filter.getSchReview()));
-                    }else if(user.getUserType().equals("1")){
-                        predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.cscReview), filter.getSchReview()));
-                    }
+                    predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.schReview), filter.getSchReview()));
                 }
                 if(filter.getYear() != 0){
                     predicate.getExpressions().add(cb.equal(scholarshipX.get(ScholarshipX_.year), filter.getYear()));
@@ -74,12 +70,14 @@ public class ScholarshipXSpecs extends BaseService {
                     predicate.getExpressions().add(cb.equal(scholarshipX.get(ScholarshipX_.year), currentYear));
                 }
                 if (filter.getSchResult() != null) {
-                    if(user.getUserType().equals("2")){
-                        predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.schResult), filter.getSchResult()));
-                    }else if(user.getUserType().equals("1")){
-                        predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.cscResult), filter.getSchResult()));
+                    predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.schResult), filter.getSchResult()));
+                }
+                if(filter.getCscResult() != null){
+                    if("1".equals(user.getUserType())){
+                        predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.cscResult), filter.getCscResult()));
+                    }else if("2".equals(user.getUserType())){
+                        predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.schResult), filter.getCscResult()));
                     }
-
                 }
                 predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.school), school));
 
