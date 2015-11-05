@@ -25,6 +25,7 @@ public class Filter {
     private String preSta = null;            // 保险订购状态 add by gc
     private String schReview = null;         // 奖学金评审结果 add by gc
     private String schResult = null;         // 奖学金处理结果 add by gc
+    private String cscResult = null;
     private int year = 0;                    //奖学金评审年度
     private Character state = null;          //奖学金评审状态
     private String qualified = null;         //奖学金是否有不合格人数
@@ -612,5 +613,13 @@ public class Filter {
 
     public void setSchoolResults(String schoolResults) {
         this.schoolResults = schoolResults;
+    }
+
+    public String getCscResult() {
+        return cscResult;
+    }
+
+    public void setCscResult(String cscResult) {
+        this.cscResult = cscResult;
     }
 }
