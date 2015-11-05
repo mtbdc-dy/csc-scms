@@ -15,6 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Expression;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.springframework.data.jpa.domain.Specifications.where;
 
 /**
@@ -72,6 +75,35 @@ public class StudentsService extends StudentSpecs {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    @Transactional
+    public String[] getStudentsAllByFilter(Filter filter, String mode, String header) {
+
+        List<Student> studentsAll=null;
+        try {
+            User user = userService.getUserByJWT(header);
+            Specification<Student> specA = filterIsLike(filter, mode);
+            Specification<Student> specB = userIs(user, mode);
+
+            if ("freshregister".equals(mode)) {
+                studentsAll = studentRepository.findAll(where(specA).and(isFreshRegister()).and(specB));
+            }else if ("oldregister".equals(mode)) {
+                studentsAll = studentRepository.findAll(where(specA).and(isOldRegister()).and(specB));
+            }else if ("export".equals(mode)){
+                studentsAll = studentRepository.findAll(where(specA).and(specB));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        String result[]=new String[studentsAll.size()];
+        for(int i=0;i<studentsAll.size();i++){
+            String cscId = studentsAll.get(i).getCscId();
+            result[i] = cscId;
+        }
+        return result;
     }
 
 

@@ -84,7 +84,7 @@ public class AbnormalSpecs extends BaseService {
                     Date begin = filter.getAbnormalDateBegin();
                     predicate.getExpressions().add(cb.greaterThanOrEqualTo(abnormal.get(Abnormal_.applyTime), begin));
                 } else if (filter.getAbnormalDateEnd() != null) {
-                    Date end = filter.getArrivalDateEnd();
+                    Date end = filter.getAbnormalDateEnd();
                     predicate.getExpressions().add(cb.lessThanOrEqualTo(abnormal.get(Abnormal_.applyTime), end));
                 }
 
