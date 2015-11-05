@@ -26,76 +26,76 @@ public class Student implements Cloneable {
     /**
      * 基本信息
      */
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "BasicInfo", unique = true, nullable = false)
     private BasicInfo basicInfo;
     /**
      * 来华前概况
      */
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ProfilesHistory")
     private ProfilesHistory profilesHistory;
     /**
      * 注册信息
      */
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "RegistrationInfo", unique = true)
     private RegistrationInfo registrationInfo;
     /**
      * 商议信息
      */
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "Discuss", unique = true)
     private Discuss discuss;
     /**
      * 学籍信息
      */
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "SchoolRoll", unique = true)
     private SchoolRoll schoolRoll;
     /**
      * 相关地址
      */
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "student")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
     private List<RelatedAddress> relatedAddress = new ArrayList<RelatedAddress>();
     /**
      * 突发事件
      */
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "student")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
     private List<Accident> accidents = new ArrayList<Accident>();
     /**
      * 校友信息
      */
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SCHOOLFELLOW")
     private Schoolfellow schoolfellow;
     /**
      * 成绩信息
      */
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "student")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
     private List<Grade> Grades = new ArrayList<Grade>();
     /**
      * 成绩附件
      */
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "student")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
     private List<GradeAttachment> gradeAttachment;
 
     /**
      * 异动记录
      */
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "student")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
     private List<Abnormal> abnormals;
 
     /**
      * 机票信息
      */
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "student")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
     private List<Ticket> tickets;
 
     /**
      * 保险信息
      */
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "student")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
     private List<Insurance> insurances;
 
     public List<Insurance> getInsurances() {
@@ -109,7 +109,7 @@ public class Student implements Cloneable {
     /**
      * 奖学金信息
      */
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "student")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
     private List<ScholarshipX> scholarshipXs;
 
     public List<ScholarshipX> getScholarshipXs() {
@@ -123,7 +123,7 @@ public class Student implements Cloneable {
     /**
      * 预警名单
      */
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "warning", unique = true)
     private Warning warning;
 
@@ -158,7 +158,6 @@ public class Student implements Cloneable {
 
     public void setBasicInfo(BasicInfo basicInfo) {
         this.basicInfo = basicInfo;
-        basicInfo.setStudent(this);
     }
 
     public ProfilesHistory getProfilesHistory() {
@@ -167,7 +166,6 @@ public class Student implements Cloneable {
 
     public void setProfilesHistory(ProfilesHistory profilesHistory) {
         this.profilesHistory = profilesHistory;
-        profilesHistory.setStudent(this);
     }
 
     public RegistrationInfo getRegistrationInfo() {
@@ -184,7 +182,6 @@ public class Student implements Cloneable {
 
     public void setDiscuss(Discuss discuss) {
         this.discuss = discuss;
-        discuss.setStudent(this);
     }
 
     public SchoolRoll getSchoolRoll() {
@@ -193,7 +190,6 @@ public class Student implements Cloneable {
 
     public void setSchoolRoll(SchoolRoll schoolRoll) {
         this.schoolRoll = schoolRoll;
-        schoolRoll.setStudent(this);
     }
 
     public List<RelatedAddress> getRelatedAddress() {

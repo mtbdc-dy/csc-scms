@@ -42,22 +42,6 @@ public class StudentConverter extends BaseService implements Converter<Student, 
     public Map<String, Object> convert(Student source) {
         Map<String, Object> target = new HashMap<String, Object>();
 
-        setNullByField(source.getBasicInfo(), "student", BasicInfo.class);
-        setNullByField(source.getSchoolfellow(), "student", Schoolfellow.class);
-        setNullByField(source.getDiscuss(), "student", Discuss.class);
-        setNullByField(source.getProfilesHistory(), "student", ProfilesHistory.class);
-        setNullByField(source.getRegistrationInfo(), "student", RegistrationInfo.class);
-        setNullByField(source.getSchoolRoll(), "student", SchoolRoll.class);
-        setNullByField(source.getWarning(), "student", Warning.class);
-        setNullByField(source.getAccidents(), "student", Accident.class);
-        setNullByField(source.getRelatedAddress(), "student", RelatedAddress.class);
-        setNullByField(source.getGrades(), "student", Grade.class);
-        setNullByField(source.getGradeAttachment(), "student", GradeAttachment.class);
-        setNullByField(source.getAbnormals(),"student", Abnormal.class);
-        setNullByField(source.getTickets(),"student", Ticket.class);
-        setNullByField(source.getInsurances(), "student", Insurance.class);
-        setNullByField(source.getScholarshipXs(), "student", ScholarshipX.class);
-
 //        source.setAbnormals(null);
 //        source.setTickets(null);
 
