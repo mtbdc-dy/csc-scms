@@ -364,12 +364,19 @@ public class BaseDAO {
 
     //统计机票 主管用户
     public int getTicketStatusNumZG(List<Project> projects,String state) {
+        String finalDate = null;
+        String intialDate = null;
+        int currentYear=0;
+        Calendar calendar = Calendar.getInstance();
+        currentYear = calendar.get(Calendar.YEAR);
+        intialDate = currentYear + "-01-01";
+        finalDate = currentYear + "-12-31";
         String proSql = "";
         for (int i = 0; i < projects.size(); i++) {
             proSql = proSql + "'" + projects.get(i).getProjectId() + "',";
         }
         String pSql = proSql.substring(0, proSql.length() - 1) + ")";
-        String sql = "select count(t.ID) from SCMS_AIRTICKET t,SCMS_BASIC_INFO b where t.studentid = b.studentid and b.projectname in (" + pSql + " and t.STATE = '"+ state +"'";
+        String sql = "select count(t.ID) from SCMS_AIRTICKET t,SCMS_BASIC_INFO b where t.studentid = b.studentid and b.projectname in (" + pSql + " and t.STATE = '"+ state +"' and t.CREATED >= to_date('"+ intialDate + "','yyyy-mm-dd') and t.CREATED <= to_date('"+ finalDate +"','yyyy-mm-dd')";
         EntityManager em = null;
         try {
             em = entityManagerFactory.createEntityManager();
@@ -408,7 +415,14 @@ public class BaseDAO {
     }
     //统计机票
     public int getTicketStatusNum(String state) {
-        String sql = "select count(t.ID) from SCMS_AIRTICKET t where t.STATE = '"+ state +"'";
+        String finalDate = null;
+        String intialDate = null;
+        int currentYear=0;
+        Calendar calendar = Calendar.getInstance();
+        currentYear = calendar.get(Calendar.YEAR);
+        intialDate = currentYear + "-01-01";
+        finalDate = currentYear + "-12-31";
+        String sql = "select count(t.ID) from SCMS_AIRTICKET t where t.STATE = '"+ state +"' and t.CREATED >= to_date('"+ intialDate + "','yyyy-mm-dd') and t.CREATED <= to_date('"+ finalDate +"','yyyy-mm-dd')";
         EntityManager em = null;
         try {
             em = entityManagerFactory.createEntityManager();
@@ -473,7 +487,8 @@ public class BaseDAO {
 
     //统计奖学金审批已上报数量
     public int getScholarshipSubmited(){
-        String sql = "select count(t.ID) from SCMS_SCHOLARSHIP t where t.schoolsta = '1' and t.cscsta = '0' and t.schoolqual + t.schoolunqual <> 0";
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        String sql = "select count(t.ID) from SCMS_SCHOLARSHIP t where t.schoolsta = '1' and t.cscsta = '0' and t.schoolqual + t.schoolunqual <> 0 and t.year = " + year;
         EntityManager em = null;
         try {
             em = entityManagerFactory.createEntityManager();
