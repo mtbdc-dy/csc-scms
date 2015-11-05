@@ -88,8 +88,10 @@ public class StudentsService extends StudentSpecs {
 
             if ("freshregister".equals(mode)) {
                 studentsAll = studentRepository.findAll(where(specA).and(isFreshRegister()).and(specB));
-            } else if ("oldregister".equals(mode)) {
+            }else if ("oldregister".equals(mode)) {
                 studentsAll = studentRepository.findAll(where(specA).and(isOldRegister()).and(specB));
+            }else if ("export".equals(mode)){
+                studentsAll = studentRepository.findAll(where(specA).and(specB));
             }
 
         } catch (Exception e) {
