@@ -79,5 +79,34 @@ public class ExportController {
         return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
     }
 
+    @RequestMapping(
+            method = RequestMethod.PUT,
+            headers = "Accept=application/octet-stream")
+    public ResponseEntity<byte[]> exportInsuranceAll(
+            @RequestBody String[] id) throws IOException {
+        byte[] bytes = null;
+
+        String[] tableName = {"v_sheet1_basic_info" ,
+                "v_sheet2_profiles_history" ,
+                "v_sheet3_registration_info" ,
+                "v_sheet4_discuss" ,
+                "v_sheet5_schoolroll" ,
+                "v_sheet6_related_address",
+                "v_sheet7_accident",
+                "v_sheet8_airticket",
+                "v_sheet9_grade",
+                "v_sheet10_school_fellow"};
+        bytes = exportService.exportByfilter(tableName,"0", id);
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        String fileName = ts.getTime() + ".xls"; // 组装附件名称和格式
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        httpHeaders.setContentDispositionFormData("attachment", fileName);
+
+        return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
+    }
+
+
 
 }

@@ -409,4 +409,23 @@ public class StudentController {
 
         return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
     }
+
+    @RequestMapping(
+            method = RequestMethod.PUT,
+            headers = "Accept=application/octet-stream")
+    public ResponseEntity<byte[]> exportSturegisterAll(
+            @RequestBody String[] id) throws IOException {
+        byte[] bytes = null;
+
+        String tableName = "v_exp_register";
+        bytes = exportService.exportByfilter(tableName,"0", id);
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        httpHeaders.setContentDispositionFormData("attachment", fileName);
+
+        return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
+    }
 }
