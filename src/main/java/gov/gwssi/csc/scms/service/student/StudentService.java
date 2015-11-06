@@ -57,25 +57,39 @@ public class StudentService extends BaseService {
     @Autowired
     private InsuranceService insuranceService;
 
-
-    public Student getStudentById(String id) throws Exception{
+    @Transactional
+    public Student getStudentById(String id) throws Exception {
         Student student = studentRepository.findOne(id);
-        if(null == student){
+        if (null == student) {
             throw new Exception("can not find the student with id:" + id);
         }
+        return student;
+    }
 
-        setNullByField(student.getBasicInfo(), "student", BasicInfo.class);
-        setNullByField(student.getSchoolfellow(), "student", Schoolfellow.class);
-        setNullByField(student.getDiscuss(), "student", Discuss.class);
-        setNullByField(student.getProfilesHistory(), "student", ProfilesHistory.class);
-        setNullByField(student.getRegistrationInfo(), "student", RegistrationInfo.class);
-        setNullByField(student.getSchoolRoll(), "student", SchoolRoll.class);
+    @Transactional
+    public Student getCompleteInfoOfStudentById(String id) throws Exception {
+        Student student = getStudentById(id);
 
+        List<Insurance> insurances = student.getInsurances();
+        Collections.sort(insurances);
+        Collections.reverse(insurances);
 
-        setNullByField(student.getAccidents(), "student", Accident.class);
-        setNullByField(student.getRelatedAddress(), "student", RelatedAddress.class);
-        setNullByField(student.getGrades(), "student", Grade.class);
-        setNullByField(student.getGradeAttachment(), "student", GradeAttachment.class);
+        /*!IMPORTANT!*/
+        System.out.println(student.getDiscuss());
+        System.out.println(student.getProfilesHistory());
+        System.out.println(student.getRegistrationInfo());
+        System.out.println(student.getRelatedAddress());
+        System.out.println(student.getAccidents());
+        System.out.println(student.getSchoolfellow());
+        System.out.println(student.getGrades());
+        System.out.println(student.getGradeAttachment());
+        System.out.println(student.getAbnormals());
+        System.out.println(student.getTickets());
+        System.out.println(student.getScholarshipXs());
+        System.out.println(student.getWarning());
+        /*!IMPORTANT!*/
+
+        setNullByField(student.getProfilesHistory(), "handler", ProfilesHistory.class);
         return student;
     }
 
@@ -171,7 +185,7 @@ public class StudentService extends BaseService {
                 "where student.basicInfo = basicInfo.student " +
                 "and student.schoolRoll = schoolRoll.student ";
 
-       // tempSql += new StudentFilter((StudentFilterObject) filterObject).getFilter(user);
+        // tempSql += new StudentFilter((StudentFilterObject) filterObject).getFilter(user);
         return tempSql;
     }
 
@@ -188,7 +202,7 @@ public class StudentService extends BaseService {
                 "and student.id = schoolRoll.student ";
 
         //添加查询条件，并返回完整SQL语句
-        return sqlStr + new StudentFilter((StudentFilterObject) filterObject).getFilter(user,"","");
+        return sqlStr + new StudentFilter((StudentFilterObject) filterObject).getFilter(user, "", "");
     }
 
     private String getSqlByBody(FilterObject filterObject, User user, String str) {
@@ -204,7 +218,7 @@ public class StudentService extends BaseService {
                 "and student.id = schoolRoll.student " + str;
 
         //添加查询条件，并返回完整SQL语句
-        return sqlStr + new StudentFilter((StudentFilterObject) filterObject).getFilter(user,"","");
+        return sqlStr + new StudentFilter((StudentFilterObject) filterObject).getFilter(user, "", "");
     }
 
     @Transactional
@@ -240,7 +254,7 @@ public class StudentService extends BaseService {
     public Student updateStudent(Student student) {
         return studentRepository.save(student);
     }
-    
+
     @Transactional
     public String saveStudent(String dbType, OperationLog operationLog) throws Exception {
         //记录日志
@@ -248,43 +262,44 @@ public class StudentService extends BaseService {
         operationLogs.add(operationLog);
         operationLogService.saveOperationLog(operationLogs);
         Map tableMap = TablesAndColumnsMap.tableMap;
-        if("insurance".equals(operationLog.getTableEN())){
+        if ("insurance".equals(operationLog.getTableEN())) {
             String insuranceId = "";
             List<Insurance> insurances = insuranceService.findInsuranceByStduentId(operationLog.getStudentId());
-            if(insurances!=null){
-                for(int i=0;i<insurances.size();i++){
-                    if(insurances.get(i).getInsurSta().equals("1")){
+            if (insurances != null) {
+                for (int i = 0; i < insurances.size(); i++) {
+                    if (insurances.get(i).getInsurSta().equals("1")) {
                         insuranceId = insurances.get(i).getId();
                         break;
                     }
                 }
             }
-            if(!insuranceId.equals("")){
+            if (!insuranceId.equals("")) {
                 Insurance insurance = insuranceService.getInsuranceById(insuranceId);
                 insurance.setInsurNo(operationLog.getAfter());
             }
 
-        }else{
-            String sql = " update "+tableMap.get(operationLog.getTableEN())+" set "+operationLog.getColumnEN()+" = ";
+        } else {
+            String sql = " update " + tableMap.get(operationLog.getTableEN()) + " set " + operationLog.getColumnEN() + " = ";
             //判断数据类型
-            if(dbType.equals("number")){
-                sql+=operationLog.getAfter();
-            }else if(dbType.equals("string")){
-                sql+="'"+operationLog.getAfter()+"'";
-            }else if(dbType.equals("date")){
+            if (dbType.equals("number")) {
+                sql += operationLog.getAfter();
+            } else if (dbType.equals("string")) {
+                sql += "'" + operationLog.getAfter() + "'";
+            } else if (dbType.equals("date")) {
 //            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                String after = operationLog.getAfter().substring(0,10);
-                sql+="to_date('" + after + "','yyyy-mm-dd')" ;
+                String after = operationLog.getAfter().substring(0, 10);
+                sql += "to_date('" + after + "','yyyy-mm-dd')";
             }
-            sql+= " where studentid ='" + operationLog.getStudentId()+"'";
+            sql += " where studentid ='" + operationLog.getStudentId() + "'";
             System.out.println(sql);
             getBaseDao().updateBySql(sql);
         }
         return operationLog.getAfter().toString();
     }
+
     @Transactional
-    public void updateRegistState( OperationLog operationLog) throws Exception {
-        if(operationLog.getAfter().equals("AX0002")){    //若将"是否报到"从否(AX0001)改为是(AX0002)，则还要将报到状态从未处理(AW0002)改为新生报到(AW0001)
+    public void updateRegistState(OperationLog operationLog) throws Exception {
+        if (operationLog.getAfter().equals("AX0002")) {    //若将"是否报到"从否(AX0001)改为是(AX0002)，则还要将报到状态从未处理(AW0002)改为新生报到(AW0001)
             SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(operationLog.getStudentId());
             schoolRoll.setRegisterState("AW0001");
             Calendar calendar = Calendar.getInstance();
@@ -292,58 +307,58 @@ public class StudentService extends BaseService {
             schoolRoll.setRegisterYear(currentYear);
             schoolRollService.updateSchoolRoll(schoolRoll);
         }
-        if(operationLog.getAfter().equals("AX0001")){  //若将"是否报到"从是(AX0002)改为否(AX0001)，则还要将报到状态从新生报到(AW0001)改为未处理(AW0002)
+        if (operationLog.getAfter().equals("AX0001")) {  //若将"是否报到"从是(AX0002)改为否(AX0001)，则还要将报到状态从新生报到(AW0001)改为未处理(AW0002)
             SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(operationLog.getStudentId());
             schoolRoll.setRegisterState("AW0002");
             schoolRollService.updateSchoolRoll(schoolRoll);
         }
     }
-    @SuppressWarnings("unchecked")
-    public Object getGroupByStudentId(String studentId, String groupName) {
-        if ("basicInfo".equalsIgnoreCase(groupName)) {
-            BasicInfo basicInfo = basicInfoService.getBasicInfoByStudentId(studentId);
-            return setNullByField(basicInfo, "student", BasicInfo.class);
-        }
-        if ("schoolRoll".equalsIgnoreCase(groupName)) {
-            SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(studentId);
-            return setNullByField(schoolRoll, "student", SchoolRoll.class);
-        }
-        if ("registrationInfo".equalsIgnoreCase(groupName)) {
-            RegistrationInfo registrationInfo = registrationInfoService.getRegistrationInfoByStudentId(studentId);
-            return setNullByField(registrationInfo, "student", RegistrationInfo.class);
-        }
-        if ("profilesHistory".equalsIgnoreCase(groupName)) {
-            ProfilesHistory profilesHistory = profilesHistoryService.getProfilesHistoryByStudentId(studentId);
-            return setNullByField(profilesHistory, "student", ProfilesHistory.class);
-        }
-        if ("discuss".equalsIgnoreCase(groupName)) {
-            Discuss discuss = discussService.getDiscussByStudentId(studentId);
-            return setNullByField(discuss, "student", Discuss.class);
-        }
-        if ("schoolfellow".equalsIgnoreCase(groupName)) {
-            Schoolfellow schoolfellow = schoolfellowService.getSchoolfellowByStudentId(studentId);
-            return setNullByField(schoolfellow, "student", Schoolfellow.class);
-        }
-        if ("accident".equalsIgnoreCase(groupName)) {
-            List<Accident> list = accidentService.getAccidentByStudentId(studentId);
-            return setNullByField(list, "student", Accident.class);
-        }
-        if ("relatedAddress".equalsIgnoreCase(groupName)) {
-            List<RelatedAddress> list = relatedAddressService.getRelatedAddressByStudentId(studentId);
-            return setNullByField(list, "student", RelatedAddress.class);
-        }
-        if ("grade".equalsIgnoreCase(groupName)) {
-            List<Grade> list = gradeService.getGradeByStudentId(studentId);
-            return setNullByField(list, "student", Grade.class);
-        }
-        if ("gradeAttachment".equalsIgnoreCase(groupName)) {
-            List<GradeAttachment> list = gradeAttachmentService.getGradeAttachmentByStudentId(studentId);
-            return setNullByField(list, "student", GradeAttachment.class);
-        }
-        return null;
-    }
+//    @SuppressWarnings("unchecked")
+//    public Object getGroupByStudentId(String studentId, String groupName) {
+//        if ("basicInfo".equalsIgnoreCase(groupName)) {
+//            BasicInfo basicInfo = basicInfoService.getBasicInfoByStudentId(studentId);
+//            return setNullByField(basicInfo, "student", BasicInfo.class);
+//        }
+//        if ("schoolRoll".equalsIgnoreCase(groupName)) {
+//            SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(studentId);
+//            return setNullByField(schoolRoll, "student", SchoolRoll.class);
+//        }
+//        if ("registrationInfo".equalsIgnoreCase(groupName)) {
+//            RegistrationInfo registrationInfo = registrationInfoService.getRegistrationInfoByStudentId(studentId);
+//            return setNullByField(registrationInfo, "student", RegistrationInfo.class);
+//        }
+//        if ("profilesHistory".equalsIgnoreCase(groupName)) {
+//            ProfilesHistory profilesHistory = profilesHistoryService.getProfilesHistoryByStudentId(studentId);
+//            return setNullByField(profilesHistory, "student", ProfilesHistory.class);
+//        }
+//        if ("discuss".equalsIgnoreCase(groupName)) {
+//            Discuss discuss = discussService.getDiscussByStudentId(studentId);
+//            return setNullByField(discuss, "student", Discuss.class);
+//        }
+//        if ("schoolfellow".equalsIgnoreCase(groupName)) {
+//            Schoolfellow schoolfellow = schoolfellowService.getSchoolfellowByStudentId(studentId);
+//            return setNullByField(schoolfellow, "student", Schoolfellow.class);
+//        }
+//        if ("accident".equalsIgnoreCase(groupName)) {
+//            List<Accident> list = accidentService.getAccidentByStudentId(studentId);
+//            return setNullByField(list, "student", Accident.class);
+//        }
+//        if ("relatedAddress".equalsIgnoreCase(groupName)) {
+//            List<RelatedAddress> list = relatedAddressService.getRelatedAddressByStudentId(studentId);
+//            return setNullByField(list, "student", RelatedAddress.class);
+//        }
+//        if ("grade".equalsIgnoreCase(groupName)) {
+//            List<Grade> list = gradeService.getGradeByStudentId(studentId);
+//            return setNullByField(list, "student", Grade.class);
+//        }
+//        if ("gradeAttachment".equalsIgnoreCase(groupName)) {
+//            List<GradeAttachment> list = gradeAttachmentService.getGradeAttachmentByStudentId(studentId);
+//            return setNullByField(list, "student", GradeAttachment.class);
+//        }
+//        return null;
+//    }
 
-    public Student deleteStudentById(String studentId, List<OperationLog> operationLogs) throws Exception{
+    public Student deleteStudentById(String studentId, List<OperationLog> operationLogs) throws Exception {
         Student student = getStudentById(studentId);
         if (student == null)
             return null;
@@ -353,133 +368,133 @@ public class StudentService extends BaseService {
         return student;
     }
 
-    @SuppressWarnings("unchecked")
-    public Object updateGroupByName(String groupName, Object groupObj, List<OperationLog> operationLogs) {
-        //记录日志
-        operationLogService.saveOperationLog(operationLogs);
-        if ("basicInfo".equalsIgnoreCase(groupName)) {
-            BasicInfo basicInfo = basicInfoService.updateBasicInfo((BasicInfo) groupObj);
-            return setNullByField(basicInfo, "student", BasicInfo.class);
-        }
-        if ("schoolRoll".equalsIgnoreCase(groupName)) {
-            SchoolRoll schoolRoll = schoolRollService.updateSchoolRoll((SchoolRoll) groupObj);
-            return setNullByField(schoolRoll, "student", SchoolRoll.class);
-        }
-        if ("registrationInfo".equalsIgnoreCase(groupName)) {
-            RegistrationInfo registrationInfo = registrationInfoService.updateRegistrationInfo((RegistrationInfo) groupObj);
-            return setNullByField(registrationInfo, "student", RegistrationInfo.class);
-        }
-        if ("profilesHistory".equalsIgnoreCase(groupName)) {
-            ProfilesHistory profilesHistory = profilesHistoryService.updateProfilesHistory((ProfilesHistory) groupObj);
-            return setNullByField(profilesHistory, "student", ProfilesHistory.class);
-        }
-        if ("discuss".equalsIgnoreCase(groupName)) {
-            Discuss discuss = discussService.updateDiscuss((Discuss) groupObj);
-            return setNullByField(discuss, "student", Discuss.class);
-        }
-        if ("schoolfellow".equalsIgnoreCase(groupName)) {
-            Schoolfellow schoolfellow = schoolfellowService.updateSchoolfellow((Schoolfellow) groupObj);
-            return setNullByField(schoolfellow, "student", Schoolfellow.class);
-        }
-        if ("accident".equalsIgnoreCase(groupName)) {
-            List<Accident> list = accidentService.updateAccident((List<Accident>) groupObj);
-            return setNullByField(list, "student", Accident.class);
-        }
-        if ("relatedAddress".equalsIgnoreCase(groupName)) {
-            List<RelatedAddress> list = relatedAddressService.updateRelatedAddress((List<RelatedAddress>) groupObj);
-            return setNullByField(list, "student", RelatedAddress.class);
-        }
-        if ("grade".equalsIgnoreCase(groupName)) {
-            List<Grade> list = gradeService.updateGrade((List<Grade>) groupObj);
-            return setNullByField(list, "student", Grade.class);
-        }
-        if ("gradeAttachment".equalsIgnoreCase(groupName)) {
-            List<GradeAttachment> list = gradeAttachmentService.updateGradeAttachment((List<GradeAttachment>) groupObj);
-            return setNullByField(list, "student", GradeAttachment.class);
-        }
-        return null;
-    }
-
-    public Object transObj(Object des, Object src) throws Exception {
-        try {
-            Field[] srcfields = src.getClass().getDeclaredFields();//需要其中属性值的obj
-            for (Field field : srcfields) { //遍历需要修改的所有属性
-                Field f = des.getClass().getDeclaredField(field.getName());
-                field.setAccessible(true);
-                Object value = field.get(src);
-                System.out.println("===value=====" + value);
-                if (value != null) {
-                    if (f.getType().equals(String.class)) {
-                        f.setAccessible(true);
-                        f.set(des, value);
-                    } else if (!f.getType().equals(String.class) && !f.getType().equals(Date.class)) {
-                        Integer integer = (Integer) value;
-                        f.setAccessible(true);
-                        f.set(des, integer);
-                    }
-                }
-
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return des;
-    }
-
-//    @Transactional
-    public Object updateGroupByName(String studentId, String groupName, Object groupObj, List<OperationLog> operationLogs) throws Exception {
-        //记录日志
+//    @SuppressWarnings("unchecked")
+//    public Object updateGroupByName(String groupName, Object groupObj, List<OperationLog> operationLogs) {
+//        //记录日志
 //        operationLogService.saveOperationLog(operationLogs);
-        Object des = getGroupByStudentId(studentId, groupName);
-        System.out.println("obj===============" + des);
-        if ("basicInfo".equalsIgnoreCase(groupName)) {
-            BasicInfo basicInfo = (BasicInfo) transObj(des, groupObj);
-            basicInfo = basicInfoService.updateBasicInfo(basicInfo,operationLogs);
-            return setNullByField(basicInfo, "student", BasicInfo.class);
-        }
-        if ("schoolRoll".equalsIgnoreCase(groupName)) {
-            SchoolRoll schoolRoll = (SchoolRoll) transObj(des, groupObj);
-            schoolRoll = schoolRollService.updateSchoolRoll(schoolRoll,operationLogs);
-            return setNullByField(schoolRoll, "student", SchoolRoll.class);
-        }
-        if ("registrationInfo".equalsIgnoreCase(groupName)) {
-            RegistrationInfo registrationInfo = (RegistrationInfo) transObj(des, groupObj);
-            registrationInfo = registrationInfoService.updateRegistrationInfo(registrationInfo,operationLogs);
-            return setNullByField(registrationInfo, "student", RegistrationInfo.class);
-        }
-        if ("profilesHistory".equalsIgnoreCase(groupName)) {
-            ProfilesHistory profilesHistory = (ProfilesHistory) transObj(des, groupObj);
-            profilesHistory = profilesHistoryService.updateProfilesHistory(profilesHistory,operationLogs);
-            return setNullByField(profilesHistory, "student", ProfilesHistory.class);
-        }
-        if ("discuss".equalsIgnoreCase(groupName)) {
-            Discuss discuss = (Discuss) transObj(des, groupObj);
-            discuss = discussService.updateDiscuss(discuss,operationLogs);
-            return setNullByField(discuss, "student", Discuss.class);
-        }
-        if ("schoolfellow".equalsIgnoreCase(groupName)) {
-            Schoolfellow schoolfellow = (Schoolfellow) transObj(des, groupObj);
-            schoolfellow = schoolfellowService.updateSchoolfellow(schoolfellow,operationLogs);
-            return setNullByField(schoolfellow, "student", Schoolfellow.class);
-        }
+//        if ("basicInfo".equalsIgnoreCase(groupName)) {
+//            BasicInfo basicInfo = basicInfoService.updateBasicInfo((BasicInfo) groupObj);
+//            return setNullByField(basicInfo, "student", BasicInfo.class);
+//        }
+//        if ("schoolRoll".equalsIgnoreCase(groupName)) {
+//            SchoolRoll schoolRoll = schoolRollService.updateSchoolRoll((SchoolRoll) groupObj);
+//            return setNullByField(schoolRoll, "student", SchoolRoll.class);
+//        }
+//        if ("registrationInfo".equalsIgnoreCase(groupName)) {
+//            RegistrationInfo registrationInfo = registrationInfoService.updateRegistrationInfo((RegistrationInfo) groupObj);
+//            return setNullByField(registrationInfo, "student", RegistrationInfo.class);
+//        }
+//        if ("profilesHistory".equalsIgnoreCase(groupName)) {
+//            ProfilesHistory profilesHistory = profilesHistoryService.updateProfilesHistory((ProfilesHistory) groupObj);
+//            return setNullByField(profilesHistory, "student", ProfilesHistory.class);
+//        }
+//        if ("discuss".equalsIgnoreCase(groupName)) {
+//            Discuss discuss = discussService.updateDiscuss((Discuss) groupObj);
+//            return setNullByField(discuss, "student", Discuss.class);
+//        }
+//        if ("schoolfellow".equalsIgnoreCase(groupName)) {
+//            Schoolfellow schoolfellow = schoolfellowService.updateSchoolfellow((Schoolfellow) groupObj);
+//            return setNullByField(schoolfellow, "student", Schoolfellow.class);
+//        }
+//        if ("accident".equalsIgnoreCase(groupName)) {
+//            List<Accident> list = accidentService.updateAccident((List<Accident>) groupObj);
+//            return setNullByField(list, "student", Accident.class);
+//        }
+//        if ("relatedAddress".equalsIgnoreCase(groupName)) {
+//            List<RelatedAddress> list = relatedAddressService.updateRelatedAddress((List<RelatedAddress>) groupObj);
+//            return setNullByField(list, "student", RelatedAddress.class);
+//        }
+//        if ("grade".equalsIgnoreCase(groupName)) {
+//            List<Grade> list = gradeService.updateGrade((List<Grade>) groupObj);
+//            return setNullByField(list, "student", Grade.class);
+//        }
+//        if ("gradeAttachment".equalsIgnoreCase(groupName)) {
+//            List<GradeAttachment> list = gradeAttachmentService.updateGradeAttachment((List<GradeAttachment>) groupObj);
+//            return setNullByField(list, "student", GradeAttachment.class);
+//        }
+//        return null;
+//    }
 
-        return null;
-    }
+//    public Object transObj(Object des, Object src) throws Exception {
+//        try {
+//            Field[] srcfields = src.getClass().getDeclaredFields();//需要其中属性值的obj
+//            for (Field field : srcfields) { //遍历需要修改的所有属性
+//                Field f = des.getClass().getDeclaredField(field.getName());
+//                field.setAccessible(true);
+//                Object value = field.get(src);
+//                System.out.println("===value=====" + value);
+//                if (value != null) {
+//                    if (f.getType().equals(String.class)) {
+//                        f.setAccessible(true);
+//                        f.set(des, value);
+//                    } else if (!f.getType().equals(String.class) && !f.getType().equals(Date.class)) {
+//                        Integer integer = (Integer) value;
+//                        f.setAccessible(true);
+//                        f.set(des, integer);
+//                    }
+//                }
+//
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return des;
+//    }
+
+////    @Transactional
+//    public Object updateGroupByName(String studentId, String groupName, Object groupObj, List<OperationLog> operationLogs) throws Exception {
+//        //记录日志
+////        operationLogService.saveOperationLog(operationLogs);
+//        Object des = getGroupByStudentId(studentId, groupName);
+//        System.out.println("obj===============" + des);
+//        if ("basicInfo".equalsIgnoreCase(groupName)) {
+//            BasicInfo basicInfo = (BasicInfo) transObj(des, groupObj);
+//            basicInfo = basicInfoService.updateBasicInfo(basicInfo,operationLogs);
+//            return setNullByField(basicInfo, "student", BasicInfo.class);
+//        }
+//        if ("schoolRoll".equalsIgnoreCase(groupName)) {
+//            SchoolRoll schoolRoll = (SchoolRoll) transObj(des, groupObj);
+//            schoolRoll = schoolRollService.updateSchoolRoll(schoolRoll,operationLogs);
+//            return setNullByField(schoolRoll, "student", SchoolRoll.class);
+//        }
+//        if ("registrationInfo".equalsIgnoreCase(groupName)) {
+//            RegistrationInfo registrationInfo = (RegistrationInfo) transObj(des, groupObj);
+//            registrationInfo = registrationInfoService.updateRegistrationInfo(registrationInfo,operationLogs);
+//            return setNullByField(registrationInfo, "student", RegistrationInfo.class);
+//        }
+//        if ("profilesHistory".equalsIgnoreCase(groupName)) {
+//            ProfilesHistory profilesHistory = (ProfilesHistory) transObj(des, groupObj);
+//            profilesHistory = profilesHistoryService.updateProfilesHistory(profilesHistory,operationLogs);
+//            return setNullByField(profilesHistory, "student", ProfilesHistory.class);
+//        }
+//        if ("discuss".equalsIgnoreCase(groupName)) {
+//            Discuss discuss = (Discuss) transObj(des, groupObj);
+//            discuss = discussService.updateDiscuss(discuss,operationLogs);
+//            return setNullByField(discuss, "student", Discuss.class);
+//        }
+//        if ("schoolfellow".equalsIgnoreCase(groupName)) {
+//            Schoolfellow schoolfellow = (Schoolfellow) transObj(des, groupObj);
+//            schoolfellow = schoolfellowService.updateSchoolfellow(schoolfellow,operationLogs);
+//            return setNullByField(schoolfellow, "student", Schoolfellow.class);
+//        }
+//
+//        return null;
+//    }
 
     @Transactional
     public void registerorAbandon(String mode, String studentId, List<OperationLog> operationLogs) throws Exception {
         //记录日志
         operationLogService.saveOperationLog(operationLogs);
         String sql = null;
-        if("register".equals(mode)){
+        if ("register".equals(mode)) {
             sql = " update SCMS_SCHOOLROLL set registed = 'AX0002'," +
-                    " registerState = 'AW0004', registerYear = extract(year from sysdate)"+
-                    " where studentid = '"+studentId +"'";
+                    " registerState = 'AW0004', registerYear = extract(year from sysdate)" +
+                    " where studentid = '" + studentId + "'";
         }
-        if("abandon".equals(mode)){
+        if ("abandon".equals(mode)) {
             sql = " update SCMS_SCHOOLROLL set registerState = 'AW0003'" +
-                    " where studentid = '"+studentId +"'";
+                    " where studentid = '" + studentId + "'";
         }
         System.out.println(sql);
         getBaseDao().updateBySql(sql);

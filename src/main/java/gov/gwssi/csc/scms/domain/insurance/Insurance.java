@@ -3,6 +3,7 @@ package gov.gwssi.csc.scms.domain.insurance;
 import gov.gwssi.csc.scms.domain.student.Student;
 
 import javax.persistence.*;
+import java.util.Comparator;
 import java.util.Date;
 
 /**
@@ -10,7 +11,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name="SCMS_INSURANCE")
-public class Insurance {
+public class Insurance implements Comparable<Insurance>{
     @Id
 
     private String id;
@@ -148,5 +149,16 @@ public class Insurance {
 
     public void setYear(long year) {
         this.year = year;
+    }
+
+    @Override
+    public int compareTo(Insurance insurance) {
+        int i = this.getInsurSta().compareTo(insurance.getInsurSta());
+
+        if (i >= 0){
+            i = (int) (this.getYear() - insurance.getYear());
+        }
+
+        return i;
     }
 }

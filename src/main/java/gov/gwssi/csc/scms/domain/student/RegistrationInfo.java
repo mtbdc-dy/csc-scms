@@ -1,5 +1,7 @@
 package gov.gwssi.csc.scms.domain.student;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -77,6 +79,7 @@ public class RegistrationInfo {
     /**
      * 学生
      */
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "STUDENTID")
     private Student student;

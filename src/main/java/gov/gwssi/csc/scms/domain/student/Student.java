@@ -248,12 +248,26 @@ public class Student implements Cloneable {
         this.tickets = tickets;
     }
 
+
+    public Student(){}
+
+    @Override
     public Student clone() {
-        try {
-            return (Student) super.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-        return new Student();
+//        try {
+//            return (Student) super.clone();
+//        } catch (CloneNotSupportedException e) {
+//            e.printStackTrace();
+//        }
+//        return new Student();
+        ProfilesHistory profilesHistory = new ProfilesHistory();
+
+        profilesHistory.setId(this.getProfilesHistory().getId());
+        Student student = new Student();
+        student.setId(this.id);
+        student.setCscId(this.cscId);
+        student.setProfilesHistory(profilesHistory);
+        return student;
     }
+
+
 }
