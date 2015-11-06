@@ -11,7 +11,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "SCMS_DISCUSS")
-public class Discuss {
+public class Discuss implements Cloneable{
     @Id
     private String id;
     /**
@@ -302,5 +302,10 @@ public class Discuss {
 
     public void setStudent(Student student) {
         this.student = student;
+    }
+
+    @Override
+    public Discuss clone() throws CloneNotSupportedException{
+        return (Discuss)super.clone();
     }
 }

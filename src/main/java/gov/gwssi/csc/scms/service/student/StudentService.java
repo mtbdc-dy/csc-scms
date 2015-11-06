@@ -73,7 +73,6 @@ public class StudentService extends BaseService {
         List<Insurance> insurances = student.getInsurances();
         Collections.sort(insurances);
         Collections.reverse(insurances);
-
         /*!IMPORTANT!*/
         System.out.println(student.getDiscuss());
         System.out.println(student.getProfilesHistory());
@@ -89,8 +88,8 @@ public class StudentService extends BaseService {
         System.out.println(student.getWarning());
         /*!IMPORTANT!*/
 
-        setNullByField(student.getProfilesHistory(), "handler", ProfilesHistory.class);
-        return student;
+//        setNullByField(student.getProfilesHistory(), "handler", ProfilesHistory.class);
+        return student.getStudent();
     }
 
     public Student getStudentByCscId(String scsId) {

@@ -11,7 +11,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "SCMS_PROFILES_HISTORY")
-public class ProfilesHistory {
+public class ProfilesHistory implements Cloneable {
 
     @Id
     private String id;
@@ -193,7 +193,9 @@ public class ProfilesHistory {
         this.student = student;
     }
 
-//    public ProfilesHistory clone(){
-//
-//    }
+    @Override
+    public ProfilesHistory clone() throws CloneNotSupportedException {
+        return (ProfilesHistory)super.clone();
+    }
+
 }

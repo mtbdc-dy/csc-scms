@@ -10,7 +10,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "SCMS_BASIC_INFO")
-public class BasicInfo {
+public class BasicInfo implements Cloneable{
     @Id
     private String id;
     /**
@@ -265,5 +265,10 @@ public class BasicInfo {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    @Override
+    public BasicInfo clone() throws CloneNotSupportedException {
+        return (BasicInfo) super.clone();
     }
 }

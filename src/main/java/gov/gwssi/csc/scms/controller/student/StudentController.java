@@ -170,8 +170,8 @@ public class StudentController {
             Student student = studentService.getCompleteInfoOfStudentById(id);
 //            List<Insurance> insuranceList = student.getInsurances();
             ObjectMapper mapper = new ObjectMapper();
-            mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-
+//            mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+//
             System.out.println(mapper.writeValueAsString(student));
 
 //            SerializationFeature.FAIL_ON_EMPTY_BEANS

@@ -11,7 +11,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "SCMS_REGISTRATION_INFO")
-public class RegistrationInfo {
+public class RegistrationInfo implements Cloneable{
     @Id
     private String id;
     /**
@@ -218,5 +218,10 @@ public class RegistrationInfo {
 
     public void setStudent(Student student) {
         this.student = student;
+    }
+
+    @Override
+    public RegistrationInfo clone() throws CloneNotSupportedException{
+        return (RegistrationInfo)super.clone();
     }
 }

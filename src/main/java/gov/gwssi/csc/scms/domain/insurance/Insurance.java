@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.domain.insurance;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import gov.gwssi.csc.scms.domain.student.Student;
 
 import javax.persistence.*;
@@ -13,13 +14,13 @@ import java.util.Date;
 @Table(name="SCMS_INSURANCE")
 public class Insurance implements Comparable<Insurance>{
     @Id
-
     private String id;
 
 
     /**
      * 学生
      */
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "STUDENTID")
     private Student student;

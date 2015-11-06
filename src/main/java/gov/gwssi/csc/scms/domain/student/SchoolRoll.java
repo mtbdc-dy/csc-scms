@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "SCMS_SCHOOLROLL")
-public class SchoolRoll {
+public class SchoolRoll implements Cloneable{
     @Id
     private String id;
     /**
@@ -479,5 +479,10 @@ public class SchoolRoll {
 
     public void setCurrentProvince(String currentProvince) {
         this.currentProvince = currentProvince;
+    }
+
+    @Override
+    public SchoolRoll clone() throws CloneNotSupportedException{
+        return (SchoolRoll)super.clone();
     }
 }

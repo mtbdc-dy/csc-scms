@@ -12,7 +12,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "SCMS_SCHOOL_FELLOW")
-public class Schoolfellow {
+public class Schoolfellow implements Cloneable{
     @Id
     private String id;
     /**
@@ -183,5 +183,10 @@ public class Schoolfellow {
 
     public void setStudent(Student student) {
         this.student = student;
+    }
+
+    @Override
+    public Schoolfellow clone() throws CloneNotSupportedException{
+        return (Schoolfellow)super.clone();
     }
 }

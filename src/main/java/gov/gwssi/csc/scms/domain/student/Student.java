@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.domain.student;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
 import gov.gwssi.csc.scms.domain.insurance.Insurance;
 import gov.gwssi.csc.scms.domain.scholarship.ScholarshipX;
@@ -8,6 +9,7 @@ import gov.gwssi.csc.scms.domain.warning.Warning;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -248,24 +250,42 @@ public class Student implements Cloneable {
         this.tickets = tickets;
     }
 
+    @JsonIgnore
+    public Student getStudent() throws CloneNotSupportedException {
+        ProfilesHistory profilesHistory = this.getProfilesHistory() != null ? this.getProfilesHistory().clone() : null;
+        BasicInfo basicInfo = this.getBasicInfo() != null ? this.getBasicInfo().clone() : null;
+        RegistrationInfo registrationInfo = this.getRegistrationInfo() != null ? this.getRegistrationInfo().clone() : null;
+        Discuss discuss = this.getDiscuss() != null ? this.getDiscuss().clone() : null;
+        SchoolRoll schoolRoll = this.getSchoolRoll() != null ? this.getSchoolRoll().clone() : null;
+        List<RelatedAddress> relatedAddresses = this.getRelatedAddress();
+        List<Accident> accidents = this.getAccidents();
+        Schoolfellow schoolfellow = this.getSchoolfellow() != null ? this.getSchoolfellow().clone() : null;
+        List<Grade> grades = this.getGrades();
+        List<GradeAttachment> gradeAttachments = this.getGradeAttachment();
+        List<Abnormal> abnormals = this.getAbnormals();
+        List<Ticket> tickets = this.getTickets();
+        List<Insurance> insurances = this.getInsurances();
+        List<ScholarshipX> scholarshipXList = this.getScholarshipXs();
+        Warning warning = this.getWarning() != null ? this.getWarning().clone() : null;
 
-    public Student(){}
-
-    @Override
-    public Student clone() {
-//        try {
-//            return (Student) super.clone();
-//        } catch (CloneNotSupportedException e) {
-//            e.printStackTrace();
-//        }
-//        return new Student();
-        ProfilesHistory profilesHistory = new ProfilesHistory();
-
-        profilesHistory.setId(this.getProfilesHistory().getId());
         Student student = new Student();
         student.setId(this.id);
         student.setCscId(this.cscId);
         student.setProfilesHistory(profilesHistory);
+        student.setBasicInfo(basicInfo);
+        student.setRegistrationInfo(registrationInfo);
+        student.setDiscuss(discuss);
+        student.setSchoolRoll(schoolRoll);
+        student.setRelatedAddress(relatedAddresses);
+        student.setAccidents(accidents);
+        student.setSchoolfellow(schoolfellow);
+        student.setGrades(grades);
+        student.setGradeAttachment(gradeAttachments);
+        student.setAbnormals(abnormals);
+        student.setTickets(tickets);
+        student.setInsurances(insurances);
+        student.setScholarshipXs(scholarshipXList);
+        student.setWarning(warning);
         return student;
     }
 
