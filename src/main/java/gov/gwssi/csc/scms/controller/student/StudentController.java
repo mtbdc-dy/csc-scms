@@ -2,8 +2,10 @@ package gov.gwssi.csc.scms.controller.student;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.insurance.Insurance;
 import gov.gwssi.csc.scms.service.export.ExportService;
+import gov.gwssi.csc.scms.service.students.StudentsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -43,6 +45,8 @@ import java.util.Map;
 @RequestMapping(value = "/student")
 public class StudentController {
 
+    private static final String HEADER_AUTHORIZATION = JWTUtil.HEADER_AUTHORIZATION;
+
     @Autowired
     private StudentService studentService;
 
@@ -51,6 +55,9 @@ public class StudentController {
 
     @Autowired
     private ExportService exportService;
+
+    @Autowired
+    private StudentsService studentsService;
 
     /**
      * 学籍信息管理相关操作，获取学生列表
@@ -411,11 +418,17 @@ public class StudentController {
     }
 
     @RequestMapping(
-            method = RequestMethod.PUT,
+            value = "/all",
+            method = RequestMethod.GET,
+            params = {"mode","filter"},
             headers = "Accept=application/octet-stream")
     public ResponseEntity<byte[]> exportSturegisterAll(
-            @RequestBody String[] id) throws IOException {
+            @RequestHeader(value = HEADER_AUTHORIZATION) String header,
+            @RequestParam(value = "mode") String mode,
+            @RequestParam(value = "filter") String filterJSON) throws IOException {
         byte[] bytes = null;
+        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+        String [] id = studentsService.getStudentsAllByFilter(filter, mode, header);
 
         String tableName = "v_exp_register";
         bytes = exportService.exportByfilter(tableName,"0", id);
