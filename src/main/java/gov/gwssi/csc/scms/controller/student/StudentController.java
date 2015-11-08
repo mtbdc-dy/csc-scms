@@ -2,6 +2,9 @@ package gov.gwssi.csc.scms.controller.student;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.insurance.Insurance;
 import gov.gwssi.csc.scms.service.export.ExportService;
@@ -33,10 +36,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
 import java.net.URLDecoder;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by WangZishi on 3/27/2015.
@@ -175,31 +175,34 @@ public class StudentController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
     public Student getStudentById(@PathVariable(value = "id") String id) {
         try {
-            Student student = studentService.getStudentById(id);
-            student.setAbnormals(null);
-            student.setTickets(null);
-//            student.setInsurances(null);
-            List<Insurance> insuranceList = student.getInsurances();
-            if(insuranceList != null && insuranceList.size()>0){
-                List<Insurance> insurances = new ArrayList<Insurance>();
-                long max = insuranceList.get(0).getYear();
-                for(int i=1;i<insuranceList.size();i++){
-                    if(insuranceList.get(i).getYear()>max){
-                        max = insuranceList.get(i).getYear();
-                    }
-                }
-                for(int j=0;j<insuranceList.size();j++){
-                    Insurance insurance = insuranceList.get(j);
-                    if(insurance.getInsurSta().equals("1")&&insurance.getYear() == max){
-                        insurance.setStudent(null);
-                        insurances.add(insurance);
-                        break;
-                    }
-                }
-                student.setInsurances(insurances);
-            }
-            student.setScholarshipXs(null);
-            student.setWarning(null);
+            Student student = studentService.getCompleteInfoOfStudentById(id);
+//            List<Insurance> insuranceList = student.getInsurances();
+            ObjectMapper mapper = new ObjectMapper();
+//            mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+//
+            System.out.println(mapper.writeValueAsString(student));
+
+//            SerializationFeature.FAIL_ON_EMPTY_BEANS
+//            insuranceList
+
+//            if(insuranceList != null && insuranceList.size()>0){
+//                List<Insurance> insurances = new ArrayList<Insurance>();
+//                long max = insuranceList.get(0).getYear();
+//                for(int i=1;i<insuranceList.size();i++){
+//                    if(insuranceList.get(i).getYear()>max){
+//                        max = insuranceList.get(i).getYear();
+//                    }
+//                }
+//                for(int j=0;j<insuranceList.size();j++){
+//                    Insurance insurance = insuranceList.get(j);
+//                    if(insurance.getInsurSta().equals("1")&&insurance.getYear() == max){
+//                        insurance.setStudent(null);
+//                        insurances.add(insurance);
+//                        break;
+//                    }
+//                }
+//                student.setInsurances(insurances);
+//            }
             return student;
         } catch (Exception e) {
             e.printStackTrace();
@@ -243,51 +246,51 @@ public class StudentController {
         }
     }
 
-    @RequestMapping(value = "/{id}/{group}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
-    public Object getStudentGroupById(@PathVariable(value = "id") String id, @PathVariable("group") String group) {
-        try {
-            return studentService.getGroupByStudentId(id, group);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-    }
+//    @RequestMapping(value = "/{id}/{group}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
+//    public Object getStudentGroupById(@PathVariable(value = "id") String id, @PathVariable("group") String group) {
+//        try {
+//            return studentService.getGroupByStudentId(id, group);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new RuntimeException(e);
+//        }
+//    }
 
-    /**
-     * 更新学生相关信息
-     *
-     * @param id
-     * @param group 修改的对象
-     * @param mode 用于区分修改前判断是否已经有group的完整信息，
-     *             若有，则updateGroupByName方法直接修改，若无先获取 再set需要修改的数据项并保存
-     * @param body 修改后的数据项和日志
-     * @return
-     */
-    @RequestMapping(value = "/{id}/{group}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
-    public Object putStudentGroup(@PathVariable(value = "id") String id, @PathVariable("group") String group,
-                                  @RequestParam(value = "mode") String mode, @RequestBody String body) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonBody jbosy = new ObjectMapper().readValue(body, JsonBody.class);
-            //Json转成对象 包含修改后的信息
-            Object groupObj = updateStudentGroup(group, jbosy.getValue());
-            if (groupObj == null)
-                throw new NoSuchStudentException("cannot find the student for update" );
-
-            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
-            List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
-            if("withoutDetail".equals(mode)){//无Detail 需要传studentId
-                groupObj = studentService.updateGroupByName(id, group, groupObj, operationLogs);
-            }else{
-                groupObj = studentService.updateGroupByName(group, groupObj, operationLogs);
-            }
-
-            return groupObj;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-    }
+//    /**
+//     * 更新学生相关信息
+//     *
+//     * @param id
+//     * @param group 修改的对象
+//     * @param mode 用于区分修改前判断是否已经有group的完整信息，
+//     *             若有，则updateGroupByName方法直接修改，若无先获取 再set需要修改的数据项并保存
+//     * @param body 修改后的数据项和日志
+//     * @return
+//     */
+//    @RequestMapping(value = "/{id}/{group}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
+//    public Object putStudentGroup(@PathVariable(value = "id") String id, @PathVariable("group") String group,
+//                                  @RequestParam(value = "mode") String mode, @RequestBody String body) {
+//        try {
+//            ObjectMapper mapper = new ObjectMapper();
+//            JsonBody jbosy = new ObjectMapper().readValue(body, JsonBody.class);
+//            //Json转成对象 包含修改后的信息
+//            Object groupObj = updateStudentGroup(group, jbosy.getValue());
+//            if (groupObj == null)
+//                throw new NoSuchStudentException("cannot find the student for update" );
+//
+//            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
+//            List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
+//            if("withoutDetail".equals(mode)){//无Detail 需要传studentId
+//                groupObj = studentService.updateGroupByName(id, group, groupObj, operationLogs);
+//            }else{
+//                groupObj = studentService.updateGroupByName(group, groupObj, operationLogs);
+//            }
+//
+//            return groupObj;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     /**
      * 新生老生注册功能

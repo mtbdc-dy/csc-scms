@@ -7,6 +7,9 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.NamedStoredProcedureQuery;
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureParameter;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +22,12 @@ import java.util.Map;
 public interface ConfigurationRepository extends CrudRepository<Configuration, String>, JpaSpecificationExecutor<Configuration> {
     @Procedure
     String newId(@Param("seqName") String seqName);
+
+    @Procedure
+    String generateStatisticsSQL(@Param("configId") String configId);
+
+    @Procedure
+    String generateQuerySQL(@Param("configId") String configId);
 
     @Procedure
     List test(@Param("in") String in);

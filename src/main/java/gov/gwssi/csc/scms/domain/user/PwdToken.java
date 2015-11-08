@@ -5,6 +5,7 @@ package gov.gwssi.csc.scms.domain.user;
  */
 public class PwdToken {
     private String userId;
+    private String fullName;
     private String password;
     private String userType;
     private String identity;
@@ -41,8 +42,17 @@ public class PwdToken {
         this.identity = identity;
     }
 
-    public PwdToken(String userId, String password, String userType, String identity) {
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public PwdToken(String userId, String fullName, String password, String userType, String identity) {
         this.userId = userId;
+        this.fullName = fullName;
         this.password = password;
         this.userType = userType;
         this.identity = identity;

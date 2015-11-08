@@ -10,7 +10,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "SCMS_WARNING")
-public class Warning {
+public class Warning implements Cloneable{
     @Id
     @Column(name = "id")
 //    @SequenceGenerator(name = "SCMS_WARNING_ID",sequenceName = "SCMS_WARNING_SEQ",allocationSize = 1)
@@ -155,12 +155,16 @@ public class Warning {
         this.rmUserName = rmUserName;
     }
 
-
     public String getWarningId() {
         return warningId;
     }
 
     public void setWarningId(String warningId) {
         this.warningId = warningId;
+    }
+
+    @Override
+    public Warning clone() throws CloneNotSupportedException{
+        return (Warning)super.clone();
     }
 }

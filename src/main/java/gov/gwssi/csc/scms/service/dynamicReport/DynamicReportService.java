@@ -5,10 +5,16 @@ import gov.gwssi.csc.scms.domain.dictionary.DictTreeJson;
 import gov.gwssi.csc.scms.domain.dynamicReport.*;
 import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.*;
 import gov.gwssi.csc.scms.domain.dynamicReport.Report.Cell;
+import gov.gwssi.csc.scms.domain.dynamicReport.Report.ExcelCell;
 import gov.gwssi.csc.scms.domain.dynamicReport.Report.Report;
+import gov.gwssi.csc.scms.domain.dynamicReport.Report.Row;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.repository.dynamicReport.*;
 import gov.gwssi.csc.scms.service.dictionary.TranslateDictService;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -16,6 +22,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.springframework.data.jpa.domain.Specifications.where;
+
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.*;
 
 /**
@@ -66,6 +76,15 @@ public class DynamicReportService extends DynamicReportSpecs {
         return configurationRepository.findAll(filterIsLike(filter), new PageRequest(0, 20));
     }
 
+    public Page<Configuration> getAllConfigurationsByFilterAndUserName(Filter filter, String userName) {
+        return configurationRepository.findAll(
+                where(
+                        where(isPublic()).and(filterIsLike(filter))
+                ).or(
+                        where(userNameIsLike(userName)).and(filterIsLike(filter))
+                ), new PageRequest(0, 20));
+    }
+
     public void deleteConfigurations(String id) {
         configurationRepository.delete(id);
     }
@@ -100,136 +119,6 @@ public class DynamicReportService extends DynamicReportSpecs {
     public Table getTableWithoutColumns(String id) {
         Table table = tableRepository.findOne(id);
         return table;
-    }
-
-    public String getSelectSQL(List<String> codeTableNames) {
-        String selectSQL = "";
-        List<List<DictTreeJson>> lists = new ArrayList<List<DictTreeJson>>();
-        int[] sizes = new int[codeTableNames.size()];
-        int total = 1;
-        for (int i = 0; i < codeTableNames.size(); i++) {
-            List<DictTreeJson> codeTables = translateDictService.getCodeTableList(codeTableNames.get(i));
-            lists.add(codeTables);
-            sizes[i] = codeTables.size();
-            total *= sizes[i];
-//            total = max > sizes[i] ? max : sizes[i];
-        }
-//        for (String codeTableName : codeTableNames) {
-//            List<DictTreeJson> codeTables = translateDictService.getCodeTableList(codeTableName);
-//            lists.add(codeTables);
-//            max = max > codeTables.size() ? max : codeTables.size();
-//        }
-//
-//        String[][] matrix = new String[codeTableNames.size()][max];
-//
-//        for (int i = 0; i < lists.size(); i++) {
-//            List<DictTreeJson> list = lists.get(i);
-//            for (DictTreeJson dictTreeJson : list) {
-//                String code = dictTreeJson.getCode();
-//                for (int i1 = 0; i1 < matrix.length; i1++) {
-//                    for (int j1 = 0; j1 < max; j1++) {
-//                        matrix[i1][j1] =
-//                    }
-//                }
-//            }
-//        }
-
-        return selectSQL;
-    }
-
-    @Transactional
-    public String generateSQL(OriginalConfiguration configuration) {
-        String SQL = "\nselect \n";
-        // 显示的分组列
-        for (GroupCondition groupCondition : configuration.getGroupConditions()) {
-            Column column = getColumn(groupCondition.getColumn());
-            SQL += "  nvl(" + column.getTable().getTableEn() + "." + column.getColumnEn() + ", '-'),\n";
-        }
-
-        List<String> codeTables = new ArrayList<String>();
-        for (SelectCondition selectCondition : configuration.getSelectConditions()) {
-            Column column = getColumn(selectCondition.getColumn());
-            Table table = column.getTable();
-            if (column.getCodeTable() == null) {
-                System.out.println("codeTables = " + codeTables);
-                getSelectSQL(codeTables);
-                codeTables.clear();
-                SQL += "  nvl(count(" + table.getTableEn() + "." + column.getColumnEn() + "), 0),\n";
-            } else if (selectCondition.getLevel() == 1) {
-                System.out.println("codeTables = " + codeTables);
-                getSelectSQL(codeTables);
-                codeTables.clear();
-                codeTables.add(column.getCodeTable());
-            } else {
-                codeTables.add(column.getCodeTable());
-            }
-        }
-
-        // 显示的合计列
-        SQL += "  nvl(sum(CASE WHEN 1 = 1 THEN 1 END), 0)\n";
-
-        SQL += "  from SCMS_STUDENT\n";
-        for (JoinCondition joinCondition : configuration.getJoinConditions()) {
-            Table table = getTable(joinCondition.getTable());
-            SQL += "  join " + table.getTableEn() + " on SCMS_STUDENT.ID = " + table.getTableEn() + ".STUDENTID\n";
-        }
-
-        if (configuration.getWhereConditions().size() > 0) {
-            SQL += " where ";
-            for (WhereCondition whereCondition : configuration.getWhereConditions()) {
-                Column column = getColumn(whereCondition.getColumn());
-                SQL += whereCondition.getLParenthese() + column.getTable().getTableEn() + "." + column.getColumnEn() + getOperator(whereCondition.getOperator()) + "'" + whereCondition.getCondition() + "'" + whereCondition.getRParenthese() + getLogic(whereCondition.getLogic());
-            }
-        }
-
-        SQL += "\n";
-        if (configuration.getGroupConditions().size() > 0) {
-            SQL += " group by ";
-            for (GroupCondition groupCondition : configuration.getGroupConditions()) {
-                Column column = getColumn(groupCondition.getColumn());
-                SQL += column.getTable().getTableEn() + "." + column.getColumnEn() + ", ";
-            }
-            SQL = SQL.substring(0, SQL.length() - 2);
-            SQL += "\n";
-        }
-
-        if (configuration.getOrderConditions().size() > 0) {
-            SQL += " order by ";
-            for (OrderCondition orderCondition : configuration.getOrderConditions()) {
-                Column column = getColumn(orderCondition.getColumn());
-                SQL += column.getTable().getTableEn() + "." + column.getColumnEn() + getOrder(orderCondition.getOrderType()) + ", ";
-            }
-            SQL = SQL.substring(0, SQL.length() - 2);
-        }
-
-        return SQL;
-    }
-
-    private String getOperator(String id) {
-        String operator = null;
-        if (id.equals("1")) operator = " = ";
-        if (id.equals("2")) operator = " <> ";
-        if (id.equals("3")) operator = " > ";
-        if (id.equals("4")) operator = " >= ";
-        if (id.equals("5")) operator = " < ";
-        if (id.equals("6")) operator = " <= ";
-        if (id.equals("7")) operator = " LIKE ";
-        if (id.equals("8")) operator = " NOT LIKE ";
-        return operator;
-    }
-
-    private String getLogic(String id) {
-        String logic = "";
-        if (id.equals("1")) logic = " AND ";
-        if (id.equals("2")) logic = " OR ";
-        return logic;
-    }
-
-    private String getOrder(String id) {
-        String order = null;
-        if (id.equals("1")) order = " ASC ";
-        if (id.equals("2")) order = " DESC ";
-        return order;
     }
 
     @Transactional
@@ -284,14 +173,14 @@ public class DynamicReportService extends DynamicReportSpecs {
             Integer currentLevel, Integer maxLevel) {
         List<Cell> cells = new ArrayList<Cell>();
         Column column = columnRepository.findOne(selectCondition.getColumn());
-        if (column.getCodeTable() != null) { // 代码列
+        if (column.getCodeTable() != null && selectCondition.getCalculateType().equals("2")) { // 代码列
             List<DictTreeJson> list = translateDictService.getCodeTableList(column.getCodeTable());
             Integer colSpan = 0;
             for (DictTreeJson dictTreeJson : list) { // 遍历代码值
                 colSpan = colSpan.equals(0) ? getColSpan(selectConditions, currentLevel, maxLevel) : colSpan;
                 cells.add(new Cell(getId(), currentLevel, 1, colSpan, dictTreeJson.getValue()));
             }
-        } else { // 非代码列
+        } else { // 非代码列或非代码计数列
             cells.add(new Cell(getId(), 1, maxLevel, 1, column.getColumnCh()));
         }
         // 小计列
@@ -351,7 +240,7 @@ public class DynamicReportService extends DynamicReportSpecs {
         for (Condition condition : collection) condition.setId(getId());
     }
 
-    public <E extends Collection<? extends Condition>> void setIds(E ...collections){
+    public <E extends Collection<? extends Condition>> void setIds(E... collections) {
         for (E collection : collections) setIds(collection);
     }
 
@@ -363,51 +252,267 @@ public class DynamicReportService extends DynamicReportSpecs {
         for (E collection : collections) setConfig(config, collection);
     }
 
+    private Configuration saveConfigration(Configuration configuration) throws Exception{
+        configuration = saveConfig(configuration);
+        if (configuration.getReportType().equals("statistics")) {
+            String result = configurationRepository.generateStatisticsSQL(configuration.getId());
+            if (!result.equals("1")) {
+                configurationRepository.delete(configuration.getId());
+                if (result.equals("4")) {
+                    throw new Exception("配置失败，报表统计列数过多！");
+                } else {
+                    throw new Exception("配置失败！");
+                }
+            }
+        } else {
+            configurationRepository.generateQuerySQL(configuration.getId());
+            List<Cell> cells = generateHead(configuration);
+            setConfig(configuration, cells);
+            cellRepository.save(cells);
+            configuration.setCells(cells);
+        }
+        return configuration;
+    }
+
+    public Configuration createConfig(Configuration configuration) throws Exception {
+        configuration.setId(getId());
+        return saveConfigration(configuration);
+    }
+
+    public Configuration updateConfig(Configuration configuration, String id) throws Exception {
+        if (configurationRepository.exists(id)) {
+            configurationRepository.delete(id);
+        }
+        configuration.setId(id);
+        return saveConfigration(configuration);
+    }
+
     @SuppressWarnings("unchecked")
     @Transactional
-    public Configuration saveNewConfig(Configuration configuration) {
-        Configuration newConfiguration = new Configuration(configuration);
+    public Configuration saveConfig(Configuration configuration) {
+        Configuration tempConfig = new Configuration(configuration);
 
-        newConfiguration.setId(getId());
-        configurationRepository.save(newConfiguration);
+        configurationRepository.save(tempConfig);
 
-        List<Cell> cells = generateHead(configuration);
         Set<JoinCondition> joins = configuration.getJoinConditions();
         List<WhereCondition> wheres = configuration.getWhereConditions();
-        Set<GroupCondition> groups = configuration.getGroupConditions();
-        Set<OrderCondition> orders = configuration.getOrderConditions();
+        List<GroupCondition> groups = configuration.getGroupConditions();
+        List<OrderCondition> orders = configuration.getOrderConditions();
         List<SelectCondition> selects = configuration.getSelectConditions();
 
         setIds(joins, wheres, groups, orders, selects);
-        setConfig(newConfiguration, cells, joins, wheres, groups, orders, selects);
+        setConfig(tempConfig, joins, wheres, groups, orders, selects);
 
         joinConditionRepository.save(joins);
         whereConditionRepository.save(wheres);
         groupConditionRepository.save(groups);
         orderConditionRepository.save(orders);
         selectConditionRepository.save(selects);
-        cellRepository.save(cells);
 
-        newConfiguration.setCells(cells);
-        newConfiguration.setJoinConditions(joins);
-        newConfiguration.setWhereConditions(wheres);
-        newConfiguration.setGroupConditions(groups);
-        newConfiguration.setOrderConditions(orders);
-        newConfiguration.setSelectConditions(selects);
+        tempConfig.setJoinConditions(joins);
+        tempConfig.setWhereConditions(wheres);
+        tempConfig.setGroupConditions(groups);
+        tempConfig.setOrderConditions(orders);
+        tempConfig.setSelectConditions(selects);
 
-        return newConfiguration;
+        return tempConfig;
     }
 
     public Configuration findOne(String id) {
         return configurationRepository.findOne(id);
     }
 
+    public List<Row> getReportHeader(String id) {
+        Configuration config = findOne(id);
+        Report report = new Report(config.getOrderedCells(), new ArrayList<Map>());
+        return report.getHeader();
+    }
+
+    public List<Row> getReportBody(String id) {
+        Configuration config = findOne(id);
+        String sql = config.getSql();
+        BaseDAO dao = getBaseDao();
+        List<Map> body = dao.queryListBySql(sql);
+        Report report = new Report(new ArrayList<Cell>(), body);
+        return report.getBody();
+    }
+
+    @Transactional
     public Report getReport(String id) {
         Configuration config = findOne(id);
         String sql = config.getSql();
         BaseDAO dao = getBaseDao();
         List<Map> body = dao.queryListBySql(sql);
-        // TODO Body
         return new Report(config.getOrderedCells(), body);
+    }
+
+    @Transactional
+    public List<ExcelCell> getExcelHeader(String id) {
+        return configurationRepository.findOne(id).getExcelCells();
+    }
+
+    @Transactional
+    public byte[] export(String id, OutputStream outputStream) throws IOException {
+        List<ExcelCell> header = getExcelHeader(id);
+        List<Row> body = getReportBody(id);
+        Workbook workbook = new HSSFWorkbook();
+        Sheet sheet = workbook.createSheet("sheet1");
+        sheet.setDisplayGridlines(false);
+
+        createExportHeader(header, sheet, workbook);
+        createExportBody(body, sheet, workbook);
+
+        if (outputStream != null) {
+            workbook.write(outputStream);
+        }
+        return ((HSSFWorkbook) workbook).getBytes();
+    }
+
+    @Transactional
+    public byte[] export(String id) throws IOException {
+        return export(id, null);
+    }
+
+    private short getColorIndex(short index, byte red, byte green, byte blue, Workbook workbook) {
+        HSSFColor color;
+        HSSFPalette palette = ((HSSFWorkbook) workbook).getCustomPalette();
+        if (palette.findColor(red, green, blue) == null) {
+            palette.setColorAtIndex(index, red, green, blue);
+        }
+        color = palette.findColor(red, green, blue);
+        return color.getIndex();
+    }
+
+    private CellStyle createContentStyle(Workbook workbook) {
+        CellStyle style = workbook.createCellStyle();
+
+        Font font = workbook.createFont();
+        font.setFontName("微软雅黑");
+
+        final short GREY_35_PERCENT = getColorIndex((short) 56, (byte) 166, (byte) 166, (byte) 166, workbook);
+        style.setFont(font);
+        style.setAlignment(CellStyle.ALIGN_RIGHT);
+        style.setBorderBottom(CellStyle.BORDER_THIN);
+        style.setBorderLeft(CellStyle.BORDER_THIN);
+        style.setBorderTop(CellStyle.BORDER_THIN);
+        style.setBorderRight(CellStyle.BORDER_THIN);
+        style.setBottomBorderColor(GREY_35_PERCENT);
+        style.setLeftBorderColor(GREY_35_PERCENT);
+        style.setTopBorderColor(GREY_35_PERCENT);
+        style.setRightBorderColor(GREY_35_PERCENT);
+
+        return style;
+    }
+
+    private CellStyle createHeaderContentStyle(Workbook workbook, CellStyle contentStyle) {
+        CellStyle style = workbook.createCellStyle();
+        style.cloneStyleFrom(contentStyle);
+
+        Font font = workbook.createFont();
+        font.setFontName("微软雅黑");
+        font.setBold(true);
+
+        style.setFont(font);
+        style.setAlignment(CellStyle.ALIGN_CENTER);
+        style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
+        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        return style;
+    }
+
+    private CellStyle createBottomHeaderContentStyle(Workbook workbook, CellStyle headerContentStyle) {
+        CellStyle style = workbook.createCellStyle();
+        style.cloneStyleFrom(headerContentStyle);
+        style.setBottomBorderColor(HSSFColor.GREY_80_PERCENT.index);
+        return style;
+    }
+
+    private CellStyle createColumnHeaderContentStyle(Workbook workbook, CellStyle contentStyle) {
+        CellStyle style = workbook.createCellStyle();
+        style.cloneStyleFrom(contentStyle);
+
+        final short GREY_15_PERCENT = getColorIndex((short) 57, (byte) 220, (byte) 220, (byte) 220, workbook);
+        Font font = workbook.createFont();
+        font.setFontName("微软雅黑");
+        font.setBold(true);
+
+        style.setFont(font);
+        style.setAlignment(CellStyle.ALIGN_CENTER);
+        style.setFillForegroundColor(GREY_15_PERCENT);
+        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        return style;
+    }
+
+    private CellStyle createRightColumnHeaderContentStyle(Workbook workbook, CellStyle columnHeaderContentStyle) {
+        CellStyle style = workbook.createCellStyle();
+        style.cloneStyleFrom(columnHeaderContentStyle);
+        style.setRightBorderColor(HSSFColor.GREY_80_PERCENT.index);
+        return style;
+    }
+
+    private void createExportBody(List<Row> body, Sheet sheet, Workbook workbook) {
+        CellStyle contentStyle = createContentStyle(workbook);
+        CellStyle columnHeaderContentStyle = createColumnHeaderContentStyle(workbook, contentStyle);
+        CellStyle rightColumnHeaderContentStyle = createRightColumnHeaderContentStyle(workbook, columnHeaderContentStyle);
+        Map<String, String> allCode = translateDictService.getAllCode();
+        Integer columnHeaderCount = 1;
+        for (Cell cell : body.get(body.size() - 1).getCells()) {
+            if (cell.getValue().equals("合计") || cell.getValue().equals("-")) columnHeaderCount++;
+        }
+        int xOff = sheet.getPhysicalNumberOfRows(), yOff = columnHeaderCount;
+        Row row;
+        sheet.createFreezePane(yOff, xOff);
+        for (int x = xOff; x < body.size() + xOff; x++) {
+            row = body.get(x - xOff);
+            for (int y = 0; y < row.getCells().size(); y++) {
+                String value = row.getCells().get(y).getValue();
+                String codeValue = allCode.get(value);
+                value = codeValue != null ? codeValue : value;
+                getCell(x, y, sheet).setCellValue(value);
+                getCell(x, y, sheet).setCellStyle(contentStyle);
+                if (y < yOff - 1) {
+                    getCell(x, y, sheet).setCellStyle(columnHeaderContentStyle);
+                }
+                if (y == yOff - 1) {
+                    getCell(x, y, sheet).setCellStyle(rightColumnHeaderContentStyle);
+                }
+            }
+        }
+        System.out.println(sheet.getPhysicalNumberOfRows());
+    }
+
+
+    private void createExportHeader(List<ExcelCell> header, Sheet sheet, Workbook workbook) {
+        CellStyle contentStyle = createContentStyle(workbook);
+        CellStyle headerContentStyle = createHeaderContentStyle(workbook, contentStyle);
+        CellStyle bottomHeaderContentStyle = createBottomHeaderContentStyle(workbook, headerContentStyle);
+
+        int x, y, m, n, xMax = 0, yMax = 0;
+        for (ExcelCell excelCell : header) {
+            x = excelCell.getFirstRow();
+            y = excelCell.getFirstColumn();
+            m = excelCell.getLastRow();
+            n = excelCell.getLastColumn();
+            xMax = m > xMax ? m : xMax;
+            yMax = n > yMax ? n : yMax;
+            getCell(x, y, sheet).setCellValue(excelCell.getValue());
+            sheet.addMergedRegion(new CellRangeAddress(x, m, y, n));
+        }
+        for (x = 0; x < xMax; x++) {
+            for (y = 0; y <= yMax; y++) {
+                getCell(x, y, sheet).setCellStyle(headerContentStyle);
+            }
+        }
+        for (y = 0; y <= yMax; y++) {
+            getCell(xMax, y, sheet).setCellStyle(bottomHeaderContentStyle);
+        }
+    }
+
+    private org.apache.poi.ss.usermodel.Cell getCell(int x, int y, Sheet sheet) {
+        org.apache.poi.ss.usermodel.Row.MissingCellPolicy policy = HSSFRow.RETURN_BLANK_AS_NULL;
+        org.apache.poi.ss.usermodel.Row row;
+        org.apache.poi.ss.usermodel.Cell cell;
+        row = sheet.getRow(x) == null ? sheet.createRow(x) : sheet.getRow(x);
+        cell = row.getCell(y, policy) == null ? row.createCell(y) : row.getCell(y, policy);
+        return cell;
     }
 }

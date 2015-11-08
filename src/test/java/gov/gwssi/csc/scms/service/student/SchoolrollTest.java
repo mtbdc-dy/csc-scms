@@ -30,22 +30,22 @@ public class SchoolrollTest extends UnitTestBase {
         schoolRollService.updateSchoolRoll(schoolRoll);
     }
 
-    @Test
-    public void groupUpdateTest() throws Exception {
-        String group = "schoolRoll";
-
-        StudentService studentService = getBean(StudentService.class);
-        SchoolRoll schoolRoll = studentService.getStudentById("1").getSchoolRoll();
-
-        schoolRoll.setStudent(null);
-        schoolRoll.setRegisterYear(2015);
-        schoolRoll.setRegisterState("2");
-
-        ObjectMapper mapper = new ObjectMapper();
-        JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
-        List<OperationLog> operationLogs = mapper.readValue("[]", javaType);
-
-
-        studentService.updateGroupByName(group, schoolRoll, operationLogs);
-    }
+//    @Test
+//    public void groupUpdateTest() throws Exception {
+//        String group = "schoolRoll";
+//
+//        StudentService studentService = getBean(StudentService.class);
+//        SchoolRoll schoolRoll = studentService.getStudentById("1").getSchoolRoll();
+//
+//        schoolRoll.setStudent(null);
+//        schoolRoll.setRegisterYear(2015);
+//        schoolRoll.setRegisterState("2");
+//
+//        ObjectMapper mapper = new ObjectMapper();
+//        JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
+//        List<OperationLog> operationLogs = mapper.readValue("[]", javaType);
+//
+//
+//        studentService.updateGroupByName(group, schoolRoll, operationLogs);
+//    }
 }

@@ -5,21 +5,30 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.domain.dynamicReport.Column;
 import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.Configuration;
 import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.OriginalConfiguration;
+import gov.gwssi.csc.scms.domain.dynamicReport.Report.Report;
+import gov.gwssi.csc.scms.domain.dynamicReport.Report.Row;
 import gov.gwssi.csc.scms.domain.dynamicReport.ReportConfiguration;
 import gov.gwssi.csc.scms.domain.dynamicReport.Table;
 import gov.gwssi.csc.scms.domain.filter.Filter;
+import gov.gwssi.csc.scms.repository.dynamicReport.ConfigurationRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.service.dynamicReport.DynamicReportService;
+import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Pageable;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * Created by WangZhenghua on 2015/5/28.
@@ -34,6 +43,7 @@ public class DynamicReportController extends BaseService {
     private DynamicReportService service;
 
 
+
     @RequestMapping(
             value = "/configurations",
             method = RequestMethod.GET,
@@ -41,14 +51,18 @@ public class DynamicReportController extends BaseService {
             params = {"filter"}
     )
     public ResponseEntity<Page<Configuration>> getConfigurations(
+            @RequestHeader(value = "Authorization")  String jwt,
             @RequestParam(value = "filter") String filterJSON) throws UnsupportedEncodingException {
+        Map<String, Object> user = JWTUtil.decode(jwt);
+        assert user != null;
+        String userName = String.valueOf(user.get("fullName"));
         String content = URLDecoder.decode(filterJSON, "UTF8");
         Class<Filter> valueType = Filter.class;
 
         Page<Configuration> configurations = null;
         try {
             Filter filter = new ObjectMapper().readValue(content, valueType);
-            configurations = service.getAllConfigurationsByFilter(filter);
+            configurations = service.getAllConfigurationsByFilterAndUserName(filter, userName);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -57,21 +71,38 @@ public class DynamicReportController extends BaseService {
 
     @RequestMapping(
             value = "/configurations",
-            method = {RequestMethod.PUT, RequestMethod.POST},
+            method = RequestMethod.POST,
             headers = "Accept=application/json;charset=utf-8"
     )
-    public String createConfigurations(@RequestBody String configJSON) throws IOException {
+    public Configuration createConfigurations(@RequestBody String configJSON) throws Exception {
         System.out.println("DynamicReportController.createConfigurations");
         System.out.println("configJSON = [" + configJSON + "]");
+        Configuration configuration;
         try {
-            Configuration configuration = new ObjectMapper().readValue(configJSON, Configuration.class);
-            configuration = service.saveNewConfig(configuration);
-            System.out.println("configuration = " + configuration);
+            configuration = new ObjectMapper().readValue(configJSON, Configuration.class);
+            configuration = service.createConfig(configuration);
         } catch (IOException e) {
             e.printStackTrace();
             throw e;
         }
-        return null;
+        return configuration;
+    }
+
+    @RequestMapping(
+            value = "/configurations/{id}",
+            method = RequestMethod.PUT,
+            headers = "Accept=application/json;charset=utf-8"
+    )
+    public Configuration updateConfigurations(@PathVariable(value = "id") String id, @RequestBody String configJSON) throws Exception {
+        Configuration configuration;
+        try {
+            configuration = new ObjectMapper().readValue(configJSON, Configuration.class);
+            configuration = service.updateConfig(configuration, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+        return configuration;
     }
 
     @RequestMapping(
@@ -95,7 +126,57 @@ public class DynamicReportController extends BaseService {
     )
     public String getReport(@PathVariable(value = "id") String id) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(service.getReport(id));
+        Report report = service.getReport(id);
+        return mapper.writeValueAsString(report);
+    }
+
+    @RequestMapping(
+            value = "/configurations/{id}/report/header",
+            method = RequestMethod.GET,
+            headers = "Accept=application/json;charset=utf-8"
+    )
+    public ResponseEntity<List<Row>> getReportHeader(@PathVariable(value = "id") String id){
+        return new ResponseEntity<List<Row>>(service.getReportHeader(id), HttpStatus.OK);
+    }
+
+    @RequestMapping(
+            value = "/configurations/{id}/report/body",
+            params = {"page", "size"},
+            method = RequestMethod.GET,
+            headers = "Accept=application/json;charset=utf-8"
+    )
+    public ResponseEntity<Page<Row>> getReportBody(
+            @PathVariable(value = "id") String id,
+            @RequestParam(value = "page") Integer pageNumber,
+            @RequestParam(value = "size") Integer pageSize) {
+        List<Row> content = service.getReportBody(id);
+        Integer fromIndex = pageNumber * pageSize;
+        Integer toIndex = fromIndex + pageSize;
+        toIndex = toIndex < content.size() ? toIndex : content.size();
+        List<Row> subContent = content.subList(fromIndex, toIndex);
+        Page<Row> page = new PageImpl<Row>(subContent, new PageRequest(pageNumber, pageSize), content.size());
+        return new ResponseEntity<Page<Row>>(page, HttpStatus.OK);
+    }
+
+    @RequestMapping(
+            value = "/configurations/{id}/report/excel",
+            headers = "Accept=application/octet-stream",
+            method = RequestMethod.GET
+    )
+    public ResponseEntity<byte[]> exportReport(
+            @PathVariable(value = "id") String id) {
+        byte[] bytes = null;
+
+        try {
+            bytes = service.export(id);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        httpHeaders.setContentDispositionFormData("attachment", "attachment");
+        return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
     }
 
     @RequestMapping(
