@@ -94,6 +94,7 @@ public class ExportController {
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
         byte[] bytes = null;
+        String [] id = studentsService.getStudentsAllByFilter(filter, mode, header);
 
         String[] tableName = {"v_sheet1_basic_info" ,
                 "v_sheet2_profiles_history" ,
