@@ -1,11 +1,13 @@
 package gov.gwssi.csc.scms.domain.student;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "SCMS_SCHOOLROLL")
-public class SchoolRoll {
+public class SchoolRoll implements Cloneable{
     @Id
     private String id;
     /**
@@ -162,6 +164,7 @@ public class SchoolRoll {
     /**
      * 学生
      */
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "STUDENTID")
     private Student student;
@@ -476,5 +479,10 @@ public class SchoolRoll {
 
     public void setCurrentProvince(String currentProvince) {
         this.currentProvince = currentProvince;
+    }
+
+    @Override
+    public SchoolRoll clone() throws CloneNotSupportedException{
+        return (SchoolRoll)super.clone();
     }
 }

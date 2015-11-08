@@ -1,6 +1,8 @@
 package gov.gwssi.csc.scms.domain.student;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -10,7 +12,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "SCMS_SCHOOL_FELLOW")
-public class Schoolfellow {
+public class Schoolfellow implements Cloneable{
     @Id
     private String id;
     /**
@@ -66,6 +68,7 @@ public class Schoolfellow {
     /**
      * 学生id
      */
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "STUDENTID")
     private Student student;
@@ -180,5 +183,10 @@ public class Schoolfellow {
 
     public void setStudent(Student student) {
         this.student = student;
+    }
+
+    @Override
+    public Schoolfellow clone() throws CloneNotSupportedException{
+        return (Schoolfellow)super.clone();
     }
 }

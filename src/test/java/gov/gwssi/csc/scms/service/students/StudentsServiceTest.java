@@ -42,7 +42,7 @@ public class StudentsServiceTest extends UnitTestBase {
 
         System.out.println(student.getClass().getDeclaredMethod("getCscId").invoke(student));
 
-        Student abc = student.clone();
+        Student abc = student.getStudent();
         System.out.println(abc.getCscId());
     }
 

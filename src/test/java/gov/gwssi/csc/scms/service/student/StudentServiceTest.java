@@ -118,21 +118,21 @@ public class StudentServiceTest extends UnitTestBase {
         Assert.assertNotNull(stu1);
     }
 
-    @Test
-    public void updateGroupByName() throws Exception {
-        StudentService studentService = getBean("studentService");
-        String id="2";
-        String body = "{\"value\":\"{\\\"registerState\\\":\\\"123\\\"}\",\"user\":\"11111111\",\"log\":\"[]\"}";
-        String group = "shoolRoll";
-        ObjectMapper mapper = new ObjectMapper();
-        JsonBody jbosy = new ObjectMapper().readValue(body, JsonBody.class);
-        //Json转成对象 包含修改后的信息
-        Object groupObj = updateStudentGroup(group, jbosy.getValue());
-
-        JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
-        List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
-        groupObj = studentService.updateGroupByName(id, group, groupObj, operationLogs);
-    }
+//    @Test
+//    public void updateGroupByName() throws Exception {
+//        StudentService studentService = getBean("studentService");
+//        String id="2";
+//        String body = "{\"value\":\"{\\\"registerState\\\":\\\"123\\\"}\",\"user\":\"11111111\",\"log\":\"[]\"}";
+//        String group = "shoolRoll";
+//        ObjectMapper mapper = new ObjectMapper();
+//        JsonBody jbosy = new ObjectMapper().readValue(body, JsonBody.class);
+//        //Json转成对象 包含修改后的信息
+//        Object groupObj = updateStudentGroup(group, jbosy.getValue());
+//
+//        JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
+//        List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
+//        groupObj = studentService.updateGroupByName(id, group, groupObj, operationLogs);
+//    }
 
     private Object updateStudentGroup(String group, String body) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
