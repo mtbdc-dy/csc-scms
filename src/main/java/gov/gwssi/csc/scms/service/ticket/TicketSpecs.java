@@ -92,7 +92,12 @@ public class TicketSpecs extends BaseService {
 
 
                 if (filter.getTicketState() != null) {
-                    predicate.getExpressions().add(cb.like(ticket.get(Ticket_.state), filter.getTicketState()));
+                    if(filter.getTicketState().equals("AT0006")){
+                        predicate.getExpressions().add(cb.in(ticket.get(Ticket_.state)).value("AT0002").value("AT0005"));
+                    }else{
+                        predicate.getExpressions().add(cb.like(ticket.get(Ticket_.state), filter.getTicketState()));
+                    }
+
                 } else {
                     if ("2".equals(user.getUserType())) {//1 基金委用户 2学校用户
                         predicate.getExpressions().add(cb.in(ticket.get(Ticket_.state)).value("AT0001").value("AT0002").value("AT0005").value("AT0003").value("AT0004"));
@@ -100,7 +105,10 @@ public class TicketSpecs extends BaseService {
                         predicate.getExpressions().add(cb.in(ticket.get(Ticket_.state)).value("AT0002").value("AT0005").value("AT0003").value("AT0004"));
                     }
                 }
+                if (filter.getTicketType() != null) {
+                    predicate.getExpressions().add(cb.like(ticket.get(Ticket_.type), filter.getTicketType()));
 
+                }
                 /**学生主表部分*/
                 if (needStudent) {
                     Join<Ticket, Student> student = ticket.join(Ticket_.student);
@@ -273,6 +281,17 @@ public class TicketSpecs extends BaseService {
                     Join<Student, SchoolRoll> schoolRoll = student.join(Student_.schoolRoll);
                     predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.currentUniversity), nodeId));
                 }
+                return predicate;
+            }
+        };
+    }
+
+    public static Specification<Ticket> stateIs(final String state){
+        return new Specification<Ticket>() {
+            @Override
+            public Predicate toPredicate(Root<Ticket> ticketRoot, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                Predicate predicate = cb.conjunction();
+                predicate.getExpressions().add(cb.like(ticketRoot.get(Ticket_.state), state));
                 return predicate;
             }
         };

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by WangZhenghua on 2015/4/27.
@@ -28,9 +29,10 @@ public class TranslateDictController {
             headers = {"Accept=application/json;charset=utf-8"},
             params = {"codeTableName"}
     )
-    public ResponseEntity<Map<String, List<DictTreeJson>>> getCodeTable(@RequestParam(value = "codeTableName") String[] codeTableNames){
+    public ResponseEntity<Map<String, List<DictTreeJson>>> getCodeTable(@RequestParam(value = "codeTableName") Set<String> codeTableNames){
 
         Map<String, List<DictTreeJson>> map = new HashMap<String, List<DictTreeJson>>();
+
         for (String codeTableName : codeTableNames) {
             map.put(codeTableName, translateDictService.getCodeTableList(codeTableName));
         }

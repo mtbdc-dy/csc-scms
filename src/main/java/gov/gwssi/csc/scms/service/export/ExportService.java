@@ -107,7 +107,12 @@ public class ExportService extends BaseService {
             for (int k = 0; k < headArray1[0].length; k++) {
                 String colen = headArray1[0][k].toUpperCase();//map中区分大小写问题
                 if (map.get(colen) != null) {
-                    result[k] = map.get(colen).toString();
+                    if("v_scholarship_lastyear".equals(tablename) && "SCHOOL".equals(colen)){
+                        String sCode = map.get(colen).toString();
+                        result[k] = baseDAO.getUnivByUnivId(sCode);
+                    }else {
+                        result[k] = map.get(colen).toString();
+                    }
                 } else {
                     result[k] = "";
                 }

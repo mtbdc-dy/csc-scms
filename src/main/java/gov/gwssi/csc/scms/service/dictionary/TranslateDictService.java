@@ -1,14 +1,16 @@
 package gov.gwssi.csc.scms.service.dictionary;
 
 import gov.gwssi.csc.scms.dao.dictionary.CodeTableDAO;
+import gov.gwssi.csc.scms.domain.dictionary.Code;
 import gov.gwssi.csc.scms.domain.dictionary.CodeTableClass;
 import gov.gwssi.csc.scms.domain.dictionary.DictTreeJson;
+import gov.gwssi.csc.scms.repository.dictionary.CodeRepository;
 import gov.gwssi.csc.scms.repository.dictionary.CodeTableClassRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by WangZhenghua on 2015/4/27.
@@ -22,9 +24,28 @@ public class TranslateDictService {
     @Autowired
     private CodeTableDAO codeTableDAO;
 
+
+
     @Autowired
     @Qualifier("codeTableClassRepository")
     private CodeTableClassRepository codeTableClassRepository;
+
+    @Qualifier("codeRepository")
+    @Autowired
+    private CodeRepository codeRepository;
+
+    public Code getCode(String id){
+        return codeRepository.findOne(id);
+    }
+
+    public Map<String, String> getAllCode(){
+        Iterable<Code> all = codeRepository.findAll();
+        Map<String, String> codes = new HashMap<String, String>();
+        for (Code code : all) {
+            codes.put(code.getId(), code.getValue());
+        }
+        return codes;
+    }
 
     public List<DictTreeJson> getCodeTableList(String codeTableName){
         List<DictTreeJson> list;
@@ -67,9 +88,6 @@ public class TranslateDictService {
                 list = getTranslateDictByClassEn(codeTableName);
 
             }
-
-
-            System.out.println("list = " + list);
 
         } catch (Exception e) {
 

@@ -165,7 +165,7 @@ public class OperationLogController {
 
     //分页查询
     @RequestMapping(
-            value = "/query1",
+            value = "/queryLog",
             method = RequestMethod.GET,
             headers = {"Accept=application/json"},
             params = {"mode", "page", "size", "filter"})

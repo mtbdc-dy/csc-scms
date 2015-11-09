@@ -10,6 +10,7 @@ import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.TicketResultObject;
 import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.domain.ticket.Ticket;
+import gov.gwssi.csc.scms.domain.user.Project;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.ticket.TicketRepository;
 import gov.gwssi.csc.scms.service.BaseService;
@@ -20,12 +21,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.data.jpa.domain.Specifications.where;
 
@@ -231,27 +235,57 @@ public class TicketService extends TicketSpecs {
 
     //分页查询
     @Transactional
-    public Page<Ticket> getTicketsPagingByFilter(Filter filter,Integer page,Integer size,String mode,String header) {
+    public Page<Ticket> getTicketsPagingByFilter(Filter filter, Integer page, Integer size, String mode, String header) {
         try {
             User user = userService.getUserByJWT(header);
             Specification<Ticket> specA = filterIsLike(filter, user);
             Specification<Ticket> specB = userIs(user);
             return ticketRepository.findAll(where(specA).and(specB), new PageRequest(page, size));
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
+
     //生成机票管理清单
     public String getStNo(User user) {
-
         List listParameter = new ArrayList();
-
         listParameter.add(user.getUserId());
-       String no = getBaseDao().doStatementForRtn("p_scms_airticket", listParameter);//调用存储生成当年需要预定的机票记录
-
+        String no = getBaseDao().doStatementForRtn("p_scms_airticket", listParameter);//调用存储生成当年需要预定的机票记录
         return no;
+    }
 
+    @Transactional
+    public Map<String,Long> getTicketsStateSum(String header,Filter filter){
+        long zs = 0;
+        long wtj = 0;
+        long ytj = 0;
+        long yfk = 0;
+        long jjwwdc = 0;
+        long jjwydc = 0;
+        try {
+            User user = userService.getUserByJWT(header);
+            Specification<Ticket> specA = filterIsLike(filter, user);
+            Specification<Ticket> specB = userIs(user);
+            zs = ticketRepository.count(where(specA).and(specB));
+            wtj = ticketRepository.count(where(specA).and(specB).and(stateIs("AT0001")));
+            yfk = ticketRepository.count(where(specA).and(specB).and(stateIs("AT0003")));
+            jjwwdc = ticketRepository.count(where(specA).and(specB).and(stateIs("AT0002")));
+            jjwydc = ticketRepository.count(where(specA).and(specB).and(stateIs("AT0005")));
+            ytj = jjwwdc + jjwydc;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        Map<String, Long> result = new HashMap<String, Long>();
+        result.put("zs", zs);
+        result.put("wtj", wtj);
+        result.put("ytj", ytj);
+        result.put("yfk", yfk);
+        result.put("jjwwdc", jjwwdc);
+        result.put("jjwydc", jjwydc);
+        return result;
     }
 
 }

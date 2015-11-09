@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.domain.scholarship;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import gov.gwssi.csc.scms.domain.student.Student;
 
 import javax.persistence.*;
@@ -16,11 +17,11 @@ public class ScholarshipX {
     //@Column(length = 19)
     private String id;
 
-
     /**
      * 学生
      */
-    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "STUDENTID")
     private Student student;
 

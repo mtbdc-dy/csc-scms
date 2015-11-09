@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.domain.abnormal;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import gov.gwssi.csc.scms.domain.student.Student;
 
 import javax.persistence.*;
@@ -22,6 +23,7 @@ public class Abnormal {
 //    @JoinColumn(name = "studentid"/*,nullable = false*/,insertable = false, updatable = false)
 //    private Student student;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "studentid"/*,nullable = false*/)
     private Student student;

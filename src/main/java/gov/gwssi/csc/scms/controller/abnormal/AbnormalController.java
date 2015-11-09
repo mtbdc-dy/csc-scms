@@ -11,6 +11,7 @@ import gov.gwssi.csc.scms.domain.query.AbnormalResultObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.domain.user.User;
+import gov.gwssi.csc.scms.repository.abnormal.AbnormalRepository;
 import gov.gwssi.csc.scms.service.abnormal.AbnormalConverter;
 import gov.gwssi.csc.scms.service.abnormal.AbnormalService;
 import gov.gwssi.csc.scms.service.abnormal.NoSuchAbnormalException;
@@ -97,6 +98,9 @@ public class AbnormalController {
             if (abnormal == null) {
                 throw new NoSuchAbnormalException("cannot generate the abnormal");
             }
+
+            String reason = "学校意见:\n" + abnormal.getReason() + "\n基金委主管意见:\n";
+            abnormal.setReason(reason);
 
 //            abnormal.setStudentId(studentId);
             Student student = studentService.getStudentById(studentId);

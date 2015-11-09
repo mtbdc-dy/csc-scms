@@ -1,14 +1,7 @@
 package gov.gwssi.csc.scms.service.dynamicReport;
 
 import gov.gwssi.csc.scms.base.UnitTestBase;
-import gov.gwssi.csc.scms.domain.dynamicReport.ReportConfiguration;
-import gov.gwssi.csc.scms.domain.dynamicReport.TablesJson;
-import gov.gwssi.csc.scms.repository.dynamicReport.ReportConfigurationRepository;
-import gov.gwssi.csc.scms.service.dictionary.NoSuchDictTreeException;
-import gov.gwssi.csc.scms.service.dictionary.util.JsonMapper;
 import org.junit.Test;
-
-import java.util.List;
 
 
 /**
@@ -17,11 +10,11 @@ import java.util.List;
  */
 public class StatisticsServiceTest extends UnitTestBase {
 
-    @Test
-    public void testReportConfiguration(){
-        ReportConfigurationRepository reportConfigurationRepository = getBean(ReportConfigurationRepository.class);
-        reportConfigurationRepository.findAll();
-    }
+//    @Test
+//    public void testReportConfiguration(){
+//        ReportConfigurationRepository reportConfigurationRepository = getBean(ReportConfigurationRepository.class);
+//        reportConfigurationRepository.findAll();
+//    }
 
 //    // DimTable测试，获取动态查询统计所有表清单
 //    @Test

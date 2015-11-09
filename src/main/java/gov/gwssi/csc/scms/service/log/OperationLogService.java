@@ -88,7 +88,8 @@ public class OperationLogService extends BaseService {
         }
     }
     public Page<OperationLog> getOptLogsPagingByFilter(Filter filter,Integer page,Integer size,String mode,User user) {
-        Specification<OperationLog> specA = filterIsLike(filter,user);
+        String userId = user.getUserId();
+        Specification<OperationLog> specA = filterIsLike(filter,userId);
 //        Specification<Ticket> specB = userIs(user);getOptLogsPagingByFilter
 //        System.out.println();
         return operationLogRepository.findAll(where(specA), new PageRequest(page, size, Sort.Direction.DESC,"createD"));

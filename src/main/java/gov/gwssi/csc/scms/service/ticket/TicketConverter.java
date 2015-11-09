@@ -21,6 +21,7 @@ public class TicketConverter extends BaseService implements Converter<Ticket, Ma
         SchoolRoll schoolRoll = student.getSchoolRoll();
         target.put("id",ticket.getId());
         target.put("studentId",student.getId());
+        target.put("currentUniversity",schoolRoll.getCurrentUniversity());
         target.put("cscId",student.getCscId());
         target.put("passportName",basicInfo.getPassportName());
         target.put("gender",basicInfo.getGender());

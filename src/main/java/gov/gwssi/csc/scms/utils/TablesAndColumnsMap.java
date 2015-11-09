@@ -17,5 +17,6 @@ public class TablesAndColumnsMap {
         tableMap.put("profilesHistory","SCMS_PROFILES_HISTORY");
         tableMap.put("schoolfellow","SCMS_SCHOOL_FELLOW");
         tableMap.put("registrationInfo","SCMS_REGISTRATION_INFO");
+        tableMap.put("insurance","SCMS_INSURANCE");
     }
 }

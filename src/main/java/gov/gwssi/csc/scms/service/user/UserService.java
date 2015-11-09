@@ -2,6 +2,7 @@ package gov.gwssi.csc.scms.service.user;
 
 import gov.gwssi.csc.scms.controller.RequestHeaderError;
 import gov.gwssi.csc.scms.domain.user.*;
+import gov.gwssi.csc.scms.repository.user.ProjectRepository;
 import gov.gwssi.csc.scms.repository.user.UserRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.utils.JWTUtil;
@@ -23,6 +24,9 @@ public class UserService extends BaseService {
     @Autowired
     @Qualifier("userRepository")
     private UserRepository userRepository;
+    @Qualifier("projectRepository")
+    @Autowired
+    private ProjectRepository projectRepository;
 
     @Autowired
     private RoleService roleService;
@@ -35,6 +39,7 @@ public class UserService extends BaseService {
 
     @Autowired
     private ProjectService projectService;
+
 
 
     public User getUserByIdAndEnable(String id, String enable) {
@@ -86,8 +91,12 @@ public class UserService extends BaseService {
     }
 
     public User addUser(User user, User loginUser) throws UserIdBeingUsedException, NoSuchRoleException, NoSuchNodeException {
-        if (userExists(user.getUserId()))
-            throw new UserIdBeingUsedException("this username for new user is used :" + user.getUserId());
+        if (userExists(user.getUserId())){
+        //            throw new UserIdBeingUsedException("this username for new user is used :" + user.getUserId());
+
+            return null;
+        }
+
         user.setId(getBaseDao().getIdBySequence("seq_user"));
         user.setPassword(user.getPassword());
         user.setCreateBy(loginUser.getUserId());
@@ -108,20 +117,8 @@ public class UserService extends BaseService {
         }
         user.setNode(node);
 
-        List<Project> projects = user.getProjects();
-        List<Project> newProjects = new ArrayList<Project>(projects.size());
-        Project newProject;
-        for (Project project : projects) {
-            newProject = projectService.getProjectByProjectIdAndEnabled(project.getProjectId(), Project.ENABLED);
-            if (newProject != null) {
-                newProjects.add(newProject);
-            }
-        }
-        user.setProjects(newProjects);
+        user = userRepository.save(user);
 
-        user = doSave(user);
-
-//        return initUser(user);
         return user;
     }
 
@@ -129,16 +126,15 @@ public class UserService extends BaseService {
         return userRepository.save(user);
     }
 
-
+    @Transactional
     public void deleteUser(String id, User loginUser) throws NoSuchUserException, NoSuchNodeException, NoSuchRoleException {
-        User user = getUserByUserIdAndEnable(id, User.ENABLE);
+        User user = userRepository.findUserByUserIdAndEnable(id, User.ENABLE);
         if (user == null)
             throw new NoSuchUserException("can not find enable user for delete:" + id);
 
         user.setEnable(User.UNENABLE);
         user.setUpdateDate(new Date());
         user.setUpdateBy(loginUser.getUserId());
-        doSave(user);
     }
 
 
@@ -148,7 +144,7 @@ public class UserService extends BaseService {
             throw new NoSuchUserException("cannot find the user for update : " + user.getUserId());
 
         if (user.getPassword() != null) {
-            user.setPassword(MD5Util.MD5(user.getPassword()));
+//            user.setPassword(MD5Util.MD5(user.getPassword()));
         } else {
             user.setPassword(u.getPassword());
         }
@@ -268,5 +264,22 @@ public class UserService extends BaseService {
 
     public User getUserByUserId(String userId) {
         return userRepository.findUserByUserId(userId);
+    }
+
+    @Transactional
+    public User updateUserProjects(User user){
+        List<Project> projectsNow = user.getProjects();
+        User userYuan = userRepository.findOne(user.getId());
+        List<Project> projectsYuan = userYuan.getProjects();
+        projectsYuan.clear();
+        Project newProject;
+        for(int i=0;i<projectsNow.size();i++){
+            newProject = projectService.getProjectByProjectIdAndEnabled(projectsNow.get(i).getProjectId(), Project.ENABLED);
+            if (newProject != null) {
+                projectsYuan.add(newProject);
+            }
+        }
+        userYuan.setProjects(projectsYuan);
+        return user;
     }
 }

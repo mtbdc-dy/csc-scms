@@ -220,6 +220,22 @@ public class studentsController {
         Page<Map<String, Object>> mapPage = studentPage.map(new StudentConverter(fields));
         return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
     }
+
+    //根据过滤条件查询全部学生
+    @RequestMapping(
+            value = "/exportAll",
+            method = RequestMethod.GET,
+            headers = {"Accept=application/json"},
+            params = {"mode","filter"})
+    public String[] getLeaveChinaStudents(
+            @RequestHeader(value = HEADER_AUTHORIZATION) String header,
+            @RequestParam(value = "mode") String mode,
+            @RequestParam(value = "filter") String filterJSON) throws IOException {
+        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+        String studentsAll[] = studentsService.getStudentsAllByFilter(filter, mode, header);
+        return studentsAll;
+    }
+
 //
 //    /**
 //     * 根据学生id返回但个学生的所有信息

@@ -18,7 +18,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.data.jpa.domain.Specifications.where;
 
@@ -53,9 +55,23 @@ public class ScholarshipJService extends ScholarshipJSpecs {
         return scholarshipJDAO.getDetailListBy(scholarshipId);
     }
     //分页查询
-    public Page<ScholarshipJ> getScholarshipJsPagingByFilter(Filter filter,Integer page,Integer size,String mode,User user) {
-        Specification<ScholarshipJ> specA = filterIsLike(filter,user);
-//        Specification<ScholarshipJ> specB = userIs(user);
-        return scholarshipJRepository.findAll(where(specA), new PageRequest(page, size , Sort.Direction.DESC,"state"));
+    public Page<ScholarshipJ> getScholarshipJsPagingByFilter(Filter filter,Integer page,Integer size,String mode) {
+        Specification<ScholarshipJ> specA = filterIsLike(filter);
+        return scholarshipJRepository.findAll(where(specA), new PageRequest(page, size, Sort.Direction.DESC, "state"));
+    }
+    //统计未上报已上报学校数量
+    public Map<String,Long> getScholarshipJSchoolNum(Filter filter){
+        long unSubmitted = 0;
+        long submitted = 0;
+        long sum = 0;
+        Specification<ScholarshipJ> specA = filterIsLike(filter);
+        sum = scholarshipJRepository.count(where(specA));
+        unSubmitted = scholarshipJRepository.count(where(specA).and(stateIs('1')));
+        submitted = scholarshipJRepository.count(where(specA).and(stateIs('2')));
+        Map<String,Long> result = new HashMap<String, Long>();
+        result.put("sum",sum);
+        result.put("unSubmitted",unSubmitted);
+        result.put("submitted",submitted);
+        return result;
     }
 }
