@@ -14,6 +14,7 @@ import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.TicketResultObject;
 import gov.gwssi.csc.scms.domain.student.*;
 import gov.gwssi.csc.scms.domain.ticket.Ticket;
+import gov.gwssi.csc.scms.domain.ticket.TicketSort;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.domain.warning.Warning;
 import gov.gwssi.csc.scms.service.BaseService;
@@ -22,6 +23,7 @@ import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.ticket.NoSuchTicketException;
 import gov.gwssi.csc.scms.service.ticket.TicketConverter;
 import gov.gwssi.csc.scms.service.ticket.TicketService;
+import gov.gwssi.csc.scms.service.ticket.TicketSortConverter;
 import gov.gwssi.csc.scms.service.user.NoSuchUserException;
 import gov.gwssi.csc.scms.service.user.UserIdentityError;
 import gov.gwssi.csc.scms.service.user.UserService;
@@ -74,7 +76,7 @@ public class TicketController extends BaseService {
 
     //学校用户在前台点击生成机票管理列表，返回列表
     @RequestMapping(value = "/new", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public Map<String,String> getTickets(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
+    public Map<String, String> getTickets(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
         User user = null;
         try {
             user = userService.getUserByJWT(header);
@@ -83,12 +85,12 @@ public class TicketController extends BaseService {
         } catch (UserIdentityError userIdentityError) {
             userIdentityError.printStackTrace();
         }
-        Map<String,String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<String, String>();
         String no = ticketService.getStNo(user);
 
 //        List<Map<String,String>> list = new ArrayList<Map<String, String>>();
 //        list.add(map);
-        map.put("returnNo",no);
+        map.put("returnNo", no);
         return map;
     }
 
@@ -407,7 +409,29 @@ public class TicketController extends BaseService {
 
     }
 
-    //分页查询
+    //    //分页查询
+//    @RequestMapping(
+//            method = RequestMethod.GET,
+//            headers = {"Accept=application/json"},
+//            params = {"mode", "field", "page", "size", "filter"})
+//    public ResponseEntity<Page<Map<String, Object>>> getTickets(
+//            @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
+//            @RequestParam(value = "mode") String mode,
+//            @RequestParam(value = "field") String[] fields,
+//            @RequestParam(value = "page") Integer page,
+//            @RequestParam(value = "size") Integer size,
+//            @RequestParam(value = "filter") String filterJSON) throws IOException {
+//        try {
+//            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+//            Page<Ticket> ticketPage = ticketService.getTicketsPagingByFilter(filter, page, size, mode, header);
+//            Page<Map<String, Object>> mapPage = ticketPage.map(new TicketConverter());
+//            return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new RuntimeException(e);
+//        }
+//    }
+//分页查询 增加院校排序
     @RequestMapping(
             method = RequestMethod.GET,
             headers = {"Accept=application/json"},
@@ -421,8 +445,8 @@ public class TicketController extends BaseService {
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         try {
             Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
-            Page<Ticket> ticketPage = ticketService.getTicketsPagingByFilter(filter, page, size, mode, header);
-            Page<Map<String, Object>> mapPage = ticketPage.map(new TicketConverter());
+            Page<TicketSort> ticketPage = ticketService.getTicketsPagingByFilterSort(filter, page, size, mode, header);
+            Page<Map<String, Object>> mapPage = ticketPage.map(new TicketSortConverter());
             return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
@@ -436,14 +460,14 @@ public class TicketController extends BaseService {
             method = RequestMethod.GET,
             headers = {"Accept=application/json"},
             params = {"filter"})
-    public Map<String,Long> getInsurancesStateSum(
+    public Map<String, Long> getInsurancesStateSum(
             @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
             @RequestParam(value = "filter") String filterJSON) throws IOException {
-        Map<String, Long> result=new HashMap<String,Long >();
+        Map<String, Long> result = new HashMap<String, Long>();
         try {
             Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
             result = ticketService.getTicketsStateSum(header, filter);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
