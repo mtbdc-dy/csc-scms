@@ -75,16 +75,6 @@ public class Warning implements Cloneable{
     @JoinColumn(name = "STUDENTID")
     private Student student;
 
-//    private String studentId;
-
-//    public String getStudentId() {
-//        return studentId;
-//    }
-//
-//    public void setStudentId(String studentId) {
-//        this.studentId = studentId;
-//    }
-
     public Student getStudent() {
         return student;
     }
