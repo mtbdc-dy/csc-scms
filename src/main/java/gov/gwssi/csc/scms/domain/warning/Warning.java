@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.domain.warning;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import gov.gwssi.csc.scms.domain.student.Student;
 
 import javax.persistence.*;
@@ -69,19 +70,10 @@ public class Warning implements Cloneable{
     /**
      * 学生
      */
+    @JsonIgnore
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "STUDENTID")
     private Student student;
-
-//    private String studentId;
-
-//    public String getStudentId() {
-//        return studentId;
-//    }
-//
-//    public void setStudentId(String studentId) {
-//        this.studentId = studentId;
-//    }
 
     public Student getStudent() {
         return student;

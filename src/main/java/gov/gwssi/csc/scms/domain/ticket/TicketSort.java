@@ -2,6 +2,7 @@ package gov.gwssi.csc.scms.domain.ticket;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import gov.gwssi.csc.scms.domain.student.Student;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -11,8 +12,8 @@ import java.util.Date;
  * 机票管理
  */
 @Entity
-@Table(name = "SCMS_AIRTICKET")
-public class Ticket {
+@Table(name = "v_airticket_sort")
+public class TicketSort {
     @Id
     private String id;
 
@@ -20,10 +21,7 @@ public class Ticket {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "studentid"/*,nullable = false*/)
     private Student student;
-//    /**
-//     * STUDENTID
-//     */
-//    private  String studentId;
+
     /**
      *院校 可以不需要 待定
      */
@@ -108,6 +106,20 @@ public class Ticket {
     @Column(name = "updated")
     private Date updated;
 
+    /**
+     *修改时间
+     */
+    @Column(name = "customsort")
+    private Long customSort;
+
+    public Long getCustomSort() {
+        return customSort;
+    }
+
+    public void setCustomSort(Long customSort) {
+        this.customSort = customSort;
+    }
+
     public Date getValiddate() {
         return validdate;
     }
@@ -123,14 +135,6 @@ public class Ticket {
     public void setId(String id) {
         this.id = id;
     }
-
-//    public String getStudentId() {
-//        return studentId;
-//    }
-//
-//    public void setStudentId(String studentId) {
-//        this.studentId = studentId;
-//    }
 
     public String getSchool() {
         return school;

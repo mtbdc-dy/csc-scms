@@ -125,7 +125,7 @@ public class Student implements Cloneable {
     /**
      * 预警名单
      */
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "warning", unique = true)
     private Warning warning;
 
