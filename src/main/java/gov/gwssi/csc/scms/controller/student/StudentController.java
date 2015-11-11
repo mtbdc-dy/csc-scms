@@ -176,33 +176,10 @@ public class StudentController {
     public Student getStudentById(@PathVariable(value = "id") String id) {
         try {
             Student student = studentService.getCompleteInfoOfStudentById(id);
-//            List<Insurance> insuranceList = student.getInsurances();
             ObjectMapper mapper = new ObjectMapper();
-//            mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-//
+
             System.out.println(mapper.writeValueAsString(student));
 
-//            SerializationFeature.FAIL_ON_EMPTY_BEANS
-//            insuranceList
-
-//            if(insuranceList != null && insuranceList.size()>0){
-//                List<Insurance> insurances = new ArrayList<Insurance>();
-//                long max = insuranceList.get(0).getYear();
-//                for(int i=1;i<insuranceList.size();i++){
-//                    if(insuranceList.get(i).getYear()>max){
-//                        max = insuranceList.get(i).getYear();
-//                    }
-//                }
-//                for(int j=0;j<insuranceList.size();j++){
-//                    Insurance insurance = insuranceList.get(j);
-//                    if(insurance.getInsurSta().equals("1")&&insurance.getYear() == max){
-//                        insurance.setStudent(null);
-//                        insurances.add(insurance);
-//                        break;
-//                    }
-//                }
-//                student.setInsurances(insurances);
-//            }
             return student;
         } catch (Exception e) {
             e.printStackTrace();

@@ -10,10 +10,10 @@ import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.TicketResultObject;
 import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.domain.ticket.Ticket;
-import gov.gwssi.csc.scms.domain.user.Project;
+import gov.gwssi.csc.scms.domain.ticket.TicketSort;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.ticket.TicketRepository;
-import gov.gwssi.csc.scms.service.BaseService;
+import gov.gwssi.csc.scms.repository.ticket.TicketSortRepository;
 import gov.gwssi.csc.scms.service.log.OperationLogService;
 import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.user.UserService;
@@ -38,10 +38,13 @@ import static org.springframework.data.jpa.domain.Specifications.where;
  * 机票管理服务类
  */
 @Service("ticketService")
-public class TicketService extends TicketSpecs {
+public class TicketService extends TicketSortSpecs {
     @Autowired
     @Qualifier("ticketRepository")
     private TicketRepository ticketRepository;
+    @Autowired
+    @Qualifier("ticketSortRepository")
+    private TicketSortRepository ticketSortRepository;
     @Autowired
     private OperationLogService operationLogService;
     @Autowired
@@ -234,13 +237,27 @@ public class TicketService extends TicketSpecs {
     }
 
     //分页查询
+//    @Transactional
+//    public Page<Ticket> getTicketsPagingByFilter(Filter filter, Integer page, Integer size, String mode, String header) {
+//        try {
+//            User user = userService.getUserByJWT(header);
+//            Specification<Ticket> specA = filterIsLike(filter, user);
+//            Specification<Ticket> specB = userIs(user);
+//            return ticketRepository.findAll(where(specA).and(specB), new PageRequest(page, size));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new RuntimeException(e);
+//        }
+//    }
+
+    //分页查询 增加院校排序
     @Transactional
-    public Page<Ticket> getTicketsPagingByFilter(Filter filter, Integer page, Integer size, String mode, String header) {
+    public Page<TicketSort> getTicketsPagingByFilterSort(Filter filter, Integer page, Integer size, String mode, String header) {
         try {
             User user = userService.getUserByJWT(header);
-            Specification<Ticket> specA = filterIsLike(filter, user);
-            Specification<Ticket> specB = userIs(user);
-            return ticketRepository.findAll(where(specA).and(specB), new PageRequest(page, size));
+            Specification<TicketSort> specA = filterIsLike(filter, user);
+            Specification<TicketSort> specB = userIs(user);
+            return ticketSortRepository.findAll(where(specA).and(specB), new PageRequest(page, size, Sort.Direction.ASC,"customSort"));
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -265,13 +282,13 @@ public class TicketService extends TicketSpecs {
         long jjwydc = 0;
         try {
             User user = userService.getUserByJWT(header);
-            Specification<Ticket> specA = filterIsLike(filter, user);
-            Specification<Ticket> specB = userIs(user);
-            zs = ticketRepository.count(where(specA).and(specB));
-            wtj = ticketRepository.count(where(specA).and(specB).and(stateIs("AT0001")));
-            yfk = ticketRepository.count(where(specA).and(specB).and(stateIs("AT0003")));
-            jjwwdc = ticketRepository.count(where(specA).and(specB).and(stateIs("AT0002")));
-            jjwydc = ticketRepository.count(where(specA).and(specB).and(stateIs("AT0005")));
+            Specification<TicketSort> specA = filterIsLike(filter, user);
+            Specification<TicketSort> specB = userIs(user);
+            zs = ticketSortRepository.count(where(specA).and(specB));
+            wtj = ticketSortRepository.count(where(specA).and(specB).and(stateIs("AT0001")));
+            yfk = ticketSortRepository.count(where(specA).and(specB).and(stateIs("AT0003")));
+            jjwwdc = ticketSortRepository.count(where(specA).and(specB).and(stateIs("AT0002")));
+            jjwydc = ticketSortRepository.count(where(specA).and(specB).and(stateIs("AT0005")));
             ytj = jjwwdc + jjwydc;
 
         } catch (Exception e) {
