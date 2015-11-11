@@ -231,8 +231,10 @@ public class TicketService extends TicketSortSpecs {
     public void updateTicketState(String[] ids) {
         for (int i = 0; i < ids.length; i++) {
             Ticket ticket = ticketRepository.findOne(ids[i]);
-            ticket.setState("AT0005");
-            ticketRepository.save(ticket);
+            if("AT0002".equals(ticket.getState())){
+                ticket.setState("AT0005");
+                ticketRepository.save(ticket);
+            }
         }
     }
 
