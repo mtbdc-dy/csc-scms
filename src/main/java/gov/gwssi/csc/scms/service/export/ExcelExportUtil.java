@@ -273,7 +273,7 @@ public class ExcelExportUtil {
             }
 
             //合并动态表头
-            if (mergeArrays.size()>0 && ((int[][])mergeArrays.get(i)).length > 0) {
+            if (mergeArrays.size()>0 && mergeArrays.get(i)!= null &&((int[][])mergeArrays.get(i)).length > 0) {
                 for (int i1 = 0; i1 < ((int[][])mergeArrays.get(i)).length; i1++) {
                     //转换合并数组,行数+titleRowNum，列数不变
                     int[][] mera=((int[][])mergeArrays.get(i));
@@ -582,7 +582,7 @@ public class ExcelExportUtil {
             String dir = "";
             dir = s[0];
             for (int i = 1; i < s.length; i++) {
-                if (s[i].indexOf(".") >= 0) {
+                if (s[i].contains(".")) {
                     return;
                 } else {
                     dir = dir + "/" + s[i];

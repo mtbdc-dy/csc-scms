@@ -1,19 +1,12 @@
 package gov.gwssi.csc.scms.controller.appropriation;
 
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.gwssi.csc.scms.controller.JsonBody;
-import gov.gwssi.csc.scms.controller.RequestHeaderError;
 import gov.gwssi.csc.scms.domain.appropriation.Appropriation;
 import gov.gwssi.csc.scms.domain.filter.Filter;
-import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.user.User;
-import gov.gwssi.csc.scms.service.abnormal.NoSuchAbnormalException;
 import gov.gwssi.csc.scms.service.appropriation.AppropriationConverter;
 import gov.gwssi.csc.scms.service.export.ExportService;
 import gov.gwssi.csc.scms.service.appropriation.AppropriationService;
-import gov.gwssi.csc.scms.service.user.NoSuchUserException;
-import gov.gwssi.csc.scms.service.user.UserIdentityError;
 import gov.gwssi.csc.scms.service.user.UserService;
 import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -107,7 +96,7 @@ public class AppropriationController {
         byte[] bytes = null;
 
         String tableName = "v_exp_appropriation";
-        bytes = exportService.exportByfilter(tableName,"0", id);
+        bytes = exportService.exportByFilter(tableName,"0", id);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
 

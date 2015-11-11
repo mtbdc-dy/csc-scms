@@ -9,7 +9,6 @@ import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.export.ExportService;
 import gov.gwssi.csc.scms.service.scholarship.ScholarshipJConverter;
 import gov.gwssi.csc.scms.service.scholarship.ScholarshipJService;
-import gov.gwssi.csc.scms.service.scholarship.ScholarshipXConverter;
 import gov.gwssi.csc.scms.service.scholarship.ScholarshipXService;
 import gov.gwssi.csc.scms.service.user.UserService;
 import gov.gwssi.csc.scms.utils.JWTUtil;
@@ -138,7 +137,7 @@ public class ScholarshipJController {
            id1=ids.split(",");//转化后的id数组
         }
         String tableName = "v_scholarship_lastyear";//对主表对应的所有信息以学生为单位导出
-        bytes = exportService.exportByfilter(tableName,"1", id1);
+        bytes = exportService.exportByFilter(tableName,"1", id1);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
 
