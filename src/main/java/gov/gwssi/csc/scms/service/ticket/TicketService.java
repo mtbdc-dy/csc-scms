@@ -264,6 +264,26 @@ public class TicketService extends TicketSortSpecs {
         }
     }
 
+    @Transactional
+    public String[] getAllTicketsByFilter(Filter filter,String header) {
+        List<TicketSort> ticketSorts;
+        try {
+            User user = userService.getUserByJWT(header);
+            Specification<TicketSort> specA = filterIsLike(filter, user);
+            Specification<TicketSort> specB = userIs(user);
+            ticketSorts = ticketSortRepository.findAll(where(specA).and(specB));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        String result[]=new String[ticketSorts.size()];
+        for(int i=0;i<ticketSorts.size();i++){
+            String id = ticketSorts.get(i).getId();
+            result[i] = id;
+        }
+        return result;
+    }
+
     //生成机票管理清单
     public String getStNo(User user) {
         List listParameter = new ArrayList();
