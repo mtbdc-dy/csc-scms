@@ -44,6 +44,7 @@ import java.util.*;
 @RestController
 @RequestMapping(value = "/scholarshipX")
 public class ScholarshipXController {
+    private static final String HEADER_AUTHORIZATION = JWTUtil.HEADER_AUTHORIZATION;
     @Autowired
     private ExportService exportService;
     @Autowired
@@ -411,6 +412,32 @@ public class ScholarshipXController {
         return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
     }
 
+    /**
+     *增加全部导出
+     */
+    @RequestMapping(
+            value = "/all",
+            method = RequestMethod.GET,
+            params = {"filter"},
+            headers = "Accept=application/octet-stream")
+    public ResponseEntity<byte[]> exportAllScholarshipX(
+            @RequestHeader(value = HEADER_AUTHORIZATION) String header,
+            @RequestParam(value = "filter") String filterJSON) throws IOException {
+        byte[] bytes = null;
+        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+        String id[] = scholarshipXService.getAllScholarshipXByFilter(filter,header);
+
+        String tableName = "v_scholarship_lastyear";
+        bytes = exportService.exportByfilter(tableName, "0", id);
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        httpHeaders.setContentDispositionFormData("attachment", fileName);
+
+        return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
+    }
 
     // 基金委跳转进来的相关操作
     // 基金委用户在前台点击查询，返回列表
