@@ -181,8 +181,10 @@ public class InsuranceService extends InsuranceSpecs {
     public void updateInsurancePresta(String[] id) {
         for (int i = 0; i < id.length; i++) {
             Insurance insurance = getInsuranceById(id[i]);
-            insurance.setPreSta("AV0002");
-            insuranceRepository.save(insurance);
+            if("AV0001".equals(insurance.getPreSta())){
+                insurance.setPreSta("AV0002");
+                insuranceRepository.save(insurance);
+            }
         }
 
 
@@ -209,6 +211,26 @@ public class InsuranceService extends InsuranceSpecs {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    @Transactional
+    public String[] getAllInsuranceByFilter(Filter filter,String mode, String header) {
+        List<Insurance> insurances;
+        try {
+            User user = userService.getUserByJWT(header);
+            Specification<Insurance> specA = filterIsLike(filter, user, mode);
+            Specification<Insurance> specB = userIs(user);
+            insurances = insuranceRepository.findAll(where(specA).and(specB));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        String result[]=new String[insurances.size()];
+        for(int i=0;i<insurances.size();i++){
+            String id = insurances.get(i).getId();
+            result[i] = id;
+        }
+        return result;
     }
 
     //统计保险状态 已导出 未导出 已反馈
