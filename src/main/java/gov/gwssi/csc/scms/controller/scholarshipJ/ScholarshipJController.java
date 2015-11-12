@@ -149,6 +149,37 @@ public class ScholarshipJController {
     }
 
     /**
+     *查询得到导出数据总数
+     */
+    @RequestMapping(
+            value = "/getTotalNum",
+            method = RequestMethod.GET,
+            params = {"filter"},
+            headers = "Accept=application/json")
+    public Map<String,Integer> getScholarshipJExportTotalNum(
+            @RequestParam(value = "filter") String filterJSON) throws IOException {
+        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+        String id[] = scholarshipJService.getAllScholarshipJsByFilter(filter);
+        byte[] bytes = null;
+        String ids=null;
+        //将scholarshipId转化成id
+        for ( int i =0;i<id.length;i++) {
+            List detailList = scholarshipJService.findDetailListBy(id[i]);//找到主表对应的所有字表数据
+            for(int j=0;j<detailList.size();j++){
+                HashMap strD = (HashMap) detailList.get(j);
+                ids=ids+","+strD.get("ID");
+            }
+        }
+        String[] id1=null;
+        if(ids!=null){
+            id1=ids.split(",");//转化后的id数组
+        }
+        Map<String,Integer> resutlt = new HashMap<String, Integer>();
+        resutlt.put("totalNum",id1.length);
+        return resutlt;
+    }
+
+    /**
      *全部导出功能
      */
     @RequestMapping(
