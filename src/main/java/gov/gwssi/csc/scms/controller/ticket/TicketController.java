@@ -423,7 +423,7 @@ public class TicketController extends BaseService {
         Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
         String id[] = ticketService.getAllTicketsByFilter(filter,header);
         String tableName = "v_exp_airticket";
-        bytes = exportService.exportByfilter(tableName, "0", id);
+        bytes = exportService.exportByFilter(tableName, "0", id);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
 
