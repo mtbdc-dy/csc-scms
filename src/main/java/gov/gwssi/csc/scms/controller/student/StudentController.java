@@ -2,11 +2,8 @@ package gov.gwssi.csc.scms.controller.student;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 import gov.gwssi.csc.scms.domain.filter.Filter;
-import gov.gwssi.csc.scms.domain.insurance.Insurance;
 import gov.gwssi.csc.scms.service.export.ExportService;
 import gov.gwssi.csc.scms.service.students.StudentsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +30,6 @@ import gov.gwssi.csc.scms.utils.JWTUtil;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
 import java.net.URLDecoder;
 import java.sql.Timestamp;
 import java.util.*;
@@ -386,7 +382,7 @@ public class StudentController {
         byte[] bytes = null;
 
         String tableName = "v_exp_register";
-        bytes = exportService.exportByfilter(tableName,"0", id);
+        bytes = exportService.exportByFilter(tableName,"0", id);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
 
@@ -411,7 +407,7 @@ public class StudentController {
         String [] id = studentsService.getStudentsAllByFilter(filter, mode, header);
 
         String tableName = "v_exp_register";
-        bytes = exportService.exportByfilter(tableName,"0", id);
+        bytes = exportService.exportByFilter(tableName,"0", id);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
 
