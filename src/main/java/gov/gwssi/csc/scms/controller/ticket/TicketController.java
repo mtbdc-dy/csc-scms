@@ -6,8 +6,6 @@ import gov.gwssi.csc.scms.controller.JsonBody;
 import gov.gwssi.csc.scms.controller.RequestHeaderError;
 import gov.gwssi.csc.scms.dao.ticket.TicketDAO;
 
-import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
-
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
@@ -16,12 +14,10 @@ import gov.gwssi.csc.scms.domain.student.*;
 import gov.gwssi.csc.scms.domain.ticket.Ticket;
 import gov.gwssi.csc.scms.domain.ticket.TicketSort;
 import gov.gwssi.csc.scms.domain.user.User;
-import gov.gwssi.csc.scms.domain.warning.Warning;
 import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.service.export.ExportService;
 import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.ticket.NoSuchTicketException;
-import gov.gwssi.csc.scms.service.ticket.TicketConverter;
 import gov.gwssi.csc.scms.service.ticket.TicketService;
 import gov.gwssi.csc.scms.service.ticket.TicketSortConverter;
 import gov.gwssi.csc.scms.service.user.NoSuchUserException;
@@ -393,7 +389,7 @@ public class TicketController extends BaseService {
         byte[] bytes = null;
 
         String tableName = "v_exp_airticket";
-        bytes = exportService.exportByfilter(tableName, "0", id);
+        bytes = exportService.exportByFilter(tableName, "0", id);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
 
