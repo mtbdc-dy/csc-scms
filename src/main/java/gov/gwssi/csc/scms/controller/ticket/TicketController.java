@@ -53,6 +53,7 @@ import java.util.*;
 @RestController
 @RequestMapping(value = "/ticket")
 public class TicketController extends BaseService {
+    private static final String HEADER_AUTHORIZATION = JWTUtil.HEADER_AUTHORIZATION;
     @Autowired
     private UserService userService;
     @Autowired
@@ -297,7 +298,7 @@ public class TicketController extends BaseService {
         }
     }
 
-    //
+
     @RequestMapping(value = "/getkey", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
     public List getValue(@RequestParam(value = "key") String key) {
         //按照分页（默认）要求，返回列表内容
@@ -390,6 +391,39 @@ public class TicketController extends BaseService {
 
         String tableName = "v_exp_airticket";
         bytes = exportService.exportByFilter(tableName, "0", id);
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        httpHeaders.setContentDispositionFormData("attachment", fileName);
+
+        if ("1".equals(userType)) {
+            ticketService.updateTicketState(id);
+        }
+
+        return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
+
+    }
+
+    /**
+     * 导出全部机票信息
+     * GET
+     * Accept: application/octet-stream
+     */
+    @RequestMapping(value = "/export/all",
+            method = RequestMethod.GET,
+            params = {"userType","filter"},
+            headers = "Accept=application/octet-stream")
+    public ResponseEntity<byte[]> exportAllTickets(
+            @RequestHeader(value = HEADER_AUTHORIZATION) String header,
+            @RequestParam(value = "filter") String filterJSON,
+            @RequestParam("userType") String userType) throws IOException {
+        byte[] bytes = null;
+        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+        String id[] = ticketService.getAllTicketsByFilter(filter,header);
+        String tableName = "v_exp_airticket";
+        bytes = exportService.exportByfilter(tableName, "0", id);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
 

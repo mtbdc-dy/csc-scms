@@ -231,8 +231,10 @@ public class TicketService extends TicketSortSpecs {
     public void updateTicketState(String[] ids) {
         for (int i = 0; i < ids.length; i++) {
             Ticket ticket = ticketRepository.findOne(ids[i]);
-            ticket.setState("AT0005");
-            ticketRepository.save(ticket);
+            if("AT0002".equals(ticket.getState())){
+                ticket.setState("AT0005");
+                ticketRepository.save(ticket);
+            }
         }
     }
 
@@ -262,6 +264,26 @@ public class TicketService extends TicketSortSpecs {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    @Transactional
+    public String[] getAllTicketsByFilter(Filter filter,String header) {
+        List<TicketSort> ticketSorts;
+        try {
+            User user = userService.getUserByJWT(header);
+            Specification<TicketSort> specA = filterIsLike(filter, user);
+            Specification<TicketSort> specB = userIs(user);
+            ticketSorts = ticketSortRepository.findAll(where(specA).and(specB));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        String result[]=new String[ticketSorts.size()];
+        for(int i=0;i<ticketSorts.size();i++){
+            String id = ticketSorts.get(i).getId();
+            result[i] = id;
+        }
+        return result;
     }
 
     //生成机票管理清单

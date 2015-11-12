@@ -53,6 +53,7 @@ import java.util.*;
 @RestController
 @RequestMapping(value = "/insurance")
 public class InsuranceController {
+    private static final String HEADER_AUTHORIZATION = JWTUtil.HEADER_AUTHORIZATION;
     @Autowired
     private ExportService exportService;
     @Autowired
@@ -204,6 +205,35 @@ public class InsuranceController {
 
         String tableName = "v_exp_insurance";
         bytes = exportService.exportByFilter(tableName, "0", id);
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        httpHeaders.setContentDispositionFormData("attachment", fileName);
+        insuranceService.updateInsurancePresta(id);//导出后，根据传入的id数组进行批量更新导出状态
+
+        return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
+    }
+
+    /**
+     * 增加全部导出
+     */
+    @RequestMapping(
+            value = "/all",
+            method = RequestMethod.GET,
+            params = {"mode","filter"},
+            headers = "Accept=application/octet-stream")
+    public ResponseEntity<byte[]> exportAllInsurance(
+            @RequestHeader(value = HEADER_AUTHORIZATION) String header,
+            @RequestParam(value = "filter") String filterJSON,
+            @RequestParam("mode") String mode) throws IOException {
+        byte[] bytes = null;
+        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+        String id[] = insuranceService.getAllInsuranceByFilter(filter,mode,header);
+
+        String tableName = "v_exp_insurance";
+        bytes = exportService.exportByfilter(tableName, "0", id);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
 
