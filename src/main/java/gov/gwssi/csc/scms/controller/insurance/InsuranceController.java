@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.controller.JsonBody;
 import gov.gwssi.csc.scms.controller.RequestHeaderError;
-import gov.gwssi.csc.scms.dao.importExcle.ImportDao;
 import gov.gwssi.csc.scms.dao.insurance.InsuranceDAO;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.insurance.Insurance;
@@ -12,7 +11,6 @@ import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.InsuranceResultObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.student.Student;
-import gov.gwssi.csc.scms.domain.user.Project;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.abnormal.NoSuchAbnormalException;
 import gov.gwssi.csc.scms.service.export.ExportService;
@@ -34,7 +32,6 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.beans.factory.support.ManagedMap;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -43,7 +40,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.net.URLDecoder;
@@ -57,6 +53,7 @@ import java.util.*;
 @RestController
 @RequestMapping(value = "/insurance")
 public class InsuranceController {
+    private static final String HEADER_AUTHORIZATION = JWTUtil.HEADER_AUTHORIZATION;
     @Autowired
     private ExportService exportService;
     @Autowired
@@ -207,7 +204,36 @@ public class InsuranceController {
         byte[] bytes = null;
 
         String tableName = "v_exp_insurance";
-        bytes = exportService.exportByfilter(tableName, "0", id);
+        bytes = exportService.exportByFilter(tableName, "0", id);
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        httpHeaders.setContentDispositionFormData("attachment", fileName);
+        insuranceService.updateInsurancePresta(id);//导出后，根据传入的id数组进行批量更新导出状态
+
+        return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
+    }
+
+    /**
+     * 增加全部导出
+     */
+    @RequestMapping(
+            value = "/all",
+            method = RequestMethod.GET,
+            params = {"mode","filter"},
+            headers = "Accept=application/octet-stream")
+    public ResponseEntity<byte[]> exportAllInsurance(
+            @RequestHeader(value = HEADER_AUTHORIZATION) String header,
+            @RequestParam(value = "filter") String filterJSON,
+            @RequestParam("mode") String mode) throws IOException {
+        byte[] bytes = null;
+        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+        String id[] = insuranceService.getAllInsuranceByFilter(filter,mode,header);
+
+        String tableName = "v_exp_insurance";
+        bytes = exportService.exportByFilter(tableName, "0", id);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
 

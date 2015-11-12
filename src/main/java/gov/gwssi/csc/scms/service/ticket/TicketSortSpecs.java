@@ -3,6 +3,8 @@ package gov.gwssi.csc.scms.service.ticket;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.student.*;
 import gov.gwssi.csc.scms.domain.ticket.Ticket;
+import gov.gwssi.csc.scms.domain.ticket.TicketSort;
+import gov.gwssi.csc.scms.domain.ticket.TicketSort_;
 import gov.gwssi.csc.scms.domain.ticket.Ticket_;
 import gov.gwssi.csc.scms.domain.user.Project;
 import gov.gwssi.csc.scms.domain.user.User;
@@ -19,23 +21,11 @@ import java.util.List;
 /**
  * Created by tianj on 2015/8/29.
  */
-public class TicketSpecs extends BaseService {
-    public static Specification<Ticket> filterIsLike(final Filter filter, final User user) {
-        return new Specification<Ticket>() {
+public class TicketSortSpecs extends BaseService {
+    public static Specification<TicketSort> filterIsLike(final Filter filter, final User user) {
+        return new Specification<TicketSort>() {
             @Override
-            public Predicate toPredicate(Root<Ticket> ticket, CriteriaQuery<?> query, CriteriaBuilder cb) {
-//                for (Field field : filter.getClass().getDeclaredFields()) {
-//                    field.setAccessible(true);
-//                    try {
-//                        if(field.get(filter) == null){
-//                            System.out.println("field.get(filter) = " + field.get(filter));
-//                        }
-//                    } catch (IllegalAccessException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//              除了下面的暴力平铺的形式，是否有更好的解决方式？
-//              上面是尝试是用反射遍历来实现，但是再处理原模型时遇到了困难
+            public Predicate toPredicate(Root<TicketSort> ticketSortRoot, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 Predicate predicate = cb.conjunction();
 
 
@@ -86,30 +76,30 @@ public class TicketSpecs extends BaseService {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                  predicate.getExpressions().add(cb.between(ticket.get(Ticket_.created), intialDate, finalDate));
+                  predicate.getExpressions().add(cb.between(ticketSortRoot.get(TicketSort_.created), intialDate, finalDate));
 
 
                 if (filter.getTicketState() != null) {
                     if(filter.getTicketState().equals("AT0006")){
-                        predicate.getExpressions().add(cb.in(ticket.get(Ticket_.state)).value("AT0002").value("AT0005"));
+                        predicate.getExpressions().add(cb.in(ticketSortRoot.get(TicketSort_.state)).value("AT0002").value("AT0005"));
                     }else{
-                        predicate.getExpressions().add(cb.like(ticket.get(Ticket_.state), filter.getTicketState()));
+                        predicate.getExpressions().add(cb.like(ticketSortRoot.get(TicketSort_.state), filter.getTicketState()));
                     }
 
                 } else {
                     if ("2".equals(user.getUserType())) {//1 基金委用户 2学校用户
-                        predicate.getExpressions().add(cb.in(ticket.get(Ticket_.state)).value("AT0001").value("AT0002").value("AT0005").value("AT0003").value("AT0004"));
+                        predicate.getExpressions().add(cb.in(ticketSortRoot.get(TicketSort_.state)).value("AT0001").value("AT0002").value("AT0005").value("AT0003").value("AT0004"));
                     } else if ("1".equals(user.getUserType())) {
-                        predicate.getExpressions().add(cb.in(ticket.get(Ticket_.state)).value("AT0002").value("AT0005").value("AT0003").value("AT0004"));
+                        predicate.getExpressions().add(cb.in(ticketSortRoot.get(TicketSort_.state)).value("AT0002").value("AT0005").value("AT0003").value("AT0004"));
                     }
                 }
                 if (filter.getTicketType() != null) {
-                    predicate.getExpressions().add(cb.like(ticket.get(Ticket_.type), filter.getTicketType()));
+                    predicate.getExpressions().add(cb.like(ticketSortRoot.get(TicketSort_.type), filter.getTicketType()));
 
                 }
                 /**学生主表部分*/
                 if (needStudent) {
-                    Join<Ticket, Student> student = ticket.join(Ticket_.student);
+                    Join<TicketSort, Student> student = ticketSortRoot.join(TicketSort_.student);
                     if (filter.getCscId() != null) {
                         predicate.getExpressions().add(cb.like(student.get(Student_.cscId), filter.getCscId()));
                     }
@@ -247,19 +237,19 @@ public class TicketSpecs extends BaseService {
         };
     }
 
-    public static Specification<Ticket> userIs(final User user) {
+    public static Specification<TicketSort> userIs(final User user) {
         // TODO 实现根据用户所属项目或者所属院校进行查询
 
-        return new Specification<Ticket>() {
+        return new Specification<TicketSort>() {
             @Override
-            public Predicate toPredicate(Root<Ticket> ticketRoot, CriteriaQuery<?> query, CriteriaBuilder cb) {
+            public Predicate toPredicate(Root<TicketSort> ticketSortRoot, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 Predicate predicate = cb.conjunction();
 
                 String userType = user.getUserType();
                 String identity = user.getRole().getIdentity();
                 String nodeId = user.getNode().getNodeId();
                 if("Y0002".equals(identity)){    //基金委用户  Y0002主管
-                    Join<Ticket, Student> student = ticketRoot.join(Ticket_.student);
+                    Join<TicketSort, Student> student = ticketSortRoot.join(TicketSort_.student);
                     Join<Student, BasicInfo> basicInfo = student.join(Student_.basicInfo);
                     List<Project> projects = user.getProjects();
 
@@ -275,7 +265,7 @@ public class TicketSpecs extends BaseService {
                     }
 
                 }else if("2".equals(userType)){
-                    Join<Ticket, Student> student = ticketRoot.join(Ticket_.student);
+                    Join<TicketSort, Student> student = ticketSortRoot.join(TicketSort_.student);
                     Join<Student, SchoolRoll> schoolRoll = student.join(Student_.schoolRoll);
                     predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.currentUniversity), nodeId));
                 }
@@ -284,12 +274,12 @@ public class TicketSpecs extends BaseService {
         };
     }
 
-    public static Specification<Ticket> stateIs(final String state){
-        return new Specification<Ticket>() {
+    public static Specification<TicketSort> stateIs(final String state){
+        return new Specification<TicketSort>() {
             @Override
-            public Predicate toPredicate(Root<Ticket> ticketRoot, CriteriaQuery<?> query, CriteriaBuilder cb) {
+            public Predicate toPredicate(Root<TicketSort> ticketSortRoot, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 Predicate predicate = cb.conjunction();
-                predicate.getExpressions().add(cb.like(ticketRoot.get(Ticket_.state), state));
+                predicate.getExpressions().add(cb.like(ticketSortRoot.get(TicketSort_.state), state));
                 return predicate;
             }
         };

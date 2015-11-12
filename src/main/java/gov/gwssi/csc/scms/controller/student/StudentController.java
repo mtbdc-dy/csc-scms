@@ -2,11 +2,8 @@ package gov.gwssi.csc.scms.controller.student;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 import gov.gwssi.csc.scms.domain.filter.Filter;
-import gov.gwssi.csc.scms.domain.insurance.Insurance;
 import gov.gwssi.csc.scms.service.export.ExportService;
 import gov.gwssi.csc.scms.service.students.StudentsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +30,6 @@ import gov.gwssi.csc.scms.utils.JWTUtil;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
 import java.net.URLDecoder;
 import java.sql.Timestamp;
 import java.util.*;
@@ -176,33 +172,10 @@ public class StudentController {
     public Student getStudentById(@PathVariable(value = "id") String id) {
         try {
             Student student = studentService.getCompleteInfoOfStudentById(id);
-//            List<Insurance> insuranceList = student.getInsurances();
             ObjectMapper mapper = new ObjectMapper();
-//            mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-//
+
             System.out.println(mapper.writeValueAsString(student));
 
-//            SerializationFeature.FAIL_ON_EMPTY_BEANS
-//            insuranceList
-
-//            if(insuranceList != null && insuranceList.size()>0){
-//                List<Insurance> insurances = new ArrayList<Insurance>();
-//                long max = insuranceList.get(0).getYear();
-//                for(int i=1;i<insuranceList.size();i++){
-//                    if(insuranceList.get(i).getYear()>max){
-//                        max = insuranceList.get(i).getYear();
-//                    }
-//                }
-//                for(int j=0;j<insuranceList.size();j++){
-//                    Insurance insurance = insuranceList.get(j);
-//                    if(insurance.getInsurSta().equals("1")&&insurance.getYear() == max){
-//                        insurance.setStudent(null);
-//                        insurances.add(insurance);
-//                        break;
-//                    }
-//                }
-//                student.setInsurances(insurances);
-//            }
             return student;
         } catch (Exception e) {
             e.printStackTrace();
@@ -409,7 +382,7 @@ public class StudentController {
         byte[] bytes = null;
 
         String tableName = "v_exp_register";
-        bytes = exportService.exportByfilter(tableName,"0", id);
+        bytes = exportService.exportByFilter(tableName,"0", id);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
 
@@ -434,7 +407,7 @@ public class StudentController {
         String [] id = studentsService.getStudentsAllByFilter(filter, mode, header);
 
         String tableName = "v_exp_register";
-        bytes = exportService.exportByfilter(tableName,"0", id);
+        bytes = exportService.exportByFilter(tableName,"0", id);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
 
