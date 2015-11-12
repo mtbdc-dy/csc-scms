@@ -148,6 +148,43 @@ public class ScholarshipJController {
         return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
     }
 
+    /**
+     *全部导出功能
+     */
+    @RequestMapping(
+            value = "/all",
+            method = RequestMethod.GET,
+            params = {"filter"},
+            headers = "Accept=application/octet-stream")
+    public ResponseEntity<byte[]> exportInsurance(
+            @RequestParam(value = "filter") String filterJSON) throws IOException {
+        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+        String id[] = scholarshipJService.getAllScholarshipJsByFilter(filter);
+        byte[] bytes = null;
+        String ids=null;
+        //将scholarshipId转化成id
+        for ( int i =0;i<id.length;i++) {
+            List detailList = scholarshipJService.findDetailListBy(id[i]);//找到主表对应的所有字表数据
+            for(int j=0;j<detailList.size();j++){
+                HashMap strD = (HashMap) detailList.get(j);
+                ids=ids+","+strD.get("ID");
+            }
+        }
+        String[] id1=null;
+        if(ids!=null){
+            id1=ids.split(",");//转化后的id数组
+        }
+        String tableName = "v_scholarship_lastyear";//对主表对应的所有信息以学生为单位导出
+        bytes = exportService.exportByFilter(tableName, "1", id1);
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        httpHeaders.setContentDispositionFormData("attachment", fileName);
+
+        return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
+    }
     //分页查询
     @RequestMapping(
             method = RequestMethod.GET,
