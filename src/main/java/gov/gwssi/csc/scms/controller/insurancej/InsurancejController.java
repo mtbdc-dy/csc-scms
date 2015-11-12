@@ -13,7 +13,6 @@ import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.abnormal.NoSuchAbnormalException;
 import gov.gwssi.csc.scms.service.export.ExportService;
-import gov.gwssi.csc.scms.service.insurance.InsuranceService;
 import gov.gwssi.csc.scms.service.insurancej.InsurancejService;
 import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.user.NoSuchUserException;
@@ -206,7 +205,7 @@ public class InsurancejController {
         byte[] bytes = null;
 
         String tableName = "v_exp_insurance";
-        bytes = exportService.exportByfilter(tableName,"0", id);
+        bytes = exportService.exportByFilter(tableName,"0", id);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
 

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by gc on 2015/6/1.
@@ -80,6 +81,11 @@ public class ExportDAO extends BaseDAO {
     public List getListbysql(String sql) {
         List resurtList = super.queryListBySql(sql.toString());
         return resurtList;
+    }
+
+    //根据传入sql 查询数据库，得到结果list
+    public List<Map> getListBySql(String sql) {
+        return super.queryListBySql(sql);
     }
 
     //获取动态标题行的需要合并行和列的LIST

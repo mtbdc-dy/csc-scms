@@ -1,15 +1,12 @@
 package gov.gwssi.csc.scms.service.export;
 
 import gov.gwssi.csc.scms.base.UnitTestBase;
-import gov.gwssi.csc.scms.dao.export.ExportDAO;
-import gov.gwssi.csc.scms.service.insurance.InsuranceService;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -40,7 +37,7 @@ public class exportTest extends UnitTestBase {
                 "v_sheet7_accident","v_sheet8_airticket","v_sheet9_grade","v_sheet10_school_fellow"};
         String ids = "csc000000075,csc000000076,csc000000077";
         String id[] = ids.split(",");
-        exportService.exportByfilter(tableName, "0",id);
+        exportService.exportByFilter(tableName, "0",id);
 
     }
     @Test
@@ -49,7 +46,7 @@ public class exportTest extends UnitTestBase {
         String tableName = "v_exp_appropriation" ;
         String ids = "201509079782";
         String id[] = ids.split(",");
-        exportService.exportByfilter(tableName,"0", id);
+        exportService.exportByFilter(tableName,"0", id);
 
     }
 
