@@ -32,7 +32,7 @@ public class CodeMainTenanceController
     @Autowired
     private CodeMainTenanceService codeMainTenanceService;
     @Autowired
-    private UserService userService;
+    private UserService            userService;
 
     //点击查询返回代码维护列表
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
@@ -101,7 +101,7 @@ public class CodeMainTenanceController
         try
         {
             ObjectMapper mapper = new ObjectMapper();
-            JsonBody jBody = new ObjectMapper().readValue(codeJson, JsonBody.class);
+            JsonBody     jBody  = new ObjectMapper().readValue(codeJson, JsonBody.class);
             codeDetailResult = mapper.readValue(jBody.getValue(), CodeDetailResult.class);
             codeDetailResult = codeMainTenanceService.saveCode(codeDetailResult);
             codeDetailResult = codeMainTenanceService.selectCode(codeDetailResult);
@@ -115,14 +115,20 @@ public class CodeMainTenanceController
 
     @RequestMapping(
             value = "/sort",
-            params = {"id", "direction", "step"},
-            method = RequestMethod.PATCH,
+            method = RequestMethod.PUT,
             headers = "Accept=application/json; charset=utf-8;")
     public void changeSortValue(
-            @RequestParam(value = "id") String id,
-            @RequestParam(value = "direction") String direction,
-            @RequestParam(value = "step") Long step)
+            @RequestBody String body
+    ) throws IOException
     {
+        ObjectMapper mapper  = new ObjectMapper();
+        Map          bodyMap = mapper.readValue(body, Map.class);
+
+        System.out.println("body = [" + bodyMap + "]");
+        String id        = (String) bodyMap.get("id");
+        String direction = String.valueOf(bodyMap.get("direction"));
+        Long   step      = Long.parseLong(bodyMap.get("step").toString());
+
         codeMainTenanceService.changeUniversitySortValue(id, direction, step);
     }
 
@@ -132,13 +138,13 @@ public class CodeMainTenanceController
             @RequestParam(value = "dim") String dim, @RequestBody String codeJson)
     {
         //按照分页（默认）要求，返回列表内容
-        String detailCodeList = null;
+        String           detailCodeList   = null;
         CodeDetailResult codeDetailResult = null;
         try
         {
             ObjectMapper mapper = new ObjectMapper();
             // mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            boolean rv = true;
+            boolean  rv    = true;
             JsonBody jbosy = new ObjectMapper().readValue(codeJson, JsonBody.class);
             codeDetailResult = mapper.readValue(jbosy.getValue(), CodeDetailResult.class);
             codeDetailResult.setTABLEEN(dim);
@@ -167,10 +173,10 @@ public class CodeMainTenanceController
     {
         try
         {
-            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
-            User user = userService.getUserByJWT(header);
-            Page<CodeMainTenance> codeMainTenancesPage = codeMainTenanceService.getCodeMainTenancesPagingByFilter(filter, page, size, user);
-            Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceConverter());
+            Filter                    filter               = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            User                      user                 = userService.getUserByJWT(header);
+            Page<CodeMainTenance>     codeMainTenancesPage = codeMainTenanceService.getCodeMainTenancesPagingByFilter(filter, page, size, user);
+            Page<Map<String, Object>> mapPage              = codeMainTenancesPage.map(new CodeMainTenanceConverter());
             return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
         } catch (Exception e)
         {
@@ -198,77 +204,77 @@ public class CodeMainTenanceController
             if ("dim_region".equals(name) && "A".equals(type))
             {
                 Page<CodemaintanenceRegionFirst> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceRegionFirstsPagingByFilter(page, size);
-                Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceRegion1Converter());
+                Page<Map<String, Object>>        mapPage              = codeMainTenancesPage.map(new CodeMainTenanceRegion1Converter());
                 return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
             } else if ("dim_region".equals(name) && "E".equals(type))
             {
                 Page<CodemaintanenceRegionSecond> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceRegionSecondsPagingByFilter(page, size);
-                Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceRegion2Converter());
+                Page<Map<String, Object>>         mapPage              = codeMainTenancesPage.map(new CodeMainTenanceRegion2Converter());
                 return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
             } else if ("dim_region".equals(name) && "P".equals(type))
             {
                 Page<CodemaintanenceRegionThird> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceRegionThirdsPagingByFilter(page, size);
-                Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceRegion3Converter());
+                Page<Map<String, Object>>        mapPage              = codeMainTenancesPage.map(new CodeMainTenanceRegion3Converter());
                 return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
             } else if ("dim_univ".equals(name) && "S".equals(type))
             {
                 Page<CodemaintanenceUniv> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceUnivsPagingByFilter(page, size);
-                Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceUnivConverter());
+                Page<Map<String, Object>> mapPage              = codeMainTenancesPage.map(new CodeMainTenanceUnivConverter());
                 return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
             } else if ("dim_project".equals(name) && "BC".equals(type))
             {
                 Page<CodemaintanenceProjectFirst> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceProjectFirstsPagingByFilter(page, size);
-                Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceProject1Converter());
+                Page<Map<String, Object>>         mapPage              = codeMainTenancesPage.map(new CodeMainTenanceProject1Converter());
                 return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
             } else if ("dim_project".equals(name) && "T".equals(type))
             {
                 Page<CodemaintanenceProjectSecond> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceProjectSecondsPagingByFilter(page, size);
-                Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceProject2Converter());
+                Page<Map<String, Object>>          mapPage              = codeMainTenancesPage.map(new CodeMainTenanceProject2Converter());
                 return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
             } else if ("dim_project".equals(name) && "U".equals(type))
             {
                 Page<CodemaintanenceProjectThird> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceProjectThirdsPagingByFilter(page, size);
-                Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceProject3Converter());
+                Page<Map<String, Object>>         mapPage              = codeMainTenancesPage.map(new CodeMainTenanceProject3Converter());
                 return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
             } else if ("dim_anml".equals(name) && "AB".equals(type))
             {
                 Page<CodemaintanenceAnmlFirst> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceAnmlFirstsPagingByFilter(page, size);
-                Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceAnml1Converter());
+                Page<Map<String, Object>>      mapPage              = codeMainTenancesPage.map(new CodeMainTenanceAnml1Converter());
                 return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
             } else if ("dim_anml".equals(name) && "AC".equals(type))
             {
                 Page<CodemaintanenceAnmlSecond> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceAnmlSecondsPagingByFilter(page, size);
-                Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceAnml2Converter());
+                Page<Map<String, Object>>       mapPage              = codeMainTenancesPage.map(new CodeMainTenanceAnml2Converter());
                 return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
             } else if ("dim_subject".equals(name) && "V".equals(type))
             {
                 Page<CodemaintanenceSubjectFirst> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceSubjectFirstsPagingByFilter(page, size);
-                Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceSubject1Converter());
+                Page<Map<String, Object>>         mapPage              = codeMainTenancesPage.map(new CodeMainTenanceSubject1Converter());
                 return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
             } else if ("dim_subject".equals(name) && "W".equals(type))
             {
                 Page<CodemaintanenceSubjectSecond> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceSubjectSecondsPagingByFilter(page, size);
-                Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceSubject2Converter());
+                Page<Map<String, Object>>          mapPage              = codeMainTenancesPage.map(new CodeMainTenanceSubject2Converter());
                 return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
             } else if ("dim_subject".equals(name) && "X".equals(type))
             {
                 Page<CodemaintanenceSubjectThird> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceSubjectThirdsPagingByFilter(page, size);
-                Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceSubject3Converter());
+                Page<Map<String, Object>>         mapPage              = codeMainTenancesPage.map(new CodeMainTenanceSubject3Converter());
                 return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
             } else if ("dim_dept".equals(name) && "BI".equals(type))
             {
                 Page<CodemaintanenceDeptFirst> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceDeptFirstsPagingByFilter(page, size);
-                Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceDept1Converter());
+                Page<Map<String, Object>>      mapPage              = codeMainTenancesPage.map(new CodeMainTenanceDept1Converter());
                 return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
             } else if ("dim_dept".equals(name) && "BJ".equals(type))
             {
                 Page<CodemaintanenceDeptSecond> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceDeptSecondsPagingByFilter(page, size);
-                Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceDept2Converter());
+                Page<Map<String, Object>>       mapPage              = codeMainTenancesPage.map(new CodeMainTenanceDept2Converter());
                 return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
             } else
             {
                 Page<CodemaintanenceTranslate> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceTranslatesPagingByFilter(page, size, type);
-                Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceTranslateConverter());
+                Page<Map<String, Object>>      mapPage              = codeMainTenancesPage.map(new CodeMainTenanceTranslateConverter());
                 return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
             }
         } catch (Exception e)
