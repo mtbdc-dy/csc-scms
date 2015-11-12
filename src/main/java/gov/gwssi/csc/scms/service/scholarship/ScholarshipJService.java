@@ -59,6 +59,19 @@ public class ScholarshipJService extends ScholarshipJSpecs {
         Specification<ScholarshipJ> specA = filterIsLike(filter);
         return scholarshipJRepository.findAll(where(specA), new PageRequest(page, size, Sort.Direction.DESC, "state"));
     }
+
+    //得到所有查询结果的SCHOLARSHIPID,用于全部导出
+    public String[] getAllScholarshipJsByFilter(Filter filter) {
+        Specification<ScholarshipJ> specA = filterIsLike(filter);
+        List<ScholarshipJ> scholarshipJList = scholarshipJRepository.findAll(where(specA).and(stateIs('2')));
+        String result[]=new String[scholarshipJList.size()];
+        for(int i=0;i<scholarshipJList.size();i++){
+            String id = scholarshipJList.get(i).getScholarshipId();
+            result[i] = id;
+        }
+        return result;
+    }
+
     //统计未上报已上报学校数量
     public Map<String,Long> getScholarshipJSchoolNum(Filter filter){
         long unSubmitted = 0;
