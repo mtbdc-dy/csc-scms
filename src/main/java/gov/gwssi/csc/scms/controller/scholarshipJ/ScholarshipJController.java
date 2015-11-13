@@ -175,7 +175,12 @@ public class ScholarshipJController {
             id1=ids.split(",");//转化后的id数组
         }
         Map<String,Integer> resutlt = new HashMap<String, Integer>();
-        resutlt.put("totalNum",id1.length);
+        if(id1 != null){
+            resutlt.put("totalNum",id1.length);
+        }else{
+            resutlt.put("totalNum",0);
+        }
+
         return resutlt;
     }
 
