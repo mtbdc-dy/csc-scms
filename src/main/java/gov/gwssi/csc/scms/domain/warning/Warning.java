@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.domain.warning;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import gov.gwssi.csc.scms.domain.student.Student;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "SCMS_WARNING")
-public class Warning {
+public class Warning implements Cloneable{
     @Id
     @Column(name = "id")
 //    @SequenceGenerator(name = "SCMS_WARNING_ID",sequenceName = "SCMS_WARNING_SEQ",allocationSize = 1)
@@ -69,19 +70,10 @@ public class Warning {
     /**
      * 学生
      */
+    @JsonIgnore
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "STUDENTID")
     private Student student;
-
-//    private String studentId;
-
-//    public String getStudentId() {
-//        return studentId;
-//    }
-//
-//    public void setStudentId(String studentId) {
-//        this.studentId = studentId;
-//    }
 
     public Student getStudent() {
         return student;
@@ -155,12 +147,16 @@ public class Warning {
         this.rmUserName = rmUserName;
     }
 
-
     public String getWarningId() {
         return warningId;
     }
 
     public void setWarningId(String warningId) {
         this.warningId = warningId;
+    }
+
+    @Override
+    public Warning clone() throws CloneNotSupportedException{
+        return (Warning)super.clone();
     }
 }

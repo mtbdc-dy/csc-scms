@@ -6,22 +6,20 @@ import gov.gwssi.csc.scms.controller.JsonBody;
 import gov.gwssi.csc.scms.controller.RequestHeaderError;
 import gov.gwssi.csc.scms.dao.ticket.TicketDAO;
 
-import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
-
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.TicketResultObject;
 import gov.gwssi.csc.scms.domain.student.*;
 import gov.gwssi.csc.scms.domain.ticket.Ticket;
+import gov.gwssi.csc.scms.domain.ticket.TicketSort;
 import gov.gwssi.csc.scms.domain.user.User;
-import gov.gwssi.csc.scms.domain.warning.Warning;
 import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.service.export.ExportService;
 import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.ticket.NoSuchTicketException;
-import gov.gwssi.csc.scms.service.ticket.TicketConverter;
 import gov.gwssi.csc.scms.service.ticket.TicketService;
+import gov.gwssi.csc.scms.service.ticket.TicketSortConverter;
 import gov.gwssi.csc.scms.service.user.NoSuchUserException;
 import gov.gwssi.csc.scms.service.user.UserIdentityError;
 import gov.gwssi.csc.scms.service.user.UserService;
@@ -55,6 +53,7 @@ import java.util.*;
 @RestController
 @RequestMapping(value = "/ticket")
 public class TicketController extends BaseService {
+    private static final String HEADER_AUTHORIZATION = JWTUtil.HEADER_AUTHORIZATION;
     @Autowired
     private UserService userService;
     @Autowired
@@ -74,7 +73,7 @@ public class TicketController extends BaseService {
 
     //学校用户在前台点击生成机票管理列表，返回列表
     @RequestMapping(value = "/new", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public Map<String,String> getTickets(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
+    public Map<String, String> getTickets(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
         User user = null;
         try {
             user = userService.getUserByJWT(header);
@@ -83,12 +82,12 @@ public class TicketController extends BaseService {
         } catch (UserIdentityError userIdentityError) {
             userIdentityError.printStackTrace();
         }
-        Map<String,String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<String, String>();
         String no = ticketService.getStNo(user);
 
 //        List<Map<String,String>> list = new ArrayList<Map<String, String>>();
 //        list.add(map);
-        map.put("returnNo",no);
+        map.put("returnNo", no);
         return map;
     }
 
@@ -299,7 +298,7 @@ public class TicketController extends BaseService {
         }
     }
 
-    //
+
     @RequestMapping(value = "/getkey", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
     public List getValue(@RequestParam(value = "key") String key) {
         //按照分页（默认）要求，返回列表内容
@@ -391,7 +390,7 @@ public class TicketController extends BaseService {
         byte[] bytes = null;
 
         String tableName = "v_exp_airticket";
-        bytes = exportService.exportByfilter(tableName, "0", id);
+        bytes = exportService.exportByFilter(tableName, "0", id);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
 
@@ -407,7 +406,62 @@ public class TicketController extends BaseService {
 
     }
 
-    //分页查询
+    /**
+     * 导出全部机票信息
+     * GET
+     * Accept: application/octet-stream
+     */
+    @RequestMapping(value = "/export/all",
+            method = RequestMethod.GET,
+            params = {"userType","filter"},
+            headers = "Accept=application/octet-stream")
+    public ResponseEntity<byte[]> exportAllTickets(
+            @RequestHeader(value = HEADER_AUTHORIZATION) String header,
+            @RequestParam(value = "filter") String filterJSON,
+            @RequestParam("userType") String userType) throws IOException {
+        byte[] bytes = null;
+        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+        String id[] = ticketService.getAllTicketsByFilter(filter,header);
+        String tableName = "v_exp_airticket";
+        bytes = exportService.exportByFilter(tableName, "0", id);
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        httpHeaders.setContentDispositionFormData("attachment", fileName);
+
+        if ("1".equals(userType)) {
+            ticketService.updateTicketState(id);
+        }
+
+        return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
+
+    }
+
+    //    //分页查询
+//    @RequestMapping(
+//            method = RequestMethod.GET,
+//            headers = {"Accept=application/json"},
+//            params = {"mode", "field", "page", "size", "filter"})
+//    public ResponseEntity<Page<Map<String, Object>>> getTickets(
+//            @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
+//            @RequestParam(value = "mode") String mode,
+//            @RequestParam(value = "field") String[] fields,
+//            @RequestParam(value = "page") Integer page,
+//            @RequestParam(value = "size") Integer size,
+//            @RequestParam(value = "filter") String filterJSON) throws IOException {
+//        try {
+//            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+//            Page<Ticket> ticketPage = ticketService.getTicketsPagingByFilter(filter, page, size, mode, header);
+//            Page<Map<String, Object>> mapPage = ticketPage.map(new TicketConverter());
+//            return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new RuntimeException(e);
+//        }
+//    }
+//分页查询 增加院校排序
     @RequestMapping(
             method = RequestMethod.GET,
             headers = {"Accept=application/json"},
@@ -421,8 +475,8 @@ public class TicketController extends BaseService {
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         try {
             Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
-            Page<Ticket> ticketPage = ticketService.getTicketsPagingByFilter(filter, page, size, mode, header);
-            Page<Map<String, Object>> mapPage = ticketPage.map(new TicketConverter());
+            Page<TicketSort> ticketPage = ticketService.getTicketsPagingByFilterSort(filter, page, size, mode, header);
+            Page<Map<String, Object>> mapPage = ticketPage.map(new TicketSortConverter());
             return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
@@ -436,14 +490,14 @@ public class TicketController extends BaseService {
             method = RequestMethod.GET,
             headers = {"Accept=application/json"},
             params = {"filter"})
-    public Map<String,Long> getInsurancesStateSum(
+    public Map<String, Long> getInsurancesStateSum(
             @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
             @RequestParam(value = "filter") String filterJSON) throws IOException {
-        Map<String, Long> result=new HashMap<String,Long >();
+        Map<String, Long> result = new HashMap<String, Long>();
         try {
             Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
             result = ticketService.getTicketsStateSum(header, filter);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;

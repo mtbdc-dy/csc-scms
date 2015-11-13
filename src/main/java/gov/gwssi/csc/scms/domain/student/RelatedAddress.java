@@ -1,5 +1,7 @@
 package gov.gwssi.csc.scms.domain.student;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -162,6 +164,7 @@ public class RelatedAddress {
         this.updateDate = updateDate;
     }
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "STUDENTID")
     public Student getStudent() {

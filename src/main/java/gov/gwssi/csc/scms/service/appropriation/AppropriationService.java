@@ -97,8 +97,7 @@ public class AppropriationService extends AppropriationSpecs {
         String sameId = getBaseDao().doStatementForRtn("p_scms_stats_appropriation", listParameter);
         System.out.println(sameId);
         Specification<Appropriation> specA = filterIsLike(sameId);
-//        Specification<Ticket> specB = userIs(user);
-        return  appropriationRepository.findAll(where(specA), new PageRequest(page, size,Sort.Direction.ASC,"no"));
+        return  appropriationRepository.findAll(where(specA), new PageRequest(page, size,Sort.Direction.ASC,"id"));
     }
 
 

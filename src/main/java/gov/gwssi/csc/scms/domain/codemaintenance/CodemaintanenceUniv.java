@@ -1,19 +1,29 @@
 package gov.gwssi.csc.scms.domain.codemaintenance;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
  * Created by LiZhiSheng on 2015/9/24.
  */
 @Entity
+@NamedStoredProcedureQueries(
+        @NamedStoredProcedureQuery(name = "CodemaintanenceUniv.changeSortValue", procedureName = "p_scms_univ_sort",
+                parameters = {
+                        @StoredProcedureParameter(name = "id", mode = ParameterMode.IN, type = String.class),
+                        @StoredProcedureParameter(name = "direction", mode = ParameterMode.IN, type = String.class),
+                        @StoredProcedureParameter(name = "step", mode = ParameterMode.IN, type = Long.class),
+                        @StoredProcedureParameter(name = "result", mode = ParameterMode.OUT, type = String.class)
+                })
+)
 @Table(name = "v_dim_univ_codemaintanence")
-public class CodemaintanenceUniv {
+public class CodemaintanenceUniv
+{
     @Id
     private String id;
+
+    @Column
+    private Long customSort;
 
     @Column
     private String name;
@@ -32,90 +42,123 @@ public class CodemaintanenceUniv {
 
     @Column
     private String parentid;
+
     @Column
     private String type;
+
     @Column
     private String admindept;
+
     @Column
     private String code;
 
-    public String getParentid() {
+    public String getParentid()
+    {
         return parentid;
     }
 
-    public void setParentid(String parentid) {
+    public void setParentid(String parentid)
+    {
         this.parentid = parentid;
     }
 
-    public String getId() {
+    public String getId()
+    {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(String id)
+    {
         this.id = id;
     }
 
-    public String getName() {
+    public Long getCustomSort()
+    {
+        return customSort;
+    }
+
+    public void setCustomSort(Long customSort)
+    {
+        this.customSort = customSort;
+    }
+
+    public String getName()
+    {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(String name)
+    {
         this.name = name;
     }
 
-    public String getEnabled() {
+    public String getEnabled()
+    {
         return enabled;
     }
 
-    public void setEnabled(String enabled) {
+    public void setEnabled(String enabled)
+    {
         this.enabled = enabled;
     }
 
-    public String getFullname() {
+    public String getFullname()
+    {
         return fullname;
     }
 
-    public void setFullname(String fullname) {
+    public void setFullname(String fullname)
+    {
         this.fullname = fullname;
     }
 
-    public Date getUpdated() {
+    public Date getUpdated()
+    {
         return updated;
     }
 
-    public void setUpdated(Date updated) {
+    public void setUpdated(Date updated)
+    {
         this.updated = updated;
     }
 
-    public String getTableen() {
+    public String getTableen()
+    {
         return tableen;
     }
 
-    public void setTableen(String tableen) {
+    public void setTableen(String tableen)
+    {
         this.tableen = tableen;
     }
 
-    public String getType() {
+    public String getType()
+    {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(String type)
+    {
         this.type = type;
     }
 
-    public String getAdmindept() {
+    public String getAdmindept()
+    {
         return admindept;
     }
 
-    public void setAdmindept(String admindept) {
+    public void setAdmindept(String admindept)
+    {
         this.admindept = admindept;
     }
 
-    public String getCode() {
+    public String getCode()
+    {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode(String code)
+    {
         this.code = code;
     }
 }

@@ -1,5 +1,8 @@
 package gov.gwssi.csc.scms.domain.student;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.proxy.pojo.javassist.JavassistLazyInitializer;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -8,7 +11,8 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "SCMS_PROFILES_HISTORY")
-public class ProfilesHistory {
+public class ProfilesHistory implements Cloneable {
+
     @Id
     private String id;
     /**
@@ -64,9 +68,18 @@ public class ProfilesHistory {
     /**
      * 学生
      */
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "STUDENTID")
     private Student student;
+
+//    public JavassistLazyInitializer getHandler() {
+//        return handler;
+//    }
+//
+//    public void setHandler(JavassistLazyInitializer handler) {
+//        this.handler = handler;
+//    }
 
     public String getId() {
         return id;
@@ -179,4 +192,10 @@ public class ProfilesHistory {
     public void setStudent(Student student) {
         this.student = student;
     }
+
+    @Override
+    public ProfilesHistory clone() throws CloneNotSupportedException {
+        return (ProfilesHistory)super.clone();
+    }
+
 }
