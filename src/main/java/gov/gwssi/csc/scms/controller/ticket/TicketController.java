@@ -336,8 +336,6 @@ public class TicketController extends BaseService {
         Calendar cale = Calendar.getInstance();
         cale.setTime(new Date());   // 当前年
         int year = cale.get(Calendar.YEAR);
-
-        System.out.println("InsuranceController.importInsurance");
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
         System.out.println("isMultipart = " + isMultipart);
         List<String> list1 = new ArrayList<String>();

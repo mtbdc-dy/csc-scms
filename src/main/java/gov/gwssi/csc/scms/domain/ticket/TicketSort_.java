@@ -31,5 +31,6 @@ public abstract class TicketSort_ {
     public static volatile SingularAttribute<TicketSort, Date> validdate;
     public static volatile SingularAttribute<TicketSort, Date> flightDate;
     public static volatile SingularAttribute<TicketSort, Long> customSort;
+    public static volatile SingularAttribute<TicketSort, Date> pervalidDate;
 }
 
