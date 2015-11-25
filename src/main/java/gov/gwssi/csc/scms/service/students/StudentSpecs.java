@@ -258,7 +258,7 @@ public class StudentSpecs {
                         || filter.getAnnual() != null;
                 boolean needSchoolRoll = filter.getRegisterState() != null
                         || filter.getStudentType() != null
-                        || filter.getAppropriation() != null
+                        || filter.getFundType() != null
                         || filter.getTeachLanguage() != null
                         || filter.getSchoolRollState() != null
                         || filter.getArrivalDateBegin() != null
@@ -330,8 +330,8 @@ public class StudentSpecs {
                     if (filter.getStudentType() != null) {
                         predicate.getExpressions().add(cb.like(schoolRoll.get(SchoolRoll_.studentType), filter.getStudentType()));
                     }
-                    if (filter.getAppropriation() != null) {
-                        predicate.getExpressions().add(cb.like(schoolRoll.get(SchoolRoll_.appropriation), filter.getAppropriation()));
+                    if (filter.getFundType() != null) {
+                        predicate.getExpressions().add(cb.like(schoolRoll.get(SchoolRoll_.appropriation), filter.getFundType()));
                     }
                     if (filter.getTeachLanguage() != null) {
                         predicate.getExpressions().add(cb.like(schoolRoll.get(SchoolRoll_.teachLanguage), filter.getTeachLanguage()));
@@ -492,7 +492,7 @@ public class StudentSpecs {
                         || filter.getAnnual() != null;
                 boolean needSchoolRoll = filter.getRegisterState() != null
                         || filter.getStudentType() != null
-                        || filter.getAppropriation() != null
+                        || filter.getFundType() != null
                         || filter.getTeachLanguage() != null
                         || filter.getSchoolRollState() != null
                         || filter.getArrivalDateBegin() != null
@@ -564,8 +564,8 @@ public class StudentSpecs {
                     if (filter.getStudentType() != null) {
                         predicate.getExpressions().add(cb.like(schoolRoll.get(SchoolRoll_.studentType), filter.getStudentType()));
                     }
-                    if (filter.getAppropriation() != null) {
-                        predicate.getExpressions().add(cb.like(schoolRoll.get(SchoolRoll_.appropriation), filter.getAppropriation()));
+                    if (filter.getFundType() != null) {
+                        predicate.getExpressions().add(cb.like(schoolRoll.get(SchoolRoll_.appropriation), filter.getFundType()));
                     }
                     if (filter.getTeachLanguage() != null) {
                         predicate.getExpressions().add(cb.like(schoolRoll.get(SchoolRoll_.teachLanguage), filter.getTeachLanguage()));
