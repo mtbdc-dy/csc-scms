@@ -26,10 +26,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.springframework.data.jpa.domain.Specifications.where;
 
@@ -161,7 +158,26 @@ public class TicketService extends TicketSortSpecs {
     public Ticket saveTicket(Ticket ticket, List<OperationLog> operationLogs) {
         //记录日志
         operationLogService.saveOperationLog(operationLogs);
-        return ticketRepository.save(ticket);
+        Ticket retTicket = ticketRepository.save(ticket);
+        return retTicket;
+    }
+
+    @Transactional
+    public List<Ticket> updateTicket(List<Ticket> tickets, User user) {
+        Ticket ticketInDB;
+        List<Ticket> list = new ArrayList<Ticket>();
+        for (Ticket ticket : tickets) {
+            ticketInDB = ticketRepository.findOne(ticket.getId());
+            ticketInDB.setUpdateBy(user.getId());
+            ticketInDB.setUpdated(new Date());
+            ticketInDB.setValiddate(ticket.getValiddate());
+            ticketInDB.setPervalidDate(ticket.getPervalidDate());
+            ticketInDB.setApplyDate(ticket.getApplyDate());
+            ticketInDB.setLeaveCity(ticket.getLeaveCity());
+            ticketInDB.setRemark(ticket.getRemark());
+            list.add(ticketInDB);
+        }
+        return list;
     }
 
     //根据Ticket Id获取机票信息

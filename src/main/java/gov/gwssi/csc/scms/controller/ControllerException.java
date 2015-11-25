@@ -16,6 +16,7 @@ public class ControllerException {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public ErrorJSON defaultException(Exception ex) {
+        ex.printStackTrace();
         int statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
         ErrorJSON ejson = new ErrorJSON(statusCode, statusCode,
                 ex.getMessage(), Arrays.toString(ex.getStackTrace()));
