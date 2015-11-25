@@ -1,14 +1,24 @@
 package gov.gwssi.csc.scms.domain.appropriation;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by LiZhiSheng on 2015/9/14.
  */
 @Entity
 @Table(name = "SCMS_STATS_APPROPRIATION")
+@NamedStoredProcedureQueries(value = {
+        @NamedStoredProcedureQuery(name = "Appropriation.statistic", procedureName = "P_SCMS_STATS_APPROPRIATION", parameters = {
+                @StoredProcedureParameter(name = "fundAttr", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "fundType", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "fundStandard", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "planned", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "projectAttr", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "projectType", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "projectName", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "sameId", mode = ParameterMode.OUT, type = String.class)
+        })
+})
 public class Appropriation {
     //id
     @Id
