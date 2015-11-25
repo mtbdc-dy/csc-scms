@@ -30,6 +30,7 @@ public abstract class Ticket_ {
     public static volatile SingularAttribute<Ticket, String> studentId;
     public static volatile SingularAttribute<Ticket, Date> validdate;
     public static volatile SingularAttribute<Ticket, Date> flightDate;
+    public static volatile SingularAttribute<Ticket, Date> pervalidDate;
 
 }
 
