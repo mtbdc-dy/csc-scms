@@ -26,9 +26,9 @@ public class Filter {
     private String schReview = null;         // 奖学金评审结果 add by gc
     private String schResult = null;         // 奖学金处理结果 add by gc
     private String cscResult = null;
-    private int year = 0;                    //奖学金评审年度
-    private Character state = null;          //奖学金评审状态
-    private String qualified = null;         //奖学金是否有不合格人数
+    private int year = 0;                    // 奖学金评审年度
+    private Character state = null;          // 奖学金评审状态
+    private String qualified = null;         // 奖学金是否有不合格人数
     private String currentProvince = null;
     private String currentUniversity = null;
 
@@ -37,9 +37,9 @@ public class Filter {
     private String schoolReviews = null;
     private String schoolResults = null;
 
-/**
- * LZS 自定义的查询条件 非公共条件
- */
+    /**
+     * LZS 自定义的查询条件 非公共条件
+     */
     private String pro = null;//省市
     private String univ = null;//学校
     //导入模块日期 报到进度统计 公用
@@ -62,9 +62,11 @@ public class Filter {
     private String planned = null;           // 名额性质（计划内 计划外）
     private String dispatch = null;          // 派遣途径
     private String travelType = null;        // 国际旅费
-    private Integer annual = null;              // 年度
+    private Integer annual = null;           // 年度
     private String studentType = null;       // 学生类别
-    private String appropriation = null;     // 经费办法
+    private String fundAttr = null;          // 经费属性 //
+    private String fundType = null;          // 经费办法 //
+    private String fundStandard = null;      // 经费标准 //
     private String teachLanguage = null;     // 授课语言
     private String schoolRollState = null;   // 学籍状态
     private Date arrivalDateBegin = null;    // 来华时间起始时间
@@ -94,532 +96,683 @@ public class Filter {
     // add by lzs20150511 添加 mode 字段用来区分新增学生列表时候，返回不同列表
     private String mode = null; // 区分学生列表
 
-    public String getConfigId() {
-        return configId;
-    }
-
-    public void setConfigId(String configId) {
-        this.configId = configId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getConfigType() {
-        return configType;
-    }
-
-    public void setConfigType(String configType) {
-        this.configType = configType;
-    }
-
-    public String getAccessState() {
-        return accessState;
-    }
-
-    public void setAccessState(String accessState) {
-        this.accessState = accessState;
-    }
-
-    public String getPublishState() {
-        return publishState;
-    }
-
-    public void setPublishState(String publishState) {
-        this.publishState = publishState;
-    }
-
-    public Date getCreateTimeFrom() {
-        return createTimeFrom;
-    }
-
-    public void setCreateTimeFrom(Date createTimeFrom) {
-        this.createTimeFrom = createTimeFrom;
-    }
-
-    public Date getCreateTimeTo() {
-        return createTimeTo;
-    }
-
-    public void setCreateTimeTo(Date createTimeTo) {
-        this.createTimeTo = createTimeTo;
-    }
-
-    public Date getPublishTimeFrom() {
-        return publishTimeFrom;
-    }
-
-    public void setPublishTimeFrom(Date publishTimeFrom) {
-        this.publishTimeFrom = publishTimeFrom;
-    }
-
-    public Date getPublishTimeTo() {
-        return publishTimeTo;
-    }
-
-    public void setPublishTimeTo(Date publishTimeTo) {
-        this.publishTimeTo = publishTimeTo;
-    }
-
-    public String getCscId() {
-        return cscId;
-    }
-
-    public void setCscId(String cscId) {
-        this.cscId = cscId;
-    }
-
-    public String getPassportName() {
-        return passportName;
-    }
-
-    public void setPassportName(String passportName) {
-        this.passportName = passportName;
-    }
-
-    public String getContinent() {
-        return continent;
-    }
-
-    public void setContinent(String continent) {
-        this.continent = continent;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getProjectAttr() {
-        return projectAttr;
-    }
-
-    public void setProjectAttr(String projectAttr) {
-        this.projectAttr = projectAttr;
-    }
-
-    public String getProjectType() {
-        return projectType;
-    }
-
-    public void setProjectType(String projectType) {
-        this.projectType = projectType;
-    }
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
-    }
-
-    public String getRegisterState() {
-        return registerState;
-    }
-
-    public void setRegisterState(String registerState) {
-        this.registerState = registerState;
-    }
-
-    public String getAbnormalState() {
-        return abnormalState;
-    }
-
-    public void setAbnormalState(String abnormalState) {
-        this.abnormalState = abnormalState;
-    }
-
-    public Date getAbnormalDateBegin() {
+    public Date getAbnormalDateBegin()
+    {
         return abnormalDateBegin;
     }
 
-    public void setAbnormalDateBegin(Date abnormalDateBegin) {
+    public void setAbnormalDateBegin(Date abnormalDateBegin)
+    {
         this.abnormalDateBegin = abnormalDateBegin;
     }
 
-    public Date getAbnormalDateEnd() {
+    public Date getAbnormalDateEnd()
+    {
         return abnormalDateEnd;
     }
 
-    public void setAbnormalDateEnd(Date abnormalDateEnd) {
+    public void setAbnormalDateEnd(Date abnormalDateEnd)
+    {
         this.abnormalDateEnd = abnormalDateEnd;
     }
 
-    public String getTicketState() {
-        return ticketState;
+    public String getAbnormalState()
+    {
+        return abnormalState;
     }
 
-    public void setTicketState(String ticketState) {
-        this.ticketState = ticketState;
+    public void setAbnormalState(String abnormalState)
+    {
+        this.abnormalState = abnormalState;
     }
 
-    public String getSchReview() {
-        return schReview;
+    public String getAccessState()
+    {
+        return accessState;
     }
 
-    public void setSchReview(String schReview) {
-        this.schReview = schReview;
+    public void setAccessState(String accessState)
+    {
+        this.accessState = accessState;
     }
 
-    public String getSchResult() {
-        return schResult;
-    }
-
-    public void setSchResult(String schResult) {
-        this.schResult = schResult;
-    }
-
-    public String getPlanned() {
-        return planned;
-    }
-
-    public void setPlanned(String planned) {
-        this.planned = planned;
-    }
-
-    public String getDispatch() {
-        return dispatch;
-    }
-
-    public void setDispatch(String dispatch) {
-        this.dispatch = dispatch;
-    }
-
-    public String getTravelType() {
-        return travelType;
-    }
-
-    public void setTravelType(String travelType) {
-        this.travelType = travelType;
-    }
-
-    public Integer getAnnual() {
+    public Integer getAnnual()
+    {
         return annual;
     }
 
-    public void setAnnual(Integer annual) {
+    public void setAnnual(Integer annual)
+    {
         this.annual = annual;
     }
 
-    public String getStudentType() {
-        return studentType;
-    }
-
-    public void setStudentType(String studentType) {
-        this.studentType = studentType;
-    }
-
-    public String getAppropriation() {
-        return appropriation;
-    }
-
-    public void setAppropriation(String appropriation) {
-        this.appropriation = appropriation;
-    }
-
-    public String getTeachLanguage() {
-        return teachLanguage;
-    }
-
-    public void setTeachLanguage(String teachLanguage) {
-        this.teachLanguage = teachLanguage;
-    }
-
-    public String getSchoolRollState() {
-        return schoolRollState;
-    }
-
-    public void setSchoolRollState(String schoolRollState) {
-        this.schoolRollState = schoolRollState;
-    }
-
-    public Date getArrivalDateBegin() {
+    public Date getArrivalDateBegin()
+    {
         return arrivalDateBegin;
     }
 
-    public void setArrivalDateBegin(Date arrivalDateBegin) {
+    public void setArrivalDateBegin(Date arrivalDateBegin)
+    {
         this.arrivalDateBegin = arrivalDateBegin;
     }
 
-    public Date getArrivalDateEnd() {
+    public Date getArrivalDateEnd()
+    {
         return arrivalDateEnd;
     }
 
-    public void setArrivalDateEnd(Date arrivalDateEnd) {
+    public void setArrivalDateEnd(Date arrivalDateEnd)
+    {
         this.arrivalDateEnd = arrivalDateEnd;
     }
 
-    public Date getLeaveDateBegin() {
-        return leaveDateBegin;
-    }
-
-    public void setLeaveDateBegin(Date leaveDateBegin) {
-        this.leaveDateBegin = leaveDateBegin;
-    }
-
-    public Date getLeaveDateEnd() {
-        return leaveDateEnd;
-    }
-
-    public void setLeaveDateEnd(Date leaveDateEnd) {
-        this.leaveDateEnd = leaveDateEnd;
-    }
-
-    public Date getCramDateBeginBegin() {
-        return cramDateBeginBegin;
-    }
-
-    public void setCramDateBeginBegin(Date cramDateBeginBegin) {
-        this.cramDateBeginBegin = cramDateBeginBegin;
-    }
-
-    public Date getCramDateBeginEnd() {
-        return cramDateBeginEnd;
-    }
-
-    public void setCramDateBeginEnd(Date cramDateBeginEnd) {
-        this.cramDateBeginEnd = cramDateBeginEnd;
-    }
-
-    public Date getCramDateEndBegin() {
-        return cramDateEndBegin;
-    }
-
-    public void setCramDateEndBegin(Date cramDateEndBegin) {
-        this.cramDateEndBegin = cramDateEndBegin;
-    }
-
-    public Date getCramDateEndEnd() {
-        return cramDateEndEnd;
-    }
-
-    public void setCramDateEndEnd(Date cramDateEndEnd) {
-        this.cramDateEndEnd = cramDateEndEnd;
-    }
-
-    public Date getMajorStartDateBegin() {
-        return majorStartDateBegin;
-    }
-
-    public void setMajorStartDateBegin(Date majorStartDateBegin) {
-        this.majorStartDateBegin = majorStartDateBegin;
-    }
-
-    public Date getMajorStartDateEnd() {
-        return majorStartDateEnd;
-    }
-
-    public void setMajorStartDateEnd(Date majorStartDateEnd) {
-        this.majorStartDateEnd = majorStartDateEnd;
-    }
-
-    public Date getPlanLeaveDateBegin() {
-        return planLeaveDateBegin;
-    }
-
-    public void setPlanLeaveDateBegin(Date planLeaveDateBegin) {
-        this.planLeaveDateBegin = planLeaveDateBegin;
-    }
-
-    public Date getPlanLeaveDateEnd() {
-        return planLeaveDateEnd;
-    }
-
-    public void setPlanLeaveDateEnd(Date planLeaveDateEnd) {
-        this.planLeaveDateEnd = planLeaveDateEnd;
-    }
-
-    public String getMode() {
-        return mode;
-    }
-
-    public void setMode(String mode) {
-        this.mode = mode;
-    }
-
-    public String getPro() {
-        return pro;
-    }
-
-    public void setPro(String pro) {
-        this.pro = pro;
-    }
-
-    public String getUniv() {
-        return univ;
-    }
-
-    public void setUniv(String univ) {
-        this.univ = univ;
-    }
-
-    public String getPreSta() {
-        return preSta;
-    }
-
-    public void setPreSta(String preSta) {
-        this.preSta = preSta;
-    }
-
-
-    public Date getBeginTime() {
+    public Date getBeginTime()
+    {
         return beginTime;
     }
 
-    public void setBeginTime(Date beginTime) {
+    public void setBeginTime(Date beginTime)
+    {
         this.beginTime = beginTime;
     }
 
-    public Date getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
-    }
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-
-    }
-
-    public String getTicketType() {
-        return ticketType;
-    }
-
-    public void setTicketType(String ticketType) {
-        this.ticketType = ticketType;
-    }
-
-    public String getProvince() {
-        return province;
-    }
-
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
-    public String getUniversity() {
-        return university;
-    }
-
-    public void setUniversity(String university) {
-        this.university = university;
-    }
-    public Character getState() {
-        return state;
-    }
-
-    public void setState(Character state) {
-        this.state = state;
-    }
-
-    public String getQualified() {
-        return qualified;
-    }
-
-    public void setQualified(String qualified) {
-        this.qualified = qualified;
-    }
-
-    public String getCurrentProvince() {
-        return currentProvince;
-    }
-
-    public void setCurrentProvince(String currentProvince) {
-        this.currentProvince = currentProvince;
-    }
-
-    public String getCurrentUniversity() {
-        return currentUniversity;
-    }
-
-    public void setCurrentUniversity(String currentUniversity) {
-        this.currentUniversity = currentUniversity;
-
-    }
-
-    public String getBusinessModule() {
+    public String getBusinessModule()
+    {
         return businessModule;
     }
 
-    public void setBusinessModule(String businessModule) {
+    public void setBusinessModule(String businessModule)
+    {
         this.businessModule = businessModule;
     }
 
-    public String getOptType() {
-        return optType;
-    }
-
-    public void setOptType(String optType) {
-        this.optType = optType;
-    }
-
-    public String getChinaName() {
+    public String getChinaName()
+    {
         return chinaName;
     }
 
-    public void setChinaName(String chinaName) {
+    public void setChinaName(String chinaName)
+    {
         this.chinaName = chinaName;
     }
 
-    public String getTableName() {
-        return tableName;
+    public String getConfigId()
+    {
+        return configId;
     }
 
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
+    public void setConfigId(String configId)
+    {
+        this.configId = configId;
     }
 
-    public String getSchool() {
-        return school;
+    public String getConfigType()
+    {
+        return configType;
     }
 
-    public void setSchool(String school) {
-        this.school = school;
+    public void setConfigType(String configType)
+    {
+        this.configType = configType;
     }
 
-    public String getInsuranceState() {
-        return insuranceState;
+    public String getContinent()
+    {
+        return continent;
     }
 
-    public void setInsuranceState(String insuranceState) {
-        this.insuranceState = insuranceState;
+    public void setContinent(String continent)
+    {
+        this.continent = continent;
     }
 
-    public String getSchoolReviews() {
-        return schoolReviews;
+    public String getCountry()
+    {
+        return country;
     }
 
-    public void setSchoolReviews(String schoolReviews) {
-        this.schoolReviews = schoolReviews;
+    public void setCountry(String country)
+    {
+        this.country = country;
     }
 
-    public String getSchoolResults() {
-        return schoolResults;
+    public Date getCramDateBeginBegin()
+    {
+        return cramDateBeginBegin;
     }
 
-    public void setSchoolResults(String schoolResults) {
-        this.schoolResults = schoolResults;
+    public void setCramDateBeginBegin(Date cramDateBeginBegin)
+    {
+        this.cramDateBeginBegin = cramDateBeginBegin;
     }
 
-    public String getCscResult() {
+    public Date getCramDateBeginEnd()
+    {
+        return cramDateBeginEnd;
+    }
+
+    public void setCramDateBeginEnd(Date cramDateBeginEnd)
+    {
+        this.cramDateBeginEnd = cramDateBeginEnd;
+    }
+
+    public Date getCramDateEndBegin()
+    {
+        return cramDateEndBegin;
+    }
+
+    public void setCramDateEndBegin(Date cramDateEndBegin)
+    {
+        this.cramDateEndBegin = cramDateEndBegin;
+    }
+
+    public Date getCramDateEndEnd()
+    {
+        return cramDateEndEnd;
+    }
+
+    public void setCramDateEndEnd(Date cramDateEndEnd)
+    {
+        this.cramDateEndEnd = cramDateEndEnd;
+    }
+
+    public Date getCreateTimeFrom()
+    {
+        return createTimeFrom;
+    }
+
+    public void setCreateTimeFrom(Date createTimeFrom)
+    {
+        this.createTimeFrom = createTimeFrom;
+    }
+
+    public Date getCreateTimeTo()
+    {
+        return createTimeTo;
+    }
+
+    public void setCreateTimeTo(Date createTimeTo)
+    {
+        this.createTimeTo = createTimeTo;
+    }
+
+    public String getCscId()
+    {
+        return cscId;
+    }
+
+    public void setCscId(String cscId)
+    {
+        this.cscId = cscId;
+    }
+
+    public String getCscResult()
+    {
         return cscResult;
     }
 
-    public void setCscResult(String cscResult) {
+    public void setCscResult(String cscResult)
+    {
         this.cscResult = cscResult;
+    }
+
+    public String getCurrentProvince()
+    {
+        return currentProvince;
+    }
+
+    public void setCurrentProvince(String currentProvince)
+    {
+        this.currentProvince = currentProvince;
+    }
+
+    public String getCurrentUniversity()
+    {
+        return currentUniversity;
+    }
+
+    public void setCurrentUniversity(String currentUniversity)
+    {
+        this.currentUniversity = currentUniversity;
+    }
+
+    public String getDispatch()
+    {
+        return dispatch;
+    }
+
+    public void setDispatch(String dispatch)
+    {
+        this.dispatch = dispatch;
+    }
+
+    public Date getEndTime()
+    {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime)
+    {
+        this.endTime = endTime;
+    }
+
+    public String getFundAttr()
+    {
+        return fundAttr;
+    }
+
+    public void setFundAttr(String fundAttr)
+    {
+        this.fundAttr = fundAttr;
+    }
+
+    public String getFundStandard()
+    {
+        return fundStandard;
+    }
+
+    public void setFundStandard(String fundStandard)
+    {
+        this.fundStandard = fundStandard;
+    }
+
+    public String getFundType()
+    {
+        return fundType;
+    }
+
+    public void setFundType(String fundType)
+    {
+        this.fundType = fundType;
+    }
+
+    public String getInsuranceState()
+    {
+        return insuranceState;
+    }
+
+    public void setInsuranceState(String insuranceState)
+    {
+        this.insuranceState = insuranceState;
+    }
+
+    public Date getLeaveDateBegin()
+    {
+        return leaveDateBegin;
+    }
+
+    public void setLeaveDateBegin(Date leaveDateBegin)
+    {
+        this.leaveDateBegin = leaveDateBegin;
+    }
+
+    public Date getLeaveDateEnd()
+    {
+        return leaveDateEnd;
+    }
+
+    public void setLeaveDateEnd(Date leaveDateEnd)
+    {
+        this.leaveDateEnd = leaveDateEnd;
+    }
+
+    public Date getMajorStartDateBegin()
+    {
+        return majorStartDateBegin;
+    }
+
+    public void setMajorStartDateBegin(Date majorStartDateBegin)
+    {
+        this.majorStartDateBegin = majorStartDateBegin;
+    }
+
+    public Date getMajorStartDateEnd()
+    {
+        return majorStartDateEnd;
+    }
+
+    public void setMajorStartDateEnd(Date majorStartDateEnd)
+    {
+        this.majorStartDateEnd = majorStartDateEnd;
+    }
+
+    public String getMode()
+    {
+        return mode;
+    }
+
+    public void setMode(String mode)
+    {
+        this.mode = mode;
+    }
+
+    public String getOptType()
+    {
+        return optType;
+    }
+
+    public void setOptType(String optType)
+    {
+        this.optType = optType;
+    }
+
+    public String getPassportName()
+    {
+        return passportName;
+    }
+
+    public void setPassportName(String passportName)
+    {
+        this.passportName = passportName;
+    }
+
+    public Date getPlanLeaveDateBegin()
+    {
+        return planLeaveDateBegin;
+    }
+
+    public void setPlanLeaveDateBegin(Date planLeaveDateBegin)
+    {
+        this.planLeaveDateBegin = planLeaveDateBegin;
+    }
+
+    public Date getPlanLeaveDateEnd()
+    {
+        return planLeaveDateEnd;
+    }
+
+    public void setPlanLeaveDateEnd(Date planLeaveDateEnd)
+    {
+        this.planLeaveDateEnd = planLeaveDateEnd;
+    }
+
+    public String getPlanned()
+    {
+        return planned;
+    }
+
+    public void setPlanned(String planned)
+    {
+        this.planned = planned;
+    }
+
+    public String getPreSta()
+    {
+        return preSta;
+    }
+
+    public void setPreSta(String preSta)
+    {
+        this.preSta = preSta;
+    }
+
+    public String getPro()
+    {
+        return pro;
+    }
+
+    public void setPro(String pro)
+    {
+        this.pro = pro;
+    }
+
+    public String getProjectAttr()
+    {
+        return projectAttr;
+    }
+
+    public void setProjectAttr(String projectAttr)
+    {
+        this.projectAttr = projectAttr;
+    }
+
+    public String getProjectName()
+    {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName)
+    {
+        this.projectName = projectName;
+    }
+
+    public String getProjectType()
+    {
+        return projectType;
+    }
+
+    public void setProjectType(String projectType)
+    {
+        this.projectType = projectType;
+    }
+
+    public String getProvince()
+    {
+        return province;
+    }
+
+    public void setProvince(String province)
+    {
+        this.province = province;
+    }
+
+    public String getPublishState()
+    {
+        return publishState;
+    }
+
+    public void setPublishState(String publishState)
+    {
+        this.publishState = publishState;
+    }
+
+    public Date getPublishTimeFrom()
+    {
+        return publishTimeFrom;
+    }
+
+    public void setPublishTimeFrom(Date publishTimeFrom)
+    {
+        this.publishTimeFrom = publishTimeFrom;
+    }
+
+    public Date getPublishTimeTo()
+    {
+        return publishTimeTo;
+    }
+
+    public void setPublishTimeTo(Date publishTimeTo)
+    {
+        this.publishTimeTo = publishTimeTo;
+    }
+
+    public String getQualified()
+    {
+        return qualified;
+    }
+
+    public void setQualified(String qualified)
+    {
+        this.qualified = qualified;
+    }
+
+    public String getRegisterState()
+    {
+        return registerState;
+    }
+
+    public void setRegisterState(String registerState)
+    {
+        this.registerState = registerState;
+    }
+
+    public String getSchool()
+    {
+        return school;
+    }
+
+    public void setSchool(String school)
+    {
+        this.school = school;
+    }
+
+    public String getSchoolResults()
+    {
+        return schoolResults;
+    }
+
+    public void setSchoolResults(String schoolResults)
+    {
+        this.schoolResults = schoolResults;
+    }
+
+    public String getSchoolReviews()
+    {
+        return schoolReviews;
+    }
+
+    public void setSchoolReviews(String schoolReviews)
+    {
+        this.schoolReviews = schoolReviews;
+    }
+
+    public String getSchoolRollState()
+    {
+        return schoolRollState;
+    }
+
+    public void setSchoolRollState(String schoolRollState)
+    {
+        this.schoolRollState = schoolRollState;
+    }
+
+    public String getSchResult()
+    {
+        return schResult;
+    }
+
+    public void setSchResult(String schResult)
+    {
+        this.schResult = schResult;
+    }
+
+    public String getSchReview()
+    {
+        return schReview;
+    }
+
+    public void setSchReview(String schReview)
+    {
+        this.schReview = schReview;
+    }
+
+    public Character getState()
+    {
+        return state;
+    }
+
+    public void setState(Character state)
+    {
+        this.state = state;
+    }
+
+    public String getStudentType()
+    {
+        return studentType;
+    }
+
+    public void setStudentType(String studentType)
+    {
+        this.studentType = studentType;
+    }
+
+    public String getTableName()
+    {
+        return tableName;
+    }
+
+    public void setTableName(String tableName)
+    {
+        this.tableName = tableName;
+    }
+
+    public String getTeachLanguage()
+    {
+        return teachLanguage;
+    }
+
+    public void setTeachLanguage(String teachLanguage)
+    {
+        this.teachLanguage = teachLanguage;
+    }
+
+    public String getTicketState()
+    {
+        return ticketState;
+    }
+
+    public void setTicketState(String ticketState)
+    {
+        this.ticketState = ticketState;
+    }
+
+    public String getTicketType()
+    {
+        return ticketType;
+    }
+
+    public void setTicketType(String ticketType)
+    {
+        this.ticketType = ticketType;
+    }
+
+    public String getTitle()
+    {
+        return title;
+    }
+
+    public void setTitle(String title)
+    {
+        this.title = title;
+    }
+
+    public String getTravelType()
+    {
+        return travelType;
+    }
+
+    public void setTravelType(String travelType)
+    {
+        this.travelType = travelType;
+    }
+
+    public String getUniv()
+    {
+        return univ;
+    }
+
+    public void setUniv(String univ)
+    {
+        this.univ = univ;
+    }
+
+    public String getUniversity()
+    {
+        return university;
+    }
+
+    public void setUniversity(String university)
+    {
+        this.university = university;
+    }
+
+    public int getYear()
+    {
+        return year;
+    }
+
+    public void setYear(int year)
+    {
+        this.year = year;
     }
 }

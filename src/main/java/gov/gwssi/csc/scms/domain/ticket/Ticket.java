@@ -11,7 +11,7 @@ import java.util.Date;
  * 机票管理
  */
 @Entity
-@Table(name = "SCMS_AIRTICKET")
+@Table(name = "SCMS_AIRTICKET",schema = "SCMS")
 public class Ticket {
     @Id
     private String id;
@@ -107,6 +107,20 @@ public class Ticket {
      */
     @Column(name = "updated")
     private Date updated;
+
+    /**
+     *居留许可有效期
+     */
+    @Column(name = "pervalidDate")
+    private Date pervalidDate;
+
+    public Date getPervalidDate() {
+        return pervalidDate;
+    }
+
+    public void setPervalidDate(Date pervalidDate) {
+        this.pervalidDate = pervalidDate;
+    }
 
     public Date getValiddate() {
         return validdate;

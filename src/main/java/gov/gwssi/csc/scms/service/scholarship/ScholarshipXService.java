@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -504,7 +505,7 @@ public class ScholarshipXService extends ScholarshipXSpecs {
             String school = user.getNode().getNodeId();
             Specification<ScholarshipX> specA = filterIsLike(filter, user, school);
             Specification<ScholarshipX> specB = userIs(user);
-            return scholarshipXRepository.findAll(where(specA).and(specB), new PageRequest(page, size));
+            return scholarshipXRepository.findAll(where(specA).and(specB), new PageRequest(page, size, Sort.Direction.ASC, "cscId"));
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -520,7 +521,7 @@ public class ScholarshipXService extends ScholarshipXSpecs {
             String school = user.getNode().getNodeId();
             Specification<ScholarshipX> specA = filterIsLike(filter, user, school);
             Specification<ScholarshipX> specB = userIs(user);
-            scholarshipXes = scholarshipXRepository.findAll(where(specA).and(specB));
+            scholarshipXes = scholarshipXRepository.findAll(where(specA).and(specB),new Sort(Sort.Direction.ASC,"cscId"));
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -540,7 +541,7 @@ public class ScholarshipXService extends ScholarshipXSpecs {
                 User user = userService.getUserByJWT(header);
                 Specification<ScholarshipX> specA = filterIsLike(filter, user, school);
                 Specification<ScholarshipX> specB = userIs(user);
-                return scholarshipXRepository.findAll(where(specA).and(specB), new PageRequest(page, size));
+                return scholarshipXRepository.findAll(where(specA).and(specB), new PageRequest(page, size, Sort.Direction.ASC, "cscId"));
             }catch (Exception e){
                 e.printStackTrace();
                 throw new RuntimeException(e);

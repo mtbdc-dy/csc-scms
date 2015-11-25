@@ -25,6 +25,7 @@ public class ExportService extends BaseService
 
     public byte[] exportByFilter(String tableName, String subTable, String[] ids)
     {
+        ids = ids == null ? new String[0] : ids;
         List<List<String>> idsList = splitList(Arrays.asList(ids));
 
         List exportList    = exportDAO.getExportList(tableName, subTable);
@@ -68,6 +69,7 @@ public class ExportService extends BaseService
     //生成多个sheet页的导出
     public byte[] exportByFilter(String[] tableNames, String subTable, String[] ids)
     {
+        ids = ids == null ? new String[0] : ids;
         List<List<String>> idsList = splitList(Arrays.asList(ids));
 
         //定义传入参数数组

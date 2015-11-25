@@ -10,6 +10,7 @@ import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class AbnormalSpecs extends BaseService {
                         || filter.getAnnual() != null;
                 boolean needSchoolRoll = filter.getRegisterState() != null
                         || filter.getStudentType() != null
-                        || filter.getAppropriation() != null
+                        || filter.getFundType() != null
                         || filter.getTeachLanguage() != null
                         || filter.getSchoolRollState() != null
                         || filter.getArrivalDateBegin() != null
@@ -77,15 +78,25 @@ public class AbnormalSpecs extends BaseService {
                 if (filter.getAbnormalDateBegin() != null && filter.getAbnormalDateEnd() != null) {
                     Date begin = filter.getAbnormalDateBegin();
                     Date end = filter.getAbnormalDateEnd();
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(end);   //设置日期
+                    c.add(Calendar.DATE, 1); //日期加1天
+                    end = c.getTime();
                     if(begin != null && end != null){
-                        predicate.getExpressions().add(cb.between(abnormal.get(Abnormal_.applyTime), begin, end));
+//                        predicate.getExpressions().add(cb.between(abnormal.get(Abnormal_.applyTime), begin, end));
+                        predicate.getExpressions().add(cb.greaterThanOrEqualTo(abnormal.get(Abnormal_.applyTime), begin));
+                        predicate.getExpressions().add(cb.lessThan(abnormal.get(Abnormal_.applyTime), end));
                     }
                 } else if (filter.getAbnormalDateBegin() != null) {
                     Date begin = filter.getAbnormalDateBegin();
                     predicate.getExpressions().add(cb.greaterThanOrEqualTo(abnormal.get(Abnormal_.applyTime), begin));
                 } else if (filter.getAbnormalDateEnd() != null) {
                     Date end = filter.getAbnormalDateEnd();
-                    predicate.getExpressions().add(cb.lessThanOrEqualTo(abnormal.get(Abnormal_.applyTime), end));
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(end);   //设置日期
+                    c.add(Calendar.DATE, 1); //日期加1天
+                    end = c.getTime();
+                    predicate.getExpressions().add(cb.lessThan(abnormal.get(Abnormal_.applyTime), end));
                 }
 
 
@@ -138,8 +149,8 @@ public class AbnormalSpecs extends BaseService {
                         if (filter.getStudentType() != null) {
                             predicate.getExpressions().add(cb.like(schoolRoll.get(SchoolRoll_.studentType), filter.getStudentType()));
                         }
-                        if (filter.getAppropriation() != null) {
-                            predicate.getExpressions().add(cb.like(schoolRoll.get(SchoolRoll_.appropriation), filter.getAppropriation()));
+                        if (filter.getFundType() != null) {
+                            predicate.getExpressions().add(cb.like(schoolRoll.get(SchoolRoll_.appropriation), filter.getFundType()));
                         }
                         if (filter.getTeachLanguage() != null) {
                             predicate.getExpressions().add(cb.like(schoolRoll.get(SchoolRoll_.teachLanguage), filter.getTeachLanguage()));

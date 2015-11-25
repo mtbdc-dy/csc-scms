@@ -28,77 +28,25 @@ import static org.springframework.data.jpa.domain.Specifications.where;
  * 经费统计控制器
  */
 @Service("appropriationService")
-public class AppropriationService extends AppropriationSpecs {
-    @Autowired
-    @Qualifier("scholarshipDetailRepository")
-    private ScholarshipDetailRepository scholarshipDetailRepository;
-    @Autowired
-    @Qualifier("scholarshipRepository")
-    private ScholarshipRepository scholarshipRepository;
-
+public class AppropriationService extends AppropriationSpecs
+{
     @Autowired
     @Qualifier("appropriationRepository")
-    private AppropriationRepository appropriationRepository;
-    @Autowired
-    private OperationLogService operationLogService;
-    @Autowired
-    private AppropriationDAO appropriationDAO;
+    private AppropriationRepository repository;
 
-    //查询经费统计列表
-//    public List getList(List listParameter){
-//        //调用存储过程
-//        String id=appropriationDAO.doSt("p_scms_stats_appropriation", listParameter);
-//        //根据id找到生成的统计记录
-//        return appropriationDAO.getListById(id);
-//    }
+    public Page<Appropriation> getAppropriationsPagingByFilter(Filter filter, Integer page, Integer size)
+    {
+        String fundAttr = filter.getFundAttr() == null ? "" : filter.getFundAttr(),
+                fundType = filter.getFundType() == null ? "" : filter.getFundType(),
+                fundStandard = filter.getFundStandard() == null ? "" : filter.getFundStandard(),
+                planned = filter.getPlanned() == null ? "" : filter.getPlanned(),
+                projectAttr = filter.getProjectAttr() == null ? "" : filter.getProjectAttr(),
+                projectType = filter.getProjectType() == null ? "" : filter.getProjectType(),
+                projectName = filter.getProjectName() == null ? "" : filter.getProjectName();
 
-    public Page<Appropriation> getAppropriationsPagingByFilter(Filter filter,Integer page,Integer size) {
-        List listParameter = new ArrayList();
-/**
- * 存储参数的顺序
- * listParameter.add("");
- listParameter.add(appropriation);
- listParameter.add("");
- listParameter.add(planned);
- listParameter.add(projectAttr);
- listParameter.add(projectType);
- listParameter.add(projectName);
- */
-        listParameter.add("");
-        if (filter.getAppropriation()!= null) {
-            listParameter.add(filter.getAppropriation());
-        }else{
-            listParameter.add("");
-        }
-        listParameter.add("");
-        if (filter.getPlanned()!=null) {
-            listParameter.add(filter.getPlanned());
-        }else{
-            listParameter.add("");
-        }
-
-        if (filter.getProjectAttr()!=null) {
-            listParameter.add(filter.getProjectAttr());
-        }else{
-            listParameter.add("");
-        }
-        if (filter.getProjectType()!=null) {
-            listParameter.add(filter.getProjectType());
-        }else{
-            listParameter.add("");
-        }
-        if (filter.getProjectName()!=null) {
-            listParameter.add(filter.getProjectName());
-        }else {
-            listParameter.add("");
-        }
-
-        System.out.println(listParameter);
-        String sameId = getBaseDao().doStatementForRtn("p_scms_stats_appropriation", listParameter);
+        String sameId = repository.statistic(fundAttr, fundType, fundStandard, planned, projectAttr, projectType, projectName);
         System.out.println(sameId);
         Specification<Appropriation> specA = filterIsLike(sameId);
-        return  appropriationRepository.findAll(where(specA), new PageRequest(page, size,Sort.Direction.ASC,"id"));
+        return repository.findAll(where(specA), new PageRequest(page, size, Sort.Direction.ASC, "id"));
     }
-
-
-    }
+}
