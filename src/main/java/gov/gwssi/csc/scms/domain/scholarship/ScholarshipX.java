@@ -12,7 +12,8 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "V_SCHOLARSHIP_LASTYEAR")
-public class ScholarshipX {
+public class ScholarshipX implements Comparable<ScholarshipX>
+{
     @Id
     //@Column(length = 19)
     private String id;
@@ -40,27 +41,27 @@ public class ScholarshipX {
     @Column
     private String schReason;
     @Column
-    private Date schStartTime;
+    private Date   schStartTime;
     @Column
-    private Date schEndTime;
+    private Date   schEndTime;
     @Column
     private String cscReason;
     @Column
-    private Date cscStartTime;
+    private Date   cscStartTime;
     @Column
-    private Date cscEndTime;
+    private Date   cscEndTime;
     @Column
-    private Long schoolQual;
+    private Long   schoolQual;
     @Column
-    private Long schoolUnQual;
+    private Long   schoolUnQual;
     @Column
-    private Long cscQual;
+    private Long   cscQual;
     @Column
-    private Long cscUnQual;
+    private Long   cscUnQual;
     @Column
-    private Date updated;
+    private Date   updated;
     @Column
-    private String  updateby;
+    private String updateby;
     @Column
     private String schoolSta;
     @Column
@@ -71,225 +72,284 @@ public class ScholarshipX {
     private String passportName;
 
     /**
-     *年度
+     * 年度
      */
     @Column
-    private long year;
+    private long   year;
     /**
-     *院校 DIM_UNIVERSITY代码
+     * 院校 DIM_UNIVERSITY代码
      */
     @Column
     private String school;
 
-    public String getPassportName() {
+    public String getPassportName()
+    {
         return passportName;
     }
 
-    public void setPassportName(String passportName) {
+    public void setPassportName(String passportName)
+    {
         this.passportName = passportName;
     }
 
-    public Long getSchoolQual() {
+    public Long getSchoolQual()
+    {
         return schoolQual;
     }
 
-    public void setSchoolQual(Long schoolQual) {
+    public void setSchoolQual(Long schoolQual)
+    {
         this.schoolQual = schoolQual;
     }
 
-    public Long getSchoolUnQual() {
+    public Long getSchoolUnQual()
+    {
         return schoolUnQual;
     }
 
-    public void setSchoolUnQual(Long schoolUnQual) {
+    public void setSchoolUnQual(Long schoolUnQual)
+    {
         this.schoolUnQual = schoolUnQual;
     }
 
-    public Long getCscQual() {
+    public Long getCscQual()
+    {
         return cscQual;
     }
 
-    public void setCscQual(Long cscQual) {
+    public void setCscQual(Long cscQual)
+    {
         this.cscQual = cscQual;
     }
 
-    public Long getCscUnQual() {
+    public Long getCscUnQual()
+    {
         return cscUnQual;
     }
 
-    public void setCscUnQual(Long cscUnQual) {
+    public void setCscUnQual(Long cscUnQual)
+    {
         this.cscUnQual = cscUnQual;
     }
 
-    public String getSchoolSta() {
+    public String getSchoolSta()
+    {
         return schoolSta;
     }
 
-    public void setSchoolSta(String schoolSta) {
+    public void setSchoolSta(String schoolSta)
+    {
         this.schoolSta = schoolSta;
     }
 
-    public String getCscSta() {
+    public String getCscSta()
+    {
         return cscSta;
     }
 
-    public void setCscSta(String cscSta) {
+    public void setCscSta(String cscSta)
+    {
         this.cscSta = cscSta;
     }
 
-    public String getId() {
+    public String getId()
+    {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(String id)
+    {
         this.id = id;
     }
 
-    public long getYear() {
+    public long getYear()
+    {
         return year;
     }
 
-    public void setYear(long year) {
+    public void setYear(long year)
+    {
         this.year = year;
     }
 
-    public String getSchool() {
+    public String getSchool()
+    {
         return school;
     }
 
-    public void setSchool(String school) {
+    public void setSchool(String school)
+    {
         this.school = school;
     }
 
 
-    public String getCscReview() {
+    public String getCscReview()
+    {
         return cscReview;
     }
 
-    public void setCscReview(String cscReview) {
+    public void setCscReview(String cscReview)
+    {
         this.cscReview = cscReview;
     }
 
 
-
-    public String getScholarshipId() {
+    public String getScholarshipId()
+    {
         return scholarshipId;
     }
 
-    public void setScholarshipId(String scholarshipId) {
+    public void setScholarshipId(String scholarshipId)
+    {
         this.scholarshipId = scholarshipId;
     }
 
-    public Date getUpdated() {
+    public Date getUpdated()
+    {
         return updated;
     }
 
-    public void setUpdated(Date updated) {
+    public void setUpdated(Date updated)
+    {
         this.updated = updated;
     }
 
-    public String getUpdateby() {
+    public String getUpdateby()
+    {
         return updateby;
     }
 
-    public void setUpdateby(String updateby) {
+    public void setUpdateby(String updateby)
+    {
         this.updateby = updateby;
     }
 
-    public String getSchResult() {
+    public String getSchResult()
+    {
         return schResult;
     }
 
-    public void setSchResult(String schResult) {
+    public void setSchResult(String schResult)
+    {
         this.schResult = schResult;
     }
 
-    public String getCscId() {
+    public String getCscId()
+    {
         return cscId;
     }
 
-    public void setCscId(String cscId) {
+    public void setCscId(String cscId)
+    {
         this.cscId = cscId;
     }
 
-    public String getSchReview() {
+    public String getSchReview()
+    {
         return schReview;
     }
 
-    public void setSchReview(String schReview) {
+    public void setSchReview(String schReview)
+    {
         this.schReview = schReview;
     }
 
-    public String getCscResult() {
+    public String getCscResult()
+    {
         return cscResult;
     }
 
-    public void setCscResult(String cscResult) {
+    public void setCscResult(String cscResult)
+    {
         this.cscResult = cscResult;
     }
 
-    public String getSchReason() {
+    public String getSchReason()
+    {
         return schReason;
     }
 
-    public void setSchReason(String schReason) {
+    public void setSchReason(String schReason)
+    {
         this.schReason = schReason;
     }
 
-    public Date getSchStartTime() {
+    public Date getSchStartTime()
+    {
         return schStartTime;
     }
 
-    public void setSchStartTime(Date schStartTime) {
+    public void setSchStartTime(Date schStartTime)
+    {
         this.schStartTime = schStartTime;
     }
 
-    public Date getSchEndTime() {
+    public Date getSchEndTime()
+    {
         return schEndTime;
     }
 
-    public void setSchEndTime(Date schEndTime) {
+    public void setSchEndTime(Date schEndTime)
+    {
         this.schEndTime = schEndTime;
     }
 
-    public String getCscReason() {
+    public String getCscReason()
+    {
         return cscReason;
     }
 
-    public void setCscReason(String cscReason) {
+    public void setCscReason(String cscReason)
+    {
         this.cscReason = cscReason;
     }
 
-    public Date getCscStartTime() {
+    public Date getCscStartTime()
+    {
         return cscStartTime;
     }
 
-    public void setCscStartTime(Date cscStartTime) {
+    public void setCscStartTime(Date cscStartTime)
+    {
         this.cscStartTime = cscStartTime;
     }
 
-    public Date getCscEndTime() {
+    public Date getCscEndTime()
+    {
         return cscEndTime;
     }
 
-    public void setCscEndTime(Date cscEndTime) {
+    public void setCscEndTime(Date cscEndTime)
+    {
         this.cscEndTime = cscEndTime;
     }
 
-    public String getCscrresult_lastyear() {
+    public String getCscrresult_lastyear()
+    {
         return cscrresult_lastyear;
     }
 
-    public void setCscrresult_lastyear(String cscrresult_lastyear) {
+    public void setCscrresult_lastyear(String cscrresult_lastyear)
+    {
         this.cscrresult_lastyear = cscrresult_lastyear;
     }
 
 
-    public Student getStudent() {
+    public Student getStudent()
+    {
         return student;
     }
 
-    public void setStudent(Student student) {
+    public void setStudent(Student student)
+    {
         this.student = student;
+    }
+
+    @Override
+    public int compareTo(ScholarshipX that)
+    {
+        int result = ((Long) this.getYear()).compareTo(that.getYear());
+        result = result == 0 ? this.getUpdated().compareTo(that.getUpdated()) : result;
+        return result;
     }
 }
