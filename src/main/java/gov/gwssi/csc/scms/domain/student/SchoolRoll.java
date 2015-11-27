@@ -169,6 +169,49 @@ public class SchoolRoll implements Cloneable{
     @JoinColumn(name = "STUDENTID")
     private Student student;
 
+
+    // 奖学金年度
+    @Transient
+    private Long scholarshipAnnual;
+
+    // 奖学金结果
+    @Transient
+    private String scholarshipReview;
+
+    // 奖学金意见
+    @Transient
+    private String scholarshipResult;
+
+    public Long getScholarshipAnnual()
+    {
+        return scholarshipAnnual;
+    }
+
+    public void setScholarshipAnnual(Long scholarshipAnnual)
+    {
+        this.scholarshipAnnual = scholarshipAnnual;
+    }
+
+    public String getScholarshipResult()
+    {
+        return scholarshipResult;
+    }
+
+    public void setScholarshipResult(String scholarshipResult)
+    {
+        this.scholarshipResult = scholarshipResult;
+    }
+
+    public String getScholarshipReview()
+    {
+        return scholarshipReview;
+    }
+
+    public void setScholarshipReview(String scholarshipReview)
+    {
+        this.scholarshipReview = scholarshipReview;
+    }
+
     public String getId() {
         return id;
     }

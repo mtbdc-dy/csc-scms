@@ -67,13 +67,6 @@ public class StudentServiceTest extends UnitTestBase {
         System.out.println("count::" + count);
     }
 
-    @Test
-    public void saveStudentTest() {
-        StudentService studentService = getBean("studentService");
-        Student stu = studentService.saveStudent(getStudentInTest(), getLogList());
-        Assert.assertNotNull(stu);
-
-    }
 
     @Test
     public void getStudentByScsIdTest() {
@@ -116,63 +109,6 @@ public class StudentServiceTest extends UnitTestBase {
         stu.getBasicInfo().setChineseName("小红");
         Student stu1 = studentService.saveStudent(stu, null);
         Assert.assertNotNull(stu1);
-    }
-
-//    @Test
-//    public void updateGroupByName() throws Exception {
-//        StudentService studentService = getBean("studentService");
-//        String id="2";
-//        String body = "{\"value\":\"{\\\"registerState\\\":\\\"123\\\"}\",\"user\":\"11111111\",\"log\":\"[]\"}";
-//        String group = "shoolRoll";
-//        ObjectMapper mapper = new ObjectMapper();
-//        JsonBody jbosy = new ObjectMapper().readValue(body, JsonBody.class);
-//        //Json转成对象 包含修改后的信息
-//        Object groupObj = updateStudentGroup(group, jbosy.getValue());
-//
-//        JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
-//        List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
-//        groupObj = studentService.updateGroupByName(id, group, groupObj, operationLogs);
-//    }
-
-    private Object updateStudentGroup(String group, String body) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        Object groupObject = null;
-
-        if ("basicInfo".equalsIgnoreCase(group)) {
-            groupObject = mapper.readValue(body, BasicInfo.class);
-        }
-        if ("schoolRoll".equalsIgnoreCase(group)) {
-            groupObject = mapper.readValue(body, SchoolRoll.class);
-        }
-        if ("registrationInfo".equalsIgnoreCase(group)) {
-            groupObject = mapper.readValue(body, RegistrationInfo.class);
-        }
-        if ("profilesHistory".equalsIgnoreCase(group)) {
-            groupObject = mapper.readValue(body, ProfilesHistory.class);
-        }
-        if ("discuss".equalsIgnoreCase(group)) {
-            groupObject = mapper.readValue(body, Discuss.class);
-        }
-        if ("schoolfellow".equalsIgnoreCase(group)) {
-            groupObject = mapper.readValue(body, Schoolfellow.class);
-        }
-        if ("accident".equalsIgnoreCase(group)) {
-            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, Accident.class);
-            groupObject = mapper.readValue(body, javaType);
-        }
-        if ("relatedAddress".equalsIgnoreCase(group)) {
-            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, RelatedAddress.class);
-            groupObject = mapper.readValue(body, javaType);
-        }
-        if ("grade".equalsIgnoreCase(group)) {
-            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, Grade.class);
-            groupObject = mapper.readValue(body, javaType);
-        }
-        if ("gradeAttachment".equalsIgnoreCase(group)) {
-            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, GradeAttachment.class);
-            groupObject = mapper.readValue(body, javaType);
-        }
-        return groupObject;
     }
 
     private Student getStudentInTest() {
@@ -232,29 +168,6 @@ public class StudentServiceTest extends UnitTestBase {
         return stu;
     }
 
-    private List<OperationLog> getLogList() {
-        List<OperationLog> list = new ArrayList<OperationLog>();
-
-        OperationLog op1 = new OperationLog();
-        op1.setModule("在校生管理");
-        op1.setTableEN("basicInfo");
-        //op1.setColunmEN("passportName");
-        op1.setBefore("beForeName");
-        op1.setAfter("afterName");
-        op1.setStudentId("2005042828");
-        list.add(op1);
-
-        OperationLog op2 = new OperationLog();
-        op2.setModule("离校生管理");
-        op2.setTableEN("relatedAddress");
-        //op2.setColunmEN("personName");
-        op2.setBefore("beForeAddress");
-        op2.setAfter("afterAddress");
-        op2.setStudentId("2005042828");
-        list.add(op2);
-
-        return list;
-    }
 
     @Test
     public void testGetStudentById() throws Exception {
@@ -263,5 +176,13 @@ public class StudentServiceTest extends UnitTestBase {
         Student student = studentService.getStudentById("2015061600000000341");
         Date b = new Date();
         System.out.println("costs: " + (b.getTime() - a.getTime()) + "ms.");
+    }
+
+    @Test
+    public void getCompleteInfoOfStudentById() throws Exception
+    {
+        StudentService service = getBean(StudentService.class);
+        Student student = service.getCompleteInfoOfStudentById("2008392005");
+        System.out.println(student);
     }
 }
