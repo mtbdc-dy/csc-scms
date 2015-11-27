@@ -2,8 +2,12 @@ package gov.gwssi.csc.scms.repository.ticket;
 
 import gov.gwssi.csc.scms.domain.ticket.Ticket;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -12,4 +16,8 @@ import java.util.List;
  */
 public interface TicketRepository extends CrudRepository<Ticket,String> , JpaSpecificationExecutor<Ticket> {
     List<Ticket> findByStudentId(String studentId);
+
+    @Modifying
+    @Query(value = "update Ticket ticket set ticket.pervalidDate = :pervalidDate where ticket.id = :id")
+    int updateTicket(@Param("pervalidDate")Date pervalidDate, @Param("id")String id);
 }

@@ -148,7 +148,7 @@ public class ScholarshipXController {
                     for (Iterator iter = scholarshipXlist.iterator(); iter.hasNext(); ) {
                         ScholarshipX strX = (ScholarshipX) iter.next();
 //                        if (strX.getYear() == year && strX.getSchool().equals(school)) {
-                            if (strX.getSchReview().equals("AQ0001")) {
+                            if ("AQ0001".equals(strX.getSchReview())) {
                                 qualNum++;
                             } else {
                                 unqualNum++;
@@ -159,7 +159,7 @@ public class ScholarshipXController {
                     for (Iterator iter = scholarshipXlist.iterator(); iter.hasNext(); ) {
                         ScholarshipX strX = (ScholarshipX) iter.next();
 //                        if (strX.getYear() == year && strX.getSchool().equals(school)) {
-                            if (strX.getCscReview().equals("AQ0001")) {
+                            if ("AQ0001".equals(strX.getCscReview())) {
                                 qualNum++;
                             } else {
                                 unqualNum++;
@@ -236,7 +236,7 @@ public class ScholarshipXController {
                 for (Iterator iter = scholarshipXlist.iterator(); iter.hasNext(); ) {
                     ScholarshipX strX = (ScholarshipX) iter.next();
                     if (strX.getYear() == year && strX.getSchool().equals(school)) {
-                        if (strX.getSchReview().equals("AQ0001")) {
+                        if ("AQ0001".equals(strX.getSchReview())) {
                             qualNum++;
                         } else {
                             unqualNum++;
@@ -291,7 +291,7 @@ public class ScholarshipXController {
             for (Iterator iter = scholarshipXlist.iterator(); iter.hasNext(); ) {
                 ScholarshipX strX = (ScholarshipX) iter.next();
 //                if (strX.getYear() == year && strX.getSchool().equals(school)) {
-                    if (strX.getSchReview().equals("AQ0001")) {
+                    if ("AQ0001".equals(strX.getSchReview())) {
                         qualNum++;
                     } else {
                         unqualNum++;
@@ -350,7 +350,7 @@ public class ScholarshipXController {
                     ScholarshipX strX = (ScholarshipX) iter.next();
 //                    if (strX.getYear() == year && strX.getSchool().equals(school)) {
 //                        scholarshipId = strX.getScholarshipId();
-                        if (strX.getSchReview().equals("AQ0001")) {
+                        if ("AQ0001".equals(strX.getSchReview())) {
                             qualNum++;
                         } else {
                             unqualNum++;
