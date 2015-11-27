@@ -18,7 +18,7 @@ public class CodeMainTenanceProject3Converter extends BaseService implements Con
         Map<String, Object> target = new HashMap<String, Object>();
         target.put("id",codemaintanenceProjectThird.getId());
         target.put("name",codemaintanenceProjectThird.getName());
-        target.put("fundAttr", codemaintanenceProjectThird.getFundattr());
+        target.put("fundattr", codemaintanenceProjectThird.getFundattr());
         target.put("enabled",codemaintanenceProjectThird.getEnabled());
         target.put("fullname",codemaintanenceProjectThird.getFullname());
         target.put("updated",codemaintanenceProjectThird.getUpdated());

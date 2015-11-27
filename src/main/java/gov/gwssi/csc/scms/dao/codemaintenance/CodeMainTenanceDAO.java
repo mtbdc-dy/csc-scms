@@ -239,6 +239,7 @@ public class CodeMainTenanceDAO extends BaseDAO
             HashMap          map = (HashMap) codeList.get(0);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             codeDetailResult1.setID(map.get("projectid".toUpperCase()).toString());
+            codeDetailResult1.setFUNDATTR(map.get("APPR".toUpperCase()).toString());
             codeDetailResult1.setENABLED(map.get("enabled".toUpperCase()).toString());
             codeDetailResult1.setNAME(map.get("namech".toUpperCase()).toString());
             codeDetailResult1.setTABLEEN(codeDetailResult.getTABLEEN());
