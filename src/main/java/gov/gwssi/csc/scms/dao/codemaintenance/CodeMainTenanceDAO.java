@@ -309,6 +309,7 @@ public class CodeMainTenanceDAO extends BaseDAO
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
             codeDetailResult1.setID(map.get("subjectid".toUpperCase()).toString());
+            codeDetailResult1.setFUNDSTANDARD(map.get("appr".toUpperCase()) == null ? "" : map.get("appr".toUpperCase()).toString());
             codeDetailResult1.setENABLED(map.get("enabled".toUpperCase()).toString());
             codeDetailResult1.setNAME(map.get("subjectnamech".toUpperCase()).toString());
             codeDetailResult1.setTABLEEN(codeDetailResult.getTABLEEN());
@@ -464,7 +465,7 @@ public class CodeMainTenanceDAO extends BaseDAO
         {
             if ("1".equals(codeDetailResult.getENABLED()))
             {
-                sql = "update dim_subject t set t.SUBJECTNAMECH ='" + codeDetailResult.getNAME() + "',t.enabled ='1',t.updateby='" + codeDetailResult.getFULLNAME() + "',t.updated =sysdate where t.subjectid = '" + codeDetailResult.getID() + "'";
+                sql = "update dim_subject t set t.appr ='"+ codeDetailResult.getFUNDSTANDARD() +"', t.SUBJECTNAMECH ='" + codeDetailResult.getNAME() + "',t.enabled ='1',t.updateby='" + codeDetailResult.getFULLNAME() + "',t.updated =sysdate where t.subjectid = '" + codeDetailResult.getID() + "'";
                 int m = super.updateBySql(sql);
                 if (m == 0)
                 {

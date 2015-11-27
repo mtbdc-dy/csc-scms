@@ -306,7 +306,7 @@ public class BaseDAO {
             Query query = em.createNativeQuery(sql);
             int num = query.executeUpdate();
             em.getTransaction().commit();
-            // em.flush();
+//            em.flush();
             return num;
         } finally {
             if (em != null) {

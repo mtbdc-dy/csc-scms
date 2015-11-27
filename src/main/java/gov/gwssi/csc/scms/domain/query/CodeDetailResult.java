@@ -55,6 +55,11 @@ public class CodeDetailResult implements Serializable
      */
     private String FUNDATTR;
 
+    /**
+     * 经费标准
+     */
+    private String FUNDSTANDARD;
+
 
     public CodeDetailResult()
     {
@@ -203,5 +208,15 @@ public class CodeDetailResult implements Serializable
     public void setFUNDATTR(String FUNDATTR)
     {
         this.FUNDATTR = FUNDATTR;
+    }
+
+    public String getFUNDSTANDARD()
+    {
+        return FUNDSTANDARD;
+    }
+
+    public void setFUNDSTANDARD(String FUNDSTANDARD)
+    {
+        this.FUNDSTANDARD = FUNDSTANDARD;
     }
 }

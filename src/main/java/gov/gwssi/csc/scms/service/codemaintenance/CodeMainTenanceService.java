@@ -107,7 +107,7 @@ public class CodeMainTenanceService extends CodeMainTenanceSpecs
         return codeMainTenanceDAO.getParentCode(type);
     }
 
-    @Transactional
+//    @Transactional
     public CodeDetailResult saveCode(CodeDetailResult codeDetailResult)
     {
         return codeMainTenanceDAO.saveCode(codeDetailResult);
