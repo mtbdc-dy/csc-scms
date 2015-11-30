@@ -11,7 +11,8 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "v_dim_pro_3_codemaintanence")
-public class CodemaintanenceProjectThird {
+public class CodemaintanenceProjectThird
+{
     @Id
     private String id;
 
@@ -20,6 +21,9 @@ public class CodemaintanenceProjectThird {
 
     @Column
     private String enabled;
+
+    @Column
+    private String fundattr;
 
     @Column
     private String fullname;
@@ -33,59 +37,83 @@ public class CodemaintanenceProjectThird {
     @Column
     private String parentid;
 
-    public String getParentid() {
+    public String getFundattr()
+    {
+        return fundattr;
+    }
+
+    public void setFundattr(String fundattr)
+    {
+        this.fundattr = fundattr;
+    }
+
+    public String getParentid()
+    {
         return parentid;
     }
 
-    public void setParentid(String parentid) {
+    public void setParentid(String parentid)
+    {
         this.parentid = parentid;
     }
 
-    public String getId() {
+    public String getId()
+    {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(String id)
+    {
         this.id = id;
     }
 
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(String name)
+    {
         this.name = name;
     }
 
-    public String getEnabled() {
+    public String getEnabled()
+    {
         return enabled;
     }
 
-    public void setEnabled(String enabled) {
+    public void setEnabled(String enabled)
+    {
         this.enabled = enabled;
     }
 
-    public String getFullname() {
+    public String getFullname()
+    {
         return fullname;
     }
 
-    public void setFullname(String fullname) {
+    public void setFullname(String fullname)
+    {
         this.fullname = fullname;
     }
 
-    public Date getUpdated() {
+    public Date getUpdated()
+    {
         return updated;
     }
 
-    public void setUpdated(Date updated) {
+    public void setUpdated(Date updated)
+    {
         this.updated = updated;
     }
 
-    public String getTableen() {
+    public String getTableen()
+    {
         return tableen;
     }
 
-    public void setTableen(String tableen) {
+    public void setTableen(String tableen)
+    {
         this.tableen = tableen;
     }
 }
