@@ -4,8 +4,10 @@ import gov.gwssi.csc.scms.dao.codemaintenance.CodeMainTenanceDAO;
 import gov.gwssi.csc.scms.domain.codemaintenance.*;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.query.CodeDetailResult;
+import gov.gwssi.csc.scms.domain.user.PwdToken;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.codemaintenance.*;
+import gov.gwssi.csc.scms.repository.user.UserRepository;
 import gov.gwssi.csc.scms.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -27,6 +29,8 @@ import static org.springframework.data.jpa.domain.Specifications.where;
 @Service("codeMainTenanceService")
 public class CodeMainTenanceService extends CodeMainTenanceSpecs
 {
+
+
     @Autowired
     private CodeMainTenanceDAO codeMainTenanceDAO;
     @Autowired
@@ -67,16 +71,19 @@ public class CodeMainTenanceService extends CodeMainTenanceSpecs
     private CodeMainTenanceSubject2Repository codeMainTenanceSubject2Repository;
     @Autowired
     @Qualifier("codeMainTenanceSubject3Repository")
-    private CodeMainTenanceSubject3Repository codeMainTenanceSubject3Repository;
+    private CodeMainTenanceSubject3Repository  codeMainTenanceSubject3Repository;
     @Autowired
     @Qualifier("codeMainTenanceDept1Repository")
-    private CodeMainTenanceDept1Repository codeMainTenanceDept1Repository;
+    private CodeMainTenanceDept1Repository     codeMainTenanceDept1Repository;
     @Autowired
     @Qualifier("codeMainTenanceDept2Repository")
-    private CodeMainTenanceDept2Repository codeMainTenanceDept2Repository;
+    private CodeMainTenanceDept2Repository     codeMainTenanceDept2Repository;
     @Autowired
     @Qualifier("codeMainTenanceTranslateRepository")
     private CodeMainTenanceTranslateRepository codeMainTenanceTranslateRepository;
+    @Qualifier("userRepository")
+    @Autowired
+    private UserRepository                     userRepository;
 
     public String changeUniversitySortValue(String id, String direction, Long step)
     {
@@ -100,7 +107,7 @@ public class CodeMainTenanceService extends CodeMainTenanceSpecs
         return codeMainTenanceDAO.getParentCode(type);
     }
 
-    @Transactional
+//    @Transactional
     public CodeDetailResult saveCode(CodeDetailResult codeDetailResult)
     {
         return codeMainTenanceDAO.saveCode(codeDetailResult);
@@ -117,9 +124,13 @@ public class CodeMainTenanceService extends CodeMainTenanceSpecs
         return codeMainTenanceDAO.selectCode(codeDetailResult, zdz);
     }
 
+    @Transactional
     public CodeDetailResult selectCode(CodeDetailResult codeDetailResult)
     {
-        return codeMainTenanceDAO.selectCode(codeDetailResult);
+        CodeDetailResult result = codeMainTenanceDAO.selectCode(codeDetailResult);
+        PwdToken user = userRepository.getPwdToken(result.getFULLNAME());
+        result.setFULLNAME(user.getFullName());
+        return result;
     }
 
     public Page<CodeMainTenance> getCodeMainTenancesPagingByFilter(Filter filter, Integer page, Integer size, User user)
