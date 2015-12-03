@@ -50,7 +50,7 @@ public class TimeSetController {
 //        return proAndUnivList;
 //    }
 
-    //设置选中院校报到期限
+    //设置选中院校新生报到期限
     @RequestMapping(value = "/newstus",
             method = RequestMethod.PUT,
             headers = {"Accept=application/json; charset=utf-8;"})
@@ -69,28 +69,33 @@ public class TimeSetController {
         }
     }
 
-    //设置新生全部院校报到期限
-    @RequestMapping(value = "/newstus/all",
+    //设置全部院校报到期限
+    @RequestMapping(value = "/allSchools",
             method = RequestMethod.PUT,
             headers = {"Accept=application/json; charset=utf-8;"},
-            params = {"filter","begin","end"})
+            params = {"mode", "filter", "begin", "end"})
     public void saveNewAll(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
+                           @RequestParam(value = "mode") String mode,
                            @RequestParam(value = "filter") String filterJSON,
                            @RequestParam(value = "begin") String begin,
                            @RequestParam(value = "end") String end) {
         try {
             Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
             User user = userService.getUserByJWT(header);
-            String ids = timeSetService.getAllDimUnivsIdsByFilter(filter,user);
+            String ids = timeSetService.getAllDimUnivsIdsByFilter(filter, user);
             String userName = user.getFullName();
-            timeSetService.setTime(userName, begin, end, ids);
+            if ("new".equals(mode)) {
+                timeSetService.setTime(userName, begin, end, ids);
+            }else if("old".equals(mode)){
+                timeSetService.setOldTime(userName, begin, end, ids);
+            }
         } catch (RequestHeaderError requestHeaderError) {
             requestHeaderError.printStackTrace();
         } catch (UserIdentityError userIdentityError) {
             userIdentityError.printStackTrace();
         } catch (NoSuchUserException e) {
             e.printStackTrace();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -112,7 +117,7 @@ public class TimeSetController {
         return proAndUnivList;
     }
 
-    //返回列表
+    //设置选中院校老生报到期限
     @RequestMapping(value = "/oldstus",
             method = RequestMethod.PUT,
             headers = {"Accept=application/json; charset=utf-8;"})
@@ -132,8 +137,6 @@ public class TimeSetController {
         } catch (NoSuchUserException e) {
             e.printStackTrace();
         }
-
-
     }
 
     //分页查询 老生
@@ -145,7 +148,6 @@ public class TimeSetController {
     public ResponseEntity<Page<Map<String, Object>>> getOldStuTimeSet(
             @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
             @RequestParam(value = "mode") String mode,
-
             @RequestParam(value = "page") Integer page,
             @RequestParam(value = "size") Integer size,
             @RequestParam(value = "filter") String filterJSON) throws IOException {
@@ -170,7 +172,6 @@ public class TimeSetController {
     public ResponseEntity<Page<Map<String, Object>>> getNewStuTimeSet(
             @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
             @RequestParam(value = "mode") String mode,
-
             @RequestParam(value = "page") Integer page,
             @RequestParam(value = "size") Integer size,
             @RequestParam(value = "filter") String filterJSON) throws IOException {
