@@ -24,8 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.data.jpa.domain.Specifications.where;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -370,7 +369,9 @@ public class DynamicReportService extends DynamicReportSpecs {
 
     @Transactional
     public byte[] export(String id) throws IOException {
-        return export(id, null);
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        export(id, os);
+        return os.toByteArray();
     }
 
     private short getColorIndex(short index, byte red, byte green, byte blue, Workbook workbook) {
