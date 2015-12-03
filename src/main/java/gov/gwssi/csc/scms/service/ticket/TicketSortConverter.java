@@ -45,6 +45,7 @@ public class TicketSortConverter extends BaseService implements Converter<Ticket
         target.put("created",ticket.getCreated());
         target.put("updateBy",ticket.getUpdateBy());
         target.put("updated",ticket.getUpdated());
+        target.put("pervalidDate",ticket.getPervalidDate());
         return target;
     }
 }

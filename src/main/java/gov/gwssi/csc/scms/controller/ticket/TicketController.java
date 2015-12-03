@@ -28,6 +28,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.omg.CORBA.TCKind;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.domain.Page;
@@ -129,46 +130,15 @@ public class TicketController extends BaseService {
 
     //修改机票管理
     @RequestMapping(value = "/save", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
-    public List<Ticket> modTicket(@RequestBody String ticketJson, @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
+    public List<Ticket> modTicket(@RequestBody String ticketJson, @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws Exception {
 
-            JsonBody jbosy = new ObjectMapper().readValue(ticketJson, JsonBody.class);
-            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, Ticket.class);
-            List<Ticket> tickets = mapper.readValue(jbosy.getValue(), javaType);
-            List<Ticket> newTickets = new ArrayList<Ticket>();
-            Ticket ticket = new Ticket();
-            Timestamp ts = new Timestamp(System.currentTimeMillis());
-            User user = userService.getUserByJWT(header);
-            //Ticket ticket = mapper.readValue(jbosy.getValue(), Ticket.class);
-            if (tickets.size() == 0) {
-                return null;
-            } else {
-                //  JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
-                //  List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
-                for (int i = 0; i < tickets.size(); i++) {
-                    ticket = tickets.get(i);
-                    ticket.setUpdateBy(user.getUserId());
-                    ticket.setUpdated(ts);
-                    Ticket oldTicket = ticketService.getTicketById(ticket.getId());
-                    Student student = oldTicket.getStudent();
-
-                    Student student1 = new Student();
-                    student1.setId(student.getId());
-                    ticket.setStudent(student1);
-
-                    Ticket hqTicket = ticketService.saveTicket(ticket, null);
-                    hqTicket.setStudent(student1);
-                    newTickets.add(hqTicket);
-                }
-
-                return newTickets;
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+        ObjectMapper mapper = new ObjectMapper();
+        JsonBody jsonBody = new ObjectMapper().readValue(ticketJson, JsonBody.class);
+        JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, Ticket.class);
+        List<Ticket> tickets = mapper.readValue(jsonBody.getValue(), javaType);
+        User user = userService.getUserByJWT(header);
+        List<Ticket> returnTickets = ticketService.updateTicket(tickets, user);
+        return returnTickets;
     }
 
     //学校用户提交机票管理
@@ -336,8 +306,6 @@ public class TicketController extends BaseService {
         Calendar cale = Calendar.getInstance();
         cale.setTime(new Date());   // 当前年
         int year = cale.get(Calendar.YEAR);
-
-        System.out.println("InsuranceController.importInsurance");
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
         System.out.println("isMultipart = " + isMultipart);
         List<String> list1 = new ArrayList<String>();
@@ -413,7 +381,7 @@ public class TicketController extends BaseService {
      */
     @RequestMapping(value = "/export/all",
             method = RequestMethod.GET,
-            params = {"userType","filter"},
+            params = {"userType", "filter"},
             headers = "Accept=application/octet-stream")
     public ResponseEntity<byte[]> exportAllTickets(
             @RequestHeader(value = HEADER_AUTHORIZATION) String header,
@@ -421,7 +389,7 @@ public class TicketController extends BaseService {
             @RequestParam("userType") String userType) throws IOException {
         byte[] bytes = null;
         Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
-        String id[] = ticketService.getAllTicketsByFilter(filter,header);
+        String id[] = ticketService.getAllTicketsByFilter(filter, header);
         String tableName = "v_exp_airticket";
         bytes = exportService.exportByFilter(tableName, "0", id);
         Timestamp ts = new Timestamp(System.currentTimeMillis());

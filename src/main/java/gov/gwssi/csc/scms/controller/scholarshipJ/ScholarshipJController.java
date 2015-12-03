@@ -80,18 +80,19 @@ public class ScholarshipJController {
                 scholarship.setSchoolQual(scholarship.getCscQual());//人数
                 scholarship.setSchoolUnQual(scholarship.getCscUnQual());
                 scholarshipXService.saveScholarship(scholarship, user,"2");//对主表进行更新,并保存批复日志
+
                 //对子表进行更新，批复后，把csc的相关值，都赋值给school的相关字段
-                List detailList = scholarshipJService.findDetailListBy(id[i]);//找到主表对应的所有子表
-                for ( int j=0;j<detailList.size();j++) {
-                    HashMap strD = (HashMap) detailList.get(j);
-                    ScholarshipDetail scholarshipDetail=scholarshipXService.getScholarshipDetailById((String)strD.get("ID"));
-                    scholarshipDetail.setSchStartTime((Date) strD.get("CSCSTARTTIME"));
-                    scholarshipDetail.setSchEndTime((Date) strD.get("CSCENDTIME"));
-                    scholarshipDetail.setSchReason((String) strD.get("CSCREASON"));
-                    scholarshipDetail.setSchResult((String) strD.get("CSCRESULT"));
-                    scholarshipDetail.setSchReview((String) strD.get("CSCREVIEW"));
-                    scholarshipXService.saveScholarshipDetail(scholarshipDetail,user);
-                }
+//                List detailList = scholarshipJService.findDetailListBy(id[i]);//找到主表对应的所有子表
+//                for ( int j=0;j<detailList.size();j++) {
+//                    HashMap strD = (HashMap) detailList.get(j);
+//                    ScholarshipDetail scholarshipDetail=scholarshipXService.getScholarshipDetailById((String)strD.get("ID"));
+//                    scholarshipDetail.setSchStartTime((Date) strD.get("CSCSTARTTIME"));
+//                    scholarshipDetail.setSchEndTime((Date) strD.get("CSCENDTIME"));
+//                    scholarshipDetail.setSchReason((String) strD.get("CSCREASON"));
+//                    scholarshipDetail.setSchResult((String) strD.get("CSCRESULT"));
+//                    scholarshipDetail.setSchReview((String) strD.get("CSCREVIEW"));
+//                    scholarshipXService.saveScholarshipDetail(scholarshipDetail,user);
+//                }
             }
 
 
@@ -146,6 +147,42 @@ public class ScholarshipJController {
         httpHeaders.setContentDispositionFormData("attachment", fileName);
 
         return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
+    }
+
+    /**
+     *查询得到导出数据总数
+     */
+    @RequestMapping(
+            value = "/getTotalNum",
+            method = RequestMethod.GET,
+            params = {"filter"},
+            headers = "Accept=application/json")
+    public Map<String,Integer> getScholarshipJExportTotalNum(
+            @RequestParam(value = "filter") String filterJSON) throws IOException {
+        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+        String id[] = scholarshipJService.getAllScholarshipJsByFilter(filter);
+        byte[] bytes = null;
+        String ids=null;
+        //将scholarshipId转化成id
+        for ( int i =0;i<id.length;i++) {
+            List detailList = scholarshipJService.findDetailListBy(id[i]);//找到主表对应的所有字表数据
+            for(int j=0;j<detailList.size();j++){
+                HashMap strD = (HashMap) detailList.get(j);
+                ids=ids+","+strD.get("ID");
+            }
+        }
+        String[] id1=null;
+        if(ids!=null){
+            id1=ids.split(",");//转化后的id数组
+        }
+        Map<String,Integer> resutlt = new HashMap<String, Integer>();
+        if(id1 != null){
+            resutlt.put("totalNum",id1.length);
+        }else{
+            resutlt.put("totalNum",0);
+        }
+
+        return resutlt;
     }
 
     /**

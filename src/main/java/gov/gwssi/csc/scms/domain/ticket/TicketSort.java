@@ -12,7 +12,7 @@ import java.util.Date;
  * 机票管理
  */
 @Entity
-@Table(name = "v_airticket_sort")
+@Table(name = "v_airticket_sort",schema = "SCMS")
 public class TicketSort {
     @Id
     private String id;
@@ -107,10 +107,24 @@ public class TicketSort {
     private Date updated;
 
     /**
+     *居留许可有效期
+     */
+    @Column(name = "pervalidDate")
+    private Date pervalidDate;
+
+    /**
      *修改时间
      */
     @Column(name = "customsort")
     private Long customSort;
+
+    public Date getPervalidDate() {
+        return pervalidDate;
+    }
+
+    public void setPervalidDate(Date pervalidDate) {
+        this.pervalidDate = pervalidDate;
+    }
 
     public Long getCustomSort() {
         return customSort;
