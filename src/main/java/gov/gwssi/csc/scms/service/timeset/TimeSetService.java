@@ -47,9 +47,21 @@ public class TimeSetService extends TimeSetSpecs {
     }
     public Page<DimUniv> getDimUnivsPagingByFilter(Filter filter,Integer page,Integer size,String mode,User user) {
         Specification<DimUniv> specA = filterIsLike(filter,user);
-//        Specification<Ticket> specB = userIs(user);
         return timeSetRepository.findAll(where(specA), new PageRequest(page, size, Sort.Direction.ASC, "province", "univId"));
     }
+    public String getAllDimUnivsIdsByFilter(Filter filter,User user){
+        Specification<DimUniv> specA = filterIsLike(filter,user);
+        List<DimUniv> univs = timeSetRepository.findAll(where(specA));
+        String ids = "";
+        for(int i=0;i<univs.size();i++){
+            ids = ids + univs.get(i).getUnivId() + ",";
+        }
+        if(!"".equals(ids)){
+            ids = ids.substring(0,ids.length()-1);
+        }
+        return ids;
+    }
+
     public Map<String,String> getFreshRegisterTimeSet(String nodeId){
 
         Map<String,String> result = new HashMap<String, String>();
