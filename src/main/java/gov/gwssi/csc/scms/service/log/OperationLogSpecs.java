@@ -5,6 +5,7 @@ import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.log.OperationLog_;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.BaseService;
+import gov.gwssi.csc.scms.utils.DateConvert;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -32,27 +33,13 @@ public class OperationLogSpecs extends BaseService {
                 if (!"".equals(filter.getOptType())) {
                     predicate.getExpressions().add(cb.equal(operationLog.get(OperationLog_.optType), filter.getOptType()));
                 }
-
-
-                if ((filter.getBeginTime() != null&&!"null".equals(filter.getBeginTime())) && (filter.getEndTime() != null&&!"null".equals(filter.getEndTime()))) {
-                    Date begin = filter.getBeginTime();
-                    Date end = filter.getEndTime();
-
-                    Calendar c = Calendar.getInstance();
-                    c.setTime(end);   //设置日期
-                    c.add(Calendar.DATE, 1); //日期加1天
-                    end = c.getTime();
-                    predicate.getExpressions().add(cb.between(operationLog.get(OperationLog_.createD), begin, end));
-                } else if (filter.getBeginTime() != null&&!"null".equals(filter.getBeginTime())) {
-                    Date begin = filter.getBeginTime();
+                if (filter.getBeginTime() != null&&!"null".equals(filter.getBeginTime())) {
+                    Date begin = DateConvert.convert(filter.getBeginTime(),"begin");
                     predicate.getExpressions().add(cb.greaterThanOrEqualTo(operationLog.get(OperationLog_.createD), begin));
-                } else if (filter.getEndTime() != null&&!"null".equals(filter.getEndTime())) {
-                    Date end = filter.getEndTime();
-                    Calendar c = Calendar.getInstance();
-                    c.setTime(end);   //设置日期
-                    c.add(Calendar.DATE, 1); //日期加1天
-                    end = c.getTime();
-                    predicate.getExpressions().add(cb.lessThanOrEqualTo(operationLog.get(OperationLog_.createD), end));
+                }
+                if (filter.getEndTime() != null&&!"null".equals(filter.getEndTime())) {
+                    Date end = DateConvert.convert(filter.getEndTime(),"end");
+                    predicate.getExpressions().add(cb.lessThan(operationLog.get(OperationLog_.createD), end));
                 }
                 predicate.getExpressions().add(cb.equal(operationLog.get(OperationLog_.createBy), userId));
 
