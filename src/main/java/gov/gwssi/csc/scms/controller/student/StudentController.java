@@ -189,6 +189,7 @@ public class StudentController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public String putStudent(@PathVariable(value = "id") String id, @RequestParam(value = "dbType") String dbType, @RequestBody String logJson) {
+        String result = null;
         try {
             ObjectMapper mapper = new ObjectMapper();
             OperationLog operationLog = new ObjectMapper().readValue(logJson, OperationLog.class);
@@ -200,11 +201,12 @@ public class StudentController {
             if(!"".equals(after)){
                 studentService.updateRegistState(operationLog);
             }
-            return "{\"after\":\""+after+"\"}";
+            result = "{\"after\":\""+after+"\"}";
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException(e);
+            if (e.getCause().getCause().getMessage().contains("值太大")) throw new RuntimeException("需要保存的值超出合法长度!");
         }
+        return result;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
