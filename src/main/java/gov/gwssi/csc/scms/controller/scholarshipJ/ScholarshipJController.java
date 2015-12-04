@@ -127,7 +127,7 @@ public class ScholarshipJController {
         String ids=null;
         //将scholarshipId转化成id
         for ( int i =0;i<id.length;i++) {
-            List detailList = scholarshipJService.findDetailListBy(id[i]);//找到主表对应的所有字表数据
+            List detailList = scholarshipJService.findDetailListExport(id[i]);//找到主表对应的所有子表数据（筛选出cscResult不为AP0001）
             for(int j=0;j<detailList.size();j++){
                 HashMap strD = (HashMap) detailList.get(j);
                ids=ids+","+strD.get("ID");
@@ -161,27 +161,13 @@ public class ScholarshipJController {
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
         String id[] = scholarshipJService.getAllScholarshipJsByFilter(filter);
-        byte[] bytes = null;
-        String ids=null;
-        //将scholarshipId转化成id
+        int count = 0;
         for ( int i =0;i<id.length;i++) {
-            List detailList = scholarshipJService.findDetailListBy(id[i]);//找到主表对应的所有字表数据
-            for(int j=0;j<detailList.size();j++){
-                HashMap strD = (HashMap) detailList.get(j);
-                ids=ids+","+strD.get("ID");
-            }
-        }
-        String[] id1=null;
-        if(ids!=null){
-            id1=ids.split(",");//转化后的id数组
+            List detailList = scholarshipJService.findDetailListExport(id[i]);//找到主表对应的所有子表数据（筛选出cscResult不为AP0001）
+            count += detailList.size();
         }
         Map<String,Integer> resutlt = new HashMap<String, Integer>();
-        if(id1 != null){
-            resutlt.put("totalNum",id1.length);
-        }else{
-            resutlt.put("totalNum",0);
-        }
-
+        resutlt.put("totalNum",count);
         return resutlt;
     }
 
@@ -201,7 +187,7 @@ public class ScholarshipJController {
         String ids=null;
         //将scholarshipId转化成id
         for ( int i =0;i<id.length;i++) {
-            List detailList = scholarshipJService.findDetailListBy(id[i]);//找到主表对应的所有字表数据
+            List detailList = scholarshipJService.findDetailListExport(id[i]);//找到主表对应的所有子表数据（筛选出cscResult不为AP0001）
             for(int j=0;j<detailList.size();j++){
                 HashMap strD = (HashMap) detailList.get(j);
                 ids=ids+","+strD.get("ID");

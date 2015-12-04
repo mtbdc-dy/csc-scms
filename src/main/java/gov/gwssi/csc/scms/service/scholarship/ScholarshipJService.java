@@ -54,6 +54,11 @@ public class ScholarshipJService extends ScholarshipJSpecs {
     public List findDetailListBy(String scholarshipId) {
         return scholarshipJDAO.getDetailListBy(scholarshipId);
     }
+
+    public List findDetailListExport(String scholarshipId) {
+        return scholarshipJDAO.getDetailListExport(scholarshipId);
+    }
+
     //分页查询
     public Page<ScholarshipJ> getScholarshipJsPagingByFilter(Filter filter,Integer page,Integer size,String mode) {
         Specification<ScholarshipJ> specA = filterIsLike(filter);
