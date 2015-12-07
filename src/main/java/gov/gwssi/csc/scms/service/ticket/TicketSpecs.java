@@ -208,11 +208,11 @@ public class TicketSpecs extends BaseService {
                         }
                         if (filter.getPlanLeaveDateBegin() != null) {
                             Date begin = DateConvert.convert(filter.getPlanLeaveDateBegin(), "begin");
-                            predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), begin));
+                            predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.planLeaveDate), begin));
                         }
                         if (filter.getPlanLeaveDateEnd() != null) {
                             Date end = DateConvert.convert(filter.getPlanLeaveDateEnd(), "end");
-                            predicate.getExpressions().add(cb.lessThan(schoolRoll.get(SchoolRoll_.majorStartDate), end));
+                            predicate.getExpressions().add(cb.lessThan(schoolRoll.get(SchoolRoll_.planLeaveDate), end));
                         }
                         if(filter.getCurrentUniversity()!=null){
                             predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.currentUniversity),filter.getCurrentUniversity()));
