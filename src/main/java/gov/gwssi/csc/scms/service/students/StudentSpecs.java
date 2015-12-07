@@ -381,11 +381,11 @@ public class StudentSpecs {
                         predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), end));
                     }
                     if (filter.getPlanLeaveDateBegin() != null) {
-                        Date begin = filter.getMajorStartDateBegin();
+                        Date begin = filter.getPlanLeaveDateBegin();
                         predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), begin));
                     }
                     if (filter.getPlanLeaveDateEnd() != null) {
-                        Date end = filter.getMajorStartDateEnd();
+                        Date end = filter.getPlanLeaveDateEnd();
                         predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), end));
                     }
                     if(filter.getCurrentUniversity()!=null){
@@ -590,11 +590,11 @@ public class StudentSpecs {
                         predicate.getExpressions().add(cb.lessThan(schoolRoll.get(SchoolRoll_.majorStartDate), end));
                     }
                     if (filter.getPlanLeaveDateBegin() != null) {
-                        Date begin = DateConvert.convert(filter.getMajorStartDateBegin(),"begin");
+                        Date begin = DateConvert.convert(filter.getPlanLeaveDateBegin(),"begin");
                         predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), begin));
                     }
                     if (filter.getPlanLeaveDateEnd() != null) {
-                        Date end = DateConvert.convert(filter.getMajorStartDateEnd(),"end");
+                        Date end = DateConvert.convert(filter.getPlanLeaveDateEnd(),"end");
                         predicate.getExpressions().add(cb.lessThan(schoolRoll.get(SchoolRoll_.majorStartDate), end));
                     }
                     if(filter.getCurrentUniversity()!=null){
