@@ -382,11 +382,11 @@ public class StudentSpecs {
                     }
                     if (filter.getPlanLeaveDateBegin() != null) {
                         Date begin = filter.getPlanLeaveDateBegin();
-                        predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), begin));
+                        predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.planLeaveDate), begin));
                     }
                     if (filter.getPlanLeaveDateEnd() != null) {
                         Date end = filter.getPlanLeaveDateEnd();
-                        predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), end));
+                        predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.planLeaveDate), end));
                     }
                     if(filter.getCurrentUniversity()!=null){
                         predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.currentUniversity),filter.getCurrentUniversity()));
@@ -591,11 +591,11 @@ public class StudentSpecs {
                     }
                     if (filter.getPlanLeaveDateBegin() != null) {
                         Date begin = DateConvert.convert(filter.getPlanLeaveDateBegin(),"begin");
-                        predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), begin));
+                        predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.planLeaveDate), begin));
                     }
                     if (filter.getPlanLeaveDateEnd() != null) {
                         Date end = DateConvert.convert(filter.getPlanLeaveDateEnd(),"end");
-                        predicate.getExpressions().add(cb.lessThan(schoolRoll.get(SchoolRoll_.majorStartDate), end));
+                        predicate.getExpressions().add(cb.lessThan(schoolRoll.get(SchoolRoll_.planLeaveDate), end));
                     }
                     if(filter.getCurrentUniversity()!=null){
                         predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.currentUniversity),filter.getCurrentUniversity()));
