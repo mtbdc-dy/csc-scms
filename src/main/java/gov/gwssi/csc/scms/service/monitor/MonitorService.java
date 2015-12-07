@@ -79,10 +79,6 @@ public class MonitorService extends BaseService {
 
             Date startDate = sdf.parse(beginTime);
             Date endDate = sdf.parse(endTime);
-//            Calendar c = Calendar.getInstance();
-//            c.setTime(endDate);   //设置日期
-//            c.add(Calendar.DATE, 1); //日期加1天
-//            endDate = c.getTime();
             return monitorDayRepository.findByDayBetween(startDate, endDate);
         }catch(Exception e){
             e.printStackTrace();
