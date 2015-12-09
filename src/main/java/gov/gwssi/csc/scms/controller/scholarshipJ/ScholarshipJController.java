@@ -72,7 +72,7 @@ public class ScholarshipJController {
             for(int i=0;i<id.length;i++){
                 Scholarship scholarship = scholarshipXService.findScholarshipOne(id[i]);
                 scholarship.setUpdated(ts);//同时对主表的更新人和更新时间，进行更新
-                scholarship.setUpdateBy(user.getId());
+                scholarship.setUpdateBy(user.getUserId());
                 scholarship.setCscSta("1");//更新为已提交
                 scholarship.setCscDate(ts);
                 //对学校的相关字段进行更新
