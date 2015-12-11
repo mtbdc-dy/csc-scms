@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -154,7 +155,7 @@ public class AbnormalService extends AbnormalSpecs {
             User user = userService.getUserByJWT(header);
             Specification<Abnormal> specA = filterIsLike(filter, user);
             Specification<Abnormal> specB = userIs(user);
-            return abnormalRepository.findAll(where(specA).and(specB), new PageRequest(page, size));
+            return abnormalRepository.findAll(where(specA).and(specB), new PageRequest(page, size, Sort.Direction.DESC,"applyTime"));
         }catch(Exception e){
             e.printStackTrace();
             throw new RuntimeException(e);

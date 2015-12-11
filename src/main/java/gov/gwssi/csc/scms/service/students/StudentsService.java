@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Sort;
 
 import javax.persistence.criteria.Expression;
 
@@ -59,17 +60,17 @@ public class StudentsService extends StudentSpecs {
             Specification<Student> specB = userIs(user, mode);
 
             if ("freshregister".equals(mode)) {
-                return studentRepository.findAll(where(specA).and(isFreshRegister()).and(specB), new PageRequest(page, size));
+                return studentRepository.findAll(where(specA).and(isFreshRegister()).and(specB), new PageRequest(page, size, Sort.Direction.ASC, "cscId"));
             } else if ("oldregister".equals(mode)) {
-                return studentRepository.findAll(where(specA).and(isOldRegister()).and(specB), new PageRequest(page, size));
+                return studentRepository.findAll(where(specA).and(isOldRegister()).and(specB), new PageRequest(page, size, Sort.Direction.ASC, "cscId"));
             } else if ("schoolstudent".equals(mode)) {
-                return studentRepository.findAll(where(specA).and(isSchoolStudent()).and(specB), new PageRequest(page, size));
+                return studentRepository.findAll(where(specA).and(isSchoolStudent()).and(specB), new PageRequest(page, size, Sort.Direction.ASC, "cscId"));
             } else if ("leavestudent".equals(mode) || "alumnus".equals(mode)) {
-                return studentRepository.findAll(where(specA).and(isLeaveStudent()).and(specB), new PageRequest(page, size));
+                return studentRepository.findAll(where(specA).and(isLeaveStudent()).and(specB), new PageRequest(page, size, Sort.Direction.ASC, "cscId"));
             } else if ("leaveChina".equals(mode)) {
-                return studentRepository.findAll(where(specA).and(isLeaveChina()).and(specB), new PageRequest(page, size));
+                return studentRepository.findAll(where(specA).and(isLeaveChina()).and(specB), new PageRequest(page, size, Sort.Direction.ASC, "cscId"));
             } else {
-                return studentRepository.findAll(where(specA).and(specB), new PageRequest(page, size));
+                return studentRepository.findAll(where(specA).and(specB), new PageRequest(page, size, Sort.Direction.ASC, "cscId"));
             }
         } catch (Exception e) {
             e.printStackTrace();
