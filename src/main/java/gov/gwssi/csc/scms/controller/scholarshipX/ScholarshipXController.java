@@ -262,7 +262,7 @@ public class ScholarshipXController {
 
     //删除
     @RequestMapping(value = "/{id}/{log}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
-    public List<ScholarshipXResultObject> deleteScholarshipDetail(@PathVariable("id") String id, @PathVariable("log") String log, @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) {
+    public Scholarship deleteScholarshipDetail(@PathVariable("id") String id, @PathVariable("log") String log, @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) {
         try {
             User user = userService.getUserByJWT(header);
             String[] id1;
@@ -304,15 +304,16 @@ public class ScholarshipXController {
             scholarship.setUpdated(ts);//同时对主表的更新人和更新时间，进行更新
             scholarship.setUpdateBy(user.getUserId());
             scholarshipXService.saveScholarship(scholarship, null);//对主表进行更新
-            Iterable scholarshipXlist1 = scholarshipXService.findScholarshipXAll();
-            for (Iterator iter = scholarshipXlist1.iterator(); iter.hasNext(); ) {
-                ScholarshipX strX = (ScholarshipX) iter.next();
-                if (strX.getYear() == year && strX.getSchool().equals(school)) {
-                    ScholarshipXResultObject scholarshipXResult = scholarshipXService.getScholarshipXAndStu(strX.getId());
-                    scholarshipXResultObjectList.add(scholarshipXResult);
-                }
-            }
-            return scholarshipXResultObjectList;
+//            Iterable scholarshipXlist1 = scholarshipXService.findScholarshipXAll();
+//            for (Iterator iter = scholarshipXlist1.iterator(); iter.hasNext(); ) {
+//                ScholarshipX strX = (ScholarshipX) iter.next();
+//                if (strX.getYear() == year && strX.getSchool().equals(school)) {
+//                    ScholarshipXResultObject scholarshipXResult = scholarshipXService.getScholarshipXAndStu(strX.getId());
+//                    scholarshipXResultObjectList.add(scholarshipXResult);
+//                }
+//            }
+//            return scholarshipXResultObjectList;
+            return scholarship;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);

@@ -41,5 +41,12 @@ public class ScholarshipJDAO extends BaseDAO {
         allList = super.queryListBySql(stringBuilder.toString());
         return allList;
     }
+    public List getDetailListExport(String scholarshipId) {
+        List allList = null;
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("SELECT * from SCMS_SCHOLARSHIP_DETAIL t where  scholarshipid = '"+scholarshipId+"' and cscresult in ('AP0002','AP0003','AP0004')");
+        allList = super.queryListBySql(stringBuilder.toString());
+        return allList;
+    }
 
 }

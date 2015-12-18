@@ -13,6 +13,7 @@ import gov.gwssi.csc.scms.domain.ticket.Ticket_;
 import gov.gwssi.csc.scms.domain.user.Project;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.domain.warning.Warning;
+import gov.gwssi.csc.scms.utils.DateConvert;
 import org.hibernate.jpa.criteria.expression.EntityTypeExpression;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
@@ -141,7 +142,7 @@ public class StudentSpecs {
                         cb.lessThan(schoolRoll.get(SchoolRoll_.majorStartDate), nextIntialDate)
                 );
 
-                Expression e8 = cb.and(e5,cb.or(e6, e7));
+                Expression e8 = cb.and(e5, cb.or(e6, e7));
 
                 Expression e9 = cb.or(e4,e8);
 
@@ -339,71 +340,53 @@ public class StudentSpecs {
                     if (filter.getSchoolRollState() != null) {
                         predicate.getExpressions().add(cb.like(schoolRoll.get(SchoolRoll_.state), filter.getSchoolRollState()));
                     }
-                    if (filter.getArrivalDateBegin() != null && filter.getArrivalDateEnd() != null) {
-                        Date begin = filter.getArrivalDateBegin();
-                        Date end = filter.getArrivalDateEnd();
-                        predicate.getExpressions().add(cb.between(schoolRoll.get(SchoolRoll_.arrivalDate), begin, end));
-                    } else if (filter.getArrivalDateBegin() != null) {
+                    if (filter.getArrivalDateBegin() != null) {
                         Date begin = filter.getArrivalDateBegin();
                         predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.arrivalDate), begin));
-                    } else if (filter.getArrivalDateEnd() != null) {
+                    }
+                    if (filter.getArrivalDateEnd() != null) {
                         Date end = filter.getArrivalDateEnd();
                         predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.arrivalDate), end));
                     }
-                    if (filter.getLeaveDateBegin() != null && filter.getLeaveDateEnd() != null) {
-                        Date begin = filter.getLeaveDateBegin();
-                        Date end = filter.getLeaveDateEnd();
-                        predicate.getExpressions().add(cb.between(schoolRoll.get(SchoolRoll_.leaveDate), begin, end));
-                    } else if (filter.getLeaveDateBegin() != null) {
+                    if (filter.getLeaveDateBegin() != null) {
                         Date begin = filter.getLeaveDateBegin();
                         predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.leaveDate), begin));
-                    } else if (filter.getLeaveDateEnd() != null) {
+                    }
+                    if (filter.getLeaveDateEnd() != null) {
                         Date end = filter.getLeaveDateEnd();
                         predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.leaveDate), end));
                     }
-                    if (filter.getCramDateBeginBegin() != null && filter.getCramDateBeginEnd() != null) {
-                        Date begin = filter.getCramDateBeginBegin();
-                        Date end = filter.getCramDateBeginEnd();
-                        predicate.getExpressions().add(cb.between(schoolRoll.get(SchoolRoll_.cramDateBegin), begin, end));
-                    } else if (filter.getCramDateBeginBegin() != null) {
+                    if (filter.getCramDateBeginBegin() != null) {
                         Date begin = filter.getCramDateBeginBegin();
                         predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateBegin), begin));
-                    } else if (filter.getCramDateBeginEnd() != null) {
+                    }
+                    if (filter.getCramDateBeginEnd() != null) {
                         Date end = filter.getCramDateBeginEnd();
                         predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateBegin), end));
                     }
-                    if (filter.getCramDateEndBegin() != null && filter.getCramDateEndEnd() != null) {
-                        Date begin = filter.getCramDateEndBegin();
-                        Date end = filter.getCramDateEndEnd();
-                        predicate.getExpressions().add(cb.between(schoolRoll.get(SchoolRoll_.cramDateEnd), begin, end));
-                    } else if (filter.getCramDateEndBegin() != null) {
+                    if (filter.getCramDateEndBegin() != null) {
                         Date begin = filter.getCramDateEndBegin();
                         predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateEnd), begin));
-                    } else if (filter.getCramDateEndEnd() != null) {
+                    }
+                    if (filter.getCramDateEndEnd() != null) {
                         Date end = filter.getCramDateEndEnd();
                         predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateEnd), end));
                     }
-                    if (filter.getMajorStartDateBegin() != null && filter.getMajorStartDateEnd() != null) {
-                        Date begin = filter.getMajorStartDateBegin();
-                        Date end = filter.getMajorStartDateEnd();
-                        predicate.getExpressions().add(cb.between(schoolRoll.get(SchoolRoll_.majorStartDate), begin, end));
-                    } else if (filter.getMajorStartDateBegin() != null) {
+                    if (filter.getMajorStartDateBegin() != null) {
                         Date begin = filter.getMajorStartDateBegin();
                         predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), begin));
-                    } else if (filter.getMajorStartDateEnd() != null) {
+                    }
+                    if (filter.getMajorStartDateEnd() != null) {
                         Date end = filter.getMajorStartDateEnd();
                         predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), end));
                     }
-                    if (filter.getPlanLeaveDateBegin() != null && filter.getPlanLeaveDateEnd() != null) {
+                    if (filter.getPlanLeaveDateBegin() != null) {
                         Date begin = filter.getPlanLeaveDateBegin();
+                        predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.planLeaveDate), begin));
+                    }
+                    if (filter.getPlanLeaveDateEnd() != null) {
                         Date end = filter.getPlanLeaveDateEnd();
-                        predicate.getExpressions().add(cb.between(schoolRoll.get(SchoolRoll_.planLeaveDate), begin, end));
-                    } else if (filter.getPlanLeaveDateBegin() != null) {
-                        Date begin = filter.getMajorStartDateBegin();
-                        predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), begin));
-                    } else if (filter.getPlanLeaveDateEnd() != null) {
-                        Date end = filter.getMajorStartDateEnd();
-                        predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), end));
+                        predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.planLeaveDate), end));
                     }
                     if(filter.getCurrentUniversity()!=null){
                         predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.currentUniversity),filter.getCurrentUniversity()));
@@ -509,13 +492,6 @@ public class StudentSpecs {
                         || filter.getPlanLeaveDateEnd() != null
                         || filter.getCurrentProvince() !=null
                         || filter.getCurrentUniversity() !=null;
-                boolean needAbnormals = filter.getAbnormalState() != null
-                        || filter.getAbnormalDateBegin() != null
-                        || filter.getAbnormalDateEnd() != null;
-                boolean needTickets = filter.getTicketState() != null;
-                boolean needInsurances = filter.getPreSta()!= null;
-                boolean needScholarshipXs = filter.getSchReview()!= null
-                        ||filter.getSchResult()!= null;
 
                 /**学生主表部分*/
                 if (filter.getCscId() != null) {
@@ -573,71 +549,53 @@ public class StudentSpecs {
                     if (filter.getSchoolRollState() != null) {
                         predicate.getExpressions().add(cb.like(schoolRoll.get(SchoolRoll_.state), filter.getSchoolRollState()));
                     }
-                    if (filter.getArrivalDateBegin() != null && filter.getArrivalDateEnd() != null) {
-                        Date begin = filter.getArrivalDateBegin();
-                        Date end = filter.getArrivalDateEnd();
-                        predicate.getExpressions().add(cb.between(schoolRoll.get(SchoolRoll_.arrivalDate), begin, end));
-                    } else if (filter.getArrivalDateBegin() != null) {
-                        Date begin = filter.getArrivalDateBegin();
+                    if (filter.getArrivalDateBegin() != null) {
+                        Date begin = DateConvert.convert(filter.getArrivalDateBegin(),"begin");
                         predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.arrivalDate), begin));
-                    } else if (filter.getArrivalDateEnd() != null) {
-                        Date end = filter.getArrivalDateEnd();
-                        predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.arrivalDate), end));
                     }
-                    if (filter.getLeaveDateBegin() != null && filter.getLeaveDateEnd() != null) {
-                        Date begin = filter.getLeaveDateBegin();
-                        Date end = filter.getLeaveDateEnd();
-                        predicate.getExpressions().add(cb.between(schoolRoll.get(SchoolRoll_.leaveDate), begin, end));
-                    } else if (filter.getLeaveDateBegin() != null) {
-                        Date begin = filter.getLeaveDateBegin();
+                    if (filter.getArrivalDateEnd() != null) {
+                        Date end = DateConvert.convert(filter.getArrivalDateEnd(),"end");
+                        predicate.getExpressions().add(cb.lessThan(schoolRoll.get(SchoolRoll_.arrivalDate), end));
+                    }
+                    if (filter.getLeaveDateBegin() != null) {
+                        Date begin = DateConvert.convert(filter.getLeaveDateBegin(),"begin");
                         predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.leaveDate), begin));
-                    } else if (filter.getLeaveDateEnd() != null) {
-                        Date end = filter.getLeaveDateEnd();
-                        predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.leaveDate), end));
                     }
-                    if (filter.getCramDateBeginBegin() != null && filter.getCramDateBeginEnd() != null) {
-                        Date begin = filter.getCramDateBeginBegin();
-                        Date end = filter.getCramDateBeginEnd();
-                        predicate.getExpressions().add(cb.between(schoolRoll.get(SchoolRoll_.cramDateBegin), begin, end));
-                    } else if (filter.getCramDateBeginBegin() != null) {
-                        Date begin = filter.getCramDateBeginBegin();
+                    if (filter.getLeaveDateEnd() != null) {
+                        Date end = DateConvert.convert(filter.getLeaveDateEnd(),"end");
+                        predicate.getExpressions().add(cb.lessThan(schoolRoll.get(SchoolRoll_.leaveDate), end));
+                    }
+                    if (filter.getCramDateBeginBegin() != null) {
+                        Date begin = DateConvert.convert(filter.getCramDateBeginBegin(),"begin");
                         predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateBegin), begin));
-                    } else if (filter.getCramDateBeginEnd() != null) {
-                        Date end = filter.getCramDateBeginEnd();
-                        predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateBegin), end));
                     }
-                    if (filter.getCramDateEndBegin() != null && filter.getCramDateEndEnd() != null) {
-                        Date begin = filter.getCramDateEndBegin();
-                        Date end = filter.getCramDateEndEnd();
-                        predicate.getExpressions().add(cb.between(schoolRoll.get(SchoolRoll_.cramDateEnd), begin, end));
-                    } else if (filter.getCramDateEndBegin() != null) {
-                        Date begin = filter.getCramDateEndBegin();
+                    if (filter.getCramDateBeginEnd() != null) {
+                        Date end = DateConvert.convert(filter.getCramDateBeginEnd(),"end");
+                        predicate.getExpressions().add(cb.lessThan(schoolRoll.get(SchoolRoll_.cramDateBegin), end));
+                    }
+                    if (filter.getCramDateEndBegin() != null) {
+                        Date begin = DateConvert.convert(filter.getCramDateEndBegin(),"begin");
                         predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateEnd), begin));
-                    } else if (filter.getCramDateEndEnd() != null) {
-                        Date end = filter.getCramDateEndEnd();
-                        predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateEnd), end));
                     }
-                    if (filter.getMajorStartDateBegin() != null && filter.getMajorStartDateEnd() != null) {
-                        Date begin = filter.getMajorStartDateBegin();
-                        Date end = filter.getMajorStartDateEnd();
-                        predicate.getExpressions().add(cb.between(schoolRoll.get(SchoolRoll_.majorStartDate), begin, end));
-                    } else if (filter.getMajorStartDateBegin() != null) {
-                        Date begin = filter.getMajorStartDateBegin();
-                        predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), begin));
-                    } else if (filter.getMajorStartDateEnd() != null) {
-                        Date end = filter.getMajorStartDateEnd();
-                        predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), end));
+                    if (filter.getCramDateEndEnd() != null) {
+                        Date end = DateConvert.convert(filter.getCramDateEndEnd(),"end");
+                        predicate.getExpressions().add(cb.lessThan(schoolRoll.get(SchoolRoll_.cramDateEnd), end));
                     }
-                    if (filter.getPlanLeaveDateBegin() != null && filter.getPlanLeaveDateEnd() != null) {
-                        Date begin = filter.getPlanLeaveDateBegin();
-                        Date end = filter.getPlanLeaveDateEnd();
-                        predicate.getExpressions().add(cb.between(schoolRoll.get(SchoolRoll_.planLeaveDate), begin, end));
-                    } else if (filter.getPlanLeaveDateBegin() != null) {
-                        Date begin = filter.getMajorStartDateBegin();
+                    if (filter.getMajorStartDateBegin() != null) {
+                        Date begin = DateConvert.convert(filter.getMajorStartDateBegin(),"begin");
                         predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), begin));
-                    } else if (filter.getPlanLeaveDateEnd() != null) {
-                        Date end = filter.getMajorStartDateEnd();
-                        predicate.getExpressions().add(cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), end));
+                    }
+                    if (filter.getMajorStartDateEnd() != null) {
+                        Date end = DateConvert.convert(filter.getMajorStartDateEnd(),"end");
+                        predicate.getExpressions().add(cb.lessThan(schoolRoll.get(SchoolRoll_.majorStartDate), end));
+                    }
+                    if (filter.getPlanLeaveDateBegin() != null) {
+                        Date begin = DateConvert.convert(filter.getPlanLeaveDateBegin(),"begin");
+                        predicate.getExpressions().add(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.planLeaveDate), begin));
+                    }
+                    if (filter.getPlanLeaveDateEnd() != null) {
+                        Date end = DateConvert.convert(filter.getPlanLeaveDateEnd(),"end");
+                        predicate.getExpressions().add(cb.lessThan(schoolRoll.get(SchoolRoll_.planLeaveDate), end));
                     }
                     if(filter.getCurrentUniversity()!=null){
                         predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.currentUniversity),filter.getCurrentUniversity()));
@@ -646,51 +604,6 @@ public class StudentSpecs {
                         predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.currentProvince),filter.getCurrentProvince()));
                     }
                 }
-                if (needAbnormals) {
-                    ListJoin<Student, Abnormal> abnormals = student.join(Student_.abnormals);
-                    /**异动部分*/
-                    if (filter.getAbnormalState() != null) {
-                        predicate.getExpressions().add(cb.like(abnormals.get(Abnormal_.state), filter.getAbnormalState()));
-                    }
-                    if (filter.getAbnormalDateBegin() != null && filter.getAbnormalDateEnd() != null) {
-                        Date begin = filter.getAbnormalDateBegin();
-                        Date end = filter.getArrivalDateEnd();
-                        predicate.getExpressions().add(cb.between(abnormals.get(Abnormal_.applyTime), begin, end));
-                    } else if (filter.getAbnormalDateBegin() != null) {
-                        Date begin = filter.getAbnormalDateBegin();
-                        predicate.getExpressions().add(cb.greaterThanOrEqualTo(abnormals.get(Abnormal_.applyTime), begin));
-                    } else if (filter.getAbnormalDateEnd() != null) {
-                        Date end = filter.getArrivalDateEnd();
-                        predicate.getExpressions().add(cb.lessThanOrEqualTo(abnormals.get(Abnormal_.applyTime), end));
-                    }
-                }
-                if (needTickets) {
-                    ListJoin<Student, Ticket> tickets = student.join(Student_.tickets);
-                    /**机票部分*/
-                    if (filter.getTicketState() != null) {
-                        predicate.getExpressions().add(cb.like(tickets.get(Ticket_.state), filter.getTicketState()));
-                    }
-                }
-
-                /**保险部分*/
-                if (needInsurances) {
-                    ListJoin<Student, Insurance> insurances = student.join(Student_.insurances);
-                    if (filter.getPreSta() != null) {
-                        predicate.getExpressions().add(cb.like(insurances.get(Insurance_.preSta), filter.getPreSta()));
-                    }
-                }
-
-                /**奖学金部分*/
-                if (needScholarshipXs) {
-                    ListJoin<Student, ScholarshipX> scholarshipXs = student.join(Student_.scholarshipXs);
-                    if (filter.getSchReview() != null) {
-                        predicate.getExpressions().add(cb.like(scholarshipXs.get(ScholarshipX_.schReview), filter.getSchReview()));
-                    }
-                    if (filter.getSchResult() != null) {
-                        predicate.getExpressions().add(cb.like(scholarshipXs.get(ScholarshipX_.schResult), filter.getSchResult()));
-                    }
-                }
-
                 if("warning".equals(mode)){
                     Join<Student, Warning> warning = student.join(Student_.warning);
                 }
