@@ -144,7 +144,7 @@ public class studentsController {
             @RequestParam(value = "size") Integer size,
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         try {
-            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
             Page<Student> studentPage = studentsService.getStudentsPageByFilter(filter, page, size, mode, header);
             Page<Map<String, Object>> mapPage = studentPage.map(new StudentConverter(fields));
             return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
