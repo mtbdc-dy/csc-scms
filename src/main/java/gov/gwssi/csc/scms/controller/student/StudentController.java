@@ -64,7 +64,7 @@ public class StudentController {
             @RequestParam(value = "filter") String filter) {
         try {
             StudentFilterObject sfo = null;
-            sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);
+            sfo = new ObjectMapper().readValue(filter, StudentFilterObject.class);
 //            User user = userService.getUserByUserIdAndEnable(userId, User.ENABLE);
 
             User user = userService.getUserByJWT(header);
@@ -102,7 +102,7 @@ public class StudentController {
                                                              @RequestParam(value = "filter") String filter) {
         try {
             StudentFilterObject sfo = null;
-            sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);
+            sfo = new ObjectMapper().readValue(filter, StudentFilterObject.class);
 //            User user = userService.getUserByUserIdAndEnable(userId, User.ENABLE);
 
             User user = userService.getUserByJWT(header);
@@ -139,7 +139,7 @@ public class StudentController {
                                                                    @RequestParam(value = "filter") String filter) {
         try {
             StudentFilterObject sfo = null;
-            sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);
+            sfo = new ObjectMapper().readValue(filter, StudentFilterObject.class);
 //            User user = userService.getUserByUserIdAndEnable(userId, User.ENABLE);
 
             User user = userService.getUserByJWT(header);
@@ -405,7 +405,7 @@ public class StudentController {
             @RequestParam(value = "mode") String mode,
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         byte[] bytes = null;
-        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+        Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
         String [] id = studentsService.getStudentsAllByFilter(filter, mode, header);
 
         String tableName = "v_exp_register";

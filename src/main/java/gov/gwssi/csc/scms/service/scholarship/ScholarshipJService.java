@@ -62,7 +62,7 @@ public class ScholarshipJService extends ScholarshipJSpecs {
     //分页查询
     public Page<ScholarshipJ> getScholarshipJsPagingByFilter(Filter filter,Integer page,Integer size,String mode) {
         Specification<ScholarshipJ> specA = filterIsLike(filter);
-        return scholarshipJRepository.findAll(where(specA), new PageRequest(page, size, Sort.Direction.DESC, "state"));
+        return scholarshipJRepository.findAll(where(specA), new PageRequest(page, size));
     }
 
     //得到所有查询结果的SCHOLARSHIPID,用于全部导出

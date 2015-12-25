@@ -159,7 +159,7 @@ public class ScholarshipJController {
             headers = "Accept=application/json")
     public Map<String,Integer> getScholarshipJExportTotalNum(
             @RequestParam(value = "filter") String filterJSON) throws IOException {
-        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+        Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
         String id[] = scholarshipJService.getAllScholarshipJsByFilter(filter);
         int count = 0;
         for ( int i =0;i<id.length;i++) {
@@ -181,7 +181,7 @@ public class ScholarshipJController {
             headers = "Accept=application/octet-stream")
     public ResponseEntity<byte[]> exportInsurance(
             @RequestParam(value = "filter") String filterJSON) throws IOException {
-        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+        Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
         String id[] = scholarshipJService.getAllScholarshipJsByFilter(filter);
         byte[] bytes = null;
         String ids=null;
@@ -220,7 +220,7 @@ public class ScholarshipJController {
             @RequestParam(value = "size") Integer size,
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         try {
-            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
             Page<ScholarshipJ> scholarshipJPage = scholarshipJService.getScholarshipJsPagingByFilter(filter, page, size, mode);
             Page<Map<String, Object>> mapPage = scholarshipJPage.map(new ScholarshipJConverter());
             return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
@@ -241,7 +241,7 @@ public class ScholarshipJController {
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         Map<String, Long> result=new HashMap<String,Long >();
         try {
-            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
             result = scholarshipJService.getScholarshipJSchoolNum(filter);
         }catch (Exception e){
             e.printStackTrace();

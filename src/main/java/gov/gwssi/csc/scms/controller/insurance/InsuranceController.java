@@ -105,7 +105,7 @@ public class InsuranceController {
             @RequestParam(value = "filter") String filter) throws NoSuchUserException {
         try {
             StudentFilterObject sfo = null;
-            sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);
+            sfo = new ObjectMapper().readValue(filter, StudentFilterObject.class);
 
             User user = userService.getUserByJWT(header);
             String userid = user.getUserId();
@@ -229,7 +229,7 @@ public class InsuranceController {
             @RequestParam(value = "filter") String filterJSON,
             @RequestParam("mode") String mode) throws IOException {
         byte[] bytes = null;
-        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+        Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
         String id[] = insuranceService.getAllInsuranceByFilter(filter,mode,header);
 
         String tableName = "v_exp_insurance";
@@ -329,7 +329,7 @@ public class InsuranceController {
             @RequestParam(value = "filter") String filterJSON) throws IOException {
 
         try {
-            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
             Page<Insurance> insurancePage = insuranceService.getInsurancesPagingByFilter(filter, page, size, mode, header);
             Page<Map<String, Object>> mapPage = insurancePage.map(new InsuranceConverter());
             return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
@@ -351,7 +351,7 @@ public class InsuranceController {
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         Map<String, Long> result=new HashMap<String,Long >();
         try {
-            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
             result = insuranceService.getInsurancesStateSum(header,filter,mode);
         }catch (Exception e){
             e.printStackTrace();

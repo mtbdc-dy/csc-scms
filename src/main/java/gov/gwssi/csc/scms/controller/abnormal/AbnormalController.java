@@ -54,7 +54,7 @@ public class AbnormalController {
                                                                @RequestParam(value = "filter") String filter) {
         try {
             StudentFilterObject sfo = null;
-            sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);
+            sfo = new ObjectMapper().readValue(filter, StudentFilterObject.class);
 
 //            User user = userService.getUserByUserIdAndEnable(userId, User.ENABLE);
             User user = userService.getUserByJWT(header);
@@ -185,7 +185,7 @@ public class AbnormalController {
             @RequestParam(value = "filter") String filterJSON) throws IOException {
 
         try {
-            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
             Page<Abnormal> abnormalPage = abnormalService.getAbnormalsPagingByFilter(filter, page, size, mode, header);
             Page<Map<String, Object>> mapPage = abnormalPage.map(new AbnormalConverter());
             return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);

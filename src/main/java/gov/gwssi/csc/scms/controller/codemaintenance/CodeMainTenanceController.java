@@ -173,7 +173,7 @@ public class CodeMainTenanceController
     {
         try
         {
-            Filter                    filter               = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            Filter                    filter               = new ObjectMapper().readValue(filterJSON, Filter.class);
             User                      user                 = userService.getUserByJWT(header);
             Page<CodeMainTenance>     codeMainTenancesPage = codeMainTenanceService.getCodeMainTenancesPagingByFilter(filter, page, size, user);
             Page<Map<String, Object>> mapPage              = codeMainTenancesPage.map(new CodeMainTenanceConverter());
