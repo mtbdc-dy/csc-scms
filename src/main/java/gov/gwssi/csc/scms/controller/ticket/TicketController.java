@@ -98,7 +98,7 @@ public class TicketController extends BaseService {
                                                            @RequestParam(value = "filter") String filter) throws NoSuchUserException {
         try {
             StudentFilterObject sfo = null;
-            sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);
+            sfo = new ObjectMapper().readValue(filter, StudentFilterObject.class);
 
 //            User user = userService.getUserByUserIdAndEnable(userId, User.ENABLE);
 //            if (user == null) {
@@ -388,7 +388,7 @@ public class TicketController extends BaseService {
             @RequestParam(value = "filter") String filterJSON,
             @RequestParam("userType") String userType) throws IOException {
         byte[] bytes = null;
-        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+        Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
         String id[] = ticketService.getAllTicketsByFilter(filter, header);
         String tableName = "v_exp_airticket";
         bytes = exportService.exportByFilter(tableName, "0", id);
@@ -420,7 +420,7 @@ public class TicketController extends BaseService {
 //            @RequestParam(value = "size") Integer size,
 //            @RequestParam(value = "filter") String filterJSON) throws IOException {
 //        try {
-//            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+//            Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
 //            Page<Ticket> ticketPage = ticketService.getTicketsPagingByFilter(filter, page, size, mode, header);
 //            Page<Map<String, Object>> mapPage = ticketPage.map(new TicketConverter());
 //            return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
@@ -442,7 +442,7 @@ public class TicketController extends BaseService {
             @RequestParam(value = "size") Integer size,
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         try {
-            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
             Page<TicketSort> ticketPage = ticketService.getTicketsPagingByFilterSort(filter, page, size, mode, header);
             Page<Map<String, Object>> mapPage = ticketPage.map(new TicketSortConverter());
             return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
@@ -463,7 +463,7 @@ public class TicketController extends BaseService {
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         Map<String, Long> result = new HashMap<String, Long>();
         try {
-            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
             result = ticketService.getTicketsStateSum(header, filter);
         } catch (Exception e) {
             e.printStackTrace();

@@ -138,7 +138,7 @@ public class CodeMainTenanceController {
             @RequestParam(value = "size") Integer size,
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         try {
-            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
             User user = userService.getUserByJWT(header);
             Page<CodeMainTenance> codeMainTenancesPage = codeMainTenanceService.getCodeMainTenancesPagingByFilter(filter, page, size,  user);
             Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceConverter());
@@ -161,7 +161,7 @@ public class CodeMainTenanceController {
             @RequestParam(value = "size") Integer size,
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         try {
-            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
 if("dim_region".equals(name)&&"A".equals(type)){
     Page<CodemaintanenceRegionFirst> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceRegionFirstsPagingByFilter(page, size);
     Page<Map<String, Object>> mapPage = codeMainTenancesPage.map(new CodeMainTenanceRegion1Converter());
