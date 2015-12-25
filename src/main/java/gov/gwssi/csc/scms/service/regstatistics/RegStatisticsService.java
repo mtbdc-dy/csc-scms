@@ -82,7 +82,7 @@ public class RegStatisticsService extends RegStatisticsSpecs {
         System.out.println(sameId);
         Specification<RegStatistics> specA = filterIsLike(sameId);
 //        Specification<Ticket> specB = userIs(user);
-        return regStatisticsRepository.findAll(where(specA), new PageRequest(page, size));
+        return regStatisticsRepository.findAll(where(specA), new PageRequest(page, size, Sort.Direction.ASC,"id"));
     }
 
 }
