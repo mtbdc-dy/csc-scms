@@ -13,7 +13,8 @@ import java.util.List;
  */
 
 @Repository("userRepository")
-public interface UserRepository extends CrudRepository<User, String> {
+public interface UserRepository extends CrudRepository<User, String>
+{
     User findUserByUserIdAndPasswordAndEnable(String userId, String password, String enable);
 
     User findUserByIdAndEnable(String id, String enable);

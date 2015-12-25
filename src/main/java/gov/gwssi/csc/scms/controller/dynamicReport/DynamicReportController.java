@@ -165,6 +165,7 @@ public class DynamicReportController extends BaseService {
     )
     public ResponseEntity<byte[]> exportReport(
             @PathVariable(value = "id") String id) {
+
         byte[] bytes = null;
 
         try {
@@ -172,10 +173,9 @@ public class DynamicReportController extends BaseService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        httpHeaders.setContentDispositionFormData("attachment", "attachment");
+        httpHeaders.setContentDispositionFormData("attachment", id + ".xls");
         return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
     }
 

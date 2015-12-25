@@ -54,8 +54,8 @@ public class DynamicReportServiceTest extends UnitTestBase {
     @Test
     public void testExport() throws Exception{
         DynamicReportService service = getBean(DynamicReportService.class);
-        FileOutputStream fileOutputStream = new FileOutputStream("/Users/wangzishi/Test/test.xls");
-        fileOutputStream.write(service.export("2015102800000007750", fileOutputStream));
+        FileOutputStream fileOutputStream = new FileOutputStream("C:\\Users\\tianj\\Desktop\\test.xls");
+        fileOutputStream.write(service.export("2015102800000007764", fileOutputStream));
         fileOutputStream.close();
     }
 }

@@ -22,6 +22,9 @@ public class CodemaintanenceSubjectFirst {
     private String enabled;
 
     @Column
+    private String fundstandard;
+
+    @Column
     private String fullname;
 
     @Column
@@ -32,6 +35,16 @@ public class CodemaintanenceSubjectFirst {
 
     @Column
     private String parentid;
+
+    public String getFundstandard()
+    {
+        return fundstandard;
+    }
+
+    public void setFundstandard(String fundstandard)
+    {
+        this.fundstandard = fundstandard;
+    }
 
     public String getParentid() {
         return parentid;
