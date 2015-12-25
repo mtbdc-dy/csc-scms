@@ -83,7 +83,7 @@ public class DynamicReportController extends BaseService {
             configuration = service.createConfig(configuration);
         } catch (IOException e) {
             e.printStackTrace();
-            throw e;
+            throw new Error("系统繁忙, 请稍等片刻后, 重新点击'完成'.");
         }
         return configuration;
     }
