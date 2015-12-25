@@ -115,7 +115,7 @@ public class studentsController {
             @RequestParam(value = "size") Integer size,
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         // TODO.. GET /api/students?page=0&size=20
-        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+        Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
         Page<Student> studentPage = studentsService.getStudentsPageByFilter(filter, page, size);
         Page<Map<String, Object>> mapPage = studentPage.map(new StudentConverter());
 
@@ -163,7 +163,7 @@ public class studentsController {
             @RequestParam(value = "page") Integer page,
             @RequestParam(value = "size") Integer size,
             @RequestParam(value = "filter") String filterJSON) throws IOException {
-        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+        Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
         Page<Student> studentPage = studentsService.getStudentsPageByFilter(filter, page, size);
         Page<Map<String, Object>> mapPage = studentPage.map(new StudentConverter(fields));
         return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
@@ -189,7 +189,7 @@ public class studentsController {
             @RequestParam(value = "page") Integer page,
             @RequestParam(value = "size") Integer size,
             @RequestParam(value = "filter") String filterJSON) throws IOException {
-        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+        Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
         Page<Student> studentPage = studentsService.getStudentsPageByFilter(filter, page, size, mode,header);
         Page<Map<String, Object>> mapPage = studentPage.map(new StudentConverter(fields));
         return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
@@ -215,7 +215,7 @@ public class studentsController {
             @RequestParam(value = "page") Integer page,
             @RequestParam(value = "size") Integer size,
             @RequestParam(value = "filter") String filterJSON) throws IOException {
-        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+        Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
         Page<Student> studentPage = studentsService.getStudentsPageByFilter(filter, page, size,mode,header);
         Page<Map<String, Object>> mapPage = studentPage.map(new StudentConverter(fields));
         return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
@@ -231,7 +231,7 @@ public class studentsController {
             @RequestHeader(value = HEADER_AUTHORIZATION) String header,
             @RequestParam(value = "mode") String mode,
             @RequestParam(value = "filter") String filterJSON) throws IOException {
-        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+        Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
         String studentsAll[] = studentsService.getStudentsAllByFilter(filter, mode, header);
         return studentsAll;
     }

@@ -78,7 +78,7 @@ public class ExportController {
             @RequestHeader(value = HEADER_AUTHORIZATION) String header,
             @RequestParam(value = "mode") String mode,
             @RequestParam(value = "filter") String filterJSON) throws IOException {
-        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+        Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
         byte[] bytes = null;
         String[] id = studentsService.getStudentsAllByFilter(filter, mode, header);
         User user = null;

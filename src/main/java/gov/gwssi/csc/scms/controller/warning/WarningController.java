@@ -51,7 +51,7 @@ public class WarningController {
                                                              @RequestParam(value = "filter") String filter) {
         try {
             StudentFilterObject sfo = null;
-            sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);
+            sfo = new ObjectMapper().readValue(filter, StudentFilterObject.class);
             User user = userService.getUserByJWT(header);
             List<WarningResultObject> warningResultObjects = warningService.getWarningByFilter(sfo, user);
             return warningResultObjects;

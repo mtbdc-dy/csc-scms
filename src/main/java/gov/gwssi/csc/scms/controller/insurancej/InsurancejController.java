@@ -100,7 +100,7 @@ public class InsurancejController {
             @RequestParam(value = "filter") String filter) throws NoSuchUserException {
         try {
             StudentFilterObject sfo = null;
-            sfo = new ObjectMapper().readValue(URLDecoder.decode(filter, "utf-8"), StudentFilterObject.class);
+            sfo = new ObjectMapper().readValue(filter, StudentFilterObject.class);
 
             User user = userService.getUserByJWT(header);
             String userid = user.getUserId();
