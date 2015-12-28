@@ -85,9 +85,11 @@ public class StudentService extends BaseService
             lastScholarship = scholarships.get(0);
         }
 
-        student.getSchoolRoll().setScholarshipAnnual(lastScholarship.getYear());
-        student.getSchoolRoll().setScholarshipReview(lastScholarship.getCscReview());
-        student.getSchoolRoll().setScholarshipResult(lastScholarship.getCscResult());
+        if(student.getSchoolRoll() != null){
+            student.getSchoolRoll().setScholarshipAnnual(lastScholarship.getYear());
+            student.getSchoolRoll().setScholarshipReview(lastScholarship.getCscReview());
+            student.getSchoolRoll().setScholarshipResult(lastScholarship.getCscResult());
+        }
 
         List<Insurance> insurances = student.getInsurances();
         Collections.sort(insurances);
