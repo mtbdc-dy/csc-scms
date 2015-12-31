@@ -266,7 +266,7 @@ public class ExcelExportUtil {
                     cell = row.createCell((short) j1);
                     // cell.setEncoding(Encoding);
                     cell.setCellStyle(cs2);
-                    cell.setCellValue(String.valueOf(((String[][])headArrays.get(i))[0][j1]));
+                    cell.setCellValue(String.valueOf(((String[][])headArrays.get(i))[i1][j1]));
                 }
                 //行号每次自增1
                 currRowNum++;
