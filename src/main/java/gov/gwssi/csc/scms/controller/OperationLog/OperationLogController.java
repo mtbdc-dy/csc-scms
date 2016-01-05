@@ -128,7 +128,10 @@ public class OperationLogController {
         return !("null".equalsIgnoreCase(str) || str == null);
     }
 
-    @RequestMapping(value = "/changelog/{studentId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    @RequestMapping(
+            value = "/changelog/{studentId}",
+            method = RequestMethod.GET,
+            headers = "Accept=application/json; charset=utf-8")
     public List<OperationLog> getChangelogsByStudentId(@PathVariable(value = "studentId") String studentId) {
         try {
             return operationLogService.getLogByStudentId(studentId);
@@ -143,10 +146,9 @@ public class OperationLogController {
             value = "/changelog/{studentId}",
             method = RequestMethod.GET,
             headers = {"Accept=application/json"},
-            params = {"mode", "page", "size", "filter"})
+            params = {"page", "size", "filter"})
     public ResponseEntity<Page<Map<String, Object>>> getChangeLogPageList(
             @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
-            @RequestParam(value = "mode") String mode,
             @PathVariable(value = "studentId") String studentId,
             @RequestParam(value = "page") Integer page,
             @RequestParam(value = "size") Integer size,
