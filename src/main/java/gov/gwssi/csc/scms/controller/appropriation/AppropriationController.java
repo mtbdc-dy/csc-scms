@@ -70,7 +70,7 @@ public class AppropriationController {
 
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         try {
-            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+            Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
             User user = userService.getUserByJWT(header);
             Page<Appropriation> appropriationsPage = appropriationService.getAppropriationsPagingByFilter(filter, page, size);
             Page<Map<String, Object>> mapPage = appropriationsPage.map(new AppropriationConverter());

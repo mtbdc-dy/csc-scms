@@ -2,6 +2,7 @@ package gov.gwssi.csc.scms.controller.export;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.gwssi.csc.scms.domain.filter.Filter;
+import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.export.ExportService;
 import gov.gwssi.csc.scms.service.students.StudentsService;
 import gov.gwssi.csc.scms.service.user.UserService;
@@ -37,7 +38,7 @@ public class ExportController {
      * GET /insurance?ids=1,2,3 HTTP/1.1
      * Accept: application/octet-stream
      *
-     * @param id     需要导出的保险信息ID
+     * @param id 需要导出的保险信息ID
      */
     @RequestMapping(
             method = RequestMethod.GET,
@@ -47,17 +48,17 @@ public class ExportController {
             @RequestParam("id") String[] id) throws IOException {
         byte[] bytes = null;
 
-        String[] tableName = {"v_sheet1_basic_info" ,
-                "v_sheet2_profiles_history" ,
-                "v_sheet3_registration_info" ,
-                "v_sheet4_discuss" ,
-                "v_sheet5_schoolroll" ,
+        String[] tableName = {"v_sheet1_basic_info",
+                "v_sheet2_profiles_history",
+                "v_sheet3_registration_info",
+                "v_sheet4_discuss",
+                "v_sheet5_schoolroll",
                 "v_sheet6_related_address",
                 "v_sheet7_accident",
                 "v_sheet8_airticket",
                 "v_sheet9_grade",
                 "v_sheet10_school_fellow"};
-        bytes = exportService.exportByFilter(tableName,"0", id);
+        bytes = exportService.exportByFilter(tableName, "0", id);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = ts.getTime() + ".xls"; // 组装附件名称和格式
 
@@ -71,27 +72,47 @@ public class ExportController {
     @RequestMapping(
             value = "/all",
             method = RequestMethod.GET,
-            params = {"mode","filter"},
+            params = {"mode", "filter"},
             headers = "Accept=application/octet-stream")
     public ResponseEntity<byte[]> exportStudnetsAll(
             @RequestHeader(value = HEADER_AUTHORIZATION) String header,
             @RequestParam(value = "mode") String mode,
             @RequestParam(value = "filter") String filterJSON) throws IOException {
-        Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
+        Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
         byte[] bytes = null;
-        String [] id = studentsService.getStudentsAllByFilter(filter, mode, header);
-
-        String[] tableName = {"v_sheet1_basic_info" ,
-                "v_sheet2_profiles_history" ,
-                "v_sheet3_registration_info" ,
-                "v_sheet4_discuss" ,
-                "v_sheet5_schoolroll" ,
-                "v_sheet6_related_address",
-                "v_sheet7_accident",
-                "v_sheet8_airticket",
-                "v_sheet9_grade",
-                "v_sheet10_school_fellow"};
-        bytes = exportService.exportByFilter(tableName,"0", id);
+        String[] id = studentsService.getStudentsAllByFilter(filter, mode, header);
+        User user = null;
+        try {
+            user = userService.getUserByJWT(header);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String[] tableName;
+        if ("1".equals(user.getUserType())) {
+            String[] viewName = {"v_sheet1_basic_info",
+                    "v_sheet2_profiles_history",
+                    "v_sheet3_registration_info",
+                    "v_sheet4_discuss",
+                    "v_sheet5_schoolroll",
+                    "v_sheet6_related_address",
+                    "v_sheet7_accident",
+                    "v_sheet8_airticket",
+                    "v_sheet9_grade",
+                    "v_sheet10_school_fellow"};
+            tableName = viewName;
+        } else {
+            String[] viewName = {"v_sheet1_basic_info",
+                    "v_sheet2_profiles_history",
+                    "v_sheet3_registration_info",
+                    "v_sheet5_schoolroll",
+                    "v_sheet6_related_address",
+                    "v_sheet7_accident",
+                    "v_sheet8_airticket",
+                    "v_sheet9_grade",
+                    "v_sheet10_school_fellow"};
+            tableName = viewName;
+        }
+        bytes = exportService.exportByFilter(tableName, "0", id);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = ts.getTime() + ".xls"; // 组装附件名称和格式
 
@@ -101,7 +122,6 @@ public class ExportController {
 
         return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
     }
-
 
 
 }
