@@ -306,8 +306,9 @@ public class StudentService extends BaseService
         operationLogs.add(operationLog);
         operationLogService.saveOperationLog(operationLogs);
         Map tableMap = TablesAndColumnsMap.tableMap;
-        if ("insurance".equals(operationLog.getTableEN()))
-        {
+        String tableName = tableMap.get(operationLog.getTableEN()).toString();
+        String studentId = operationLog.getStudentId();
+        if ("insurance".equals(operationLog.getTableEN())) {
             String          insuranceId = "";
             List<Insurance> insurances  = insuranceService.findInsuranceByStduentId(operationLog.getStudentId());
             if (insurances != null)
@@ -327,8 +328,39 @@ public class StudentService extends BaseService
                 insurance.setInsurNo(operationLog.getAfter());
             }
 
-        } else
-        {
+        } else if("SCMS_SCHOOL_FELLOW".equals(tableName) && studentRepository.findOne(studentId).getSchoolfellow() == null
+                 || "SCMS_DISCUSS".equals(tableName) && studentRepository.findOne(studentId).getDiscuss() == null
+                 || "SCMS_REGISTRATION_INFO".equals(tableName) && studentRepository.findOne(studentId).getRegistrationInfo() == null
+                 || "SCMS_PROFILES_HISTORY".equals(tableName) && studentRepository.findOne(studentId).getProfilesHistory() == null){
+            String id = getBaseDao().getIdBySequence("SEQ_" + tableName.substring(5));
+            String sql = " insert into " + tableName + "(id,studentid," + operationLog.getColumnEN() + ") values('"+id +"','"+ studentId +"',";
+            //判断数据类型
+            if (dbType.equals("number"))
+            {
+                sql += operationLog.getAfter();
+            } else if (dbType.equals("string"))
+            {
+                sql += "'" + operationLog.getAfter() + "'";
+            } else if (dbType.equals("date"))
+            {
+                String after = operationLog.getAfter().substring(0, 10);
+                sql += "to_date('" + after + "','yyyy-mm-dd')";
+            }
+            sql += ")";
+            System.out.println(sql);
+            getBaseDao().updateBySql(sql);
+
+            //拼出子表对应在主表Student中的字段
+            StringBuffer stuColumn = new StringBuffer(tableName);
+            stuColumn.delete(0,5);
+            int pos = stuColumn.indexOf("_");
+            if(pos!=-1){
+                stuColumn.deleteCharAt(pos);
+            }
+            String mainSql = "update SCMS_STUDENT set "+ stuColumn.toString() +" = '"+ id +"' where id = '"+ studentId +"'";
+            System.out.println(mainSql);
+            getBaseDao().updateBySql(mainSql);
+        } else {
             String sql = " update " + tableMap.get(operationLog.getTableEN()) + " set " + operationLog.getColumnEN() + " = ";
             //判断数据类型
             if (dbType.equals("number"))
