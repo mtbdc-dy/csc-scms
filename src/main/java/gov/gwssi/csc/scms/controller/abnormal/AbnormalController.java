@@ -98,10 +98,10 @@ public class AbnormalController {
             if (abnormal == null) {
                 throw new NoSuchAbnormalException("cannot generate the abnormal");
             }
-
-            String reason = "学校意见:\n" + abnormal.getReason() + "\n基金委主管意见:\n";
-            abnormal.setReason(reason);
-
+            if("AS0006".equals(abnormal.getState())){
+                String reason = "学校意见:\n" + abnormal.getReason() + "\n-----------------------\n基金委主管意见:\n";
+                abnormal.setReason(reason);
+            }
 //            abnormal.setStudentId(studentId);
             Student student = studentService.getStudentById(studentId);
             abnormal.setStudent(student);
@@ -133,7 +133,10 @@ public class AbnormalController {
             if (abnormal == null) {
                 throw new NoSuchAbnormalException("cannot generate the abnormal");
             } else {
-
+                if("AS0006".equals(abnormal.getState())){
+                    String reason = "学校意见:\n" + abnormal.getReason() + "\n-----------------------\n基金委主管意见:\n";
+                    abnormal.setReason(reason);
+                }
                 Student student = studentService.getStudentById(studentId);
                 abnormal.setStudent(student);
 
