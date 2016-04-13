@@ -86,13 +86,13 @@ public class ScholarshipXSpecs extends BaseService {
                 if (needStudent) {
                     Join<ScholarshipX, Student> student = scholarshipX.join(ScholarshipX_.student);
                     if (filter.getCscId() != null) {
-                        predicate.getExpressions().add(cb.like(student.get(Student_.cscId), filter.getCscId()));
+                        predicate.getExpressions().add(cb.like(cb.lower(student.get(Student_.cscId)), filter.getCscId().toLowerCase()));
                     }
                     if (needBasicInfo) {
                         Join<Student, BasicInfo> basicInfo = student.join(Student_.basicInfo);
                         /**基本信息部分*/
                         if (filter.getPassportName() != null) {
-                            predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.passportName), filter.getPassportName()));
+                            predicate.getExpressions().add(cb.like(cb.lower(basicInfo.get(BasicInfo_.passportName)), filter.getPassportName().toLowerCase()));
                         }
                         if (filter.getContinent() != null) {
                             predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.continent), filter.getContinent()));
