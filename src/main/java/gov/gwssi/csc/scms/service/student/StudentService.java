@@ -383,22 +383,104 @@ public class StudentService extends BaseService
     }
 
     @Transactional
-    public void updateRegistState(OperationLog operationLog) throws Exception
+    public void updateState(OperationLog operationLog) throws Exception
     {
-        if (operationLog.getAfter().equals("AX0002"))
-        {    //若将"是否报到"从否(AX0001)改为是(AX0002)，则还要将报到状态从未处理(AW0002)改为新生报到(AW0001)
+        if (operationLog.getAfter().equals("AX0002")) {
+            //若将"是否报到"从否(AX0001)改为是(AX0002)，则还要将报到状态从未处理(AW0002)改为新生报到(AW0001)
             SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(operationLog.getStudentId());
             schoolRoll.setRegisterState("AW0001");
             Calendar calendar    = Calendar.getInstance();
             int      currentYear = calendar.get(Calendar.YEAR);
             schoolRoll.setRegisterYear(currentYear);
             schoolRollService.updateSchoolRoll(schoolRoll);
-        }
-        if (operationLog.getAfter().equals("AX0001"))
-        {  //若将"是否报到"从是(AX0002)改为否(AX0001)，则还要将报到状态从新生报到(AW0001)改为未处理(AW0002)
+        }else if (operationLog.getAfter().equals("AX0001")) {
+            //若将"是否报到"从是(AX0002)改为否(AX0001)，则还要将报到状态从新生报到(AW0001)改为未处理(AW0002)
             SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(operationLog.getStudentId());
             schoolRoll.setRegisterState("AW0002");
             schoolRollService.updateSchoolRoll(schoolRoll);
+        }else if("BA0002".equals(operationLog.getAfter())){
+            //当操作员修改“是否离华”由“否(BA0001)”改为“是(BA0002)”时，系统需将“学籍状态”同时修改为“离华(BB0004)”
+            SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(operationLog.getStudentId());
+            String oldState = schoolRoll.getState();
+            schoolRoll.setState("BB0004");
+            schoolRoll.setLeaveDate(new Date());
+            schoolRollService.updateSchoolRoll(schoolRoll);
+            //记录日志 学籍状态
+            List<OperationLog> operationLogState = new ArrayList<OperationLog>();
+            operationLog.setColumnEN("STATE");
+            operationLog.setColumnCH("学籍状态");
+            operationLog.setBefore(oldState);
+            operationLog.setAfter("BB0004");
+            operationLogState.add(operationLog);
+            operationLogService.saveOperationLog(operationLogState);
+            //记录日志 离华日期
+            List<OperationLog> operationLogLeaveDate = new ArrayList<OperationLog>();
+            operationLog.setColumnEN("LEAVEDATE");
+            operationLog.setColumnCH("离华日期");
+            operationLog.setBefore(null);
+            operationLog.setAfter((new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(new Date()));
+            operationLogLeaveDate.add(operationLog);
+            operationLogService.saveOperationLog(operationLogLeaveDate);
+        }else if("BA0001".equals(operationLog.getAfter())){
+            //当操作员修改“是否离华”由“是(BA0002)”改为“否(BA0001)”时,系统需检查当前时间是否在汉补或专业时间范围内。
+            //如是则可修改,系统同时根据系统时间所在为汉补还是专业的时间范围去修改学籍状态。如果在汉补时间段内，学籍状态修改为“汉补”，如果在专业时间段内，学籍状态修改为”专业“。
+            SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(operationLog.getStudentId());
+            String oldState = schoolRoll.getState();
+            String oldLeaveReason = schoolRoll.getLeaveReason();
+            Date oldLeaveDate = schoolRoll.getLeaveDate();
+            Date majorStart = schoolRoll.getMajorStartDate();
+            Date majorEnd = schoolRoll.getPlanLeaveDate();
+            Date cramStart = schoolRoll.getCramDateBegin();
+            Date cramEnd = schoolRoll.getCramDateEnd();
+            Date now = new Date();
+            if(now.after(majorStart) && now.before(majorEnd)){
+                schoolRoll.setState("BB0003");
+                schoolRoll.setLeaveDate(null);
+                schoolRoll.setLeaveReason(null);
+                schoolRollService.updateSchoolRoll(schoolRoll);
+                //记录日志 学籍状态
+                List<OperationLog> operationLogState = new ArrayList<OperationLog>();
+                operationLog.setColumnEN("STATE");
+                operationLog.setColumnCH("学籍状态");
+                operationLog.setBefore(oldState);
+                operationLog.setAfter("BB0003");
+                operationLogState.add(operationLog);
+                operationLogService.saveOperationLog(operationLogState);
+            }else if(now.after(cramStart) && now.before(cramEnd)){
+                schoolRoll.setState("BB0002");
+                schoolRoll.setLeaveDate(null);
+                schoolRoll.setLeaveReason(null);
+                schoolRollService.updateSchoolRoll(schoolRoll);
+                //记录日志 学籍状态
+                List<OperationLog> operationLogState = new ArrayList<OperationLog>();
+                operationLog.setColumnEN("STATE");
+                operationLog.setColumnCH("学籍状态");
+                operationLog.setBefore(oldState);
+                operationLog.setAfter("BB0002");
+                operationLogState.add(operationLog);
+                operationLogService.saveOperationLog(operationLogState);
+            }
+            //记录日志 离华日期
+            if(oldLeaveDate != null){
+                String oldLeaveDateStr = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(oldLeaveDate);
+                List<OperationLog> operationLogLeaveDate = new ArrayList<OperationLog>();
+                operationLog.setColumnEN("LEAVEDATE");
+                operationLog.setColumnCH("离华日期");
+                operationLog.setBefore(oldLeaveDateStr);
+                operationLog.setAfter(null);
+                operationLogLeaveDate.add(operationLog);
+                operationLogService.saveOperationLog(operationLogLeaveDate);
+            }
+            //记录日志 离华原因
+            if(oldLeaveReason!=null && oldLeaveReason!=""){
+                List<OperationLog> operationLogLeaveReason = new ArrayList<OperationLog>();
+                operationLog.setColumnEN("LEAVEREASON");
+                operationLog.setColumnCH("离华原因");
+                operationLog.setBefore(oldLeaveReason);
+                operationLog.setAfter(null);
+                operationLogLeaveReason.add(operationLog);
+                operationLogService.saveOperationLog(operationLogLeaveReason);
+            }
         }
     }
 //    @SuppressWarnings("unchecked")
@@ -613,7 +695,7 @@ public class StudentService extends BaseService
         String           leaveDate = sdf.format(schoolRoll.getLeaveDate());
         String sql = " update SCMS_SCHOOLROLL set LEAVECHINA = 'BA0002'," +
                 " LEAVEREASON = '" + leavaReason + "', LEAVEDATE = to_date('" + leaveDate + "','yyyy-mm-dd')" +
-                // "LEAVEDATE = to_timestamp('"+schoolRoll.getLeaveDate()+"','yyyy-mm-dd hh24:mi:ss:ff') " +
+                ", STATE = 'BB0004'" +
                 " where studentid in " + sbIds;
         System.out.println(sql);
         getBaseDao().updateBySql(sql);
