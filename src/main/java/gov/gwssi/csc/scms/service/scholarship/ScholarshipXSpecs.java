@@ -78,9 +78,9 @@ public class ScholarshipXSpecs extends BaseService {
                     predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.schResult), filter.getSchResult()));
                 }
                 if(filter.getCscResult() != null){
-                    if("1".equals(user.getUserType())){
+                    if("1".equals(user.getUserType()) || "2".equals(user.getUserType()) && "2".equals(filter.getSchoolState())){
                         predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.cscResult), filter.getCscResult()));
-                    }else if("2".equals(user.getUserType())){
+                    }else{
                         predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.schResult), filter.getCscResult()));
                     }
                 }
