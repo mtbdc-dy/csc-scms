@@ -161,28 +161,28 @@ public class StudentSpecs {
                 predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.registed), "AX0002"));
                 predicate.getExpressions().add(cb.notEqual(schoolRoll.get(SchoolRoll_.leaveChina), "BA0002"));
 
-                Date sysDate = null;
+                Date startDate = null;
                 Date finalDate = null;
-                Date intialDate = null;
-                Date nextIntialDate = null;
                 int currentYear=0;
                 try {
                     Calendar calendar = Calendar.getInstance();
                     currentYear = calendar.get(Calendar.YEAR);
                     SimpleDateFormat ds = new SimpleDateFormat("yyyy-MM-dd");
-                    intialDate = ds.parse(currentYear + "-01-01");
-                    finalDate = ds.parse(currentYear + "-07-01");
-                    int nextYear = currentYear + 1;
-                    nextIntialDate = ds.parse(nextYear + "-01-01");
+                    startDate = ds.parse(currentYear + "-07-01");
+                    finalDate = ds.parse(currentYear + "-12-31");
 
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
+                Expression e4 = cb.greaterThanOrEqualTo(cb.currentDate(), startDate);
+                Expression e5 = cb.lessThanOrEqualTo(cb.currentDate(), finalDate);
+                Expression e6 = cb.and(e4,e5);
+                predicate.getExpressions().add(e6);
 
                 predicate.getExpressions().add(cb.notEqual(schoolRoll.get(SchoolRoll_.registerYear), currentYear));
 
-                Expression e1 = cb.greaterThan(schoolRoll.get(SchoolRoll_.cramDateEnd), nextIntialDate);
-                Expression e2 = cb.lessThan(schoolRoll.get(SchoolRoll_.majorStartDate), nextIntialDate);
+                Expression e1 = cb.greaterThan(schoolRoll.get(SchoolRoll_.cramDateEnd), finalDate);
+                Expression e2 = cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), finalDate);
                 Expression e3 = cb.or(e1,e2);
                 predicate.getExpressions().add(e3);
                 return predicate;
