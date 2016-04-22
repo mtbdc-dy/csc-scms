@@ -509,8 +509,10 @@ public class ScholarshipXService extends ScholarshipXSpecs {
                 filter.setYear(Calendar.getInstance().get(Calendar.YEAR));
 
             List<ScholarshipX> list = scholarshipXRepository.findBySchoolAndYear(school, filter.getYear());
-            ScholarshipX scholarship = list.get(0);
-            filter.setSchoolState(scholarship.getSchoolSta());
+            if(list != null && list.size()>0){
+                ScholarshipX scholarship = list.get(0);
+                filter.setSchoolState(scholarship.getSchoolSta());
+            }
             ///////////!!!!IMPORTANT!!!!//////////////
 
             Specification<ScholarshipX> specA = filterIsLike(filter, user, school);
@@ -535,8 +537,10 @@ public class ScholarshipXService extends ScholarshipXSpecs {
                 filter.setYear(Calendar.getInstance().get(Calendar.YEAR));
 
             List<ScholarshipX> list = scholarshipXRepository.findBySchoolAndYear(school, filter.getYear());
-            ScholarshipX scholarship = list.get(0);
-            filter.setSchoolState(scholarship.getSchoolSta());
+            if(list != null && list.size()>0){
+                ScholarshipX scholarship = list.get(0);
+                filter.setSchoolState(scholarship.getSchoolSta());
+            }
             ///////////!!!!IMPORTANT!!!!//////////////
 
             Specification<ScholarshipX> specA = filterIsLike(filter, user, school);
