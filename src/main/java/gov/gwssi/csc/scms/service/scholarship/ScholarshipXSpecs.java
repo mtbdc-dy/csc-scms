@@ -61,7 +61,11 @@ public class ScholarshipXSpecs extends BaseService {
 
                 /**奖学金部分*/
                 if (filter.getSchReview() != null) {
-                    predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.schReview), filter.getSchReview()));
+                    // 前台过滤条件根据奖学金学校状态（schState）来区分查询的条件
+                    if ("2".equals(filter.getSchoolState()))
+                        predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.cscReview), filter.getSchReview()));
+                    else
+                        predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.schReview), filter.getSchReview()));
                 }
                 if(filter.getYear() != 0){
                     predicate.getExpressions().add(cb.equal(scholarshipX.get(ScholarshipX_.year), filter.getYear()));
