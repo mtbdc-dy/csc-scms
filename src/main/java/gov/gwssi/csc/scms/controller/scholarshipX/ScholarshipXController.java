@@ -535,4 +535,17 @@ public class ScholarshipXController {
         }
     }
 
+    //进入院校奖学金界面时首先查询该院校当年奖学金状态SCHOOLSTA，若为未提交，或者查询结果为空，显示生成按钮，否则不显示生成按钮
+    @RequestMapping(value = "/schoolSta/{school}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public Map<String,String> getSchoolSta(@PathVariable(value = "school") String school) {
+        try {
+            int year = Calendar.getInstance().get(Calendar.YEAR);
+            Map<String,String> result = scholarshipXService.getSchoolSta(school,year);
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
 }

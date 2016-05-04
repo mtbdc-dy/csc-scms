@@ -584,4 +584,12 @@ public class ScholarshipXService extends ScholarshipXSpecs {
         return result;
     }
 
+    public Map<String,String> getSchoolSta(String school,int year){
+        String schoolSta = baseDAO.getSchoolSta(school,year);
+        Map<String,String> result = new HashMap<String, String>();
+        result.put("schoolSta",schoolSta);
+        return result;
+    }
+
+
 }

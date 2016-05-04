@@ -387,11 +387,24 @@ public class StudentService extends BaseService
     {
         if (operationLog.getAfter().equals("AX0002")) {
             //若将"是否报到"从否(AX0001)改为是(AX0002)，则还要将报到状态从未处理(AW0002)改为新生报到(AW0001)
+            //系统同时修改当前院校，根据系统时间所在为汉补还是专业的时间范围去修改当前院校。
             SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(operationLog.getStudentId());
             schoolRoll.setRegisterState("AW0001");
             Calendar calendar    = Calendar.getInstance();
             int      currentYear = calendar.get(Calendar.YEAR);
             schoolRoll.setRegisterYear(currentYear);
+            Date majorStart = schoolRoll.getMajorStartDate();
+            Date majorEnd = schoolRoll.getPlanLeaveDate();
+            Date cramStart = schoolRoll.getCramDateBegin();
+            Date cramEnd = schoolRoll.getCramDateEnd();
+            Date now = new Date();
+            if(now.after(majorStart) && now.before(majorEnd)){
+                schoolRoll.setCurrentProvince(schoolRoll.getMajorProvince());
+                schoolRoll.setCurrentUniversity(schoolRoll.getMajorUniversity());
+            }else if(now.after(cramStart) && now.before(cramEnd)){
+                schoolRoll.setCurrentProvince(schoolRoll.getCramProvince());
+                schoolRoll.setCurrentUniversity(schoolRoll.getCramUniversity());
+            }
             schoolRollService.updateSchoolRoll(schoolRoll);
         }else if (operationLog.getAfter().equals("AX0001")) {
             //若将"是否报到"从是(AX0002)改为否(AX0001)，则还要将报到状态从新生报到(AW0001)改为未处理(AW0002)
