@@ -52,7 +52,7 @@ dependencies {
     compile 'com.auth0:java-jwt:2.1.0'
 
     // compile 'org.hibernate.javax.persistence:hibernate-jpa-2.0-api:1.0.1.Final'
-     compile 'javaee:javaee-api:5'
+//     compile 'javaee:javaee-api:5'
 
     testCompile 'org.springframework:spring-test:4.1.5.RELEASE'
     testCompile 'junit:junit:4.11'
