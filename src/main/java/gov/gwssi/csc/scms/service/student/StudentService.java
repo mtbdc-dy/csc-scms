@@ -85,7 +85,7 @@ public class StudentService extends BaseService
             lastScholarship = scholarships.get(0);
         }
 
-        if(student.getSchoolRoll() != null){
+        if(student.getSchoolRoll() != null) {
             student.getSchoolRoll().setScholarshipAnnual(lastScholarship.getYear());
             student.getSchoolRoll().setScholarshipReview(lastScholarship.getCscReview());
             student.getSchoolRoll().setScholarshipResult(lastScholarship.getCscResult());

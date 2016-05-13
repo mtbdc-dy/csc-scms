@@ -501,7 +501,8 @@ public class StudentSpecs {
                     Join<Student, BasicInfo> basicInfo = student.join(Student_.basicInfo);
                     /**基本信息部分*/
                     if (filter.getPassportName() != null) {
-                        predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.passportName), filter.getPassportName()));
+//                        c
+                        predicate.getExpressions().add(cb.like(cb.lower(basicInfo.get(BasicInfo_.passportName)), filter.getPassportName().toLowerCase()));
                     }
                     if (filter.getContinent() != null) {
                         predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.continent), filter.getContinent()));
