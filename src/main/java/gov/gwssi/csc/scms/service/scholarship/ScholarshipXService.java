@@ -503,6 +503,18 @@ public class ScholarshipXService extends ScholarshipXSpecs {
         try {
             User user = userService.getUserByJWT(header);
             String school = user.getNode().getNodeId();
+
+            ///////////!!!!IMPORTANT!!!!//////////////
+            if (filter.getYear() == 0)
+                filter.setYear(Calendar.getInstance().get(Calendar.YEAR));
+
+            List<ScholarshipX> list = scholarshipXRepository.findBySchoolAndYear(school, filter.getYear());
+            if(list != null && list.size()>0){
+                ScholarshipX scholarship = list.get(0);
+                filter.setSchoolState(scholarship.getSchoolSta());
+            }
+            ///////////!!!!IMPORTANT!!!!//////////////
+
             Specification<ScholarshipX> specA = filterIsLike(filter, user, school);
             Specification<ScholarshipX> specB = userIs(user);
             return scholarshipXRepository.findAll(where(specA).and(specB), new PageRequest(page, size, Sort.Direction.ASC, "cscId"));
@@ -519,6 +531,18 @@ public class ScholarshipXService extends ScholarshipXSpecs {
         try {
             User user = userService.getUserByJWT(header);
             String school = user.getNode().getNodeId();
+
+            ///////////!!!!IMPORTANT!!!!//////////////
+            if (filter.getYear() == 0)
+                filter.setYear(Calendar.getInstance().get(Calendar.YEAR));
+
+            List<ScholarshipX> list = scholarshipXRepository.findBySchoolAndYear(school, filter.getYear());
+            if(list != null && list.size()>0){
+                ScholarshipX scholarship = list.get(0);
+                filter.setSchoolState(scholarship.getSchoolSta());
+            }
+            ///////////!!!!IMPORTANT!!!!//////////////
+
             Specification<ScholarshipX> specA = filterIsLike(filter, user, school);
             Specification<ScholarshipX> specB = userIs(user);
             scholarshipXes = scholarshipXRepository.findAll(where(specA).and(specB),new Sort(Sort.Direction.ASC,"cscId"));
@@ -559,5 +583,13 @@ public class ScholarshipXService extends ScholarshipXSpecs {
         }
         return result;
     }
+
+    public Map<String,String> getSchoolSta(String school,int year){
+        String schoolSta = baseDAO.getSchoolSta(school,year);
+        Map<String,String> result = new HashMap<String, String>();
+        result.put("schoolSta",schoolSta);
+        return result;
+    }
+
 
 }

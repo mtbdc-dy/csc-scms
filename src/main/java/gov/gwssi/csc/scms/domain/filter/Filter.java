@@ -28,6 +28,7 @@ public class Filter {
     private String cscResult = null;
     private int year = 0;                    // 奖学金评审年度
     private Character state = null;          // 奖学金评审状态
+    private String schoolState = null;    // 奖学金 学校状态
     private String qualified = null;         // 奖学金是否有不合格人数
     private String currentProvince = null;
     private String currentUniversity = null;
@@ -774,5 +775,13 @@ public class Filter {
     public void setYear(int year)
     {
         this.year = year;
+    }
+
+    public String getSchoolState() {
+        return schoolState;
+    }
+
+    public void setSchoolState(String schoolState) {
+        this.schoolState = schoolState;
     }
 }
