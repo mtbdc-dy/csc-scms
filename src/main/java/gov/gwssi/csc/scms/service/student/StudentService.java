@@ -448,6 +448,8 @@ public class StudentService extends BaseService
             Date now = new Date();
             if(now.after(majorStart) && now.before(majorEnd)){
                 schoolRoll.setState("BB0003");
+                schoolRoll.setCurrentProvince(schoolRoll.getMajorProvince());
+                schoolRoll.setCurrentUniversity(schoolRoll.getMajorUniversity());
                 schoolRoll.setLeaveDate(null);
                 schoolRoll.setLeaveReason(null);
                 schoolRollService.updateSchoolRoll(schoolRoll);
@@ -461,6 +463,8 @@ public class StudentService extends BaseService
                 operationLogService.saveOperationLog(operationLogState);
             }else if(now.after(cramStart) && now.before(cramEnd)){
                 schoolRoll.setState("BB0002");
+                schoolRoll.setCurrentProvince(schoolRoll.getCramProvince());
+                schoolRoll.setCurrentUniversity(schoolRoll.getCramUniversity());
                 schoolRoll.setLeaveDate(null);
                 schoolRoll.setLeaveReason(null);
                 schoolRollService.updateSchoolRoll(schoolRoll);
