@@ -37,6 +37,29 @@ public class CodemaintanenceProjectThird
     @Column
     private String parentid;
 
+    @Column
+    private String projectCode;
+
+    public String getEnabled()
+    {
+        return enabled;
+    }
+
+    public void setEnabled(String enabled)
+    {
+        this.enabled = enabled;
+    }
+
+    public String getFullname()
+    {
+        return fullname;
+    }
+
+    public void setFullname(String fullname)
+    {
+        this.fullname = fullname;
+    }
+
     public String getFundattr()
     {
         return fundattr;
@@ -45,16 +68,6 @@ public class CodemaintanenceProjectThird
     public void setFundattr(String fundattr)
     {
         this.fundattr = fundattr;
-    }
-
-    public String getParentid()
-    {
-        return parentid;
-    }
-
-    public void setParentid(String parentid)
-    {
-        this.parentid = parentid;
     }
 
     public String getId()
@@ -77,34 +90,24 @@ public class CodemaintanenceProjectThird
         this.name = name;
     }
 
-    public String getEnabled()
+    public String getParentid()
     {
-        return enabled;
+        return parentid;
     }
 
-    public void setEnabled(String enabled)
+    public void setParentid(String parentid)
     {
-        this.enabled = enabled;
+        this.parentid = parentid;
     }
 
-    public String getFullname()
+    public String getProjectCode()
     {
-        return fullname;
+        return projectCode;
     }
 
-    public void setFullname(String fullname)
+    public void setProjectCode(String projectCode)
     {
-        this.fullname = fullname;
-    }
-
-    public Date getUpdated()
-    {
-        return updated;
-    }
-
-    public void setUpdated(Date updated)
-    {
-        this.updated = updated;
+        this.projectCode = projectCode;
     }
 
     public String getTableen()
@@ -115,5 +118,15 @@ public class CodemaintanenceProjectThird
     public void setTableen(String tableen)
     {
         this.tableen = tableen;
+    }
+
+    public Date getUpdated()
+    {
+        return updated;
+    }
+
+    public void setUpdated(Date updated)
+    {
+        this.updated = updated;
     }
 }
