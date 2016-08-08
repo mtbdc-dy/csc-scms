@@ -18,6 +18,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
+import java.util.Map;
 import java.util.Properties;
 
 @PropertySource(value = "classpath:db.properties")
@@ -34,9 +35,31 @@ public class DatabaseConfig {
 
         BoneCPDataSource boneCPDataSource = new BoneCPDataSource();
         boneCPDataSource.setDriverClass(env.getProperty("jdbc.driverClassName"));
-        boneCPDataSource.setJdbcUrl(env.getProperty("jdbc.url"));
-        boneCPDataSource.setUsername(env.getProperty("jdbc.username"));
-        boneCPDataSource.setPassword(env.getProperty("jdbc.password"));
+//        boneCPDataSource.setJdbcUrl(env.getProperty("jdbc.url"));
+//        boneCPDataSource.setUsername(env.getProperty("jdbc.username"));
+//        boneCPDataSource.setPassword(env.getProperty("jdbc.password"));
+        // 获取系统环境变量
+        Map map = System.getenv();
+        if (map.containsKey("NODE_ENV")) {
+            String nodeEnv = map.get("NODE_ENV").toString();
+            if("development".equals(nodeEnv)){
+                boneCPDataSource.setJdbcUrl(env.getProperty("jdbc.dev.url"));
+                boneCPDataSource.setUsername(env.getProperty("jdbc.dev.username"));
+                boneCPDataSource.setPassword(env.getProperty("jdbc.dev.password"));
+            }else if("test".equals(nodeEnv)){
+                boneCPDataSource.setJdbcUrl(env.getProperty("jdbc.test.url"));
+                boneCPDataSource.setUsername(env.getProperty("jdbc.test.username"));
+                boneCPDataSource.setPassword(env.getProperty("jdbc.test.password"));
+            }else if("production".equals(nodeEnv)){
+                boneCPDataSource.setJdbcUrl(env.getProperty("jdbc.prod.url"));
+                boneCPDataSource.setUsername(env.getProperty("jdbc.prod.username"));
+                boneCPDataSource.setPassword(env.getProperty("jdbc.prod.password"));
+            }
+        }else{
+            boneCPDataSource.setJdbcUrl(env.getProperty("jdbc.test.url"));
+            boneCPDataSource.setUsername(env.getProperty("jdbc.test.username"));
+            boneCPDataSource.setPassword(env.getProperty("jdbc.test.password"));
+        }
         boneCPDataSource.setIdleConnectionTestPeriodInMinutes(60);
         boneCPDataSource.setIdleMaxAgeInMinutes(420);
         boneCPDataSource.setMaxConnectionsPerPartition(30);
