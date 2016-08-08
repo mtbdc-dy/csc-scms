@@ -506,4 +506,24 @@ public class BaseDAO {
         }
     }
 
+    public String getSchoolSta(String school,int year){
+        String sql = "select schoolsta from(select schoolsta from v_scholarship_lastyear v where v.school = '"+school+"' and v.year = "+year+") where rownum=1";
+        EntityManager em = null;
+        try {
+            em = entityManagerFactory.createEntityManager();
+            Query query = em.createNativeQuery(sql);
+            List list = query.getResultList();
+            if(list.size()>0){
+                return String.valueOf(list.get(0));
+            }else{
+                return "";
+            }
+
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
 }

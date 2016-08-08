@@ -86,10 +86,19 @@ public class ScholarshipJService extends ScholarshipJSpecs {
         sum = scholarshipJRepository.count(where(specA));
         unSubmitted = scholarshipJRepository.count(where(specA).and(stateIs('1')));
         submitted = scholarshipJRepository.count(where(specA).and(stateIs('2')));
+        List<ScholarshipJ> scholarshipJs = scholarshipJRepository.findAll(where(specA));
+        long cscQualCount =0;
+        long cscUnQualCount =0;
+        for(int i=0;i<scholarshipJs.size();i++){
+            cscQualCount += scholarshipJs.get(i).getCscQual();
+            cscUnQualCount += scholarshipJs.get(i).getCscUnQual();
+        }
         Map<String,Long> result = new HashMap<String, Long>();
         result.put("sum",sum);
         result.put("unSubmitted",unSubmitted);
         result.put("submitted",submitted);
+        result.put("cscQualCount",cscQualCount);
+        result.put("cscUnQualCount",cscUnQualCount);
         return result;
     }
 }

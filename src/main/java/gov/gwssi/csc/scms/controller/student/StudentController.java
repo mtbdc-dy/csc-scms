@@ -198,8 +198,9 @@ public class StudentController {
                 return null;
 
             String after = studentService.saveStudent(dbType,operationLog);
+            //若修改字段为是否报到或者是否离华
             if(!"".equals(after)){
-                studentService.updateRegistState(operationLog);
+                studentService.updateState(operationLog);
             }
             result = "{\"after\":\""+after+"\"}";
         } catch (Exception e) {

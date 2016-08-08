@@ -61,7 +61,11 @@ public class ScholarshipXSpecs extends BaseService {
 
                 /**奖学金部分*/
                 if (filter.getSchReview() != null) {
-                    predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.schReview), filter.getSchReview()));
+                    // 前台过滤条件根据奖学金学校状态（schState）来区分查询的条件
+                    if ("2".equals(filter.getSchoolState()))
+                        predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.cscReview), filter.getSchReview()));
+                    else
+                        predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.schReview), filter.getSchReview()));
                 }
                 if(filter.getYear() != 0){
                     predicate.getExpressions().add(cb.equal(scholarshipX.get(ScholarshipX_.year), filter.getYear()));
@@ -74,9 +78,9 @@ public class ScholarshipXSpecs extends BaseService {
                     predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.schResult), filter.getSchResult()));
                 }
                 if(filter.getCscResult() != null){
-                    if("1".equals(user.getUserType())){
+                    if("1".equals(user.getUserType()) || "2".equals(user.getUserType()) && "2".equals(filter.getSchoolState())){
                         predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.cscResult), filter.getCscResult()));
-                    }else if("2".equals(user.getUserType())){
+                    }else{
                         predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.schResult), filter.getCscResult()));
                     }
                 }
@@ -86,13 +90,13 @@ public class ScholarshipXSpecs extends BaseService {
                 if (needStudent) {
                     Join<ScholarshipX, Student> student = scholarshipX.join(ScholarshipX_.student);
                     if (filter.getCscId() != null) {
-                        predicate.getExpressions().add(cb.like(student.get(Student_.cscId), filter.getCscId()));
+                        predicate.getExpressions().add(cb.like(cb.lower(student.get(Student_.cscId)), filter.getCscId().toLowerCase()));
                     }
                     if (needBasicInfo) {
                         Join<Student, BasicInfo> basicInfo = student.join(Student_.basicInfo);
                         /**基本信息部分*/
                         if (filter.getPassportName() != null) {
-                            predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.passportName), filter.getPassportName()));
+                            predicate.getExpressions().add(cb.like(cb.lower(basicInfo.get(BasicInfo_.passportName)), filter.getPassportName().toLowerCase()));
                         }
                         if (filter.getContinent() != null) {
                             predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.continent), filter.getContinent()));

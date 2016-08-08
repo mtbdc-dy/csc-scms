@@ -20,6 +20,11 @@ public class CodeTableDAO extends BaseDAO {
     public static final String PROJECTS_LEVEL_ONE = "v_dim_project_1";
     public static final String PROJECTS_LEVEL_TWO = "v_dim_project_2";
     public static final String PROJECTS_LEVEL_THREE = "v_dim_project_3";
+    public static final String PROJECTTYPES_LEVEL_ONE = "V_DIM_PRO_1";
+    public static final String PROJECTTYPES_LEVEL_TWO = "V_DIM_PRO_2";
+
+    public static final String DISPATCHES = "dispatchid";
+    public static final String DISPATCHES_LEVEL_TWO = "V_DIM_DISPATCH_2";
 
     public static final String CONTINENTS = "regionId";
     public static final String CONTINENTS_LEVEL_ONE = "v_dim_region_1";

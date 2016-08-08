@@ -46,7 +46,7 @@ public class RemindService extends BaseService {
         int scholarshipSubmited = 0;
         try {
             User user = userService.getUserByJWT(header);
-            if ("Y0002".equals(user.getRole().getIdentity())) {    //主管用户
+            if ("Y0002".equals(user.getRole().getIdentity())) {    //涓荤鐢ㄦ埛
                 List<Project> projects = user.getProjects();
                 if (projects != null || projects.size() > 0) {
                     abnormalUnSubmited = baseDAO.getAbnormalZG(projects, "AS0006");
