@@ -35,26 +35,15 @@ public class DatabaseConfig {
 
         BoneCPDataSource boneCPDataSource = new BoneCPDataSource();
         boneCPDataSource.setDriverClass(env.getProperty("jdbc.driverClassName"));
-//        boneCPDataSource.setJdbcUrl(env.getProperty("jdbc.url"));
-//        boneCPDataSource.setUsername(env.getProperty("jdbc.username"));
-//        boneCPDataSource.setPassword(env.getProperty("jdbc.password"));
         // 获取系统环境变量
         Map map = System.getenv();
-        if (map.containsKey("NODE_ENV")) {
-            String nodeEnv = map.get("NODE_ENV").toString();
-            if("development".equals(nodeEnv)){
-                boneCPDataSource.setJdbcUrl(env.getProperty("jdbc.dev.url"));
-                boneCPDataSource.setUsername(env.getProperty("jdbc.dev.username"));
-                boneCPDataSource.setPassword(env.getProperty("jdbc.dev.password"));
-            }else if("test".equals(nodeEnv)){
-                boneCPDataSource.setJdbcUrl(env.getProperty("jdbc.test.url"));
-                boneCPDataSource.setUsername(env.getProperty("jdbc.test.username"));
-                boneCPDataSource.setPassword(env.getProperty("jdbc.test.password"));
-            }else if("production".equals(nodeEnv)){
-                boneCPDataSource.setJdbcUrl(env.getProperty("jdbc.prod.url"));
-                boneCPDataSource.setUsername(env.getProperty("jdbc.prod.username"));
-                boneCPDataSource.setPassword(env.getProperty("jdbc.prod.password"));
-            }
+        if (map.containsKey("JDBC_URL") && map.containsKey("JDBC_USERNAME") && map.containsKey("JDBC_PASSWORD")) {
+            String jdbcUrl = map.get("JDBC_URL").toString();
+            String jdbcUsername = map.get("JDBC_USERNAME").toString();
+            String jdbcPassword = map.get("JDBC_PASSWORD").toString();
+            boneCPDataSource.setJdbcUrl(jdbcUrl);
+            boneCPDataSource.setUsername(jdbcUsername);
+            boneCPDataSource.setPassword(jdbcPassword);
         }else{
             boneCPDataSource.setJdbcUrl(env.getProperty("jdbc.test.url"));
             boneCPDataSource.setUsername(env.getProperty("jdbc.test.username"));
