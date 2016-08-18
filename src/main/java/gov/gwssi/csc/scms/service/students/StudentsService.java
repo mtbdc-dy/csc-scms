@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.service.students;
 
+import gov.gwssi.csc.scms.dao.BaseDAO;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.domain.user.User;
@@ -35,6 +36,9 @@ public class StudentsService extends StudentSpecs {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private BaseDAO baseDAO;
+
     public Page<Student> getStudentsByFilter(Filter filter) {
         Specification<Student> specA = filterIsLike(filter);
 //        Specification<Student> specB = userIs(user);
@@ -57,7 +61,7 @@ public class StudentsService extends StudentSpecs {
         try {
             User user = userService.getUserByJWT(header);
             Specification<Student> specA = filterIsLike(filter, mode);
-            Specification<Student> specB = userIs(user, mode);
+            Specification<Student> specB = userIs(user, mode , baseDAO);
 
             if ("freshregister".equals(mode)) {
                 return studentRepository.findAll(where(specA).and(isFreshRegister()).and(specB), new PageRequest(page, size, Sort.Direction.ASC, "cscId"));
@@ -85,7 +89,7 @@ public class StudentsService extends StudentSpecs {
         try {
             User user = userService.getUserByJWT(header);
             Specification<Student> specA = filterIsLike(filter, mode);
-            Specification<Student> specB = userIs(user, mode);
+            Specification<Student> specB = userIs(user, mode, baseDAO);
 
             if ("freshregister".equals(mode)) {
                 studentsAll = studentRepository.findAll(where(specA).and(isFreshRegister()).and(specB));

@@ -26,6 +26,7 @@ public abstract class BasicInfo_ {
     public static volatile SingularAttribute<BasicInfo, Student> student;
     public static volatile SingularAttribute<BasicInfo, String> continent;
     public static volatile SingularAttribute<BasicInfo, String> gender;
+    public static volatile SingularAttribute<BasicInfo, String> dispatchType;
     public static volatile SingularAttribute<BasicInfo, String> dispatch;
     public static volatile SingularAttribute<BasicInfo, Date> createDate;
     public static volatile SingularAttribute<BasicInfo, String> projectName;

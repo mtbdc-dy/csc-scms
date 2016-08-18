@@ -61,6 +61,7 @@ public class Filter {
      * 隐藏查询条件
      */
     private String planned = null;           // 名额性质（计划内 计划外）
+    private String dispatchType = null;      // 派遣类别
     private String dispatch = null;          // 派遣途径
     private String travelType = null;        // 国际旅费
     private Integer annual = null;           // 年度
@@ -783,5 +784,13 @@ public class Filter {
 
     public void setSchoolState(String schoolState) {
         this.schoolState = schoolState;
+    }
+
+    public String getDispatchType() {
+        return dispatchType;
+    }
+
+    public void setDispatchType(String dispatchType) {
+        this.dispatchType = dispatchType;
     }
 }
