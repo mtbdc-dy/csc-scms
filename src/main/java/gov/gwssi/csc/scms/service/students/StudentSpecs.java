@@ -263,7 +263,7 @@ public class StudentSpecs {
                 boolean needBasicInfo = filter.getPassportName() != null
                         || filter.getContinent() != null
                         || filter.getCountry() != null
-                        || filter.getProjectAttr() != null
+//                        || filter.getProjectAttr() != null
                         || filter.getProjectType() != null
                         || filter.getProjectName() != null
                         || filter.getPlanned() != null
@@ -313,9 +313,9 @@ public class StudentSpecs {
                     if (filter.getCountry() != null) {
                         predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.country), filter.getCountry()));
                     }
-                    if (filter.getProjectAttr() != null) {
-                        predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.projectAttr), filter.getProjectAttr()));
-                    }
+//                    if (filter.getProjectAttr() != null) {
+//                        predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.projectAttr), filter.getProjectAttr()));
+//                    }
                     if (filter.getProjectType() != null) {
                         predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.projectType), filter.getProjectType()));
                     }
