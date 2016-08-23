@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.service.abnormal;
 
 import gov.gwssi.csc.scms.controller.abnormal.AbnormalSpecs;
+import gov.gwssi.csc.scms.dao.BaseDAO;
 import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
@@ -39,6 +40,8 @@ public class AbnormalService extends AbnormalSpecs {
     private OperationLogService operationLogService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private BaseDAO baseDAO;
     public Abnormal getAbnormalById(String id) {
         return abnormalRepository.findById(id);
     }
@@ -154,7 +157,7 @@ public class AbnormalService extends AbnormalSpecs {
         try {
             User user = userService.getUserByJWT(header);
             Specification<Abnormal> specA = filterIsLike(filter, user);
-            Specification<Abnormal> specB = userIs(user);
+            Specification<Abnormal> specB = userIs(user,baseDAO);
             return abnormalRepository.findAll(where(specA).and(specB), new PageRequest(page, size, Sort.Direction.DESC,"applyTime"));
         }catch(Exception e){
             e.printStackTrace();
