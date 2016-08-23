@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.service.scholarship;
 
+import gov.gwssi.csc.scms.dao.BaseDAO;
 import gov.gwssi.csc.scms.dao.scholarshipX.ScholarshipXDAO;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
@@ -57,6 +58,8 @@ public class ScholarshipXService extends ScholarshipXSpecs {
     private ScholarshipXDAO scholarshipXDAO;
     @Autowired
     private UserService userService;
+    @Autowired
+    private BaseDAO baseDAO;
 
     //生成奖学金评审清单
     public Map<String,String> getScholarshipXList(User user) {
@@ -516,7 +519,7 @@ public class ScholarshipXService extends ScholarshipXSpecs {
             ///////////!!!!IMPORTANT!!!!//////////////
 
             Specification<ScholarshipX> specA = filterIsLike(filter, user, school);
-            Specification<ScholarshipX> specB = userIs(user);
+            Specification<ScholarshipX> specB = userIs(user,baseDAO);
             return scholarshipXRepository.findAll(where(specA).and(specB), new PageRequest(page, size, Sort.Direction.ASC, "cscId"));
         } catch (Exception e) {
             e.printStackTrace();
@@ -544,7 +547,7 @@ public class ScholarshipXService extends ScholarshipXSpecs {
             ///////////!!!!IMPORTANT!!!!//////////////
 
             Specification<ScholarshipX> specA = filterIsLike(filter, user, school);
-            Specification<ScholarshipX> specB = userIs(user);
+            Specification<ScholarshipX> specB = userIs(user,baseDAO);
             scholarshipXes = scholarshipXRepository.findAll(where(specA).and(specB),new Sort(Sort.Direction.ASC,"cscId"));
         } catch (Exception e) {
             e.printStackTrace();
@@ -564,7 +567,7 @@ public class ScholarshipXService extends ScholarshipXSpecs {
             try {
                 User user = userService.getUserByJWT(header);
                 Specification<ScholarshipX> specA = filterIsLike(filter, user, school);
-                Specification<ScholarshipX> specB = userIs(user);
+                Specification<ScholarshipX> specB = userIs(user,baseDAO);
                 return scholarshipXRepository.findAll(where(specA).and(specB), new PageRequest(page, size, Sort.Direction.ASC, "cscId"));
             }catch (Exception e){
                 e.printStackTrace();
