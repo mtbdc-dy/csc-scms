@@ -274,7 +274,7 @@ public class TicketService extends TicketSortSpecs {
         try {
             User user = userService.getUserByJWT(header);
             Specification<TicketSort> specA = filterIsLike(filter, user);
-            Specification<TicketSort> specB = userIs(user);
+            Specification<TicketSort> specB = userIs(user,baseDAO);
             return ticketSortRepository.findAll(where(specA).and(specB), new PageRequest(page, size, Sort.Direction.ASC,"customSort"));
         } catch (Exception e) {
             e.printStackTrace();
@@ -288,7 +288,7 @@ public class TicketService extends TicketSortSpecs {
         try {
             User user = userService.getUserByJWT(header);
             Specification<TicketSort> specA = filterIsLike(filter, user);
-            Specification<TicketSort> specB = userIs(user);
+            Specification<TicketSort> specB = userIs(user,baseDAO);
             ticketSorts = ticketSortRepository.findAll(where(specA).and(specB));
         } catch (Exception e) {
             e.printStackTrace();
@@ -321,7 +321,7 @@ public class TicketService extends TicketSortSpecs {
         try {
             User user = userService.getUserByJWT(header);
             Specification<TicketSort> specA = filterIsLike(filter, user);
-            Specification<TicketSort> specB = userIs(user);
+            Specification<TicketSort> specB = userIs(user,baseDAO);
             zs = ticketSortRepository.count(where(specA).and(specB));
             wtj = ticketSortRepository.count(where(specA).and(specB).and(stateIs("AT0001")));
             yfk = ticketSortRepository.count(where(specA).and(specB).and(stateIs("AT0003")));
