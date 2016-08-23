@@ -205,7 +205,7 @@ public class InsuranceService extends InsuranceSpecs {
         try {
             User user = userService.getUserByJWT(header);
             Specification<Insurance> specA = filterIsLike(filter, user, mode);
-            Specification<Insurance> specB = userIs(user);
+            Specification<Insurance> specB = userIs(user,baseDAO);
             return insuranceRepository.findAll(where(specA).and(specB), new PageRequest(page, size));
         } catch (Exception e) {
             e.printStackTrace();
@@ -219,7 +219,7 @@ public class InsuranceService extends InsuranceSpecs {
         try {
             User user = userService.getUserByJWT(header);
             Specification<Insurance> specA = filterIsLike(filter, user, mode);
-            Specification<Insurance> specB = userIs(user);
+            Specification<Insurance> specB = userIs(user,baseDAO);
             insurances = insuranceRepository.findAll(where(specA).and(specB));
         } catch (Exception e) {
             e.printStackTrace();
@@ -243,7 +243,7 @@ public class InsuranceService extends InsuranceSpecs {
         try {
             User user = userService.getUserByJWT(header);
             Specification<Insurance> specA = filterIsLike(filter, user, mode);
-            Specification<Insurance> specB = userIs(user);
+            Specification<Insurance> specB = userIs(user,baseDAO);
             zs = insuranceRepository.count(where(specA).and(specB));
             yfk = insuranceRepository.count(where(specA).and(specB).and(stateIs("AV0003")));
             jjwwdc = insuranceRepository.count(where(specA).and(specB).and(stateIs("AV0001")));
