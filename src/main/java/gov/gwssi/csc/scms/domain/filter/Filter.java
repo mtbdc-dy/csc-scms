@@ -14,7 +14,7 @@ public class Filter {
     private String passportName = null;      // 护照名称
     private String continent = null;         // 洲别
     private String country = null;           // 国籍
-    private String projectAttr = null;       // 项目属性
+//    private String projectAttr = null;       // 项目属性
     private String projectType = null;       // 项目类别
     private String projectName = null;       // 项目名称
     private String registerState = null;     // 报到状态 0未处理 1报到 2放弃来华
@@ -518,15 +518,15 @@ public class Filter {
         this.pro = pro;
     }
 
-    public String getProjectAttr()
-    {
-        return projectAttr;
-    }
-
-    public void setProjectAttr(String projectAttr)
-    {
-        this.projectAttr = projectAttr;
-    }
+//    public String getProjectAttr()
+//    {
+//        return projectAttr;
+//    }
+//
+//    public void setProjectAttr(String projectAttr)
+//    {
+//        this.projectAttr = projectAttr;
+//    }
 
     public String getProjectName()
     {

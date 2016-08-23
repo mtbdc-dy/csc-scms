@@ -52,7 +52,7 @@ public class BasicInfo implements Cloneable{
     /**
      * 留学项目属性
      */
-    private String projectAttr;
+//    private String projectAttr;
     /**
      * 留学项目类别
      */
@@ -255,13 +255,13 @@ public class BasicInfo implements Cloneable{
         this.student = student;
     }
 
-    public String getProjectAttr() {
-        return projectAttr;
-    }
-
-    public void setProjectAttr(String projectAttr) {
-        this.projectAttr = projectAttr;
-    }
+//    public String getProjectAttr() {
+//        return projectAttr;
+//    }
+//
+//    public void setProjectAttr(String projectAttr) {
+//        this.projectAttr = projectAttr;
+//    }
 
     public String getRemark() {
         return remark;
