@@ -60,9 +60,9 @@ public class StudentsService extends StudentSpecs {
             Specification<Student> specB = userIs(user, mode);
 
             if ("freshregister".equals(mode)) {
-                return studentRepository.findAll(where(specA).and(isFreshRegister()).and(specB), new PageRequest(page, size, Sort.Direction.ASC, "cscId"));
+                return studentRepository.findAll(where(specA).and(isFreshRegister(user)), new PageRequest(page, size, Sort.Direction.ASC, "cscId"));
             } else if ("oldregister".equals(mode)) {
-                return studentRepository.findAll(where(specA).and(isOldRegister()).and(specB), new PageRequest(page, size, Sort.Direction.ASC, "cscId"));
+                return studentRepository.findAll(where(specA).and(isOldRegister(user)), new PageRequest(page, size, Sort.Direction.ASC, "cscId"));
             } else if ("schoolstudent".equals(mode)) {
                 return studentRepository.findAll(where(specA).and(isSchoolStudent()).and(specB), new PageRequest(page, size, Sort.Direction.ASC, "cscId"));
             } else if ("leavestudent".equals(mode) || "alumnus".equals(mode)) {
@@ -88,9 +88,9 @@ public class StudentsService extends StudentSpecs {
             Specification<Student> specB = userIs(user, mode);
 
             if ("freshregister".equals(mode)) {
-                studentsAll = studentRepository.findAll(where(specA).and(isFreshRegister()).and(specB));
+                studentsAll = studentRepository.findAll(where(specA).and(isFreshRegister(user)));
             }else if ("oldregister".equals(mode)) {
-                studentsAll = studentRepository.findAll(where(specA).and(isOldRegister()).and(specB));
+                studentsAll = studentRepository.findAll(where(specA).and(isOldRegister(user)));
             }else if ("export".equals(mode)){
                 studentsAll = studentRepository.findAll(where(specA).and(specB));
             }else if("schoolstudent".equals(mode)){
