@@ -20,7 +20,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.xml.crypto.Data;
 import java.lang.reflect.Field;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -674,8 +676,25 @@ public class StudentService extends BaseService
         String sql = null;
         if ("register".equals(mode))
         {
+            // 老生注册，汉补截止时间>12.31（当年）,当前院校取汉补院校,专业开始时间<12.31（当年），当前院校取专业院校
+            SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(studentId);
+            Date cramDateEnd = schoolRoll.getCramDateEnd();
+            Date majorStartDate = schoolRoll.getMajorStartDate();
+            Calendar calendar = Calendar.getInstance();
+            int      currentYear = calendar.get(Calendar.YEAR);
+            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(currentYear+"-12-31");
+            String currentProvince = "";
+            String currentUniversity = "";
+            if(cramDateEnd.after(date)){
+                currentProvince = schoolRoll.getCramProvince();
+                currentUniversity = schoolRoll.getCramUniversity();
+            }else if(majorStartDate.before(date)){
+                currentProvince = schoolRoll.getMajorProvince();
+                currentUniversity = schoolRoll.getMajorUniversity();
+            }
             sql = " update SCMS_SCHOOLROLL set registed = 'AX0002'," +
-                    " registerState = 'AW0004', registerYear = extract(year from sysdate)" +
+                    " registerState = 'AW0004', registerYear = extract(year from sysdate)," +
+                    "CURRENTPROVINCE = '" + currentProvince + "',CURRENTUNIVERSITY = '" + currentUniversity + "'" +
                     " where studentid = '" + studentId + "'";
         }
         if ("abandon".equals(mode))
