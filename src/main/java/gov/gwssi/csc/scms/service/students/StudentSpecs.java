@@ -105,10 +105,11 @@ public class StudentSpecs {
         };
     }
 
-    public static Specification<Student> isFreshRegister() {
+    public static Specification<Student> isFreshRegister(final User user) {
         return new Specification<Student>() {
             @Override
             public Predicate toPredicate(Root<Student> student, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                String nodeId = user.getNode().getNodeId();
                 Predicate predicate = cb.conjunction();
                 Join<Student, SchoolRoll> schoolRoll = student.join(Student_.schoolRoll);
                 predicate.getExpressions().add(cb.notEqual(schoolRoll.get(SchoolRoll_.registed), "AX0002"));
@@ -138,11 +139,15 @@ public class StudentSpecs {
                 Expression e2 = cb.and(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateBegin), intialDate),
                         cb.lessThan(schoolRoll.get(SchoolRoll_.cramDateBegin), finalDate));
 
+                Expression eCramSchool = cb.and(cb.equal(schoolRoll.get(SchoolRoll_.cramUniversity),nodeId));
+
 
                 Expression e3 = cb.and(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), intialDate),
                         cb.lessThan(schoolRoll.get(SchoolRoll_.majorStartDate), finalDate));
 
-                Expression e4 = cb.and(e1,cb.or(e2, e3));
+                Expression eMajorSchool = cb.and(cb.equal(schoolRoll.get(SchoolRoll_.majorUniversity),nodeId));
+
+                Expression e4 = cb.and(e1,cb.or(cb.and(e2,eCramSchool), cb.and(e3,eMajorSchool)));
 
                 Expression e5 = cb.and(cb.greaterThanOrEqualTo(cb.currentDate(), finalDate),
                         cb.lessThan(cb.currentDate(), nextIntialDate)
@@ -155,7 +160,7 @@ public class StudentSpecs {
                         cb.lessThan(schoolRoll.get(SchoolRoll_.majorStartDate), nextIntialDate)
                 );
 
-                Expression e8 = cb.and(e5, cb.or(e6, e7));
+                Expression e8 = cb.and(e5, cb.or(cb.and(e6,eCramSchool), cb.and(e7,eMajorSchool)));
 
                 Expression e9 = cb.or(e4,e8);
 
@@ -165,17 +170,18 @@ public class StudentSpecs {
         };
     }
 
-    public static Specification<Student> isOldRegister() {
-        return new Specification<Student>() {
-            @Override
-            public Predicate toPredicate(Root<Student> student, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                Predicate predicate = cb.conjunction();
-                Join<Student, SchoolRoll> schoolRoll = student.join(Student_.schoolRoll);
-                predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.registed), "AX0002"));
-                predicate.getExpressions().add(cb.notEqual(schoolRoll.get(SchoolRoll_.leaveChina), "BA0002"));
+    public static Specification<Student> isOldRegister(final User user) {
+                    return new Specification<Student>() {
+                        @Override
+                        public Predicate toPredicate(Root<Student> student, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                            String nodeId = user.getNode().getNodeId();
+                            Predicate predicate = cb.conjunction();
+                            Join<Student, SchoolRoll> schoolRoll = student.join(Student_.schoolRoll);
+                            predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.registed), "AX0002"));
+                            predicate.getExpressions().add(cb.notEqual(schoolRoll.get(SchoolRoll_.leaveChina), "BA0002"));
 
-                Date startDate = null;
-                Date finalDate = null;
+                            Date startDate = null;
+                            Date finalDate = null;
                 int currentYear=0;
                 try {
                     Calendar calendar = Calendar.getInstance();
@@ -187,16 +193,19 @@ public class StudentSpecs {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
+                predicate.getExpressions().add(cb.notEqual(schoolRoll.get(SchoolRoll_.registerYear), currentYear));
+
                 Expression e4 = cb.greaterThanOrEqualTo(cb.currentDate(), startDate);
                 Expression e5 = cb.lessThanOrEqualTo(cb.currentDate(), finalDate);
                 Expression e6 = cb.and(e4,e5);
                 predicate.getExpressions().add(e6);
 
-                predicate.getExpressions().add(cb.notEqual(schoolRoll.get(SchoolRoll_.registerYear), currentYear));
 
                 Expression e1 = cb.greaterThan(schoolRoll.get(SchoolRoll_.cramDateEnd), finalDate);
+                Expression eCramSchool = cb.equal(schoolRoll.get(SchoolRoll_.cramUniversity),nodeId);
                 Expression e2 = cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), finalDate);
-                Expression e3 = cb.or(e1,e2);
+                Expression eMajorSchool = cb.equal(schoolRoll.get(SchoolRoll_.majorUniversity),nodeId);
+                Expression e3 = cb.or(cb.and(e1,eCramSchool),cb.and(e2,eMajorSchool));
                 predicate.getExpressions().add(e3);
                 return predicate;
             }
