@@ -180,19 +180,20 @@ public class StudentSpecs {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                Expression e4 = cb.greaterThanOrEqualTo(cb.currentDate(), startDate);
-                Expression e5 = cb.lessThanOrEqualTo(cb.currentDate(), finalDate);
-                Expression eCramSchool = cb.equal(schoolRoll.get(SchoolRoll_.cramUniversity),nodeId);
-                Expression e6 = cb.and(e4,e5);
-                predicate.getExpressions().add(cb.and(e6,eCramSchool));
-
                 predicate.getExpressions().add(cb.notEqual(schoolRoll.get(SchoolRoll_.registerYear), currentYear));
 
+                Expression e4 = cb.greaterThanOrEqualTo(cb.currentDate(), startDate);
+                Expression e5 = cb.lessThanOrEqualTo(cb.currentDate(), finalDate);
+                Expression e6 = cb.and(e4,e5);
+                predicate.getExpressions().add(e6);
+
+
                 Expression e1 = cb.greaterThan(schoolRoll.get(SchoolRoll_.cramDateEnd), finalDate);
+                Expression eCramSchool = cb.equal(schoolRoll.get(SchoolRoll_.cramUniversity),nodeId);
                 Expression e2 = cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), finalDate);
                 Expression eMajorSchool = cb.equal(schoolRoll.get(SchoolRoll_.majorUniversity),nodeId);
-                Expression e3 = cb.or(e1,e2);
-                predicate.getExpressions().add(cb.and(e3,eMajorSchool));
+                Expression e3 = cb.or(cb.and(e1,eCramSchool),cb.and(e2,eMajorSchool));
+                predicate.getExpressions().add(e3);
                 return predicate;
             }
         };
