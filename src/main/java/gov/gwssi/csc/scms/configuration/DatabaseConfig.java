@@ -45,9 +45,9 @@ public class DatabaseConfig {
             boneCPDataSource.setUsername(jdbcUsername);
             boneCPDataSource.setPassword(jdbcPassword);
         }else{
-            boneCPDataSource.setJdbcUrl(env.getProperty("jdbc.dev.url"));
-            boneCPDataSource.setUsername(env.getProperty("jdbc.dev.username"));
-            boneCPDataSource.setPassword(env.getProperty("jdbc.dev.password"));
+            boneCPDataSource.setJdbcUrl(env.getProperty("jdbc.test.url"));
+            boneCPDataSource.setUsername(env.getProperty("jdbc.test.username"));
+            boneCPDataSource.setPassword(env.getProperty("jdbc.test.password"));
         }
         boneCPDataSource.setIdleConnectionTestPeriodInMinutes(60);
         boneCPDataSource.setIdleMaxAgeInMinutes(420);
