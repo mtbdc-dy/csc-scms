@@ -96,7 +96,7 @@ public class StudentSpecs {
                         predicate.getExpressions().add(cb.equal(basicInfo.get(BasicInfo_.dispatch), "^_^"));
                     }
 
-                }else if("2".equals(userType)){
+                }else if("2".equals(userType) && !"freshregister".equals(mode) && !"oldregister".equals(mode)){
                     Join<Student, SchoolRoll> schoolRoll = student.join(Student_.schoolRoll);
                     predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.currentUniversity), nodeId));
                 }
@@ -109,6 +109,7 @@ public class StudentSpecs {
         return new Specification<Student>() {
             @Override
             public Predicate toPredicate(Root<Student> student, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                String userType = user.getUserType();
                 String nodeId = user.getNode().getNodeId();
                 Predicate predicate = cb.conjunction();
                 Join<Student, SchoolRoll> schoolRoll = student.join(Student_.schoolRoll);
@@ -147,8 +148,6 @@ public class StudentSpecs {
 
                 Expression eMajorSchool = cb.and(cb.equal(schoolRoll.get(SchoolRoll_.majorUniversity),nodeId));
 
-                Expression e4 = cb.and(e1,cb.or(cb.and(e2,eCramSchool), cb.and(e3,eMajorSchool)));
-
                 Expression e5 = cb.and(cb.greaterThanOrEqualTo(cb.currentDate(), finalDate),
                         cb.lessThan(cb.currentDate(), nextIntialDate)
                 );
@@ -160,7 +159,15 @@ public class StudentSpecs {
                         cb.lessThan(schoolRoll.get(SchoolRoll_.majorStartDate), nextIntialDate)
                 );
 
-                Expression e8 = cb.and(e5, cb.or(cb.and(e6,eCramSchool), cb.and(e7,eMajorSchool)));
+                Expression e4 = null;
+                Expression e8 = null;
+                if("1".equals(userType)){ // 基金委用户
+                    e4 = cb.and(e1,cb.or(e2,e3));
+                    e8 = cb.and(e5,cb.or(e6,e7));
+                }else if("2".equals(userType)){ // 院校用户
+                    e4 = cb.and(e1,cb.or(cb.and(e2,eCramSchool), cb.and(e3,eMajorSchool)));
+                    e8 = cb.and(e5, cb.or(cb.and(e6,eCramSchool), cb.and(e7,eMajorSchool)));
+                }
 
                 Expression e9 = cb.or(e4,e8);
 
@@ -174,6 +181,7 @@ public class StudentSpecs {
                     return new Specification<Student>() {
                         @Override
                         public Predicate toPredicate(Root<Student> student, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                            String userType = user.getUserType();
                             String nodeId = user.getNode().getNodeId();
                             Predicate predicate = cb.conjunction();
                             Join<Student, SchoolRoll> schoolRoll = student.join(Student_.schoolRoll);
@@ -205,7 +213,12 @@ public class StudentSpecs {
                 Expression eCramSchool = cb.equal(schoolRoll.get(SchoolRoll_.cramUniversity),nodeId);
                 Expression e2 = cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), finalDate);
                 Expression eMajorSchool = cb.equal(schoolRoll.get(SchoolRoll_.majorUniversity),nodeId);
-                Expression e3 = cb.or(cb.and(e1,eCramSchool),cb.and(e2,eMajorSchool));
+                Expression e3 = null;
+                if("1".equals(userType)){ // 基金委用户
+                    e3 = cb.or(e1,e2);
+                }else if("2".equals(userType)){ // 院校用户
+                    e3 = cb.or(cb.and(e1,eCramSchool),cb.and(e2,eMajorSchool));
+                }
                 predicate.getExpressions().add(e3);
                 return predicate;
             }
