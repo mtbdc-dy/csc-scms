@@ -398,10 +398,10 @@ public class StudentService extends BaseService
             Date cramStart = schoolRoll.getCramDateBegin();
             Date cramEnd = schoolRoll.getCramDateEnd();
             Date now = new Date();
-            if(now.after(majorStart) && now.before(majorEnd)){
+            if(majorStart != null && majorEnd != null && now.after(majorStart) && now.before(majorEnd)){
                 schoolRoll.setCurrentProvince(schoolRoll.getMajorProvince());
                 schoolRoll.setCurrentUniversity(schoolRoll.getMajorUniversity());
-            }else if(now.after(cramStart) && now.before(cramEnd)){
+            }else if(cramStart != null && cramEnd != null && now.after(cramStart) && now.before(cramEnd)){
                 schoolRoll.setCurrentProvince(schoolRoll.getCramProvince());
                 schoolRoll.setCurrentUniversity(schoolRoll.getCramUniversity());
             }
@@ -446,7 +446,7 @@ public class StudentService extends BaseService
             Date cramStart = schoolRoll.getCramDateBegin();
             Date cramEnd = schoolRoll.getCramDateEnd();
             Date now = new Date();
-            if(now.after(majorStart) && now.before(majorEnd)){
+            if(majorStart != null && majorEnd != null && now.after(majorStart) && now.before(majorEnd)){
                 schoolRoll.setState("BB0003");
                 schoolRoll.setCurrentProvince(schoolRoll.getMajorProvince());
                 schoolRoll.setCurrentUniversity(schoolRoll.getMajorUniversity());
@@ -461,7 +461,7 @@ public class StudentService extends BaseService
                 operationLog.setAfter("BB0003");
                 operationLogState.add(operationLog);
                 operationLogService.saveOperationLog(operationLogState);
-            }else if(now.after(cramStart) && now.before(cramEnd)){
+            }else if(cramStart != null && cramEnd != null && now.after(cramStart) && now.before(cramEnd)){
                 schoolRoll.setState("BB0002");
                 schoolRoll.setCurrentProvince(schoolRoll.getCramProvince());
                 schoolRoll.setCurrentUniversity(schoolRoll.getCramUniversity());
@@ -687,10 +687,10 @@ public class StudentService extends BaseService
             Date date = new SimpleDateFormat("yyyy-MM-dd").parse(currentYear+"-12-31");
             String currentProvince = "";
             String currentUniversity = "";
-            if(cramDateEnd.after(date)){
+            if(cramDateEnd != null && date.after(cramDateEnd)){
                 currentProvince = schoolRoll.getCramProvince();
                 currentUniversity = schoolRoll.getCramUniversity();
-            }else if(majorStartDate.before(date)){
+            }else if(majorStartDate != null && date.before(majorStartDate)){
                 currentProvince = schoolRoll.getMajorProvince();
                 currentUniversity = schoolRoll.getMajorUniversity();
             }
