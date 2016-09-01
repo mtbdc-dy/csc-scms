@@ -178,18 +178,18 @@ public class StudentSpecs {
     }
 
     public static Specification<Student> isOldRegister(final User user) {
-                    return new Specification<Student>() {
-                        @Override
-                        public Predicate toPredicate(Root<Student> student, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                            String userType = user.getUserType();
-                            String nodeId = user.getNode().getNodeId();
-                            Predicate predicate = cb.conjunction();
-                            Join<Student, SchoolRoll> schoolRoll = student.join(Student_.schoolRoll);
-                            predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.registed), "AX0002"));
-                            predicate.getExpressions().add(cb.notEqual(schoolRoll.get(SchoolRoll_.leaveChina), "BA0002"));
+        return new Specification<Student>() {
+            @Override
+            public Predicate toPredicate(Root<Student> student, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                String userType = user.getUserType();
+                String nodeId = user.getNode().getNodeId();
+                Predicate predicate = cb.conjunction();
+                Join<Student, SchoolRoll> schoolRoll = student.join(Student_.schoolRoll);
+                predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.registed), "AX0002"));
+                predicate.getExpressions().add(cb.notEqual(schoolRoll.get(SchoolRoll_.leaveChina), "BA0002"));
 
-                            Date startDate = null;
-                            Date finalDate = null;
+                Date startDate = null;
+                Date finalDate = null;
                 int currentYear=0;
                 try {
                     Calendar calendar = Calendar.getInstance();
@@ -224,6 +224,7 @@ public class StudentSpecs {
             }
         };
     }
+
 
     public static Specification<Student> isSchoolStudent() {
         return new Specification<Student>() {

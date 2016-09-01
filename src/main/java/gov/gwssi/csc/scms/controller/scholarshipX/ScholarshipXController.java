@@ -212,12 +212,15 @@ public class ScholarshipXController {
                 return null;
             } else {
                 scholarshipDetail.setSchReview("AQ0001");//合格
+                scholarshipDetail.setCscReview("AQ0001");
                 //查询该学生历史的schReview
                 ScholarshipXResultObject scholarshipXLS = scholarshipXService.getScholarshipXAndStuBy(scholarshipDetail.getStudent().getId());
                 if (scholarshipXLS != null && scholarshipXLS.getSchReview().equals("AQ0002")) {//上次结果存在且上次结果为不合格
                     scholarshipDetail.setSchResult("AP0002");//恢复
+                    scholarshipDetail.setCscResult("AP0002");
                 } else {//上次为空，或者上次为合格
                     scholarshipDetail.setSchResult("AP0001");//继续
+                    scholarshipDetail.setCscResult("AP0001");
                 }
                 Student student = studentService.getStudentById(studentId);
                 scholarshipDetail.setStudent(student);
