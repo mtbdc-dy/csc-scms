@@ -12,6 +12,7 @@ import gov.gwssi.csc.scms.domain.query.InsuranceResultObject;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.domain.user.User;
+import gov.gwssi.csc.scms.service.UploadFileServer;
 import gov.gwssi.csc.scms.service.abnormal.NoSuchAbnormalException;
 import gov.gwssi.csc.scms.service.export.ExportService;
 import gov.gwssi.csc.scms.service.insurance.InsuranceConverter;
@@ -33,10 +34,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -216,33 +214,59 @@ public class InsuranceController {
         return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
     }
 
+    // 跨域请求
+    @RequestMapping(
+            value = "/all",
+            method = RequestMethod.OPTIONS
+    )
+    public ResponseEntity exportInsuranceOptions() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        List<HttpMethod> methods = new ArrayList<HttpMethod>();
+        methods.add(HttpMethod.GET);
+        methods.add(HttpMethod.POST);
+        methods.add(HttpMethod.DELETE);
+        methods.add(HttpMethod.PUT);
+        methods.add(HttpMethod.PATCH);
+        httpHeaders.setAccessControlAllowMethods(methods);
+        httpHeaders.setAccessControlAllowOrigin("*");
+        List<String> headers = new ArrayList<String>();
+        headers.add("authorization");
+        httpHeaders.setAccessControlAllowHeaders(headers);
+        return new ResponseEntity(httpHeaders, HttpStatus.OK);
+    }
+
     /**
      * 增加全部导出
      */
     @RequestMapping(
             value = "/all",
             method = RequestMethod.GET,
-            params = {"mode","filter"},
-            headers = "Accept=application/octet-stream")
-    public ResponseEntity<byte[]> exportAllInsurance(
-            @RequestHeader(value = HEADER_AUTHORIZATION) String header,
+            params = {"mode","filter"}
+    )
+    public Map<String, Object> exportAllInsurance(
+            @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
             @RequestParam(value = "filter") String filterJSON,
-            @RequestParam("mode") String mode) throws IOException {
+            @RequestParam(value = "mode") String mode
+            ) throws IOException {
         byte[] bytes = null;
         Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
-        String id[] = insuranceService.getAllInsuranceByFilter(filter,mode,header);
+        //导出条数受限，更改查询方法
+//        String id[] = insuranceService.getAllInsuranceByFilter(filter,mode,header);
+        String id[] = insuranceService.getAllInsuranceBySql(filter,mode,header);
 
         String tableName = "v_exp_insurance";
         bytes = exportService.exportByFilter(tableName, "0", id);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        httpHeaders.setContentDispositionFormData("attachment", fileName);
-        insuranceService.updateInsurancePresta(id);//导出后，根据传入的id数组进行批量更新导出状态
-
-        return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
+        //上传至文件服务器
+        String file = UploadFileServer.uploadFile(fileName, bytes);
+        Map<String, Object> fileMap = new ObjectMapper().readValue(file, Map.class);
+        //导出条数受限，更改批量更新导出状态方法
+//        insuranceService.updateInsurancePresta(id);//导出后，根据传入的id数组进行批量更新导出状态
+        if(id.length>0){
+            insuranceService.updateInsurancePrestaBySql(id);
+        }
+        return fileMap;
     }
 
     /**

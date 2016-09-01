@@ -20,7 +20,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.xml.crypto.Data;
 import java.lang.reflect.Field;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -85,7 +87,7 @@ public class StudentService extends BaseService
             lastScholarship = scholarships.get(0);
         }
 
-        if(student.getSchoolRoll() != null){
+        if(student.getSchoolRoll() != null) {
             student.getSchoolRoll().setScholarshipAnnual(lastScholarship.getYear());
             student.getSchoolRoll().setScholarshipReview(lastScholarship.getCscReview());
             student.getSchoolRoll().setScholarshipResult(lastScholarship.getCscResult());

@@ -245,6 +245,8 @@ public class CodeMainTenanceDAO extends BaseDAO
             codeDetailResult1.setTABLEEN(codeDetailResult.getTABLEEN());
             codeDetailResult1.setFULLNAME(map.get("updateby".toUpperCase()).toString());
             codeDetailResult1.setPARENTID(map.get("parentid".toUpperCase()).toString());
+            // 新增「项目编码」 by WangZishi 20160712
+            codeDetailResult1.setPROJECTCODE(map.get("projectcode".toUpperCase()).toString());
             System.out.println(map.get("projectid".toUpperCase()).toString());
             try
             {
@@ -419,7 +421,13 @@ public class CodeMainTenanceDAO extends BaseDAO
         {
             if ("1".equals(codeDetailResult.getENABLED()))
             {
-                sql = "update dim_project t set t.appr = '" + codeDetailResult.getFUNDATTR() + "', t.namech ='" + codeDetailResult.getNAME() + "',t.enabled ='1',t.updateby='" + codeDetailResult.getFULLNAME() + "',t.updated =sysdate ,t.parentid = '" + codeDetailResult.getPARENTID() + "'where t.projectid = '" + codeDetailResult.getID() + "'";
+                sql = "update dim_project t set t.appr = '"+ codeDetailResult.getFUNDATTR()
+                        + "', t.namech ='" + codeDetailResult.getNAME()
+                        + "', t.enabled ='1', t.updateby='" + codeDetailResult.getFULLNAME()
+                        + "', t.updated=sysdate, t.parentid='" + codeDetailResult.getPARENTID()
+                        + "', t.projectCode='" + codeDetailResult.getPROJECTCODE()
+                        + "' where t.projectid = '" + codeDetailResult.getID() + "'";
+                System.out.println("sql = " + sql);
                 int m = super.updateBySql(sql);
                 if (m == 0)
                 {
@@ -600,12 +608,13 @@ public class CodeMainTenanceDAO extends BaseDAO
         } else if (PROJECTS.equals(codeDetailResult.getTABLEEN()))
         {
             zdz = super.getDicIdByClassType(type);
-            sql = "insert into " + codeDetailResult.getTABLEEN() + " values(f_scms_dim_id('" + type + "'),'','" + codeDetailResult.getNAME() + "','" + codeDetailResult.getPARENTID() + "','" + type + "','" + codeDetailResult.getENABLED() + "','" + codeDetailResult.getFULLNAME() + "',SYSDATE)";
+            sql = "insert into " + codeDetailResult.getTABLEEN()
+                    // (PROJECTID, NAMEEN, NAMECH, APPR, PARENTID, TYPE, ENABLED, UPDATEBY, UPDATED, PROJECTCODE, CSC_OFFSET_LEFT, CSC_DATA, CSC_OFFSET_RIGHT, APP_DATE_START, APP_DATE_END, APP_OFFSET_START1, APP_OFFSET_END)
+                    + "(projectId, nameEn, nameCh, parentId, type, enabled, updateBy, updated, projectCode)"
+                    + " values(f_scms_dim_id('" + type + "'), '', '" + codeDetailResult.getNAME() + "', '" + codeDetailResult.getPARENTID() + "', '" + type + "', '" + codeDetailResult.getENABLED() + "', '" + codeDetailResult.getFULLNAME() + "', SYSDATE, '" + codeDetailResult.getPROJECTCODE() + "')";
             int n = super.updateBySql(sql);
             if (n == 1)
-            {
                 return zdz;
-            }
             return "";
         } else if (CONTINENTS.equals(codeDetailResult.getTABLEEN()))
         {
@@ -613,9 +622,7 @@ public class CodeMainTenanceDAO extends BaseDAO
             sql = "insert into " + codeDetailResult.getTABLEEN() + " values(f_scms_dim_id('" + type + "'),'','" + codeDetailResult.getNAME() + "','" + codeDetailResult.getPARENTID() + "','" + type + "','" + codeDetailResult.getENABLED() + "','" + codeDetailResult.getFULLNAME() + "',SYSDATE)";
             int n = super.updateBySql(sql);
             if (n == 1)
-            {
                 return zdz;
-            }
             return "";
         } else if (SUBJECTS.equals(codeDetailResult.getTABLEEN()))
         {

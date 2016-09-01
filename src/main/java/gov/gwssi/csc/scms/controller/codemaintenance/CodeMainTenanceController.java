@@ -223,11 +223,6 @@ public class CodeMainTenanceController
                 Page<CodemaintanenceUniv> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceUnivsPagingByFilter(page, size);
                 Page<Map<String, Object>> mapPage              = codeMainTenancesPage.map(new CodeMainTenanceUnivConverter());
                 return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
-            } else if ("dim_project".equals(name) && "BC".equals(type))
-            {
-                Page<CodemaintanenceProjectFirst> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceProjectFirstsPagingByFilter(page, size);
-                Page<Map<String, Object>>         mapPage              = codeMainTenancesPage.map(new CodeMainTenanceProject1Converter());
-                return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
             } else if ("dim_project".equals(name) && "T".equals(type))
             {
                 Page<CodemaintanenceProjectSecond> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceProjectSecondsPagingByFilter(page, size);

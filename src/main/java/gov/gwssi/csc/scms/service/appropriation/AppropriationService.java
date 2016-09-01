@@ -36,11 +36,13 @@ public class AppropriationService extends AppropriationSpecs
 
     public Page<Appropriation> getAppropriationsPagingByFilter(Filter filter, Integer page, Integer size)
     {
-        String fundAttr = filter.getFundAttr() == null ? "" : filter.getFundAttr(),
+         String fundAttr = filter.getFundAttr() == null ? "" : filter.getFundAttr(),
                 fundType = filter.getFundType() == null ? "" : filter.getFundType(),
                 fundStandard = filter.getFundStandard() == null ? "" : filter.getFundStandard(),
                 planned = filter.getPlanned() == null ? "" : filter.getPlanned(),
-                projectAttr = filter.getProjectAttr() == null ? "" : filter.getProjectAttr(),
+                 //一期升级 三级变两级 去掉项目属性
+//                projectAttr = filter.getProjectAttr() == null ? "" : filter.getProjectAttr(),
+                projectAttr = "",
                 projectType = filter.getProjectType() == null ? "" : filter.getProjectType(),
                 projectName = filter.getProjectName() == null ? "" : filter.getProjectName();
 

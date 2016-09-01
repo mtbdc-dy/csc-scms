@@ -60,6 +60,20 @@ public class CodeDetailResult implements Serializable
      */
     private String FUNDSTANDARD;
 
+    /**
+     * 项目编码
+     */
+    private String PROJECTCODE;
+
+    public String getPROJECTCODE()
+    {
+        return PROJECTCODE;
+    }
+
+    public void setPROJECTCODE(String PROJECTCODE)
+    {
+        this.PROJECTCODE = PROJECTCODE;
+    }
 
     public CodeDetailResult()
     {

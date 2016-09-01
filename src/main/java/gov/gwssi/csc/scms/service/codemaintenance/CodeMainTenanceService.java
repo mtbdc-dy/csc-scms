@@ -136,7 +136,6 @@ public class CodeMainTenanceService extends CodeMainTenanceSpecs
     public Page<CodeMainTenance> getCodeMainTenancesPagingByFilter(Filter filter, Integer page, Integer size, User user)
     {
         Specification<CodeMainTenance> specA = filterIsLike(filter, user);
-//        Specification<Ticket> specB = userIs(user);
         return codeMainTenanceRepository.findAll(where(specA), new PageRequest(page, size, Sort.Direction.ASC, "seq"));
     }
 

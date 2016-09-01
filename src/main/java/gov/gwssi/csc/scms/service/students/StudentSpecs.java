@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.service.students;
 
+import gov.gwssi.csc.scms.dao.BaseDAO;
 import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
 import gov.gwssi.csc.scms.domain.abnormal.Abnormal_;
 import gov.gwssi.csc.scms.domain.filter.Filter;
@@ -14,10 +15,7 @@ import gov.gwssi.csc.scms.domain.user.Project;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.domain.warning.Warning;
 import gov.gwssi.csc.scms.utils.DateConvert;
-import org.hibernate.jpa.criteria.expression.EntityTypeExpression;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.criteria.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,6 +29,7 @@ import java.util.List;
  * JPA 查询时所需使用的 Specs
  */
 public class StudentSpecs {
+
     public static Specification<Student> cscIdIsLike(final String cscId) {
         return new Specification<Student>() {
             @Override
@@ -55,7 +54,7 @@ public class StudentSpecs {
     }
 
 
-    public static Specification<Student> userIs(final User user,final String mode) {
+    public static Specification<Student> userIs(final User user, final String mode, final BaseDAO baseDAO) {
         // TODO 实现根据用户所属项目或者所属院校进行查询
 
         return new Specification<Student>() {
@@ -69,7 +68,8 @@ public class StudentSpecs {
                 if("Y0002".equals(identity) && !"integratedquery".equals(mode)){    //基金委用户  Y0002主管 并且不是综合查询模块
                     Join<Student, BasicInfo> basicInfo = student.join(Student_.basicInfo);
                     List<Project> projects = user.getProjects();
-
+                    List dispatches = baseDAO.getDispatchesByUserId(user.getUserId());
+                    //项目名称
                     if(projects.size() == 1){
                         predicate.getExpressions().add(cb.equal(basicInfo.get(BasicInfo_.projectName), projects.get(0).getProjectId()));
                     }else if(projects.size() >1){
@@ -81,6 +81,19 @@ public class StudentSpecs {
                         predicate.getExpressions().add(eSum);
                     }else{
                         predicate.getExpressions().add(cb.equal(basicInfo.get(BasicInfo_.projectName), "^_^"));
+                    }
+                    //派遣途径
+                    if(dispatches.size() == 1){
+                        predicate.getExpressions().add(cb.equal(basicInfo.get(BasicInfo_.dispatch), dispatches.get(0)));
+                    }else if(dispatches.size() > 1){
+                        Expression dSum = cb.equal(basicInfo.get(BasicInfo_.dispatch), dispatches.get(0));
+                        for(int i=1;i<dispatches.size();i++){
+                            Expression e = cb.equal(basicInfo.get(BasicInfo_.dispatch),dispatches.get(i));
+                            dSum = cb.or(dSum,e);
+                        }
+                        predicate.getExpressions().add(dSum);
+                    }else{
+                        predicate.getExpressions().add(cb.equal(basicInfo.get(BasicInfo_.dispatch), "^_^"));
                     }
 
                 }else if("2".equals(userType) && !"freshregister".equals(mode) && !"oldregister".equals(mode)){
@@ -273,7 +286,7 @@ public class StudentSpecs {
                 boolean needBasicInfo = filter.getPassportName() != null
                         || filter.getContinent() != null
                         || filter.getCountry() != null
-                        || filter.getProjectAttr() != null
+//                        || filter.getProjectAttr() != null
                         || filter.getProjectType() != null
                         || filter.getProjectName() != null
                         || filter.getPlanned() != null
@@ -323,9 +336,9 @@ public class StudentSpecs {
                     if (filter.getCountry() != null) {
                         predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.country), filter.getCountry()));
                     }
-                    if (filter.getProjectAttr() != null) {
-                        predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.projectAttr), filter.getProjectAttr()));
-                    }
+//                    if (filter.getProjectAttr() != null) {
+//                        predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.projectAttr), filter.getProjectAttr()));
+//                    }
                     if (filter.getProjectType() != null) {
                         predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.projectType), filter.getProjectType()));
                     }
@@ -489,10 +502,11 @@ public class StudentSpecs {
                 boolean needBasicInfo = filter.getPassportName() != null
                         || filter.getContinent() != null
                         || filter.getCountry() != null
-                        || filter.getProjectAttr() != null
+//                        || filter.getProjectAttr() != null
                         || filter.getProjectType() != null
                         || filter.getProjectName() != null
                         || filter.getPlanned() != null
+                        || filter.getDispatchType() != null
                         || filter.getDispatch() != null
                         || filter.getTravelType() != null
                         || filter.getAnnual() != null;
@@ -532,9 +546,9 @@ public class StudentSpecs {
                     if (filter.getCountry() != null) {
                         predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.country), filter.getCountry()));
                     }
-                    if (filter.getProjectAttr() != null) {
-                        predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.projectAttr), filter.getProjectAttr()));
-                    }
+//                    if (filter.getProjectAttr() != null) {
+//                        predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.projectAttr), filter.getProjectAttr()));
+//                    }
                     if (filter.getProjectType() != null) {
                         predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.projectType), filter.getProjectType()));
                     }
@@ -543,6 +557,9 @@ public class StudentSpecs {
                     }
                     if (filter.getPlanned() != null) {
                         predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.planned), filter.getPlanned()));
+                    }
+                    if (filter.getDispatchType() != null) {
+                        predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.dispatchType), filter.getDispatchType()));
                     }
                     if (filter.getDispatch() != null) {
                         predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.dispatch), filter.getDispatch()));

@@ -8,19 +8,13 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import javax.sql.DataSource;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Wang Rui on 2015/3/30.
@@ -519,6 +513,25 @@ public class BaseDAO {
                 return "";
             }
 
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
+    public List getDispatchesByUserId(String userId){
+        String sql = "SELECT DISPATCH FROM PUB_SCMS.PUB_USER_DISPATCH WHERE PUB_SCMS.PUB_USER_DISPATCH.USERID = '" + userId + "'";
+        EntityManager em = null;
+        List dispatches;
+        try {
+            em = entityManagerFactory.createEntityManager();
+            //创建原生SQL查询QUERY实例
+            em.getTransaction().begin();
+            Query query = em.createNativeQuery(sql);
+            dispatches = query.getResultList();
+            em.getTransaction().commit();
+            return dispatches;
         } finally {
             if (em != null) {
                 em.close();
