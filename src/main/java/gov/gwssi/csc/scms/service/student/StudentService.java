@@ -689,10 +689,10 @@ public class StudentService extends BaseService
             Date date = new SimpleDateFormat("yyyy-MM-dd").parse(currentYear+"-12-31");
             String currentProvince = "";
             String currentUniversity = "";
-            if(cramDateEnd != null && date.after(cramDateEnd)){
+            if(cramDateEnd != null && date.before(cramDateEnd)){
                 currentProvince = schoolRoll.getCramProvince();
                 currentUniversity = schoolRoll.getCramUniversity();
-            }else if(majorStartDate != null && date.before(majorStartDate)){
+            }else if(majorStartDate != null && date.after(majorStartDate)){
                 currentProvince = schoolRoll.getMajorProvince();
                 currentUniversity = schoolRoll.getMajorUniversity();
             }
