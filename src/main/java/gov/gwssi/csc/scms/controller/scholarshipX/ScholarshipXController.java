@@ -13,6 +13,7 @@ import gov.gwssi.csc.scms.domain.scholarship.ScholarshipDetail;
 import gov.gwssi.csc.scms.domain.scholarship.ScholarshipX;
 import gov.gwssi.csc.scms.domain.student.Student;
 import gov.gwssi.csc.scms.domain.user.User;
+import gov.gwssi.csc.scms.service.UploadFileServer;
 import gov.gwssi.csc.scms.service.abnormal.NoSuchAbnormalException;
 import gov.gwssi.csc.scms.service.export.ExportService;
 import gov.gwssi.csc.scms.service.scholarship.ScholarshipXConverter;
@@ -24,10 +25,7 @@ import gov.gwssi.csc.scms.service.user.UserService;
 import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -416,15 +414,36 @@ public class ScholarshipXController {
         return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
     }
 
+    // 跨域请求
+    @RequestMapping(
+            value = "/all",
+            method = RequestMethod.OPTIONS
+    )
+    public ResponseEntity exportInsuranceOptions() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        List<HttpMethod> methods = new ArrayList<HttpMethod>();
+        methods.add(HttpMethod.GET);
+        methods.add(HttpMethod.POST);
+        methods.add(HttpMethod.DELETE);
+        methods.add(HttpMethod.PUT);
+        methods.add(HttpMethod.PATCH);
+        httpHeaders.setAccessControlAllowMethods(methods);
+        httpHeaders.setAccessControlAllowOrigin("*");
+        List<String> headers = new ArrayList<String>();
+        headers.add("authorization");
+        httpHeaders.setAccessControlAllowHeaders(headers);
+        return new ResponseEntity(httpHeaders, HttpStatus.OK);
+    }
+
     /**
      *增加全部导出
      */
     @RequestMapping(
             value = "/all",
             method = RequestMethod.GET,
-            params = {"filter"},
-            headers = "Accept=application/octet-stream")
-    public ResponseEntity<byte[]> exportAllScholarshipX(
+            params = {"filter"}
+    )
+    public Map<String,Object> exportAllScholarshipX(
             @RequestHeader(value = HEADER_AUTHORIZATION) String header,
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         byte[] bytes = null;
@@ -435,12 +454,10 @@ public class ScholarshipXController {
         bytes = exportService.exportByFilter(tableName, "0", id);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        httpHeaders.setContentDispositionFormData("attachment", fileName);
-
-        return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
+        //上传至文件服务器
+        String file = UploadFileServer.uploadFile(fileName, bytes);
+        Map<String, Object> fileMap = new ObjectMapper().readValue(file, Map.class);
+        return fileMap;
     }
 
     // 基金委跳转进来的相关操作
