@@ -78,9 +78,9 @@ public class InsuranceDAO extends BaseDAO {
         Sheet sheet = wb.getSheet(0);
         int maxRows = sheet.getRows();
         int maxColumns = sheet.getColumns();
-        if (maxRows <= 2 || maxColumns > 10) {
+        if (maxRows <= 2 || maxColumns > 11) {
             stringList.add("校验结果：");
-            stringList.add("导入的数据文件标题不正确或者列数大于10列！");
+            stringList.add("导入的数据文件标题不正确或者列数大于11列！");
             return stringList;
         }
         String cscNo = "";
@@ -92,7 +92,7 @@ public class InsuranceDAO extends BaseDAO {
         for (int m = 2; m < sheet.getRows(); m++) {
 
             cscNo = String.valueOf(decodeNull(sheet.getCell(0, m).getContents()));
-            insuranceNo = String.valueOf(decodeNull(sheet.getCell(9, m).getContents()));
+            insuranceNo = String.valueOf(decodeNull(sheet.getCell(10, m).getContents()));
             Student student = studentService.getStudentByCscId(cscNo);
             int i = 0;
             if (student != null) {
@@ -167,7 +167,7 @@ public class InsuranceDAO extends BaseDAO {
 
             cscNo = String.valueOf(decodeNull(sheet.getCell(0, m).getContents()));
             // elcregisteNo = String.valueOf(decodeNull(sheet.getCell(1, m).getContents()));
-            insuranceNo = String.valueOf(decodeNull(sheet.getCell(9, m).getContents()));
+            insuranceNo = String.valueOf(decodeNull(sheet.getCell(10, m).getContents()));
             saveDate(cscNo, insuranceNo, year);
 
             stringList.add(cscNo);
