@@ -51,7 +51,7 @@ public class DatabaseConfig {
         }
         boneCPDataSource.setIdleConnectionTestPeriodInMinutes(60);
         boneCPDataSource.setIdleMaxAgeInMinutes(420);
-        boneCPDataSource.setMaxConnectionsPerPartition(30);
+        boneCPDataSource.setMaxConnectionsPerPartition(100);
         boneCPDataSource.setMinConnectionsPerPartition(10);
         boneCPDataSource.setPartitionCount(3);
         boneCPDataSource.setAcquireIncrement(5);
