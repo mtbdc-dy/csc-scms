@@ -54,15 +54,11 @@ public class TranslateDictService {
 
                 list = getContinentsWithCountries();
 
-            } else if ("projectAttrs".equals(codeTableName)) {
-
-                list = getProjectsWithTypeAndName();
-
-            } else if("projectTypes".equals(codeTableName)){
+            } else if("projectTypes".equals(codeTableName)) {
 
                 list = getProjectTypesWithName();
 
-            } else if("dispatchTypes".equals(codeTableName)){
+            } else if("dispatchTypes".equals(codeTableName)) {
 
                 list = getDispatchTypesWithDispatch();
             }

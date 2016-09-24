@@ -11,7 +11,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "SCMS_D_CFG_GROUP")
-public class GroupCondition extends Condition{
+public class GroupCondition extends Condition {
     private String id;
     private Configuration config;
     private String table;
