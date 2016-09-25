@@ -357,7 +357,7 @@ public class BaseDAO {
     }
 
     //统计机票 主管用户
-    public int getTicketStatusNumZG(List<Project> projects,String state) {
+    public int getTicketStatusNumZG(List<Project> projects,List dispatches, String state) {
         String finalDate = null;
         String intialDate = null;
         int currentYear=0;
@@ -365,12 +365,19 @@ public class BaseDAO {
         currentYear = calendar.get(Calendar.YEAR);
         intialDate = currentYear + "-01-01";
         finalDate = currentYear + "-12-31";
-        String proSql = "";
+        StringBuffer sqlBuf = new StringBuffer("select count(t.ID) from SCMS_AIRTICKET t,SCMS_BASIC_INFO b where t.studentid = b.studentid");
+        StringBuffer projectsSql = new StringBuffer(" and b.projectname in (");
         for (int i = 0; i < projects.size(); i++) {
-            proSql = proSql + "'" + projects.get(i).getProjectId() + "',";
+            projectsSql.append("'"+projects.get(i).getProjectId()+"',");
         }
-        String pSql = proSql.substring(0, proSql.length() - 1) + ")";
-        String sql = "select count(t.ID) from SCMS_AIRTICKET t,SCMS_BASIC_INFO b where t.studentid = b.studentid and b.projectname in (" + pSql + " and t.STATE = '"+ state +"' and t.CREATED >= to_date('"+ intialDate + "','yyyy-mm-dd') and t.CREATED <= to_date('"+ finalDate +"','yyyy-mm-dd')";
+        projectsSql = projectsSql.deleteCharAt(projectsSql.length()-1).append(")");
+        StringBuffer dispatchesSql = new StringBuffer(" and b.DISPATCH in (");
+        for (int j = 0; j < dispatches.size(); j++) {
+            dispatchesSql.append("'" + dispatches.get(j) + "',");
+        }
+        dispatchesSql = dispatchesSql.deleteCharAt(dispatchesSql.length()-1).append(")");
+        String stateSql = " and t.STATE = '"+ state +"' and t.CREATED >= to_date('"+ intialDate + "','yyyy-mm-dd') and t.CREATED <= to_date('"+ finalDate +"','yyyy-mm-dd')";
+        String sql = sqlBuf.append(projectsSql).append(dispatchesSql).toString() + stateSql;
         EntityManager em = null;
         try {
             em = entityManagerFactory.createEntityManager();
@@ -435,13 +442,20 @@ public class BaseDAO {
     }
 
     //统计异动  主管用户
-    public int getAbnormalZG(List<Project> projects,String state){
-        String proSql = "";
+    public int getAbnormalZG(List<Project> projects,List dispatches,String state){
+        StringBuffer sqlBuf = new StringBuffer("select count(t.ID) from SCMS_ABNORMAL t,SCMS_BASIC_INFO b where t.studentid = b.studentid");
+        StringBuffer projectsSql = new StringBuffer(" and b.projectname in (");
         for (int i = 0; i < projects.size(); i++) {
-            proSql = proSql + "'" + projects.get(i).getProjectId() + "',";
+            projectsSql.append("'"+projects.get(i).getProjectId()+"',");
         }
-        String pSql = proSql.substring(0, proSql.length() - 1) + ")";
-        String sql = "select count(t.ID) from SCMS_ABNORMAL t,SCMS_BASIC_INFO b where t.studentid = b.studentid and b.projectname in (" + pSql + " and t.STATE = '"+ state + "'";
+        projectsSql = projectsSql.deleteCharAt(projectsSql.length()-1).append(")");
+        StringBuffer dispatchesSql = new StringBuffer(" and b.DISPATCH in (");
+        for (int j = 0; j < dispatches.size(); j++) {
+            dispatchesSql.append("'" + dispatches.get(j) + "',");
+        }
+        dispatchesSql = dispatchesSql.deleteCharAt(dispatchesSql.length()-1).append(")");
+        StringBuffer stateSql = new StringBuffer(" and t.STATE = '" + state + "'");
+        String sql = sqlBuf.append(projectsSql).append(dispatchesSql).append(stateSql).toString();
         EntityManager em = null;
         try {
             em = entityManagerFactory.createEntityManager();

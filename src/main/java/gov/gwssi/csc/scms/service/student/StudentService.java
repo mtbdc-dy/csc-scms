@@ -374,9 +374,11 @@ public class StudentService extends BaseService {
             if (majorStart != null && majorEnd != null && now.after(majorStart) && now.before(majorEnd)) {
                 schoolRoll.setCurrentProvince(schoolRoll.getMajorProvince());
                 schoolRoll.setCurrentUniversity(schoolRoll.getMajorUniversity());
+                schoolRoll.setState("BB0003"); // 专业
             } else if (cramStart != null && now.after(cramStart) && cramEnd != null && now.before(cramEnd)) {
                 schoolRoll.setCurrentProvince(schoolRoll.getCramProvince());
                 schoolRoll.setCurrentUniversity(schoolRoll.getCramUniversity());
+                schoolRoll.setState("BB0002"); // 汉补
             }
             schoolRollService.updateSchoolRoll(schoolRoll);
         } else if ("AX0001".equals(operationLog.getAfter())) {
@@ -657,15 +659,19 @@ public class StudentService extends BaseService {
             Date date = new SimpleDateFormat("yyyy-MM-dd").parse(currentYear + "-12-31");
             String currentProvince = "";
             String currentUniversity = "";
+            String state = "";
             if (cramDateEnd != null && date.before(cramDateEnd)) {
                 currentProvince = schoolRoll.getCramProvince();
                 currentUniversity = schoolRoll.getCramUniversity();
+                state = "BB0002";
             } else if (majorStartDate != null && date.after(majorStartDate)) {
                 currentProvince = schoolRoll.getMajorProvince();
                 currentUniversity = schoolRoll.getMajorUniversity();
+                state = "BB0003";
             }
             sql = " update SCMS_SCHOOLROLL set registed = 'AX0002'," +
                     " registerState = 'AW0004', registerYear = extract(year from sysdate)," +
+                    " STATE = '" + state + "'," +
                     "CURRENTPROVINCE = '" + currentProvince + "',CURRENTUNIVERSITY = '" + currentUniversity + "'" +
                     " where studentid = '" + studentId + "'";
         }
