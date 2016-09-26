@@ -382,9 +382,12 @@ public class StudentService extends BaseService {
             }
             schoolRollService.updateSchoolRoll(schoolRoll);
         } else if ("AX0001".equals(operationLog.getAfter())) {
-            //若将"是否报到"从是(AX0002)改为否(AX0001)，则还要将报到状态从新生报到(AW0001)改为未处理(AW0002)
+            //若将"是否报到"从是(AX0002)改为否(AX0001)，则还要将报到状态从新生报到(AW0001)改为未处理(AW0002),学籍状态改为录取(BB0001),并清空当前省市当前院校
             SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(operationLog.getStudentId());
             schoolRoll.setRegisterState("AW0002");
+            schoolRoll.setState("BB0001");
+            schoolRoll.setCurrentProvince(null);
+            schoolRoll.setCurrentUniversity(null);
             schoolRollService.updateSchoolRoll(schoolRoll);
         } else if ("BA0002".equals(operationLog.getAfter())) {
             //当操作员修改“是否离华”由“否(BA0001)”改为“是(BA0002)”时，系统需将“学籍状态”同时修改为“离华(BB0004)”
