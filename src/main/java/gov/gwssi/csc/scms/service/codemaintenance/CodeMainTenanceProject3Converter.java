@@ -24,6 +24,7 @@ public class CodeMainTenanceProject3Converter extends BaseService implements Con
         target.put("updated",codemaintanenceProjectThird.getUpdated());
         target.put("tableen",codemaintanenceProjectThird.getTableen());
         target.put("parentid",codemaintanenceProjectThird.getParentid());
+        target.put("projectcode", codemaintanenceProjectThird.getProjectCode());
 
         return target;
     }

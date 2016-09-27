@@ -54,11 +54,15 @@ public class TranslateDictService {
 
                 list = getContinentsWithCountries();
 
-            } else if ("projectAttrs".equals(codeTableName)) {
+            } else if("projectTypes".equals(codeTableName)) {
 
-                list = getProjectsWithTypeAndName();
+                list = getProjectTypesWithName();
 
-            } else if ("provincesOnly".equals(codeTableName)) {
+            } else if("dispatchTypes".equals(codeTableName)) {
+
+                list = getDispatchTypesWithDispatch();
+            }
+            else if ("provincesOnly".equals(codeTableName)) {
 
                 list = getProvinces();
 
@@ -189,6 +193,22 @@ public class TranslateDictService {
 
     private List<DictTreeJson> getProjectsWithTypeAndName() throws NoSuchDictTreeException {
         List<DictTreeJson> jsonList = codeTableDAO.getCodeTableByLevel(CodeTableDAO.PROJECTS, CodeTableDAO.PROJECTS_LEVEL_THREE);
+        if (jsonList == null) {
+            throw new NoSuchDictTreeException("");
+        }
+        return jsonList;
+    }
+
+    private List<DictTreeJson> getProjectTypesWithName() throws NoSuchDictTreeException {
+        List<DictTreeJson> jsonList = codeTableDAO.getCodeTableByLevel(CodeTableDAO.PROJECTS, CodeTableDAO.PROJECTTYPES_LEVEL_TWO);
+        if (jsonList == null) {
+            throw new NoSuchDictTreeException("");
+        }
+        return jsonList;
+    }
+
+    private List<DictTreeJson> getDispatchTypesWithDispatch() throws NoSuchDictTreeException {
+        List<DictTreeJson> jsonList = codeTableDAO.getCodeTableByLevel(CodeTableDAO.DISPATCHES, CodeTableDAO.DISPATCHES_LEVEL_TWO);
         if (jsonList == null) {
             throw new NoSuchDictTreeException("");
         }

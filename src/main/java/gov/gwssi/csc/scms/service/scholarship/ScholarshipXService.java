@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.service.scholarship;
 
+import gov.gwssi.csc.scms.dao.BaseDAO;
 import gov.gwssi.csc.scms.dao.scholarshipX.ScholarshipXDAO;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
@@ -57,6 +58,8 @@ public class ScholarshipXService extends ScholarshipXSpecs {
     private ScholarshipXDAO scholarshipXDAO;
     @Autowired
     private UserService userService;
+    @Autowired
+    private BaseDAO baseDAO;
 
     //生成奖学金评审清单
     public Map<String,String> getScholarshipXList(User user) {
@@ -503,8 +506,20 @@ public class ScholarshipXService extends ScholarshipXSpecs {
         try {
             User user = userService.getUserByJWT(header);
             String school = user.getNode().getNodeId();
+
+            ///////////!!!!IMPORTANT!!!!//////////////
+            if (filter.getYear() == 0)
+                filter.setYear(Calendar.getInstance().get(Calendar.YEAR));
+
+            List<ScholarshipX> list = scholarshipXRepository.findBySchoolAndYear(school, filter.getYear());
+            if(list != null && list.size()>0){
+                ScholarshipX scholarship = list.get(0);
+                filter.setSchoolState(scholarship.getSchoolSta());
+            }
+            ///////////!!!!IMPORTANT!!!!//////////////
+
             Specification<ScholarshipX> specA = filterIsLike(filter, user, school);
-            Specification<ScholarshipX> specB = userIs(user);
+            Specification<ScholarshipX> specB = userIs(user,baseDAO);
             return scholarshipXRepository.findAll(where(specA).and(specB), new PageRequest(page, size, Sort.Direction.ASC, "cscId"));
         } catch (Exception e) {
             e.printStackTrace();
@@ -519,8 +534,20 @@ public class ScholarshipXService extends ScholarshipXSpecs {
         try {
             User user = userService.getUserByJWT(header);
             String school = user.getNode().getNodeId();
+
+            ///////////!!!!IMPORTANT!!!!//////////////
+            if (filter.getYear() == 0)
+                filter.setYear(Calendar.getInstance().get(Calendar.YEAR));
+
+            List<ScholarshipX> list = scholarshipXRepository.findBySchoolAndYear(school, filter.getYear());
+            if(list != null && list.size()>0){
+                ScholarshipX scholarship = list.get(0);
+                filter.setSchoolState(scholarship.getSchoolSta());
+            }
+            ///////////!!!!IMPORTANT!!!!//////////////
+
             Specification<ScholarshipX> specA = filterIsLike(filter, user, school);
-            Specification<ScholarshipX> specB = userIs(user);
+            Specification<ScholarshipX> specB = userIs(user,baseDAO);
             scholarshipXes = scholarshipXRepository.findAll(where(specA).and(specB),new Sort(Sort.Direction.ASC,"cscId"));
         } catch (Exception e) {
             e.printStackTrace();
@@ -540,7 +567,7 @@ public class ScholarshipXService extends ScholarshipXSpecs {
             try {
                 User user = userService.getUserByJWT(header);
                 Specification<ScholarshipX> specA = filterIsLike(filter, user, school);
-                Specification<ScholarshipX> specB = userIs(user);
+                Specification<ScholarshipX> specB = userIs(user,baseDAO);
                 return scholarshipXRepository.findAll(where(specA).and(specB), new PageRequest(page, size, Sort.Direction.ASC, "cscId"));
             }catch (Exception e){
                 e.printStackTrace();
@@ -559,5 +586,13 @@ public class ScholarshipXService extends ScholarshipXSpecs {
         }
         return result;
     }
+
+    public Map<String,String> getSchoolSta(String school,int year){
+        String schoolSta = baseDAO.getSchoolSta(school,year);
+        Map<String,String> result = new HashMap<String, String>();
+        result.put("schoolSta",schoolSta);
+        return result;
+    }
+
 
 }

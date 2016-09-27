@@ -23,11 +23,12 @@ public class ImportLogSpecs extends BaseService {
             @Override
             public Predicate toPredicate(Root<ImportLog> importLog, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 Predicate predicate = cb.conjunction();
-                if ((filter.getBeginTime() != null&&!"null".equals(filter.getBeginTime())) && (filter.getEndTime() != null&&!"null".equals(filter.getEndTime()))) {
-                    Date begin = filter.getBeginTime();
-                    Date end = filter.getEndTime();
-                    predicate.getExpressions().add(cb.between(importLog.get(ImportLog_.created), begin, end));
-                } else if (filter.getBeginTime() != null&&!"null".equals(filter.getBeginTime())) {
+//                if ((filter.getBeginTime() != null&&!"null".equals(filter.getBeginTime())) && (filter.getEndTime() != null&&!"null".equals(filter.getEndTime()))) {
+//                    Date begin = filter.getBeginTime();
+//                    Date end = filter.getEndTime();
+//                    predicate.getExpressions().add(cb.between(importLog.get(ImportLog_.created), begin, end));
+//                } else
+                if (filter.getBeginTime() != null&&!"null".equals(filter.getBeginTime())) {
                     Date begin = filter.getBeginTime();
                     predicate.getExpressions().add(cb.greaterThanOrEqualTo(importLog.get(ImportLog_.created), begin));
                 } else if (filter.getEndTime() != null&&!"null".equals(filter.getEndTime())) {

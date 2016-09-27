@@ -6,6 +6,7 @@ import gov.gwssi.csc.scms.domain.scholarship.Scholarship;
 import gov.gwssi.csc.scms.domain.scholarship.ScholarshipDetail;
 import gov.gwssi.csc.scms.domain.scholarship.ScholarshipJ;
 import gov.gwssi.csc.scms.domain.user.User;
+import gov.gwssi.csc.scms.service.UploadFileServer;
 import gov.gwssi.csc.scms.service.export.ExportService;
 import gov.gwssi.csc.scms.service.scholarship.ScholarshipJConverter;
 import gov.gwssi.csc.scms.service.scholarship.ScholarshipJService;
@@ -14,10 +15,7 @@ import gov.gwssi.csc.scms.service.user.UserService;
 import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -171,15 +169,36 @@ public class ScholarshipJController {
         return resutlt;
     }
 
+    // 跨域请求
+    @RequestMapping(
+            value = "/all",
+            method = RequestMethod.OPTIONS
+    )
+    public ResponseEntity exportInsuranceOptions() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        List<HttpMethod> methods = new ArrayList<HttpMethod>();
+        methods.add(HttpMethod.GET);
+        methods.add(HttpMethod.POST);
+        methods.add(HttpMethod.DELETE);
+        methods.add(HttpMethod.PUT);
+        methods.add(HttpMethod.PATCH);
+        httpHeaders.setAccessControlAllowMethods(methods);
+        httpHeaders.setAccessControlAllowOrigin("*");
+        List<String> headers = new ArrayList<String>();
+        headers.add("authorization");
+        httpHeaders.setAccessControlAllowHeaders(headers);
+        return new ResponseEntity(httpHeaders, HttpStatus.OK);
+    }
+
     /**
      *全部导出功能
      */
     @RequestMapping(
             value = "/all",
             method = RequestMethod.GET,
-            params = {"filter"},
-            headers = "Accept=application/octet-stream")
-    public ResponseEntity<byte[]> exportInsurance(
+            params = {"filter"}
+    )
+    public Map<String, Object> exportInsurance(
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
         String id[] = scholarshipJService.getAllScholarshipJsByFilter(filter);
@@ -201,12 +220,10 @@ public class ScholarshipJController {
         bytes = exportService.exportByFilter(tableName, "1", id1);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        httpHeaders.setContentDispositionFormData("attachment", fileName);
-
-        return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
+        //上传至文件服务器
+        String file = UploadFileServer.uploadFile(fileName, bytes);
+        Map<String, Object> fileMap = new ObjectMapper().readValue(file, Map.class);
+        return fileMap;
     }
     //分页查询
     @RequestMapping(

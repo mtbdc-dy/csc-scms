@@ -28,7 +28,7 @@ public class Student implements Cloneable {
     /**
      * 基本信息
      */
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "BasicInfo", unique = true, nullable = false)
     private BasicInfo basicInfo;
     /**
@@ -52,7 +52,7 @@ public class Student implements Cloneable {
     /**
      * 学籍信息
      */
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "SchoolRoll", unique = true)
     private SchoolRoll schoolRoll;
     /**

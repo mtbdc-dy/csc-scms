@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.service.insurance;
 
+import gov.gwssi.csc.scms.dao.BaseDAO;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.insurance.Insurance;
 import gov.gwssi.csc.scms.domain.insurance.Insurance_;
@@ -33,10 +34,11 @@ public class InsuranceSpecs extends BaseService {
                 boolean needBasicInfo = filter.getPassportName() != null
                         || filter.getContinent() != null
                         || filter.getCountry() != null
-                        || filter.getProjectAttr() != null
+//                        || filter.getProjectAttr() != null
                         || filter.getProjectType() != null
                         || filter.getProjectName() != null
                         || filter.getPlanned() != null
+                        || filter.getDispatchType() != null
                         || filter.getDispatch() != null
                         || filter.getTravelType() != null
                         || filter.getAnnual() != null;
@@ -80,13 +82,13 @@ public class InsuranceSpecs extends BaseService {
                 if (needStudent) {
                     Join<Insurance, Student> student = insurance.join(Insurance_.student);
                     if (filter.getCscId() != null) {
-                        predicate.getExpressions().add(cb.like(student.get(Student_.cscId), filter.getCscId()));
+                        predicate.getExpressions().add(cb.like(cb.lower(student.get(Student_.cscId)), filter.getCscId().toLowerCase()));
                     }
                     if (needBasicInfo) {
                         Join<Student, BasicInfo> basicInfo = student.join(Student_.basicInfo);
                         /**基本信息部分*/
                         if (filter.getPassportName() != null) {
-                            predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.passportName), filter.getPassportName()));
+                            predicate.getExpressions().add(cb.like(cb.lower(basicInfo.get(BasicInfo_.passportName)), filter.getPassportName().toLowerCase()));
                         }
                         if (filter.getContinent() != null) {
                             predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.continent), filter.getContinent()));
@@ -94,9 +96,9 @@ public class InsuranceSpecs extends BaseService {
                         if (filter.getCountry() != null) {
                             predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.country), filter.getCountry()));
                         }
-                        if (filter.getProjectAttr() != null) {
-                            predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.projectAttr), filter.getProjectAttr()));
-                        }
+//                        if (filter.getProjectAttr() != null) {
+//                            predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.projectAttr), filter.getProjectAttr()));
+//                        }
                         if (filter.getProjectType() != null) {
                             predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.projectType), filter.getProjectType()));
                         }
@@ -105,6 +107,9 @@ public class InsuranceSpecs extends BaseService {
                         }
                         if (filter.getPlanned() != null) {
                             predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.planned), filter.getPlanned()));
+                        }
+                        if (filter.getDispatchType() != null) {
+                            predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.dispatchType), filter.getDispatchType()));
                         }
                         if (filter.getDispatch() != null) {
                             predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.dispatch), filter.getDispatch()));
@@ -198,7 +203,7 @@ public class InsuranceSpecs extends BaseService {
         };
     }
 
-    public static Specification<Insurance> userIs(final User user) {
+    public static Specification<Insurance> userIs(final User user, final BaseDAO baseDAO) {
         // TODO 实现根据用户所属项目或者所属院校进行查询
 
         return new Specification<Insurance>() {
@@ -213,7 +218,8 @@ public class InsuranceSpecs extends BaseService {
                     Join<Insurance, Student> student = insuranceRoot.join(Insurance_.student);
                     Join<Student, BasicInfo> basicInfo = student.join(Student_.basicInfo);
                     List<Project> projects = user.getProjects();
-
+                    List dispatches = baseDAO.getDispatchesByUserId(user.getUserId());
+                    //项目名称
                     if(projects.size() == 1){
                         predicate.getExpressions().add(cb.equal(basicInfo.get(BasicInfo_.projectName), projects.get(0).getProjectId()));
                     }else if(projects.size() >1){
@@ -223,6 +229,21 @@ public class InsuranceSpecs extends BaseService {
                             eSum = cb.or(eSum,e);
                         }
                         predicate.getExpressions().add(eSum);
+                    }else{
+                        predicate.getExpressions().add(cb.equal(basicInfo.get(BasicInfo_.projectName), "^_^"));
+                    }
+                    //派遣途径
+                    if(dispatches.size() == 1){
+                        predicate.getExpressions().add(cb.equal(basicInfo.get(BasicInfo_.dispatch), dispatches.get(0)));
+                    }else if(dispatches.size() > 1){
+                        Expression dSum = cb.equal(basicInfo.get(BasicInfo_.dispatch), dispatches.get(0));
+                        for(int i=1;i<dispatches.size();i++){
+                            Expression e = cb.equal(basicInfo.get(BasicInfo_.dispatch),dispatches.get(i));
+                            dSum = cb.or(dSum,e);
+                        }
+                        predicate.getExpressions().add(dSum);
+                    }else{
+                        predicate.getExpressions().add(cb.equal(basicInfo.get(BasicInfo_.dispatch), "^_^"));
                     }
 
                 }else if("2".equals(userType)){

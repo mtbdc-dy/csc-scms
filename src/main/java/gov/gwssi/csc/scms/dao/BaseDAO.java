@@ -8,19 +8,13 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import javax.sql.DataSource;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Wang Rui on 2015/3/30.
@@ -363,7 +357,7 @@ public class BaseDAO {
     }
 
     //统计机票 主管用户
-    public int getTicketStatusNumZG(List<Project> projects,String state) {
+    public int getTicketStatusNumZG(List<Project> projects,List dispatches, String state) {
         String finalDate = null;
         String intialDate = null;
         int currentYear=0;
@@ -371,12 +365,19 @@ public class BaseDAO {
         currentYear = calendar.get(Calendar.YEAR);
         intialDate = currentYear + "-01-01";
         finalDate = currentYear + "-12-31";
-        String proSql = "";
+        StringBuffer sqlBuf = new StringBuffer("select count(t.ID) from SCMS_AIRTICKET t,SCMS_BASIC_INFO b where t.studentid = b.studentid");
+        StringBuffer projectsSql = new StringBuffer(" and b.projectname in (");
         for (int i = 0; i < projects.size(); i++) {
-            proSql = proSql + "'" + projects.get(i).getProjectId() + "',";
+            projectsSql.append("'"+projects.get(i).getProjectId()+"',");
         }
-        String pSql = proSql.substring(0, proSql.length() - 1) + ")";
-        String sql = "select count(t.ID) from SCMS_AIRTICKET t,SCMS_BASIC_INFO b where t.studentid = b.studentid and b.projectname in (" + pSql + " and t.STATE = '"+ state +"' and t.CREATED >= to_date('"+ intialDate + "','yyyy-mm-dd') and t.CREATED <= to_date('"+ finalDate +"','yyyy-mm-dd')";
+        projectsSql = projectsSql.deleteCharAt(projectsSql.length()-1).append(")");
+        StringBuffer dispatchesSql = new StringBuffer(" and b.DISPATCH in (");
+        for (int j = 0; j < dispatches.size(); j++) {
+            dispatchesSql.append("'" + dispatches.get(j) + "',");
+        }
+        dispatchesSql = dispatchesSql.deleteCharAt(dispatchesSql.length()-1).append(")");
+        String stateSql = " and t.STATE = '"+ state +"' and t.CREATED >= to_date('"+ intialDate + "','yyyy-mm-dd') and t.CREATED <= to_date('"+ finalDate +"','yyyy-mm-dd')";
+        String sql = sqlBuf.append(projectsSql).append(dispatchesSql).toString() + stateSql;
         EntityManager em = null;
         try {
             em = entityManagerFactory.createEntityManager();
@@ -441,13 +442,20 @@ public class BaseDAO {
     }
 
     //统计异动  主管用户
-    public int getAbnormalZG(List<Project> projects,String state){
-        String proSql = "";
+    public int getAbnormalZG(List<Project> projects,List dispatches,String state){
+        StringBuffer sqlBuf = new StringBuffer("select count(t.ID) from SCMS_ABNORMAL t,SCMS_BASIC_INFO b where t.studentid = b.studentid");
+        StringBuffer projectsSql = new StringBuffer(" and b.projectname in (");
         for (int i = 0; i < projects.size(); i++) {
-            proSql = proSql + "'" + projects.get(i).getProjectId() + "',";
+            projectsSql.append("'"+projects.get(i).getProjectId()+"',");
         }
-        String pSql = proSql.substring(0, proSql.length() - 1) + ")";
-        String sql = "select count(t.ID) from SCMS_ABNORMAL t,SCMS_BASIC_INFO b where t.studentid = b.studentid and b.projectname in (" + pSql + " and t.STATE = '"+ state + "'";
+        projectsSql = projectsSql.deleteCharAt(projectsSql.length()-1).append(")");
+        StringBuffer dispatchesSql = new StringBuffer(" and b.DISPATCH in (");
+        for (int j = 0; j < dispatches.size(); j++) {
+            dispatchesSql.append("'" + dispatches.get(j) + "',");
+        }
+        dispatchesSql = dispatchesSql.deleteCharAt(dispatchesSql.length()-1).append(")");
+        StringBuffer stateSql = new StringBuffer(" and t.STATE = '" + state + "'");
+        String sql = sqlBuf.append(projectsSql).append(dispatchesSql).append(stateSql).toString();
         EntityManager em = null;
         try {
             em = entityManagerFactory.createEntityManager();
@@ -499,6 +507,45 @@ public class BaseDAO {
                 return 0;
             }
 
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
+    public String getSchoolSta(String school,int year){
+        String sql = "select schoolsta from(select schoolsta from v_scholarship_lastyear v where v.school = '"+school+"' and v.year = "+year+") where rownum=1";
+        EntityManager em = null;
+        try {
+            em = entityManagerFactory.createEntityManager();
+            Query query = em.createNativeQuery(sql);
+            List list = query.getResultList();
+            if(list.size()>0){
+                return String.valueOf(list.get(0));
+            }else{
+                return "";
+            }
+
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
+    public List getDispatchesByUserId(String userId){
+        String sql = "SELECT DISPATCH FROM PUB_SCMS.PUB_USER_DISPATCH WHERE PUB_SCMS.PUB_USER_DISPATCH.USERID = '" + userId + "'";
+        EntityManager em = null;
+        List dispatches;
+        try {
+            em = entityManagerFactory.createEntityManager();
+            //创建原生SQL查询QUERY实例
+            em.getTransaction().begin();
+            Query query = em.createNativeQuery(sql);
+            dispatches = query.getResultList();
+            em.getTransaction().commit();
+            return dispatches;
         } finally {
             if (em != null) {
                 em.close();

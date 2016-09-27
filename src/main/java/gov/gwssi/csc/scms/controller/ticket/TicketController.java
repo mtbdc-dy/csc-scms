@@ -15,6 +15,7 @@ import gov.gwssi.csc.scms.domain.ticket.Ticket;
 import gov.gwssi.csc.scms.domain.ticket.TicketSort;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.service.BaseService;
+import gov.gwssi.csc.scms.service.UploadFileServer;
 import gov.gwssi.csc.scms.service.export.ExportService;
 import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.ticket.NoSuchTicketException;
@@ -32,11 +33,8 @@ import org.omg.CORBA.TCKind;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -373,6 +371,26 @@ public class TicketController extends BaseService {
         return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
 
     }
+    // 跨域请求
+    @RequestMapping(
+            value = "/export/all",
+            method = RequestMethod.OPTIONS
+    )
+    public ResponseEntity exportInsuranceOptions() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        List<HttpMethod> methods = new ArrayList<HttpMethod>();
+        methods.add(HttpMethod.GET);
+        methods.add(HttpMethod.POST);
+        methods.add(HttpMethod.DELETE);
+        methods.add(HttpMethod.PUT);
+        methods.add(HttpMethod.PATCH);
+        httpHeaders.setAccessControlAllowMethods(methods);
+        httpHeaders.setAccessControlAllowOrigin("*");
+        List<String> headers = new ArrayList<String>();
+        headers.add("authorization");
+        httpHeaders.setAccessControlAllowHeaders(headers);
+        return new ResponseEntity(httpHeaders, HttpStatus.OK);
+    }
 
     /**
      * 导出全部机票信息
@@ -381,9 +399,10 @@ public class TicketController extends BaseService {
      */
     @RequestMapping(value = "/export/all",
             method = RequestMethod.GET,
-            params = {"userType", "filter"},
-            headers = "Accept=application/octet-stream")
-    public ResponseEntity<byte[]> exportAllTickets(
+            params = {"userType", "filter"}
+            //headers = "Accept=application/octet-stream"
+    )
+    public Map<String,Object> exportAllTickets(
             @RequestHeader(value = HEADER_AUTHORIZATION) String header,
             @RequestParam(value = "filter") String filterJSON,
             @RequestParam("userType") String userType) throws IOException {
@@ -394,16 +413,17 @@ public class TicketController extends BaseService {
         bytes = exportService.exportByFilter(tableName, "0", id);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        httpHeaders.setContentDispositionFormData("attachment", fileName);
-
+        //上传至文件服务器
+        String file = UploadFileServer.uploadFile(fileName, bytes);
+        Map<String, Object> fileMap = new ObjectMapper().readValue(file, Map.class);
         if ("1".equals(userType)) {
             ticketService.updateTicketState(id);
         }
-
-        return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
+        return fileMap;
+//        HttpHeaders httpHeaders = new HttpHeaders();
+//        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+//        httpHeaders.setContentDispositionFormData("attachment", fileName);
+//        return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
 
     }
 

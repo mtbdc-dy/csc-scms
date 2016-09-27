@@ -12,7 +12,7 @@ public abstract class BasicInfo_ {
     public static volatile SingularAttribute<BasicInfo, String> updateBy;
     public static volatile SingularAttribute<BasicInfo, Date> birthday;
     public static volatile SingularAttribute<BasicInfo, Integer> annual;
-    public static volatile SingularAttribute<BasicInfo, String> projectAttr;
+//    public static volatile SingularAttribute<BasicInfo, String> projectAttr;
     public static volatile SingularAttribute<BasicInfo, String> remark;
     public static volatile SingularAttribute<BasicInfo, String> chineseName;
     public static volatile SingularAttribute<BasicInfo, String> travelType;
@@ -26,6 +26,7 @@ public abstract class BasicInfo_ {
     public static volatile SingularAttribute<BasicInfo, Student> student;
     public static volatile SingularAttribute<BasicInfo, String> continent;
     public static volatile SingularAttribute<BasicInfo, String> gender;
+    public static volatile SingularAttribute<BasicInfo, String> dispatchType;
     public static volatile SingularAttribute<BasicInfo, String> dispatch;
     public static volatile SingularAttribute<BasicInfo, Date> createDate;
     public static volatile SingularAttribute<BasicInfo, String> projectName;

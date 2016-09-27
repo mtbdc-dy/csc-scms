@@ -4,13 +4,11 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gov.gwssi.csc.scms.domain.filter.Filter;
+import gov.gwssi.csc.scms.service.UploadFileServer;
 import gov.gwssi.csc.scms.service.export.ExportService;
 import gov.gwssi.csc.scms.service.students.StudentsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import gov.gwssi.csc.scms.controller.JsonBody;
@@ -198,8 +196,9 @@ public class StudentController {
                 return null;
 
             String after = studentService.saveStudent(dbType,operationLog);
+            //若修改字段为是否报到或者是否离华
             if(!"".equals(after)){
-                studentService.updateRegistState(operationLog);
+                studentService.updateState(operationLog);
             }
             result = "{\"after\":\""+after+"\"}";
         } catch (Exception e) {
@@ -395,12 +394,33 @@ public class StudentController {
         return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
     }
 
+    // 跨域请求
+    @RequestMapping(
+            value = "/all",
+            method = RequestMethod.OPTIONS
+    )
+    public ResponseEntity exportInsuranceOptions() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        List<HttpMethod> methods = new ArrayList<HttpMethod>();
+        methods.add(HttpMethod.GET);
+        methods.add(HttpMethod.POST);
+        methods.add(HttpMethod.DELETE);
+        methods.add(HttpMethod.PUT);
+        methods.add(HttpMethod.PATCH);
+        httpHeaders.setAccessControlAllowMethods(methods);
+        httpHeaders.setAccessControlAllowOrigin("*");
+        List<String> headers = new ArrayList<String>();
+        headers.add("authorization");
+        httpHeaders.setAccessControlAllowHeaders(headers);
+        return new ResponseEntity(httpHeaders, HttpStatus.OK);
+    }
+
     @RequestMapping(
             value = "/all",
             method = RequestMethod.GET,
-            params = {"mode","filter"},
-            headers = "Accept=application/octet-stream")
-    public ResponseEntity<byte[]> exportSturegisterAll(
+            params = {"mode","filter"}
+    )
+    public Map<String, Object> exportSturegisterAll(
             @RequestHeader(value = HEADER_AUTHORIZATION) String header,
             @RequestParam(value = "mode") String mode,
             @RequestParam(value = "filter") String filterJSON) throws IOException {
@@ -413,10 +433,9 @@ public class StudentController {
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        httpHeaders.setContentDispositionFormData("attachment", fileName);
-
-        return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
+        //上传至文件服务器
+        String file = UploadFileServer.uploadFile(fileName, bytes);
+        Map<String, Object> fileMap = new ObjectMapper().readValue(file, Map.class);
+        return fileMap;
     }
 }

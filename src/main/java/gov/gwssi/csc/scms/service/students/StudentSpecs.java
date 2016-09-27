@@ -1,5 +1,6 @@
 package gov.gwssi.csc.scms.service.students;
 
+import gov.gwssi.csc.scms.dao.BaseDAO;
 import gov.gwssi.csc.scms.domain.abnormal.Abnormal;
 import gov.gwssi.csc.scms.domain.abnormal.Abnormal_;
 import gov.gwssi.csc.scms.domain.filter.Filter;
@@ -14,10 +15,7 @@ import gov.gwssi.csc.scms.domain.user.Project;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.domain.warning.Warning;
 import gov.gwssi.csc.scms.utils.DateConvert;
-import org.hibernate.jpa.criteria.expression.EntityTypeExpression;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.criteria.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,6 +29,7 @@ import java.util.List;
  * JPA 查询时所需使用的 Specs
  */
 public class StudentSpecs {
+
     public static Specification<Student> cscIdIsLike(final String cscId) {
         return new Specification<Student>() {
             @Override
@@ -55,7 +54,7 @@ public class StudentSpecs {
     }
 
 
-    public static Specification<Student> userIs(final User user,final String mode) {
+    public static Specification<Student> userIs(final User user, final String mode, final BaseDAO baseDAO) {
         // TODO 实现根据用户所属项目或者所属院校进行查询
 
         return new Specification<Student>() {
@@ -69,7 +68,8 @@ public class StudentSpecs {
                 if("Y0002".equals(identity) && !"integratedquery".equals(mode)){    //基金委用户  Y0002主管 并且不是综合查询模块
                     Join<Student, BasicInfo> basicInfo = student.join(Student_.basicInfo);
                     List<Project> projects = user.getProjects();
-
+                    List dispatches = baseDAO.getDispatchesByUserId(user.getUserId());
+                    //项目名称
                     if(projects.size() == 1){
                         predicate.getExpressions().add(cb.equal(basicInfo.get(BasicInfo_.projectName), projects.get(0).getProjectId()));
                     }else if(projects.size() >1){
@@ -82,8 +82,21 @@ public class StudentSpecs {
                     }else{
                         predicate.getExpressions().add(cb.equal(basicInfo.get(BasicInfo_.projectName), "^_^"));
                     }
+                    //派遣途径
+                    if(dispatches.size() == 1){
+                        predicate.getExpressions().add(cb.equal(basicInfo.get(BasicInfo_.dispatch), dispatches.get(0)));
+                    }else if(dispatches.size() > 1){
+                        Expression dSum = cb.equal(basicInfo.get(BasicInfo_.dispatch), dispatches.get(0));
+                        for(int i=1;i<dispatches.size();i++){
+                            Expression e = cb.equal(basicInfo.get(BasicInfo_.dispatch),dispatches.get(i));
+                            dSum = cb.or(dSum,e);
+                        }
+                        predicate.getExpressions().add(dSum);
+                    }else{
+                        predicate.getExpressions().add(cb.equal(basicInfo.get(BasicInfo_.dispatch), "^_^"));
+                    }
 
-                }else if("2".equals(userType)){
+                }else if("2".equals(userType) && !"freshregister".equals(mode) && !"oldregister".equals(mode)){
                     Join<Student, SchoolRoll> schoolRoll = student.join(Student_.schoolRoll);
                     predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.currentUniversity), nodeId));
                 }
@@ -92,10 +105,12 @@ public class StudentSpecs {
         };
     }
 
-    public static Specification<Student> isFreshRegister() {
+    public static Specification<Student> isFreshRegister(final User user) {
         return new Specification<Student>() {
             @Override
             public Predicate toPredicate(Root<Student> student, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                String userType = user.getUserType();
+                String nodeId = user.getNode().getNodeId();
                 Predicate predicate = cb.conjunction();
                 Join<Student, SchoolRoll> schoolRoll = student.join(Student_.schoolRoll);
                 predicate.getExpressions().add(cb.notEqual(schoolRoll.get(SchoolRoll_.registed), "AX0002"));
@@ -125,11 +140,13 @@ public class StudentSpecs {
                 Expression e2 = cb.and(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.cramDateBegin), intialDate),
                         cb.lessThan(schoolRoll.get(SchoolRoll_.cramDateBegin), finalDate));
 
+                Expression eCramSchool = cb.and(cb.equal(schoolRoll.get(SchoolRoll_.cramUniversity),nodeId));
+
 
                 Expression e3 = cb.and(cb.greaterThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), intialDate),
                         cb.lessThan(schoolRoll.get(SchoolRoll_.majorStartDate), finalDate));
 
-                Expression e4 = cb.and(e1,cb.or(e2, e3));
+                Expression eMajorSchool = cb.and(cb.equal(schoolRoll.get(SchoolRoll_.majorUniversity),nodeId));
 
                 Expression e5 = cb.and(cb.greaterThanOrEqualTo(cb.currentDate(), finalDate),
                         cb.lessThan(cb.currentDate(), nextIntialDate)
@@ -142,7 +159,15 @@ public class StudentSpecs {
                         cb.lessThan(schoolRoll.get(SchoolRoll_.majorStartDate), nextIntialDate)
                 );
 
-                Expression e8 = cb.and(e5, cb.or(e6, e7));
+                Expression e4 = null;
+                Expression e8 = null;
+                if("1".equals(userType)){ // 基金委用户
+                    e4 = cb.and(e1,cb.or(e2,e3));
+                    e8 = cb.and(e5,cb.or(e6,e7));
+                }else if("2".equals(userType)){ // 院校用户
+                    e4 = cb.and(e1,cb.or(cb.and(e2,eCramSchool), cb.and(e3,eMajorSchool)));
+                    e8 = cb.and(e5, cb.or(cb.and(e6,eCramSchool), cb.and(e7,eMajorSchool)));
+                }
 
                 Expression e9 = cb.or(e4,e8);
 
@@ -152,43 +177,56 @@ public class StudentSpecs {
         };
     }
 
-    public static Specification<Student> isOldRegister() {
+    public static Specification<Student> isOldRegister(final User user) {
         return new Specification<Student>() {
             @Override
             public Predicate toPredicate(Root<Student> student, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                String userType = user.getUserType();
+                String nodeId = user.getNode().getNodeId();
                 Predicate predicate = cb.conjunction();
                 Join<Student, SchoolRoll> schoolRoll = student.join(Student_.schoolRoll);
                 predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.registed), "AX0002"));
                 predicate.getExpressions().add(cb.notEqual(schoolRoll.get(SchoolRoll_.leaveChina), "BA0002"));
 
-                Date sysDate = null;
+                Date startDate = null;
                 Date finalDate = null;
-                Date intialDate = null;
-                Date nextIntialDate = null;
                 int currentYear=0;
                 try {
                     Calendar calendar = Calendar.getInstance();
                     currentYear = calendar.get(Calendar.YEAR);
                     SimpleDateFormat ds = new SimpleDateFormat("yyyy-MM-dd");
-                    intialDate = ds.parse(currentYear + "-01-01");
-                    finalDate = ds.parse(currentYear + "-07-01");
-                    int nextYear = currentYear + 1;
-                    nextIntialDate = ds.parse(nextYear + "-01-01");
+                    startDate = ds.parse(currentYear + "-07-01");
+                    finalDate = ds.parse(currentYear + "-12-31");
 
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
+                Expression eYear = cb.notEqual(schoolRoll.get(SchoolRoll_.registerYear), currentYear);
+                Expression eYearNull = cb.isNull(schoolRoll.get(SchoolRoll_.registerYear));
+                predicate.getExpressions().add(cb.or(eYear,eYearNull));
 
-                predicate.getExpressions().add(cb.notEqual(schoolRoll.get(SchoolRoll_.registerYear), currentYear));
+                Expression e4 = cb.greaterThanOrEqualTo(cb.currentDate(), startDate);
+                Expression e5 = cb.lessThanOrEqualTo(cb.currentDate(), finalDate);
+                Expression e6 = cb.and(e4,e5);
+                predicate.getExpressions().add(e6);
 
-                Expression e1 = cb.greaterThan(schoolRoll.get(SchoolRoll_.cramDateEnd), nextIntialDate);
-                Expression e2 = cb.lessThan(schoolRoll.get(SchoolRoll_.majorStartDate), nextIntialDate);
-                Expression e3 = cb.or(e1,e2);
+
+                Expression e1 = cb.greaterThan(schoolRoll.get(SchoolRoll_.cramDateEnd), finalDate);
+                Expression eCramSchool = cb.equal(schoolRoll.get(SchoolRoll_.cramUniversity),nodeId);
+                Expression e2 = cb.lessThanOrEqualTo(schoolRoll.get(SchoolRoll_.majorStartDate), finalDate);
+                Expression eMajorSchool = cb.equal(schoolRoll.get(SchoolRoll_.majorUniversity),nodeId);
+                Expression e3 = null;
+                if("1".equals(userType)){ // 基金委用户
+                    e3 = cb.or(e1,e2);
+                }else if("2".equals(userType)){ // 院校用户
+                    e3 = cb.or(cb.and(e1,eCramSchool),cb.and(e2,eMajorSchool));
+                }
                 predicate.getExpressions().add(e3);
                 return predicate;
             }
         };
     }
+
 
     public static Specification<Student> isSchoolStudent() {
         return new Specification<Student>() {
@@ -250,7 +288,7 @@ public class StudentSpecs {
                 boolean needBasicInfo = filter.getPassportName() != null
                         || filter.getContinent() != null
                         || filter.getCountry() != null
-                        || filter.getProjectAttr() != null
+//                        || filter.getProjectAttr() != null
                         || filter.getProjectType() != null
                         || filter.getProjectName() != null
                         || filter.getPlanned() != null
@@ -286,13 +324,13 @@ public class StudentSpecs {
 
                 /**学生主表部分*/
                 if (filter.getCscId() != null) {
-                    predicate.getExpressions().add(cb.like(student.get(Student_.cscId), filter.getCscId()));
+                    predicate.getExpressions().add(cb.like(cb.lower(student.get(Student_.cscId)), filter.getCscId().toLowerCase()));
                 }
                 if (needBasicInfo) {
                     Join<Student, BasicInfo> basicInfo = student.join(Student_.basicInfo);
                     /**基本信息部分*/
                     if (filter.getPassportName() != null) {
-                        predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.passportName), filter.getPassportName()));
+                        predicate.getExpressions().add(cb.like(cb.lower(basicInfo.get(BasicInfo_.passportName)), filter.getPassportName().toLowerCase()));
                     }
                     if (filter.getContinent() != null) {
                         predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.continent), filter.getContinent()));
@@ -300,9 +338,9 @@ public class StudentSpecs {
                     if (filter.getCountry() != null) {
                         predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.country), filter.getCountry()));
                     }
-                    if (filter.getProjectAttr() != null) {
-                        predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.projectAttr), filter.getProjectAttr()));
-                    }
+//                    if (filter.getProjectAttr() != null) {
+//                        predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.projectAttr), filter.getProjectAttr()));
+//                    }
                     if (filter.getProjectType() != null) {
                         predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.projectType), filter.getProjectType()));
                     }
@@ -466,10 +504,11 @@ public class StudentSpecs {
                 boolean needBasicInfo = filter.getPassportName() != null
                         || filter.getContinent() != null
                         || filter.getCountry() != null
-                        || filter.getProjectAttr() != null
+//                        || filter.getProjectAttr() != null
                         || filter.getProjectType() != null
                         || filter.getProjectName() != null
                         || filter.getPlanned() != null
+                        || filter.getDispatchType() != null
                         || filter.getDispatch() != null
                         || filter.getTravelType() != null
                         || filter.getAnnual() != null;
@@ -495,13 +534,13 @@ public class StudentSpecs {
 
                 /**学生主表部分*/
                 if (filter.getCscId() != null) {
-                    predicate.getExpressions().add(cb.like(student.get(Student_.cscId), filter.getCscId()));
+                    predicate.getExpressions().add(cb.like(cb.lower(student.get(Student_.cscId)), filter.getCscId().toLowerCase()));
                 }
                 if (needBasicInfo) {
                     Join<Student, BasicInfo> basicInfo = student.join(Student_.basicInfo);
                     /**基本信息部分*/
                     if (filter.getPassportName() != null) {
-                        predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.passportName), filter.getPassportName()));
+                        predicate.getExpressions().add(cb.like(cb.lower(basicInfo.get(BasicInfo_.passportName)), filter.getPassportName().toLowerCase()));
                     }
                     if (filter.getContinent() != null) {
                         predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.continent), filter.getContinent()));
@@ -509,9 +548,9 @@ public class StudentSpecs {
                     if (filter.getCountry() != null) {
                         predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.country), filter.getCountry()));
                     }
-                    if (filter.getProjectAttr() != null) {
-                        predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.projectAttr), filter.getProjectAttr()));
-                    }
+//                    if (filter.getProjectAttr() != null) {
+//                        predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.projectAttr), filter.getProjectAttr()));
+//                    }
                     if (filter.getProjectType() != null) {
                         predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.projectType), filter.getProjectType()));
                     }
@@ -520,6 +559,9 @@ public class StudentSpecs {
                     }
                     if (filter.getPlanned() != null) {
                         predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.planned), filter.getPlanned()));
+                    }
+                    if (filter.getDispatchType() != null) {
+                        predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.dispatchType), filter.getDispatchType()));
                     }
                     if (filter.getDispatch() != null) {
                         predicate.getExpressions().add(cb.like(basicInfo.get(BasicInfo_.dispatch), filter.getDispatch()));

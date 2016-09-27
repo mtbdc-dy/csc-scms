@@ -52,7 +52,7 @@ public class BasicInfo implements Cloneable{
     /**
      * 留学项目属性
      */
-    private String projectAttr;
+//    private String projectAttr;
     /**
      * 留学项目类别
      */
@@ -61,6 +61,10 @@ public class BasicInfo implements Cloneable{
      * 留学项目名称
      */
     private String projectName;
+    /**
+     * 派遣类别
+     */
+    private String dispatchType;
     /**
      * 派遣途径
      */
@@ -251,13 +255,13 @@ public class BasicInfo implements Cloneable{
         this.student = student;
     }
 
-    public String getProjectAttr() {
-        return projectAttr;
-    }
-
-    public void setProjectAttr(String projectAttr) {
-        this.projectAttr = projectAttr;
-    }
+//    public String getProjectAttr() {
+//        return projectAttr;
+//    }
+//
+//    public void setProjectAttr(String projectAttr) {
+//        this.projectAttr = projectAttr;
+//    }
 
     public String getRemark() {
         return remark;
@@ -265,6 +269,14 @@ public class BasicInfo implements Cloneable{
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getDispatchType() {
+        return dispatchType;
+    }
+
+    public void setDispatchType(String dispatchType) {
+        this.dispatchType = dispatchType;
     }
 
     @Override

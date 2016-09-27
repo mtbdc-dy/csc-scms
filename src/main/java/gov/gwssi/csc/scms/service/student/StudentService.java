@@ -20,7 +20,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.xml.crypto.Data;
 import java.lang.reflect.Field;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -29,63 +31,58 @@ import java.util.*;
  * 学生业务操作类
  */
 @Service(value = "studentService")
-public class StudentService extends BaseService
-{
+public class StudentService extends BaseService {
 
     @Autowired
     @Qualifier("studentRepository")
-    private StudentRepository       studentRepository;
+    private StudentRepository studentRepository;
     @Autowired
-    private BasicInfoService        basicInfoService;
+    private BasicInfoService basicInfoService;
     @Autowired
-    private DiscussService          discussService;
+    private DiscussService discussService;
     @Autowired
     private RegistrationInfoService registrationInfoService;
     @Autowired
-    private RelatedAddressService   relatedAddressService;
+    private RelatedAddressService relatedAddressService;
     @Autowired
-    private SchoolRollService       schoolRollService;
+    private SchoolRollService schoolRollService;
     @Autowired
-    private AccidentService         accidentService;
+    private AccidentService accidentService;
     @Autowired
-    private ProfilesHistoryService  profilesHistoryService;
+    private ProfilesHistoryService profilesHistoryService;
     @Autowired
-    private SchoolfellowService     schoolfellowService;
+    private SchoolfellowService schoolfellowService;
     @Autowired
-    private GradeService            gradeService;
+    private GradeService gradeService;
     @Autowired
-    private GradeAttachmentService  gradeAttachmentService;
+    private GradeAttachmentService gradeAttachmentService;
     @Autowired
-    private OperationLogService     operationLogService;
+    private OperationLogService operationLogService;
     @Autowired
-    private InsuranceService        insuranceService;
+    private InsuranceService insuranceService;
 
     @Transactional
-    public Student getStudentById(String id) throws Exception
-    {
+    public Student getStudentById(String id) throws Exception {
         Student student = studentRepository.findOne(id);
-        if (null == student)
-        {
+        if (null == student) {
             throw new Exception("can not find the student with id:" + id);
         }
         return student;
     }
 
     @Transactional
-    public Student getCompleteInfoOfStudentById(String id) throws Exception
-    {
+    public Student getCompleteInfoOfStudentById(String id) throws Exception {
         Student student = getStudentById(id);
 
         List<ScholarshipX> scholarships = student.getScholarshipXs();
         ScholarshipX lastScholarship = new ScholarshipX();
-        if (scholarships.size() > 0)
-        {
+        if (scholarships.size() > 0) {
             Collections.sort(scholarships);
             Collections.reverse(scholarships);
             lastScholarship = scholarships.get(0);
         }
 
-        if(student.getSchoolRoll() != null){
+        if (student.getSchoolRoll() != null) {
             student.getSchoolRoll().setScholarshipAnnual(lastScholarship.getYear());
             student.getSchoolRoll().setScholarshipReview(lastScholarship.getCscReview());
             student.getSchoolRoll().setScholarshipResult(lastScholarship.getCscResult());
@@ -115,29 +112,24 @@ public class StudentService extends BaseService
         return student.getStudent();
     }
 
-    public Student getStudentByCscId(String scsId)
-    {
+    public Student getStudentByCscId(String scsId) {
         return studentRepository.findByCscId(scsId);
     }
 
-    public List<StudentResultObject> getStudentsByFilter(FilterObject filterObject, User user)
-    {
+    public List<StudentResultObject> getStudentsByFilter(FilterObject filterObject, User user) {
         List<StudentResultObject> studentList;
-        int                       startPosition, pageSize;
+        int startPosition, pageSize;
 
         String sql = getSqlByBody(filterObject, user);
         System.out.println("getStudentSql===" + sql);
-        if (sql == null)
-        {
+        if (sql == null) {
             return null;
         }
 
-        try
-        {
+        try {
             startPosition = Integer.parseInt(filterObject.getOffSet());
             pageSize = Integer.parseInt(filterObject.getPageSize());
-        } catch (NumberFormatException ne)
-        {
+        } catch (NumberFormatException ne) {
             ne.printStackTrace();
             startPosition = FilterObject.OFFSETDEFULT;
             pageSize = FilterObject.PAGESIZEDEFULT;
@@ -147,24 +139,20 @@ public class StudentService extends BaseService
         return studentList;
     }
 
-    public List<StudentResultObject> getSchoolStudentsByFilter(FilterObject filterObject, User user)
-    {
+    public List<StudentResultObject> getSchoolStudentsByFilter(FilterObject filterObject, User user) {
         List<StudentResultObject> studentList;
-        int                       startPosition, pageSize;
-        String                    str = "and schoolRoll.registed = 'AX0002' and schoolRoll.leaveChina ='BA0001'";
-        String                    sql = getSqlByBody(filterObject, user, str);
+        int startPosition, pageSize;
+        String str = "and schoolRoll.registed = 'AX0002' and schoolRoll.leaveChina ='BA0001'";
+        String sql = getSqlByBody(filterObject, user, str);
         System.out.println("getStudentSql===" + sql);
-        if (sql == null)
-        {
+        if (sql == null) {
             return null;
         }
 
-        try
-        {
+        try {
             startPosition = Integer.parseInt(filterObject.getOffSet());
             pageSize = Integer.parseInt(filterObject.getPageSize());
-        } catch (NumberFormatException ne)
-        {
+        } catch (NumberFormatException ne) {
             ne.printStackTrace();
             startPosition = FilterObject.OFFSETDEFULT;
             pageSize = FilterObject.PAGESIZEDEFULT;
@@ -174,24 +162,20 @@ public class StudentService extends BaseService
         return studentList;
     }
 
-    public List<StudentResultObject> getLeaveStudentsByFilter(FilterObject filterObject, User user)
-    {
+    public List<StudentResultObject> getLeaveStudentsByFilter(FilterObject filterObject, User user) {
         List<StudentResultObject> studentList;
-        int                       startPosition, pageSize;
-        String                    str = "and schoolRoll.registed = 'AX0002' and schoolRoll.leaveChina ='BA0002'";
-        String                    sql = getSqlByBody(filterObject, user, str);
+        int startPosition, pageSize;
+        String str = "and schoolRoll.registed = 'AX0002' and schoolRoll.leaveChina ='BA0002'";
+        String sql = getSqlByBody(filterObject, user, str);
         System.out.println("getStudentSql===" + sql);
-        if (sql == null)
-        {
+        if (sql == null) {
             return null;
         }
 
-        try
-        {
+        try {
             startPosition = Integer.parseInt(filterObject.getOffSet());
             pageSize = Integer.parseInt(filterObject.getPageSize());
-        } catch (NumberFormatException ne)
-        {
+        } catch (NumberFormatException ne) {
             ne.printStackTrace();
             startPosition = FilterObject.OFFSETDEFULT;
             pageSize = FilterObject.PAGESIZEDEFULT;
@@ -201,21 +185,17 @@ public class StudentService extends BaseService
         return studentList;
     }
 
-    public int getCountByQueryFilter(FilterObject filterObject, User user)
-    {
+    public int getCountByQueryFilter(FilterObject filterObject, User user) {
         String sql = getCountSqlByBody(filterObject, user);
-        if (sql == null)
-        {
+        if (sql == null) {
             return 0;
         }
 
         return super.getBaseDao().getCountObjectByHQL(sql);
     }
 
-    private String getCountSqlByBody(FilterObject filterObject, User user)
-    {
-        if (filterObject == null)
-        {
+    private String getCountSqlByBody(FilterObject filterObject, User user) {
+        if (filterObject == null) {
             return null;
         }
 
@@ -228,8 +208,7 @@ public class StudentService extends BaseService
         return tempSql;
     }
 
-    private String getSqlByBody(FilterObject filterObject, User user)
-    {
+    private String getSqlByBody(FilterObject filterObject, User user) {
         if (filterObject == null)
             return null;
 
@@ -245,8 +224,7 @@ public class StudentService extends BaseService
         return sqlStr + new StudentFilter((StudentFilterObject) filterObject).getFilter(user, "", "");
     }
 
-    private String getSqlByBody(FilterObject filterObject, User user, String str)
-    {
+    private String getSqlByBody(FilterObject filterObject, User user, String str) {
         if (filterObject == null)
             return null;
 
@@ -263,8 +241,7 @@ public class StudentService extends BaseService
     }
 
     @Transactional
-    public Student saveStudent(Student student, List<OperationLog> operationLogs)
-    {
+    public Student saveStudent(Student student, List<OperationLog> operationLogs) {
         //记录日志
         operationLogService.saveOperationLog(operationLogs);
 
@@ -293,14 +270,12 @@ public class StudentService extends BaseService
     }
 
     @Transactional
-    public Student updateStudent(Student student)
-    {
+    public Student updateStudent(Student student) {
         return studentRepository.save(student);
     }
 
     @Transactional
-    public String saveStudent(String dbType, OperationLog operationLog) throws Exception
-    {
+    public String saveStudent(String dbType, OperationLog operationLog) throws Exception {
         //记录日志
         List<OperationLog> operationLogs = new ArrayList<OperationLog>();
         operationLogs.add(operationLog);
@@ -309,42 +284,39 @@ public class StudentService extends BaseService
         String tableName = tableMap.get(operationLog.getTableEN()).toString();
         String studentId = operationLog.getStudentId();
         if ("insurance".equals(operationLog.getTableEN())) {
-            String          insuranceId = "";
-            List<Insurance> insurances  = insuranceService.findInsuranceByStduentId(operationLog.getStudentId());
-            if (insurances != null)
-            {
-                for (int i = 0; i < insurances.size(); i++)
-                {
-                    if (insurances.get(i).getInsurSta().equals("1"))
-                    {
+            String insuranceId = "";
+            List<Insurance> insurances = insuranceService.findInsuranceByStduentId(operationLog.getStudentId());
+            if (insurances != null) {
+                for (int i = 0; i < insurances.size(); i++) {
+                    if (insurances.get(i).getInsurSta().equals("1")) {
                         insuranceId = insurances.get(i).getId();
                         break;
                     }
                 }
             }
-            if (!insuranceId.equals(""))
-            {
+            if (!insuranceId.equals("")) {
                 Insurance insurance = insuranceService.getInsuranceById(insuranceId);
                 insurance.setInsurNo(operationLog.getAfter());
             }
 
-        } else if("SCMS_SCHOOL_FELLOW".equals(tableName) && studentRepository.findOne(studentId).getSchoolfellow() == null
-                 || "SCMS_DISCUSS".equals(tableName) && studentRepository.findOne(studentId).getDiscuss() == null
-                 || "SCMS_REGISTRATION_INFO".equals(tableName) && studentRepository.findOne(studentId).getRegistrationInfo() == null
-                 || "SCMS_PROFILES_HISTORY".equals(tableName) && studentRepository.findOne(studentId).getProfilesHistory() == null){
+        } else if ("SCMS_SCHOOL_FELLOW".equals(tableName) && studentRepository.findOne(studentId).getSchoolfellow() == null
+                || "SCMS_DISCUSS".equals(tableName) && studentRepository.findOne(studentId).getDiscuss() == null
+                || "SCMS_REGISTRATION_INFO".equals(tableName) && studentRepository.findOne(studentId).getRegistrationInfo() == null
+                || "SCMS_PROFILES_HISTORY".equals(tableName) && studentRepository.findOne(studentId).getProfilesHistory() == null) {
             String id = getBaseDao().getIdBySequence("SEQ_" + tableName.substring(5));
-            String sql = " insert into " + tableName + "(id,studentid," + operationLog.getColumnEN() + ") values('"+id +"','"+ studentId +"',";
+            String sql = " insert into " + tableName + "(id,studentid," + operationLog.getColumnEN() + ") values('" + id + "','" + studentId + "',";
             //判断数据类型
-            if (dbType.equals("number"))
-            {
-                sql += operationLog.getAfter();
-            } else if (dbType.equals("string"))
-            {
-                sql += "'" + operationLog.getAfter() + "'";
-            } else if (dbType.equals("date"))
-            {
-                String after = operationLog.getAfter().substring(0, 10);
-                sql += "to_date('" + after + "','yyyy-mm-dd')";
+            if (operationLog.getAfter() != null) {
+                if (dbType.equals("number")) {
+                    sql += operationLog.getAfter();
+                } else if (dbType.equals("string")) {
+                    sql += "'" + operationLog.getAfter() + "'";
+                } else if (dbType.equals("date")) {
+                    String after = operationLog.getAfter().substring(0, 10);
+                    sql += "to_date('" + after + "','yyyy-mm-dd')";
+                }
+            } else {
+                sql += "NULL";
             }
             sql += ")";
             System.out.println(sql);
@@ -352,53 +324,158 @@ public class StudentService extends BaseService
 
             //拼出子表对应在主表Student中的字段
             StringBuffer stuColumn = new StringBuffer(tableName);
-            stuColumn.delete(0,5);
+            stuColumn.delete(0, 5);
             int pos = stuColumn.indexOf("_");
-            if(pos!=-1){
+            if (pos != -1) {
                 stuColumn.deleteCharAt(pos);
             }
-            String mainSql = "update SCMS_STUDENT set "+ stuColumn.toString() +" = '"+ id +"' where id = '"+ studentId +"'";
+            String mainSql = "update SCMS_STUDENT set " + stuColumn.toString() + " = '" + id + "' where id = '" + studentId + "'";
             System.out.println(mainSql);
             getBaseDao().updateBySql(mainSql);
         } else {
             String sql = " update " + tableMap.get(operationLog.getTableEN()) + " set " + operationLog.getColumnEN() + " = ";
             //判断数据类型
-            if (dbType.equals("number"))
-            {
-                sql += operationLog.getAfter();
-            } else if (dbType.equals("string"))
-            {
-                sql += "'" + operationLog.getAfter() + "'";
-            } else if (dbType.equals("date"))
-            {
-//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                String after = operationLog.getAfter().substring(0, 10);
-                sql += "to_date('" + after + "','yyyy-mm-dd')";
+            if (operationLog.getAfter() != null) {
+                if (dbType.equals("number")) {
+                    sql += operationLog.getAfter();
+                } else if (dbType.equals("string")) {
+                    sql += "'" + operationLog.getAfter() + "'";
+                } else if (dbType.equals("date")) {
+                    String after = operationLog.getAfter().substring(0, 10);
+                    sql += "to_date('" + after + "','yyyy-mm-dd')";
+                }
+            } else {
+                sql += "NULL";
             }
+
             sql += " where studentid ='" + operationLog.getStudentId() + "'";
             System.out.println(sql);
             getBaseDao().updateBySql(sql);
         }
-        return operationLog.getAfter().toString();
+
+        return operationLog.getAfter();
     }
 
     @Transactional
-    public void updateRegistState(OperationLog operationLog) throws Exception
-    {
-        if (operationLog.getAfter().equals("AX0002"))
-        {    //若将"是否报到"从否(AX0001)改为是(AX0002)，则还要将报到状态从未处理(AW0002)改为新生报到(AW0001)
+    public void updateState(OperationLog operationLog) throws Exception {
+        if ("AX0002".equals(operationLog.getAfter())) {
+            //若将"是否报到"从否(AX0001)改为是(AX0002)，则还要将报到状态从未处理(AW0002)改为新生报到(AW0001)
+            //系统同时修改当前院校，根据系统时间所在为汉补还是专业的时间范围去修改当前院校。
             SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(operationLog.getStudentId());
             schoolRoll.setRegisterState("AW0001");
-            Calendar calendar    = Calendar.getInstance();
-            int      currentYear = calendar.get(Calendar.YEAR);
+            Calendar calendar = Calendar.getInstance();
+            int currentYear = calendar.get(Calendar.YEAR);
             schoolRoll.setRegisterYear(currentYear);
+            Date majorStart = schoolRoll.getMajorStartDate();
+            Date majorEnd = schoolRoll.getPlanLeaveDate();
+            Date cramStart = schoolRoll.getCramDateBegin();
+            Date cramEnd = schoolRoll.getCramDateEnd();
+            Date now = new Date();
+            if (majorStart != null && majorEnd != null && now.after(majorStart) && now.before(majorEnd)) {
+                schoolRoll.setCurrentProvince(schoolRoll.getMajorProvince());
+                schoolRoll.setCurrentUniversity(schoolRoll.getMajorUniversity());
+                schoolRoll.setState("BB0003"); // 专业
+            } else if (cramStart != null && now.after(cramStart) && cramEnd != null && now.before(cramEnd)) {
+                schoolRoll.setCurrentProvince(schoolRoll.getCramProvince());
+                schoolRoll.setCurrentUniversity(schoolRoll.getCramUniversity());
+                schoolRoll.setState("BB0002"); // 汉补
+            }
             schoolRollService.updateSchoolRoll(schoolRoll);
-        }
-        if (operationLog.getAfter().equals("AX0001"))
-        {  //若将"是否报到"从是(AX0002)改为否(AX0001)，则还要将报到状态从新生报到(AW0001)改为未处理(AW0002)
+        } else if ("AX0001".equals(operationLog.getAfter())) {
+            //若将"是否报到"从是(AX0002)改为否(AX0001)，则还要将报到状态从新生报到(AW0001)改为未处理(AW0002),学籍状态改为录取(BB0001),并清空当前省市当前院校
             SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(operationLog.getStudentId());
             schoolRoll.setRegisterState("AW0002");
+            schoolRoll.setState("BB0001");
+            schoolRoll.setCurrentProvince(null);
+            schoolRoll.setCurrentUniversity(null);
             schoolRollService.updateSchoolRoll(schoolRoll);
+        } else if ("BA0002".equals(operationLog.getAfter())) {
+            //当操作员修改“是否离华”由“否(BA0001)”改为“是(BA0002)”时，系统需将“学籍状态”同时修改为“离华(BB0004)”
+            SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(operationLog.getStudentId());
+            String oldState = schoolRoll.getState();
+            schoolRoll.setState("BB0004");
+            schoolRoll.setLeaveDate(new Date());
+            schoolRollService.updateSchoolRoll(schoolRoll);
+            //记录日志 学籍状态
+            List<OperationLog> operationLogState = new ArrayList<OperationLog>();
+            operationLog.setColumnEN("STATE");
+            operationLog.setColumnCH("学籍状态");
+            operationLog.setBefore(oldState);
+            operationLog.setAfter("BB0004");
+            operationLogState.add(operationLog);
+            operationLogService.saveOperationLog(operationLogState);
+            //记录日志 离华日期
+            List<OperationLog> operationLogLeaveDate = new ArrayList<OperationLog>();
+            operationLog.setColumnEN("LEAVEDATE");
+            operationLog.setColumnCH("离华日期");
+            operationLog.setBefore(null);
+            operationLog.setAfter((new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(new Date()));
+            operationLogLeaveDate.add(operationLog);
+            operationLogService.saveOperationLog(operationLogLeaveDate);
+        } else if ("BA0001".equals(operationLog.getAfter())) {
+            //当操作员修改“是否离华”由“是(BA0002)”改为“否(BA0001)”时,系统需检查当前时间是否在汉补或专业时间范围内。
+            //如是则可修改,系统同时根据系统时间所在为汉补还是专业的时间范围去修改学籍状态。如果在汉补时间段内，学籍状态修改为“汉补”，如果在专业时间段内，学籍状态修改为”专业“。
+            SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(operationLog.getStudentId());
+            String oldState = schoolRoll.getState();
+            String oldLeaveReason = schoolRoll.getLeaveReason();
+            Date oldLeaveDate = schoolRoll.getLeaveDate();
+            Date majorStart = schoolRoll.getMajorStartDate();
+            Date majorEnd = schoolRoll.getPlanLeaveDate();
+            Date cramStart = schoolRoll.getCramDateBegin();
+            Date cramEnd = schoolRoll.getCramDateEnd();
+            Date now = new Date();
+            if (majorStart != null && now.after(majorStart) && majorEnd != null && now.before(majorEnd)) {
+                schoolRoll.setState("BB0003");
+                schoolRoll.setCurrentProvince(schoolRoll.getMajorProvince());
+                schoolRoll.setCurrentUniversity(schoolRoll.getMajorUniversity());
+                schoolRoll.setLeaveDate(null);
+                schoolRoll.setLeaveReason(null);
+                schoolRollService.updateSchoolRoll(schoolRoll);
+                //记录日志 学籍状态
+                List<OperationLog> operationLogState = new ArrayList<OperationLog>();
+                operationLog.setColumnEN("STATE");
+                operationLog.setColumnCH("学籍状态");
+                operationLog.setBefore(oldState);
+                operationLog.setAfter("BB0003");
+                operationLogState.add(operationLog);
+                operationLogService.saveOperationLog(operationLogState);
+            } else if (cramStart != null && now.after(cramStart) && cramEnd != null && now.before(cramEnd)) {
+                schoolRoll.setState("BB0002");
+                schoolRoll.setCurrentProvince(schoolRoll.getCramProvince());
+                schoolRoll.setCurrentUniversity(schoolRoll.getCramUniversity());
+                schoolRoll.setLeaveDate(null);
+                schoolRoll.setLeaveReason(null);
+                schoolRollService.updateSchoolRoll(schoolRoll);
+                //记录日志 学籍状态
+                List<OperationLog> operationLogState = new ArrayList<OperationLog>();
+                operationLog.setColumnEN("STATE");
+                operationLog.setColumnCH("学籍状态");
+                operationLog.setBefore(oldState);
+                operationLog.setAfter("BB0002");
+                operationLogState.add(operationLog);
+                operationLogService.saveOperationLog(operationLogState);
+            }
+            //记录日志 离华日期
+            if (oldLeaveDate != null) {
+                String oldLeaveDateStr = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(oldLeaveDate);
+                List<OperationLog> operationLogLeaveDate = new ArrayList<OperationLog>();
+                operationLog.setColumnEN("LEAVEDATE");
+                operationLog.setColumnCH("离华日期");
+                operationLog.setBefore(oldLeaveDateStr);
+                operationLog.setAfter(null);
+                operationLogLeaveDate.add(operationLog);
+                operationLogService.saveOperationLog(operationLogLeaveDate);
+            }
+            //记录日志 离华原因
+            if (oldLeaveReason != null && oldLeaveReason != "") {
+                List<OperationLog> operationLogLeaveReason = new ArrayList<OperationLog>();
+                operationLog.setColumnEN("LEAVEREASON");
+                operationLog.setColumnCH("离华原因");
+                operationLog.setBefore(oldLeaveReason);
+                operationLog.setAfter(null);
+                operationLogLeaveReason.add(operationLog);
+                operationLogService.saveOperationLog(operationLogLeaveReason);
+            }
         }
     }
 //    @SuppressWarnings("unchecked")
@@ -446,8 +523,7 @@ public class StudentService extends BaseService
 //        return null;
 //    }
 
-    public Student deleteStudentById(String studentId, List<OperationLog> operationLogs) throws Exception
-    {
+    public Student deleteStudentById(String studentId, List<OperationLog> operationLogs) throws Exception {
         Student student = getStudentById(studentId);
         if (student == null)
             return null;
@@ -572,19 +648,37 @@ public class StudentService extends BaseService
 //    }
 
     @Transactional
-    public void registerorAbandon(String mode, String studentId, List<OperationLog> operationLogs) throws Exception
-    {
+    public void registerorAbandon(String mode, String studentId, List<OperationLog> operationLogs) throws Exception {
         //记录日志
         operationLogService.saveOperationLog(operationLogs);
         String sql = null;
-        if ("register".equals(mode))
-        {
+        if ("register".equals(mode)) {
+            // 老生注册，汉补截止时间>12.31（当年）,当前院校取汉补院校,专业开始时间<12.31（当年），当前院校取专业院校
+            SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(studentId);
+            Date cramDateEnd = schoolRoll.getCramDateEnd();
+            Date majorStartDate = schoolRoll.getMajorStartDate();
+            Calendar calendar = Calendar.getInstance();
+            int currentYear = calendar.get(Calendar.YEAR);
+            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(currentYear + "-12-31");
+            String currentProvince = "";
+            String currentUniversity = "";
+            String state = "";
+            if (cramDateEnd != null && date.before(cramDateEnd)) {
+                currentProvince = schoolRoll.getCramProvince();
+                currentUniversity = schoolRoll.getCramUniversity();
+                state = "BB0002";
+            } else if (majorStartDate != null && date.after(majorStartDate)) {
+                currentProvince = schoolRoll.getMajorProvince();
+                currentUniversity = schoolRoll.getMajorUniversity();
+                state = "BB0003";
+            }
             sql = " update SCMS_SCHOOLROLL set registed = 'AX0002'," +
-                    " registerState = 'AW0004', registerYear = extract(year from sysdate)" +
+                    " registerState = 'AW0004', registerYear = extract(year from sysdate)," +
+                    " STATE = '" + state + "'," +
+                    "CURRENTPROVINCE = '" + currentProvince + "',CURRENTUNIVERSITY = '" + currentUniversity + "'" +
                     " where studentid = '" + studentId + "'";
         }
-        if ("abandon".equals(mode))
-        {
+        if ("abandon".equals(mode)) {
             sql = " update SCMS_SCHOOLROLL set registerState = 'AW0003'" +
                     " where studentid = '" + studentId + "'";
         }
@@ -593,27 +687,25 @@ public class StudentService extends BaseService
     }
 
     @Transactional
-    public void leaveChina(String studentIds, SchoolRoll schoolRoll, List<OperationLog> operationLogs) throws Exception
-    {
+    public void leaveChina(String studentIds, SchoolRoll schoolRoll, List<OperationLog> operationLogs) throws Exception {
         //记录日志
         operationLogService.saveOperationLog(operationLogs);
         //studentIds转为('1','2'...)
         StringBuilder sbIds = new StringBuilder("(");
 
         String ids[] = studentIds.split(",");
-        for (String id : ids)
-        {
+        for (String id : ids) {
             sbIds.append("'").append(id).append("',");
         }
         sbIds.setCharAt(sbIds.length() - 1, ')');
 
         String leavaReason = null == schoolRoll.getLeaveReason() ? "" : schoolRoll.getLeaveReason();
 //        Date date=new Date(schoolRoll.getLeaveDate()+"");
-        SimpleDateFormat sdf       = new SimpleDateFormat("yyyy-MM-dd");
-        String           leaveDate = sdf.format(schoolRoll.getLeaveDate());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String leaveDate = sdf.format(schoolRoll.getLeaveDate());
         String sql = " update SCMS_SCHOOLROLL set LEAVECHINA = 'BA0002'," +
                 " LEAVEREASON = '" + leavaReason + "', LEAVEDATE = to_date('" + leaveDate + "','yyyy-mm-dd')" +
-                // "LEAVEDATE = to_timestamp('"+schoolRoll.getLeaveDate()+"','yyyy-mm-dd hh24:mi:ss:ff') " +
+                ", STATE = 'BB0004'" +
                 " where studentid in " + sbIds;
         System.out.println(sql);
         getBaseDao().updateBySql(sql);

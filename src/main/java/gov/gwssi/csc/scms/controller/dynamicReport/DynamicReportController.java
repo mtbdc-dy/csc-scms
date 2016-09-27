@@ -12,6 +12,7 @@ import gov.gwssi.csc.scms.domain.dynamicReport.Table;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.repository.dynamicReport.ConfigurationRepository;
 import gov.gwssi.csc.scms.service.BaseService;
+import gov.gwssi.csc.scms.service.UploadFileServer;
 import gov.gwssi.csc.scms.service.dynamicReport.DynamicReportService;
 import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import java.awt.print.Pageable;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -43,7 +45,6 @@ public class DynamicReportController extends BaseService {
     private DynamicReportService service;
 
 
-
     @RequestMapping(
             value = "/configurations",
             method = RequestMethod.GET,
@@ -51,7 +52,7 @@ public class DynamicReportController extends BaseService {
             params = {"filter"}
     )
     public ResponseEntity<Page<Configuration>> getConfigurations(
-            @RequestHeader(value = "Authorization")  String jwt,
+            @RequestHeader(value = "Authorization") String jwt,
             @RequestParam(value = "filter") String filterJSON) throws UnsupportedEncodingException {
         Map<String, Object> user = JWTUtil.decode(jwt);
         assert user != null;
@@ -135,7 +136,7 @@ public class DynamicReportController extends BaseService {
             method = RequestMethod.GET,
             headers = "Accept=application/json;charset=utf-8"
     )
-    public ResponseEntity<List<Row>> getReportHeader(@PathVariable(value = "id") String id){
+    public ResponseEntity<List<Row>> getReportHeader(@PathVariable(value = "id") String id) {
         return new ResponseEntity<List<Row>>(service.getReportHeader(id), HttpStatus.OK);
     }
 
@@ -160,23 +161,31 @@ public class DynamicReportController extends BaseService {
 
     @RequestMapping(
             value = "/configurations/{id}/report/excel",
-            headers = "Accept=application/octet-stream",
+            //headers = "Accept=application/octet-stream",
             method = RequestMethod.GET
     )
-    public ResponseEntity<byte[]> exportReport(
+    public Map<String, Object> exportReport(
             @PathVariable(value = "id") String id) {
 
         byte[] bytes = null;
+        Map<String, Object> fileMap=null;
 
         try {
             bytes = service.export(id);
+            //HttpHeaders httpHeaders = new HttpHeaders();
+            //httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            //httpHeaders.setContentDispositionFormData("attachment", id + ".xls");
+            //return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
+            //上传至文件服务器
+            Timestamp ts = new Timestamp(System.currentTimeMillis());
+            String fileName = ts.getTime() + ".xls"; // 组装附件名称和格式
+            String file = UploadFileServer.uploadFile(fileName, bytes);
+            fileMap = new ObjectMapper().readValue(file, Map.class);
+            return fileMap;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        httpHeaders.setContentDispositionFormData("attachment", id + ".xls");
-        return new ResponseEntity<byte[]>(bytes, httpHeaders, HttpStatus.CREATED);
+        return fileMap;
     }
 
     @RequestMapping(

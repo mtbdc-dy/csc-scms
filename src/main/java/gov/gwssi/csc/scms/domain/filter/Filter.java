@@ -14,7 +14,7 @@ public class Filter {
     private String passportName = null;      // 护照名称
     private String continent = null;         // 洲别
     private String country = null;           // 国籍
-    private String projectAttr = null;       // 项目属性
+//    private String projectAttr = null;       // 项目属性
     private String projectType = null;       // 项目类别
     private String projectName = null;       // 项目名称
     private String registerState = null;     // 报到状态 0未处理 1报到 2放弃来华
@@ -28,6 +28,7 @@ public class Filter {
     private String cscResult = null;
     private int year = 0;                    // 奖学金评审年度
     private Character state = null;          // 奖学金评审状态
+    private String schoolState = null;    // 奖学金 学校状态
     private String qualified = null;         // 奖学金是否有不合格人数
     private String currentProvince = null;
     private String currentUniversity = null;
@@ -60,6 +61,7 @@ public class Filter {
      * 隐藏查询条件
      */
     private String planned = null;           // 名额性质（计划内 计划外）
+    private String dispatchType = null;      // 派遣类别
     private String dispatch = null;          // 派遣途径
     private String travelType = null;        // 国际旅费
     private Integer annual = null;           // 年度
@@ -516,15 +518,15 @@ public class Filter {
         this.pro = pro;
     }
 
-    public String getProjectAttr()
-    {
-        return projectAttr;
-    }
-
-    public void setProjectAttr(String projectAttr)
-    {
-        this.projectAttr = projectAttr;
-    }
+//    public String getProjectAttr()
+//    {
+//        return projectAttr;
+//    }
+//
+//    public void setProjectAttr(String projectAttr)
+//    {
+//        this.projectAttr = projectAttr;
+//    }
 
     public String getProjectName()
     {
@@ -774,5 +776,21 @@ public class Filter {
     public void setYear(int year)
     {
         this.year = year;
+    }
+
+    public String getSchoolState() {
+        return schoolState;
+    }
+
+    public void setSchoolState(String schoolState) {
+        this.schoolState = schoolState;
+    }
+
+    public String getDispatchType() {
+        return dispatchType;
+    }
+
+    public void setDispatchType(String dispatchType) {
+        this.dispatchType = dispatchType;
     }
 }

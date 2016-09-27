@@ -18,6 +18,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
+import java.util.Map;
 import java.util.Properties;
 
 @PropertySource(value = "classpath:db.properties")
@@ -34,17 +35,29 @@ public class DatabaseConfig {
 
         BoneCPDataSource boneCPDataSource = new BoneCPDataSource();
         boneCPDataSource.setDriverClass(env.getProperty("jdbc.driverClassName"));
-        boneCPDataSource.setJdbcUrl(env.getProperty("jdbc.url"));
-        boneCPDataSource.setUsername(env.getProperty("jdbc.username"));
-        boneCPDataSource.setPassword(env.getProperty("jdbc.password"));
+        // 获取系统环境变量
+        Map map = System.getenv();
+        if (map.containsKey("JDBC_URL") && map.containsKey("JDBC_USERNAME") && map.containsKey("JDBC_PASSWORD")) {
+            String jdbcUrl = map.get("JDBC_URL").toString();
+            String jdbcUsername = map.get("JDBC_USERNAME").toString();
+            String jdbcPassword = map.get("JDBC_PASSWORD").toString();
+            boneCPDataSource.setJdbcUrl(jdbcUrl);
+            boneCPDataSource.setUsername(jdbcUsername);
+            boneCPDataSource.setPassword(jdbcPassword);
+        }else{
+            boneCPDataSource.setJdbcUrl(env.getProperty("jdbc.test.url"));
+            boneCPDataSource.setUsername(env.getProperty("jdbc.test.username"));
+            boneCPDataSource.setPassword(env.getProperty("jdbc.test.password"));
+        }
         boneCPDataSource.setIdleConnectionTestPeriodInMinutes(60);
         boneCPDataSource.setIdleMaxAgeInMinutes(420);
-        boneCPDataSource.setMaxConnectionsPerPartition(30);
+        boneCPDataSource.setMaxConnectionsPerPartition(100);
         boneCPDataSource.setMinConnectionsPerPartition(10);
         boneCPDataSource.setPartitionCount(3);
         boneCPDataSource.setAcquireIncrement(5);
         boneCPDataSource.setStatementsCacheSize(100);
         // boneCPDataSource.setReleaseHelperThreads(3);
+
 
         return boneCPDataSource;
     }

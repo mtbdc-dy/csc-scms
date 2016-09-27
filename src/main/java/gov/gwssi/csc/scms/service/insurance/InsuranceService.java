@@ -10,10 +10,8 @@ import gov.gwssi.csc.scms.domain.query.StudentFilter;
 import gov.gwssi.csc.scms.domain.query.StudentFilterObject;
 import gov.gwssi.csc.scms.domain.query.InsuranceResultObject;
 import gov.gwssi.csc.scms.domain.insurance.Insurance;
-import gov.gwssi.csc.scms.domain.user.Project;
 import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.insurance.InsuranceRepository;
-import gov.gwssi.csc.scms.service.BaseService;
 import gov.gwssi.csc.scms.service.abnormal.NoSuchAbnormalException;
 import gov.gwssi.csc.scms.service.log.OperationLogService;
 import gov.gwssi.csc.scms.service.user.UserService;
@@ -190,6 +188,18 @@ public class InsuranceService extends InsuranceSpecs {
 
     }
 
+    @Transactional
+    public void updateInsurancePrestaBySql(String[] id) {
+        try{
+            insuranceDAO.updateInsurancePrestaBySql(id);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+
     public List<Insurance> findInsuranceByStduentId(String studentId) {
         return insuranceRepository.findByStudentIdOrderByYearDesc(studentId);
     }
@@ -205,7 +215,7 @@ public class InsuranceService extends InsuranceSpecs {
         try {
             User user = userService.getUserByJWT(header);
             Specification<Insurance> specA = filterIsLike(filter, user, mode);
-            Specification<Insurance> specB = userIs(user);
+            Specification<Insurance> specB = userIs(user,baseDAO);
             return insuranceRepository.findAll(where(specA).and(specB), new PageRequest(page, size));
         } catch (Exception e) {
             e.printStackTrace();
@@ -213,13 +223,14 @@ public class InsuranceService extends InsuranceSpecs {
         }
     }
 
+    // 解决导出条数限制问题，改写此方法，改为Sql方式实现
     @Transactional
     public String[] getAllInsuranceByFilter(Filter filter,String mode, String header) {
         List<Insurance> insurances;
         try {
             User user = userService.getUserByJWT(header);
             Specification<Insurance> specA = filterIsLike(filter, user, mode);
-            Specification<Insurance> specB = userIs(user);
+            Specification<Insurance> specB = userIs(user,baseDAO);
             insurances = insuranceRepository.findAll(where(specA).and(specB));
         } catch (Exception e) {
             e.printStackTrace();
@@ -232,6 +243,18 @@ public class InsuranceService extends InsuranceSpecs {
         }
         return result;
     }
+    @Transactional
+    public String[] getAllInsuranceBySql(Filter filter,String mode, String header) {
+        try {
+            User user = userService.getUserByJWT(header);
+            String ids[] = insuranceDAO.getInsuranceIds(filter,mode,user);
+            return ids;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
 
     //统计保险状态 已导出 未导出 已反馈
     @Transactional
@@ -243,7 +266,7 @@ public class InsuranceService extends InsuranceSpecs {
         try {
             User user = userService.getUserByJWT(header);
             Specification<Insurance> specA = filterIsLike(filter, user, mode);
-            Specification<Insurance> specB = userIs(user);
+            Specification<Insurance> specB = userIs(user,baseDAO);
             zs = insuranceRepository.count(where(specA).and(specB));
             yfk = insuranceRepository.count(where(specA).and(specB).and(stateIs("AV0003")));
             jjwwdc = insuranceRepository.count(where(specA).and(specB).and(stateIs("AV0001")));

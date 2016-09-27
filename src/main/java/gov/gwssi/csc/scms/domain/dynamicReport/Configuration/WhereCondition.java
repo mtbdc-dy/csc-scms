@@ -15,6 +15,7 @@ import javax.persistence.Column;
 public class WhereCondition extends Condition {
     private String id;
     private Configuration config;
+    private Integer sequence;
     private String lParenthese;
     private String table;
     private String column;
@@ -42,6 +43,12 @@ public class WhereCondition extends Condition {
     public void setConfig(Configuration config) {
         this.config = config;
     }
+
+    @Column(name = "SEQ")
+    public Integer getSequence(){return sequence;}
+
+    public void setSequence(Integer seq){this.sequence = seq;}
+
 
     @Column(name = "L_PRTS")
     @JsonProperty(value = "lParenthese")
