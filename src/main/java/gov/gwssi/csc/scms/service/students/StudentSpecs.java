@@ -201,7 +201,9 @@ public class StudentSpecs {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                predicate.getExpressions().add(cb.notEqual(schoolRoll.get(SchoolRoll_.registerYear), currentYear));
+                Expression eYear = cb.notEqual(schoolRoll.get(SchoolRoll_.registerYear), currentYear);
+                Expression eYearNull = cb.isNull(schoolRoll.get(SchoolRoll_.registerYear));
+                predicate.getExpressions().add(cb.or(eYear,eYearNull));
 
                 Expression e4 = cb.greaterThanOrEqualTo(cb.currentDate(), startDate);
                 Expression e5 = cb.lessThanOrEqualTo(cb.currentDate(), finalDate);
