@@ -424,12 +424,17 @@ public class StudentService extends BaseService {
             Date cramStart = schoolRoll.getCramDateBegin();
             Date cramEnd = schoolRoll.getCramDateEnd();
             Date now = new Date();
+            Calendar calendar = Calendar.getInstance();
+            int currentYear = calendar.get(Calendar.YEAR);
             if (majorStart != null && now.after(majorStart) && majorEnd != null && now.before(majorEnd)) {
                 schoolRoll.setState("BB0003");
                 schoolRoll.setCurrentProvince(schoolRoll.getMajorProvince());
                 schoolRoll.setCurrentUniversity(schoolRoll.getMajorUniversity());
                 schoolRoll.setLeaveDate(null);
                 schoolRoll.setLeaveReason(null);
+                schoolRoll.setRegisterState("AW0004"); // 报到状态老生报到
+                schoolRoll.setRegisted("AX0002");     // 是否报到为是
+                schoolRoll.setRegisterYear(currentYear);  // 报到年度为当年
                 schoolRollService.updateSchoolRoll(schoolRoll);
                 //记录日志 学籍状态
                 List<OperationLog> operationLogState = new ArrayList<OperationLog>();
@@ -445,6 +450,9 @@ public class StudentService extends BaseService {
                 schoolRoll.setCurrentUniversity(schoolRoll.getCramUniversity());
                 schoolRoll.setLeaveDate(null);
                 schoolRoll.setLeaveReason(null);
+                schoolRoll.setRegisterState("AW0004");
+                schoolRoll.setRegisted("AX0002");
+                schoolRoll.setRegisterYear(currentYear);
                 schoolRollService.updateSchoolRoll(schoolRoll);
                 //记录日志 学籍状态
                 List<OperationLog> operationLogState = new ArrayList<OperationLog>();
