@@ -3,7 +3,15 @@ package gov.gwssi.csc.scms.service.dynamicReport;
 import gov.gwssi.csc.scms.dao.BaseDAO;
 import gov.gwssi.csc.scms.domain.dictionary.DictTreeJson;
 import gov.gwssi.csc.scms.domain.dynamicReport.*;
+import gov.gwssi.csc.scms.domain.dynamicReport.ASMSConfiguration.*;
 import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.*;
+import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.Condition;
+import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.Configuration;
+import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.GroupCondition;
+import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.JoinCondition;
+import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.OrderCondition;
+import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.SelectCondition;
+import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.WhereCondition;
 import gov.gwssi.csc.scms.domain.dynamicReport.Report.Cell;
 import gov.gwssi.csc.scms.domain.dynamicReport.Report.ExcelCell;
 import gov.gwssi.csc.scms.domain.dynamicReport.Report.Report;
@@ -37,6 +45,10 @@ public class DynamicReportService extends DynamicReportSpecs {
     @Autowired
     @Qualifier("configurationRepository")
     private ConfigurationRepository configurationRepository;
+
+    @Autowired
+    @Qualifier("ASMSConfigurationRepository")
+    private gov.gwssi.csc.scms.repository.dynamicReport.ASMS.ConfigurationRepository asmsConfigurationRepository;
 
     @Qualifier("tableRepository")
     @Autowired
@@ -321,6 +333,10 @@ public class DynamicReportService extends DynamicReportSpecs {
         return configurationRepository.findOne(id);
     }
 
+    public gov.gwssi.csc.scms.domain.dynamicReport.ASMSConfiguration.Configuration findOneFromASMS(String id){
+        return asmsConfigurationRepository.findOne(id);
+    }
+
     public List<Row> getReportHeader(String id) {
         Configuration config = findOne(id);
         Report report = new Report(config.getOrderedCells(), new ArrayList<Map>());
@@ -329,7 +345,16 @@ public class DynamicReportService extends DynamicReportSpecs {
 
     public List<Row> getReportBody(String id) {
         Configuration config = findOne(id);
-        String sql = config.getSql();
+        gov.gwssi.csc.scms.domain.dynamicReport.ASMSConfiguration.Configuration config1 = null;
+        String sql = null;
+
+        if (config != null){
+            sql = config.getSql();
+        } else {
+            config1 = findOneFromASMS(id);
+            sql = config1.getSql();
+        }
+
         BaseDAO dao = getBaseDao();
         List<Map> body = dao.queryListBySql(sql);
         Report report = new Report(new ArrayList<Cell>(), body);
@@ -347,7 +372,14 @@ public class DynamicReportService extends DynamicReportSpecs {
 
     @Transactional
     public List<ExcelCell> getExcelHeader(String id) {
-        return configurationRepository.findOne(id).getExcelCells();
+        Configuration configuration = findOne(id);
+        gov.gwssi.csc.scms.domain.dynamicReport.ASMSConfiguration.Configuration configuration1 = null;
+        if (configuration != null) {
+            return configuration.getExcelCells();
+        } else {
+            configuration1 = findOneFromASMS(id);
+            return configuration1.getExcelCells();
+        }
     }
 
     @Transactional
