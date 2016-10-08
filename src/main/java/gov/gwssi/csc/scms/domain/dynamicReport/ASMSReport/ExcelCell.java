@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.domain.dynamicReport.ASMSReport;
 
 import gov.gwssi.csc.scms.domain.dynamicReport.ASMSConfiguration.Configuration;
+import gov.gwssi.csc.scms.domain.dynamicReport.IExcelCell;
 
 import javax.persistence.*;
 
@@ -8,9 +9,9 @@ import javax.persistence.*;
  * 坐标定位单元格
  * Created by wangzishi on 15/10/28.
  */
-@Entity
-@Table(name = "V_D_HEADERMERGE_ASMS")
-public class ExcelCell {
+@Entity(name = "ASMSExcelCell")
+@Table(name = "V_D_HEADERMERGE_ASMS", schema = "ASMS")
+public class ExcelCell implements IExcelCell {
     private String id;
     private Integer firstRow;
     private Integer firstColumn;

@@ -2,9 +2,8 @@ package gov.gwssi.csc.scms.domain.dynamicReport.ASMSConfiguration;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.JoinCondition;
-import gov.gwssi.csc.scms.domain.dynamicReport.Report.Cell;
-import gov.gwssi.csc.scms.domain.dynamicReport.Report.ExcelCell;
+import gov.gwssi.csc.scms.domain.dynamicReport.ASMSReport.Cell;
+import gov.gwssi.csc.scms.domain.dynamicReport.ASMSReport.ExcelCell;
 
 import javax.persistence.*;
 import javax.persistence.Column;

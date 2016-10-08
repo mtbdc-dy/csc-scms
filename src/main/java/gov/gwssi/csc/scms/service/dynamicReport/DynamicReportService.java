@@ -21,6 +21,7 @@ import gov.gwssi.csc.scms.repository.dynamicReport.*;
 import gov.gwssi.csc.scms.service.dictionary.TranslateDictService;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -263,7 +264,7 @@ public class DynamicReportService extends DynamicReportSpecs {
         for (E collection : collections) setConfig(config, collection);
     }
 
-    private Configuration saveConfigration(Configuration configuration) throws Exception{
+    private Configuration saveConfigration(Configuration configuration) throws Exception {
         configuration = saveConfig(configuration);
         if (configuration.getReportType().equals("statistics")) {
             String result = configurationRepository.generateStatisticsSQL(configuration.getId());
@@ -333,7 +334,7 @@ public class DynamicReportService extends DynamicReportSpecs {
         return configurationRepository.findOne(id);
     }
 
-    public gov.gwssi.csc.scms.domain.dynamicReport.ASMSConfiguration.Configuration findOneFromASMS(String id){
+    public gov.gwssi.csc.scms.domain.dynamicReport.ASMSConfiguration.Configuration findOneFromASMS(String id) {
         return asmsConfigurationRepository.findOne(id);
     }
 
@@ -348,7 +349,7 @@ public class DynamicReportService extends DynamicReportSpecs {
         gov.gwssi.csc.scms.domain.dynamicReport.ASMSConfiguration.Configuration config1 = null;
         String sql = null;
 
-        if (config != null){
+        if (config != null) {
             sql = config.getSql();
         } else {
             config1 = findOneFromASMS(id);
@@ -372,25 +373,30 @@ public class DynamicReportService extends DynamicReportSpecs {
 
     @Transactional
     public List<ExcelCell> getExcelHeader(String id) {
-        Configuration configuration = findOne(id);
-        gov.gwssi.csc.scms.domain.dynamicReport.ASMSConfiguration.Configuration configuration1 = null;
-        if (configuration != null) {
-            return configuration.getExcelCells();
-        } else {
-            configuration1 = findOneFromASMS(id);
-            return configuration1.getExcelCells();
-        }
+        Configuration config = findOne(id);
+        return config == null ? (new Configuration()).getExcelCells() : config.getExcelCells();
+    }
+
+    @Transactional
+    public List<gov.gwssi.csc.scms.domain.dynamicReport.ASMSReport.ExcelCell> getExcelHeaderFromASMS(String id) {
+        gov.gwssi.csc.scms.domain.dynamicReport.ASMSConfiguration.Configuration config = findOneFromASMS(id);
+        return config ==null ? (new gov.gwssi.csc.scms.domain.dynamicReport.ASMSConfiguration.Configuration()).getExcelCells() : config.getExcelCells();
     }
 
     @Transactional
     public byte[] export(String id, OutputStream outputStream) throws IOException {
         List<ExcelCell> header = getExcelHeader(id);
+        List<gov.gwssi.csc.scms.domain.dynamicReport.ASMSReport.ExcelCell> header1 = getExcelHeaderFromASMS(id);
         List<Row> body = getReportBody(id);
         Workbook workbook = new HSSFWorkbook();
         Sheet sheet = workbook.createSheet("sheet1");
         sheet.setDisplayGridlines(false);
 
-        createExportHeader(header, sheet, workbook);
+        if (header != null && header.size() != 0) {
+            createExportHeader(header, sheet, workbook);
+        } else {
+            createExportHeaderFromASMS(header1, sheet, workbook);
+        }
         createExportBody(body, sheet, workbook);
 
         if (outputStream != null) {
@@ -520,7 +526,33 @@ public class DynamicReportService extends DynamicReportSpecs {
         CellStyle bottomHeaderContentStyle = createBottomHeaderContentStyle(workbook, headerContentStyle);
 
         int x, y, m, n, xMax = 0, yMax = 0;
-        for (ExcelCell excelCell : header) {
+        for (IExcelCell excelCell : header) {
+            x = excelCell.getFirstRow();
+            y = excelCell.getFirstColumn();
+            m = excelCell.getLastRow();
+            n = excelCell.getLastColumn();
+            xMax = m > xMax ? m : xMax;
+            yMax = n > yMax ? n : yMax;
+            getCell(x, y, sheet).setCellValue(excelCell.getValue());
+            sheet.addMergedRegion(new CellRangeAddress(x, m, y, n));
+        }
+        for (x = 0; x < xMax; x++) {
+            for (y = 0; y <= yMax; y++) {
+                getCell(x, y, sheet).setCellStyle(headerContentStyle);
+            }
+        }
+        for (y = 0; y <= yMax; y++) {
+            getCell(xMax, y, sheet).setCellStyle(bottomHeaderContentStyle);
+        }
+    }
+
+    private void createExportHeaderFromASMS(List<gov.gwssi.csc.scms.domain.dynamicReport.ASMSReport.ExcelCell> header, Sheet sheet, Workbook workbook) {
+        CellStyle contentStyle = createContentStyle(workbook);
+        CellStyle headerContentStyle = createHeaderContentStyle(workbook, contentStyle);
+        CellStyle bottomHeaderContentStyle = createBottomHeaderContentStyle(workbook, headerContentStyle);
+
+        int x, y, m, n, xMax = 0, yMax = 0;
+        for (IExcelCell excelCell : header) {
             x = excelCell.getFirstRow();
             y = excelCell.getFirstColumn();
             m = excelCell.getLastRow();

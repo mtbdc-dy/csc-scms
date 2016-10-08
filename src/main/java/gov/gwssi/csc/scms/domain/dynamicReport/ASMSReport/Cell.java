@@ -10,8 +10,8 @@ import javax.persistence.*;
  * 报表单元格
  * Created by wangzishi on 15/10/10.
  */
-@Entity
-@Table(name = "ASMS_D_CFG_CELL")
+@Entity(name = "ASMSCell")
+@Table(name = "ASMS_D_CFG_CELL", schema = "ASMS")
 public class Cell extends ASMSConfig implements Comparable<Cell>{
     private String id;
     private Integer rowNumber;
