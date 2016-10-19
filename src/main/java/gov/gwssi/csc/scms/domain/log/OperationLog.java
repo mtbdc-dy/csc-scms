@@ -217,4 +217,27 @@ public class OperationLog {
     public void setCreateD(Date createD) {
         this.createD = createD;
     }
+
+    public OperationLog(){
+
+    }
+    //拷贝构造函数
+    public OperationLog(OperationLog o) {
+        this.optType = o.optType;
+        this.moduleId = o.moduleId;
+        this.module = o.module;
+        this.studentId = o.studentId;
+        this.cscId = o.cscId;
+        this.passportName = o.passportName;
+        this.before = o.before;
+        this.after = o.after;
+        this.columnEN = o.columnEN;
+        this.columnCH = o.columnCH;
+        this.tableEN = o.tableEN;
+        this.tableCH = o.tableCH;
+        this.nodeType = o.nodeType;
+        this.nodeId = o.nodeId;
+        this.createBy = o.createBy;
+        this.createD = o.createD;
+    }
 }

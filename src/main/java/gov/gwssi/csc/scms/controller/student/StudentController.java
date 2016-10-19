@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -437,5 +438,78 @@ public class StudentController {
         String file = UploadFileServer.uploadFile(fileName, bytes);
         Map<String, Object> fileMap = new ObjectMapper().readValue(file, Map.class);
         return fileMap;
+    }
+
+    /**
+     *一键修改汉补省市 汉补院校 汉补开始日期 汉补结束日期
+     */
+    @RequestMapping(value = "/{id}/cramInfo", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
+    public Map<String,String> modifyStudentCramInfo(@PathVariable(value = "id") String id, @RequestBody String requestBody) {
+        Map<String,String> returnInfo = new HashMap<String, String>();
+        returnInfo.put("flag","0");
+        try{
+            ObjectMapper mapper = new ObjectMapper();
+            JsonBody jbosy = mapper.readValue(requestBody, JsonBody.class);
+            // 汉补信息
+            Map<String,String> cramInfoMap = mapper.readValue(jbosy.getValue(),Map.class);
+            String cramProvince = cramInfoMap.get("cramProvince");
+            String cramUniversity = cramInfoMap.get("cramUniversity");
+            Date cramDateBegin = new SimpleDateFormat("yyyy-MM-dd").parse(cramInfoMap.get("cramDateBegin"));
+            Date cramDateEnd = new SimpleDateFormat("yyyy-MM-dd").parse(cramInfoMap.get("cramDateEnd"));
+            // 日志信息
+            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
+            List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
+            returnInfo = studentService.modifyStudentCramInfo(id,cramProvince,cramUniversity,cramDateBegin,cramDateEnd,operationLogs);
+            return returnInfo;
+        }catch (Exception e){
+          e.printStackTrace();
+        }
+        return returnInfo;
+    }
+    /**
+     *一键修改专业省市 专业院校 专业开始日期 预计毕业日期
+     */
+    @RequestMapping(value = "/{id}/majorInfo", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
+    public Map<String,String> modifyStudentMajorInfo(@PathVariable(value = "id") String id, @RequestBody String requestBody) {
+        Map<String,String> returnInfo = new HashMap<String, String>();
+        returnInfo.put("flag","0");
+        try{
+            ObjectMapper mapper = new ObjectMapper();
+            JsonBody jbosy = mapper.readValue(requestBody, JsonBody.class);
+            // 汉补信息
+            Map<String,String> cramInfoMap = mapper.readValue(jbosy.getValue(),Map.class);
+            String majorProvince = cramInfoMap.get("majorProvince");
+            String majorUniversity = cramInfoMap.get("majorUniversity");
+            Date majorStartDate = new SimpleDateFormat("yyyy-MM-dd").parse(cramInfoMap.get("majorStartDate"));
+            Date planLeaveDate = new SimpleDateFormat("yyyy-MM-dd").parse(cramInfoMap.get("planLeaveDate"));
+            // 日志信息
+            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
+            List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
+            returnInfo = studentService.modifyStudentMajorInfo(id,majorProvince,majorUniversity,majorStartDate,planLeaveDate,operationLogs);
+            return returnInfo;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return returnInfo;
+    }
+    /**
+     *一键清空汉补省市 汉补院校 汉补开始日期 汉补结束日期
+     */
+    @RequestMapping(value = "/{id}/removeCramInfo", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
+    public Map<String,String> removeStudentCramInfo(@PathVariable(value = "id") String id, @RequestBody String requestBody) {
+        Map<String,String> returnInfo = new HashMap<String, String>();
+        returnInfo.put("flag","0");
+        try{
+            ObjectMapper mapper = new ObjectMapper();
+            JsonBody jbosy = mapper.readValue(requestBody, JsonBody.class);
+            // 日志信息
+            JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, OperationLog.class);
+            List<OperationLog> operationLogs = mapper.readValue(jbosy.getLog(), javaType);
+            returnInfo = studentService.removeStudentCramInfo(id,operationLogs);
+            return returnInfo;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return returnInfo;
     }
 }

@@ -719,4 +719,165 @@ public class StudentService extends BaseService {
         getBaseDao().updateBySql(sql);
     }
 
+    @Transactional
+    // 修改 汉补省市 汉补院校 汉补起止日期 需联动修改学籍状态 当前省市 当前院校（学籍状态若为离华或者是否报到为否，则不联动修改学籍状态和当前院校）
+    public Map<String, String> modifyStudentCramInfo(String id, String cramProvince, String cramUniversity, Date cramDateBegin, Date cramDateEnd, List<OperationLog> operationLogs) {
+        Map<String, String> retValue = new HashMap<String, String>();
+        retValue.put("flag", "0");
+        try {
+            SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(id);
+            if (schoolRoll == null) {
+                return retValue;
+            }
+            // 修改汉补省市院校，汉补起止日期
+            schoolRoll.setCramProvince(cramProvince);
+            schoolRoll.setCramUniversity(cramUniversity);
+            schoolRoll.setCramDateBegin(cramDateBegin);
+            schoolRoll.setCramDateEnd(cramDateEnd);
+
+            Date now = new Date();
+            //学籍状态若不为离华并且是否报到为否，并且当前时间在汉补时间内，则联动修改学籍状态和当前省市院校
+            if (!"BB0004".equals(schoolRoll.getState())
+                    && "AX0002".equals(schoolRoll.getRegisted())
+                    && now.after(cramDateBegin)
+                    && now.before(cramDateEnd)) {
+                //保存原有学籍状态和当前省市院校
+                String oldState = schoolRoll.getState();
+                String oldCurrentProvince = schoolRoll.getCurrentProvince();
+                String oldCurrentUniversity = schoolRoll.getCurrentUniversity();
+                //修改学籍状态和当前省市院校
+                schoolRoll.setState("BB0002");
+                schoolRoll.setCurrentProvince(cramProvince);
+                schoolRoll.setCurrentUniversity(cramUniversity);
+                //记录日志 学籍状态
+                OperationLog log_state = new OperationLog(operationLogs.get(0));
+                log_state.setColumnEN("STATE");
+                log_state.setColumnCH("学籍状态");
+                log_state.setBefore(oldState);
+                log_state.setAfter("BB0002");
+                operationLogs.add(log_state);
+                //记录日志 当前省市
+                OperationLog log_currentProvince = new OperationLog(operationLogs.get(0));
+                log_currentProvince.setColumnEN("CurrentProvince");
+                log_currentProvince.setColumnCH("当前省市");
+                log_currentProvince.setBefore(oldCurrentProvince);
+                log_currentProvince.setAfter(cramProvince);
+                operationLogs.add(log_currentProvince);
+                //记录日志 当前院校
+                OperationLog log_currentUniversity = new OperationLog(operationLogs.get(0));
+                log_currentUniversity.setColumnEN("CurrentUniversity");
+                log_currentUniversity.setColumnCH("当前院校");
+                log_currentUniversity.setBefore(oldCurrentUniversity);
+                log_currentUniversity.setAfter(cramUniversity);
+                operationLogs.add(log_currentUniversity);
+
+                retValue.put("isModify","1"); // 标志位，是否修改了学籍状态和当前省市院校
+            }else{
+                retValue.put("isModify","0"); // 标志位，是否修改了学籍状态和当前省市院校
+            }
+            schoolRollService.updateSchoolRoll(schoolRoll);
+            // 保存日志
+            operationLogService.saveOperationLog(operationLogs);
+            retValue.put("flag","1");
+            return retValue;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return retValue;
+
+    }
+    @Transactional
+    // 一键修改专业省市 专业院校 专业开始日期 预计毕业日期 需联动修改学籍状态 当前省市 当前院校（学籍状态若为离华或者是否报到为否，则不联动修改学籍状态和当前院校）
+    public Map<String, String> modifyStudentMajorInfo(String id, String majorProvince, String majorUniversity, Date majorDateBegin, Date planLeaveDate, List<OperationLog> operationLogs) {
+        Map<String, String> retValue = new HashMap<String, String>();
+        retValue.put("flag", "0");
+        try {
+            SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(id);
+            if (schoolRoll == null) {
+                return retValue;
+            }
+            // 修改专业省市 专业院校 专业开始日期 预计毕业日期
+            schoolRoll.setMajorProvince(majorProvince);
+            schoolRoll.setMajorUniversity(majorUniversity);
+            schoolRoll.setMajorStartDate(majorDateBegin);
+            schoolRoll.setPlanLeaveDate(planLeaveDate);
+
+            Date now = new Date();
+            //学籍状态若不为离华并且是否报到为否，并且当前时间在专业时间内，则联动修改学籍状态和当前省市院校
+            if (!"BB0004".equals(schoolRoll.getState())
+                    && "AX0002".equals(schoolRoll.getRegisted())
+                    && now.after(majorDateBegin)
+                    && now.before(planLeaveDate)) {
+                //保存原有学籍状态和当前省市院校
+                String oldState = schoolRoll.getState();
+                String oldCurrentProvince = schoolRoll.getCurrentProvince();
+                String oldCurrentUniversity = schoolRoll.getCurrentUniversity();
+                //修改学籍状态和当前省市院校
+                schoolRoll.setState("BB0003");
+                schoolRoll.setCurrentProvince(majorProvince);
+                schoolRoll.setCurrentUniversity(majorUniversity);
+                //记录日志 学籍状态
+                OperationLog log_state = new OperationLog(operationLogs.get(0));
+                log_state.setColumnEN("STATE");
+                log_state.setColumnCH("学籍状态");
+                log_state.setBefore(oldState);
+                log_state.setAfter("BB0003");
+                operationLogs.add(log_state);
+                //记录日志 当前省市
+                OperationLog log_currentProvince = new OperationLog(operationLogs.get(0));
+                log_currentProvince.setColumnEN("CurrentProvince");
+                log_currentProvince.setColumnCH("当前省市");
+                log_currentProvince.setBefore(oldCurrentProvince);
+                log_currentProvince.setAfter(majorProvince);
+                operationLogs.add(log_currentProvince);
+                //记录日志 当前院校
+                OperationLog log_currentUniversity = new OperationLog(operationLogs.get(0));
+                log_currentUniversity.setColumnEN("CurrentUniversity");
+                log_currentUniversity.setColumnCH("当前院校");
+                log_currentUniversity.setBefore(oldCurrentUniversity);
+                log_currentUniversity.setAfter(majorUniversity);
+                operationLogs.add(log_currentUniversity);
+
+                retValue.put("isModify","1"); // 标志位，是否修改了学籍状态和当前省市院校
+            }else{
+                retValue.put("isModify","0"); // 标志位，是否修改了学籍状态和当前省市院校
+            }
+            schoolRollService.updateSchoolRoll(schoolRoll);
+            // 保存日志
+            operationLogService.saveOperationLog(operationLogs);
+            retValue.put("flag","1");
+            return retValue;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return retValue;
+
+    }
+    @Transactional
+    // 一键清空汉补省市 汉补院校 汉补开始日期 汉补结束日期
+    public Map<String, String> removeStudentCramInfo(String id,List<OperationLog> operationLogs) {
+        Map<String, String> retValue = new HashMap<String, String>();
+        retValue.put("flag", "0");
+        try {
+            SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(id);
+            if (schoolRoll == null) {
+                return retValue;
+            }
+            // 清空汉补省市院校，汉补起止日期
+            schoolRoll.setCramProvince(null);
+            schoolRoll.setCramUniversity(null);
+            schoolRoll.setCramDateBegin(null);
+            schoolRoll.setCramDateEnd(null);
+            schoolRollService.updateSchoolRoll(schoolRoll);
+            // 保存日志
+            operationLogService.saveOperationLog(operationLogs);
+            retValue.put("flag","1");
+            return retValue;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return retValue;
+
+    }
+
 }
