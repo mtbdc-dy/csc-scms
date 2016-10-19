@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.domain.dynamicReport.Report;
 
 import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.Configuration;
+import gov.gwssi.csc.scms.domain.dynamicReport.IExcelCell;
 
 import javax.persistence.*;
 
@@ -10,7 +11,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "V_D_HEADERMERGE")
-public class ExcelCell {
+public class ExcelCell implements IExcelCell{
     private String id;
     private Integer firstRow;
     private Integer firstColumn;

@@ -39,7 +39,13 @@ public class Report {
         for (Map rowMap : bodyMaps) {
             row = new Row();
             for (Integer i = 0; i < rowMap.size(); i++) {
-                row.add(new Cell(1,1, rowMap.get("COL" + i.toString()).toString()));
+                Object obj = rowMap.get("COL" + i.toString());
+                if (obj != null) {
+                    row.add(new Cell(1,1, obj.toString()));
+                } else {
+                    row.add(new Cell(1,1, ""));
+                }
+
             }
             this.body.add(row);
         }
