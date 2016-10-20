@@ -196,10 +196,12 @@ public class StudentController {
             if (student == null)
                 return null;
 
-            String after = studentService.saveStudent(dbType,operationLog);
             //若修改字段为是否报到或者是否离华
-            if(!"".equals(after)){
+            String after = operationLog.getAfter();
+            if("AX0002".equals(after) || "AX0001".equals(after) || "BA0002".equals(after) || "BA0001".equals(after)){
                 studentService.updateState(operationLog);
+            }else{
+                studentService.saveStudent(dbType,operationLog);
             }
             result = "{\"after\":\""+after+"\"}";
         } catch (Exception e) {

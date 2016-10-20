@@ -362,10 +362,38 @@ public class StudentService extends BaseService {
             //若将"是否报到"从否(AX0001)改为是(AX0002)，则还要将报到状态从未处理(AW0002)改为新生报到(AW0001)
             //系统同时修改当前院校，根据系统时间所在为汉补还是专业的时间范围去修改当前院校。
             SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(operationLog.getStudentId());
+
+            String oldRegisterState = schoolRoll.getRegisterState();
+            Integer oldRegisterYear = schoolRoll.getRegisterYear();
+            String oldState = schoolRoll.getState();
+            String oldCurrentProvince = schoolRoll.getCurrentProvince();
+            String oldCurrentUniversity = schoolRoll.getCurrentUniversity();
+
+            schoolRoll.setRegisted("AX0002");
             schoolRoll.setRegisterState("AW0001");
             Calendar calendar = Calendar.getInstance();
             int currentYear = calendar.get(Calendar.YEAR);
             schoolRoll.setRegisterYear(currentYear);
+
+            //记录日志
+            List<OperationLog> operationLogs = new ArrayList<OperationLog>();
+            //记录日志-是否报到
+            operationLogs.add(operationLog);
+            //记录日志-报到状态
+            OperationLog log_registerState = new OperationLog(operationLog);
+            log_registerState.setColumnEN("registerState");
+            log_registerState.setColumnCH("报到状态");
+            log_registerState.setBefore(oldRegisterState);
+            log_registerState.setAfter("AW0001");
+            operationLogs.add(log_registerState);
+            //记录日志-报到年度
+            OperationLog log_registerYear = new OperationLog(operationLog);
+            log_registerYear.setColumnEN("registerYear");
+            log_registerYear.setColumnCH("报到年度");
+            log_registerYear.setBefore(oldRegisterYear+"");
+            log_registerYear.setAfter(currentYear+"");
+            operationLogs.add(log_registerYear);
+
             Date majorStart = schoolRoll.getMajorStartDate();
             Date majorEnd = schoolRoll.getPlanLeaveDate();
             Date cramStart = schoolRoll.getCramDateBegin();
@@ -375,115 +403,240 @@ public class StudentService extends BaseService {
                 schoolRoll.setCurrentProvince(schoolRoll.getMajorProvince());
                 schoolRoll.setCurrentUniversity(schoolRoll.getMajorUniversity());
                 schoolRoll.setState("BB0003"); // 专业
+
+                //记录日志-学籍状态
+                OperationLog log_state = new OperationLog(operationLog);
+                log_state.setColumnEN("STATE");
+                log_state.setColumnCH("学籍状态");
+                log_state.setBefore(oldState);
+                log_state.setAfter("BB0003");
+                operationLogs.add(log_state);
+                //记录日志-当前省市
+                OperationLog log_currentProvince = new OperationLog(operationLog);
+                log_currentProvince.setColumnEN("currentProvince");
+                log_currentProvince.setColumnCH("当前省市");
+                log_currentProvince.setBefore(oldCurrentProvince);
+                log_currentProvince.setAfter(schoolRoll.getMajorProvince());
+                operationLogs.add(log_currentProvince);
+                //记录日志-当前院校
+                OperationLog log_currentUniversity = new OperationLog(operationLog);
+                log_currentUniversity.setColumnEN("currentUniversity");
+                log_currentUniversity.setColumnCH("当前院校");
+                log_currentUniversity.setBefore(oldCurrentUniversity);
+                log_currentUniversity.setAfter(schoolRoll.getMajorUniversity());
+                operationLogs.add(log_currentUniversity);
+
             } else if (cramStart != null && now.after(cramStart) && cramEnd != null && now.before(cramEnd)) {
                 schoolRoll.setCurrentProvince(schoolRoll.getCramProvince());
                 schoolRoll.setCurrentUniversity(schoolRoll.getCramUniversity());
                 schoolRoll.setState("BB0002"); // 汉补
+                //记录日志-学籍状态
+                OperationLog log_state = new OperationLog(operationLog);
+                log_state.setColumnEN("STATE");
+                log_state.setColumnCH("学籍状态");
+                log_state.setBefore(oldState);
+                log_state.setAfter("BB0002");
+                operationLogs.add(log_state);
+                //记录日志-当前省市
+                OperationLog log_currentProvince = new OperationLog(operationLog);
+                log_currentProvince.setColumnEN("currentProvince");
+                log_currentProvince.setColumnCH("当前省市");
+                log_currentProvince.setBefore(oldCurrentProvince);
+                log_currentProvince.setAfter(schoolRoll.getCramProvince());
+                operationLogs.add(log_currentProvince);
+                //记录日志-当前院校
+                OperationLog log_currentUniversity = new OperationLog(operationLog);
+                log_currentUniversity.setColumnEN("currentUniversity");
+                log_currentUniversity.setColumnCH("当前院校");
+                log_currentUniversity.setBefore(oldCurrentUniversity);
+                log_currentUniversity.setAfter(schoolRoll.getCramUniversity());
+                operationLogs.add(log_currentUniversity);
             }
             schoolRollService.updateSchoolRoll(schoolRoll);
+            operationLogService.saveOperationLog(operationLogs);
         } else if ("AX0001".equals(operationLog.getAfter())) {
             //若将"是否报到"从是(AX0002)改为否(AX0001)，则还要将报到状态从新生报到(AW0001)改为未处理(AW0002),学籍状态改为录取(BB0001),并清空当前省市当前院校
             SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(operationLog.getStudentId());
+
+            String oldRegisterState = schoolRoll.getRegisterState();
+            String oldState = schoolRoll.getState();
+            String oldCurrentProvince = schoolRoll.getCurrentProvince();
+            String oldCurrentUniversity = schoolRoll.getCurrentUniversity();
+
+            schoolRoll.setRegisted("AX0001");
             schoolRoll.setRegisterState("AW0002");
             schoolRoll.setState("BB0001");
             schoolRoll.setCurrentProvince(null);
             schoolRoll.setCurrentUniversity(null);
+
+            //记录日志
+            List<OperationLog> operationLogs = new ArrayList<OperationLog>();
+            //记录日志-是否报到
+            operationLogs.add(operationLog);
+            //记录日志-报到状态
+            OperationLog log_registerState = new OperationLog(operationLog);
+            log_registerState.setColumnEN("registerState");
+            log_registerState.setColumnCH("报到状态");
+            log_registerState.setBefore(oldRegisterState);
+            log_registerState.setAfter("AW0002");
+            operationLogs.add(log_registerState);
+            //记录日志-学籍状态
+            OperationLog log_state = new OperationLog(operationLog);
+            log_state.setColumnEN("STATE");
+            log_state.setColumnCH("学籍状态");
+            log_state.setBefore(oldState);
+            log_state.setAfter("BB0001");
+            operationLogs.add(log_state);
+            //记录日志-当前省市
+            OperationLog log_currentProvince = new OperationLog(operationLog);
+            log_currentProvince.setColumnEN("currentProvince");
+            log_currentProvince.setColumnCH("当前省市");
+            log_currentProvince.setBefore(oldCurrentProvince);
+            log_currentProvince.setAfter(null);
+            operationLogs.add(log_currentProvince);
+            //记录日志-当前院校
+            OperationLog log_currentUniversity = new OperationLog(operationLog);
+            log_currentUniversity.setColumnEN("currentUniversity");
+            log_currentUniversity.setColumnCH("当前院校");
+            log_currentUniversity.setBefore(oldCurrentUniversity);
+            log_currentUniversity.setAfter(null);
+            operationLogs.add(log_currentUniversity);
+
             schoolRollService.updateSchoolRoll(schoolRoll);
+            operationLogService.saveOperationLog(operationLogs);
         } else if ("BA0002".equals(operationLog.getAfter())) {
             //当操作员修改“是否离华”由“否(BA0001)”改为“是(BA0002)”时，系统需将“学籍状态”同时修改为“离华(BB0004)”
             SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(operationLog.getStudentId());
-            String oldState = schoolRoll.getState();
+            schoolRoll.setLeaveChina("BA0002");
             schoolRoll.setState("BB0004");
             schoolRoll.setLeaveDate(new Date());
             schoolRollService.updateSchoolRoll(schoolRoll);
-            //记录日志 学籍状态
-            List<OperationLog> operationLogState = new ArrayList<OperationLog>();
-            operationLog.setColumnEN("STATE");
-            operationLog.setColumnCH("学籍状态");
-            operationLog.setBefore(oldState);
-            operationLog.setAfter("BB0004");
-            operationLogState.add(operationLog);
-            operationLogService.saveOperationLog(operationLogState);
-            //记录日志 离华日期
-            List<OperationLog> operationLogLeaveDate = new ArrayList<OperationLog>();
-            operationLog.setColumnEN("LEAVEDATE");
-            operationLog.setColumnCH("离华日期");
-            operationLog.setBefore(null);
-            operationLog.setAfter((new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(new Date()));
-            operationLogLeaveDate.add(operationLog);
-            operationLogService.saveOperationLog(operationLogLeaveDate);
         } else if ("BA0001".equals(operationLog.getAfter())) {
             //当操作员修改“是否离华”由“是(BA0002)”改为“否(BA0001)”时,系统需检查当前时间是否在汉补或专业时间范围内。
             //如是则可修改,系统同时根据系统时间所在为汉补还是专业的时间范围去修改学籍状态。如果在汉补时间段内，学籍状态修改为“汉补”，如果在专业时间段内，学籍状态修改为”专业“。
             SchoolRoll schoolRoll = schoolRollService.getSchoolRollByStudentId(operationLog.getStudentId());
+
+            String oldRegisted = schoolRoll.getRegisted();
+            String oldRegisterState = schoolRoll.getRegisterState();
+            Integer oldRegisterYear = schoolRoll.getRegisterYear();
             String oldState = schoolRoll.getState();
+            String oldCurrentProvince = schoolRoll.getCurrentProvince();
+            String oldCurrentUniversity = schoolRoll.getCurrentUniversity();
             String oldLeaveReason = schoolRoll.getLeaveReason();
             Date oldLeaveDate = schoolRoll.getLeaveDate();
+
+            schoolRoll.setLeaveChina("BA0001");
+            schoolRoll.setRegisted("AX0002");     // 是否报到为是
+            schoolRoll.setRegisterState("AW0004"); // 报到状态老生报到
+            Calendar calendar = Calendar.getInstance();
+            int currentYear = calendar.get(Calendar.YEAR);
+            schoolRoll.setRegisterYear(currentYear);  // 报到年度为当年
+            schoolRoll.setLeaveDate(null);
+            schoolRoll.setLeaveReason(null);
+
+            //记录日志
+            List<OperationLog> operationLogs = new ArrayList<OperationLog>();
+            //记录日志-是否离华
+            operationLogs.add(operationLog);
+            //记录日志-是否报到
+            OperationLog log_registed = new OperationLog(operationLog);
+            log_registed.setColumnEN("registed");
+            log_registed.setColumnCH("是否报到");
+            log_registed.setBefore(oldRegisted);
+            log_registed.setAfter("AX0002");
+            operationLogs.add(log_registed);
+            //记录日志-报到状态
+            OperationLog log_registerState = new OperationLog(operationLog);
+            log_registerState.setColumnEN("registerState");
+            log_registerState.setColumnCH("报到状态");
+            log_registerState.setBefore(oldRegisterState);
+            log_registerState.setAfter("AW0004");
+            operationLogs.add(log_registerState);
+            //记录日志-报到年度
+            OperationLog log_registerYear = new OperationLog(operationLog);
+            log_registerYear.setColumnEN("registerYear");
+            log_registerYear.setColumnCH("报到年度");
+            log_registerYear.setBefore(oldRegisterYear+"");
+            log_registerYear.setAfter(currentYear+"");
+            operationLogs.add(log_registerYear);
+            //记录日志 离华日期
+            String oldLeaveDateStr = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(oldLeaveDate);
+            OperationLog log_leaveDate = new OperationLog(operationLog);
+            log_leaveDate.setColumnEN("LEAVEDATE");
+            log_leaveDate.setColumnCH("离华日期");
+            log_leaveDate.setBefore(oldLeaveDateStr);
+            log_leaveDate.setAfter(null);
+            operationLogs.add(log_leaveDate);
+
+            //记录日志 离华原因
+            OperationLog log_leaveReason = new OperationLog(operationLog);
+            log_leaveReason.setColumnEN("LEAVEREASON");
+            log_leaveReason.setColumnCH("离华原因");
+            log_leaveReason.setBefore(oldLeaveReason);
+            log_leaveReason.setAfter(null);
+            operationLogs.add(log_leaveReason);
+
+
             Date majorStart = schoolRoll.getMajorStartDate();
             Date majorEnd = schoolRoll.getPlanLeaveDate();
             Date cramStart = schoolRoll.getCramDateBegin();
             Date cramEnd = schoolRoll.getCramDateEnd();
             Date now = new Date();
-            Calendar calendar = Calendar.getInstance();
-            int currentYear = calendar.get(Calendar.YEAR);
+
             if (majorStart != null && now.after(majorStart) && majorEnd != null && now.before(majorEnd)) {
                 schoolRoll.setState("BB0003");
                 schoolRoll.setCurrentProvince(schoolRoll.getMajorProvince());
                 schoolRoll.setCurrentUniversity(schoolRoll.getMajorUniversity());
-                schoolRoll.setLeaveDate(null);
-                schoolRoll.setLeaveReason(null);
-                schoolRoll.setRegisterState("AW0004"); // 报到状态老生报到
-                schoolRoll.setRegisted("AX0002");     // 是否报到为是
-                schoolRoll.setRegisterYear(currentYear);  // 报到年度为当年
-                schoolRollService.updateSchoolRoll(schoolRoll);
-                //记录日志 学籍状态
-                List<OperationLog> operationLogState = new ArrayList<OperationLog>();
-                operationLog.setColumnEN("STATE");
-                operationLog.setColumnCH("学籍状态");
-                operationLog.setBefore(oldState);
-                operationLog.setAfter("BB0003");
-                operationLogState.add(operationLog);
-                operationLogService.saveOperationLog(operationLogState);
+                //记录日志-学籍状态
+                OperationLog log_state = new OperationLog(operationLog);
+                log_state.setColumnEN("STATE");
+                log_state.setColumnCH("学籍状态");
+                log_state.setBefore(oldState);
+                log_state.setAfter("BB0003");
+                operationLogs.add(log_state);
+                //记录日志-当前省市
+                OperationLog log_currentProvince = new OperationLog(operationLog);
+                log_currentProvince.setColumnEN("currentProvince");
+                log_currentProvince.setColumnCH("当前省市");
+                log_currentProvince.setBefore(oldCurrentProvince);
+                log_currentProvince.setAfter(schoolRoll.getMajorProvince());
+                operationLogs.add(log_currentProvince);
+                //记录日志-当前院校
+                OperationLog log_currentUniversity = new OperationLog(operationLog);
+                log_currentUniversity.setColumnEN("currentUniversity");
+                log_currentUniversity.setColumnCH("当前院校");
+                log_currentUniversity.setBefore(oldCurrentUniversity);
+                log_currentUniversity.setAfter(schoolRoll.getMajorUniversity());
+                operationLogs.add(log_currentUniversity);
+
             } else if (cramStart != null && now.after(cramStart) && cramEnd != null && now.before(cramEnd)) {
                 schoolRoll.setState("BB0002");
                 schoolRoll.setCurrentProvince(schoolRoll.getCramProvince());
                 schoolRoll.setCurrentUniversity(schoolRoll.getCramUniversity());
-                schoolRoll.setLeaveDate(null);
-                schoolRoll.setLeaveReason(null);
-                schoolRoll.setRegisterState("AW0004");
-                schoolRoll.setRegisted("AX0002");
-                schoolRoll.setRegisterYear(currentYear);
-                schoolRollService.updateSchoolRoll(schoolRoll);
-                //记录日志 学籍状态
-                List<OperationLog> operationLogState = new ArrayList<OperationLog>();
-                operationLog.setColumnEN("STATE");
-                operationLog.setColumnCH("学籍状态");
-                operationLog.setBefore(oldState);
-                operationLog.setAfter("BB0002");
-                operationLogState.add(operationLog);
-                operationLogService.saveOperationLog(operationLogState);
+                //记录日志-学籍状态
+                OperationLog log_state = new OperationLog(operationLog);
+                log_state.setColumnEN("STATE");
+                log_state.setColumnCH("学籍状态");
+                log_state.setBefore(oldState);
+                log_state.setAfter("BB0002");
+                operationLogs.add(log_state);
+                //记录日志-当前省市
+                OperationLog log_currentProvince = new OperationLog(operationLog);
+                log_currentProvince.setColumnEN("currentProvince");
+                log_currentProvince.setColumnCH("当前省市");
+                log_currentProvince.setBefore(oldCurrentProvince);
+                log_currentProvince.setAfter(schoolRoll.getCramProvince());
+                operationLogs.add(log_currentProvince);
+                //记录日志-当前院校
+                OperationLog log_currentUniversity = new OperationLog(operationLog);
+                log_currentUniversity.setColumnEN("currentUniversity");
+                log_currentUniversity.setColumnCH("当前院校");
+                log_currentUniversity.setBefore(oldCurrentUniversity);
+                log_currentUniversity.setAfter(schoolRoll.getCramUniversity());
+                operationLogs.add(log_currentUniversity);
             }
-            //记录日志 离华日期
-            if (oldLeaveDate != null) {
-                String oldLeaveDateStr = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(oldLeaveDate);
-                List<OperationLog> operationLogLeaveDate = new ArrayList<OperationLog>();
-                operationLog.setColumnEN("LEAVEDATE");
-                operationLog.setColumnCH("离华日期");
-                operationLog.setBefore(oldLeaveDateStr);
-                operationLog.setAfter(null);
-                operationLogLeaveDate.add(operationLog);
-                operationLogService.saveOperationLog(operationLogLeaveDate);
-            }
-            //记录日志 离华原因
-            if (oldLeaveReason != null && oldLeaveReason != "") {
-                List<OperationLog> operationLogLeaveReason = new ArrayList<OperationLog>();
-                operationLog.setColumnEN("LEAVEREASON");
-                operationLog.setColumnCH("离华原因");
-                operationLog.setBefore(oldLeaveReason);
-                operationLog.setAfter(null);
-                operationLogLeaveReason.add(operationLog);
-                operationLogService.saveOperationLog(operationLogLeaveReason);
-            }
+            schoolRollService.updateSchoolRoll(schoolRoll);
+            operationLogService.saveOperationLog(operationLogs);
         }
     }
 //    @SuppressWarnings("unchecked")
@@ -771,14 +924,14 @@ public class StudentService extends BaseService {
                 log_currentUniversity.setAfter(cramUniversity);
                 operationLogs.add(log_currentUniversity);
 
-                retValue.put("isModify","1"); // 标志位，是否修改了学籍状态和当前省市院校
-            }else{
-                retValue.put("isModify","0"); // 标志位，是否修改了学籍状态和当前省市院校
+                retValue.put("isModify", "1"); // 标志位，是否修改了学籍状态和当前省市院校
+            } else {
+                retValue.put("isModify", "0"); // 标志位，是否修改了学籍状态和当前省市院校
             }
             schoolRollService.updateSchoolRoll(schoolRoll);
             // 保存日志
             operationLogService.saveOperationLog(operationLogs);
-            retValue.put("flag","1");
+            retValue.put("flag", "1");
             return retValue;
         } catch (Exception e) {
             e.printStackTrace();
@@ -786,6 +939,7 @@ public class StudentService extends BaseService {
         return retValue;
 
     }
+
     @Transactional
     // 一键修改专业省市 专业院校 专业开始日期 预计毕业日期 需联动修改学籍状态 当前省市 当前院校（学籍状态若为离华或者是否报到为否，则不联动修改学籍状态和当前院校）
     public Map<String, String> modifyStudentMajorInfo(String id, String majorProvince, String majorUniversity, Date majorDateBegin, Date planLeaveDate, List<OperationLog> operationLogs) {
@@ -838,14 +992,14 @@ public class StudentService extends BaseService {
                 log_currentUniversity.setAfter(majorUniversity);
                 operationLogs.add(log_currentUniversity);
 
-                retValue.put("isModify","1"); // 标志位，是否修改了学籍状态和当前省市院校
-            }else{
-                retValue.put("isModify","0"); // 标志位，是否修改了学籍状态和当前省市院校
+                retValue.put("isModify", "1"); // 标志位，是否修改了学籍状态和当前省市院校
+            } else {
+                retValue.put("isModify", "0"); // 标志位，是否修改了学籍状态和当前省市院校
             }
             schoolRollService.updateSchoolRoll(schoolRoll);
             // 保存日志
             operationLogService.saveOperationLog(operationLogs);
-            retValue.put("flag","1");
+            retValue.put("flag", "1");
             return retValue;
         } catch (Exception e) {
             e.printStackTrace();
@@ -853,9 +1007,10 @@ public class StudentService extends BaseService {
         return retValue;
 
     }
+
     @Transactional
     // 一键清空汉补省市 汉补院校 汉补开始日期 汉补结束日期
-    public Map<String, String> removeStudentCramInfo(String id,List<OperationLog> operationLogs) {
+    public Map<String, String> removeStudentCramInfo(String id, List<OperationLog> operationLogs) {
         Map<String, String> retValue = new HashMap<String, String>();
         retValue.put("flag", "0");
         try {
@@ -871,7 +1026,7 @@ public class StudentService extends BaseService {
             schoolRollService.updateSchoolRoll(schoolRoll);
             // 保存日志
             operationLogService.saveOperationLog(operationLogs);
-            retValue.put("flag","1");
+            retValue.put("flag", "1");
             return retValue;
         } catch (Exception e) {
             e.printStackTrace();

@@ -13,6 +13,7 @@ import javax.persistence.Table;
 @Table(name = "SCMS_D_CFG_ORDER")
 public class OrderCondition extends Condition {
     private String id;
+    private Integer sequence;
     private Configuration config;
     private String table;
     private String column;
@@ -26,6 +27,10 @@ public class OrderCondition extends Condition {
     public void setId(String id) {
         this.id = id;
     }
+
+    @Column(name = "SEQ")
+    public Integer getSequence() {return sequence;}
+    public void setSequence(Integer seq) {this.sequence = seq;}
 
     @ManyToOne
     @JoinColumn(name = "CFG_ID")
