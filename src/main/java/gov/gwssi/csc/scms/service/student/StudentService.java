@@ -903,27 +903,32 @@ public class StudentService extends BaseService {
                 schoolRoll.setCurrentProvince(cramProvince);
                 schoolRoll.setCurrentUniversity(cramUniversity);
                 //记录日志 学籍状态
-                OperationLog log_state = new OperationLog(operationLogs.get(0));
-                log_state.setColumnEN("STATE");
-                log_state.setColumnCH("学籍状态");
-                log_state.setBefore(oldState);
-                log_state.setAfter("BB0002");
-                operationLogs.add(log_state);
+                if(!"BB0002".equals(oldState)){
+                    OperationLog log_state = new OperationLog(operationLogs.get(0));
+                    log_state.setColumnEN("STATE");
+                    log_state.setColumnCH("学籍状态");
+                    log_state.setBefore(oldState);
+                    log_state.setAfter("BB0002");
+                    operationLogs.add(log_state);
+                }
                 //记录日志 当前省市
-                OperationLog log_currentProvince = new OperationLog(operationLogs.get(0));
-                log_currentProvince.setColumnEN("CurrentProvince");
-                log_currentProvince.setColumnCH("当前省市");
-                log_currentProvince.setBefore(oldCurrentProvince);
-                log_currentProvince.setAfter(cramProvince);
-                operationLogs.add(log_currentProvince);
+                if(!cramProvince.equals(oldCurrentProvince)){
+                    OperationLog log_currentProvince = new OperationLog(operationLogs.get(0));
+                    log_currentProvince.setColumnEN("CurrentProvince");
+                    log_currentProvince.setColumnCH("当前省市");
+                    log_currentProvince.setBefore(oldCurrentProvince);
+                    log_currentProvince.setAfter(cramProvince);
+                    operationLogs.add(log_currentProvince);
+                }
                 //记录日志 当前院校
-                OperationLog log_currentUniversity = new OperationLog(operationLogs.get(0));
-                log_currentUniversity.setColumnEN("CurrentUniversity");
-                log_currentUniversity.setColumnCH("当前院校");
-                log_currentUniversity.setBefore(oldCurrentUniversity);
-                log_currentUniversity.setAfter(cramUniversity);
-                operationLogs.add(log_currentUniversity);
-
+                if(!cramUniversity.equals(oldCurrentUniversity)){
+                    OperationLog log_currentUniversity = new OperationLog(operationLogs.get(0));
+                    log_currentUniversity.setColumnEN("CurrentUniversity");
+                    log_currentUniversity.setColumnCH("当前院校");
+                    log_currentUniversity.setBefore(oldCurrentUniversity);
+                    log_currentUniversity.setAfter(cramUniversity);
+                    operationLogs.add(log_currentUniversity);
+                }
                 retValue.put("isModify", "1"); // 标志位，是否修改了学籍状态和当前省市院校
             } else {
                 retValue.put("isModify", "0"); // 标志位，是否修改了学籍状态和当前省市院校
@@ -971,27 +976,32 @@ public class StudentService extends BaseService {
                 schoolRoll.setCurrentProvince(majorProvince);
                 schoolRoll.setCurrentUniversity(majorUniversity);
                 //记录日志 学籍状态
-                OperationLog log_state = new OperationLog(operationLogs.get(0));
-                log_state.setColumnEN("STATE");
-                log_state.setColumnCH("学籍状态");
-                log_state.setBefore(oldState);
-                log_state.setAfter("BB0003");
-                operationLogs.add(log_state);
+                if(!"BB0003".equals(oldState)){
+                    OperationLog log_state = new OperationLog(operationLogs.get(0));
+                    log_state.setColumnEN("STATE");
+                    log_state.setColumnCH("学籍状态");
+                    log_state.setBefore(oldState);
+                    log_state.setAfter("BB0003");
+                    operationLogs.add(log_state);
+                }
                 //记录日志 当前省市
-                OperationLog log_currentProvince = new OperationLog(operationLogs.get(0));
-                log_currentProvince.setColumnEN("CurrentProvince");
-                log_currentProvince.setColumnCH("当前省市");
-                log_currentProvince.setBefore(oldCurrentProvince);
-                log_currentProvince.setAfter(majorProvince);
-                operationLogs.add(log_currentProvince);
+                if(!majorProvince.equals(oldCurrentProvince)){
+                    OperationLog log_currentProvince = new OperationLog(operationLogs.get(0));
+                    log_currentProvince.setColumnEN("CurrentProvince");
+                    log_currentProvince.setColumnCH("当前省市");
+                    log_currentProvince.setBefore(oldCurrentProvince);
+                    log_currentProvince.setAfter(majorProvince);
+                    operationLogs.add(log_currentProvince);
+                }
                 //记录日志 当前院校
-                OperationLog log_currentUniversity = new OperationLog(operationLogs.get(0));
-                log_currentUniversity.setColumnEN("CurrentUniversity");
-                log_currentUniversity.setColumnCH("当前院校");
-                log_currentUniversity.setBefore(oldCurrentUniversity);
-                log_currentUniversity.setAfter(majorUniversity);
-                operationLogs.add(log_currentUniversity);
-
+                if(!majorUniversity.equals(oldCurrentUniversity)){
+                    OperationLog log_currentUniversity = new OperationLog(operationLogs.get(0));
+                    log_currentUniversity.setColumnEN("CurrentUniversity");
+                    log_currentUniversity.setColumnCH("当前院校");
+                    log_currentUniversity.setBefore(oldCurrentUniversity);
+                    log_currentUniversity.setAfter(majorUniversity);
+                    operationLogs.add(log_currentUniversity);
+                }
                 retValue.put("isModify", "1"); // 标志位，是否修改了学籍状态和当前省市院校
             } else {
                 retValue.put("isModify", "0"); // 标志位，是否修改了学籍状态和当前省市院校
