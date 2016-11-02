@@ -6,6 +6,8 @@ import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.log.OperationLog;
 import gov.gwssi.csc.scms.domain.regstatistics.RegStatistics;
 import gov.gwssi.csc.scms.domain.user.User;
+import gov.gwssi.csc.scms.service.UploadFileServer;
+import gov.gwssi.csc.scms.service.export.ExportService;
 import gov.gwssi.csc.scms.service.log.LogQueryException;
 import gov.gwssi.csc.scms.service.log.NoSupportedUserException;
 import gov.gwssi.csc.scms.service.log.OperationLogService;
@@ -16,14 +18,18 @@ import gov.gwssi.csc.scms.service.user.UserService;
 import gov.gwssi.csc.scms.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +47,8 @@ public class RegStatisticsController {
     private RegStatisticsService regStatisticsService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private ExportService exportService;
     private static final String HEADER_AUTHORIZATION = JWTUtil.HEADER_AUTHORIZATION;
 
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
@@ -83,5 +91,48 @@ public class RegStatisticsController {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    // 跨域请求
+    @RequestMapping(
+            value = "/export/{stuType}/{sameId}",
+            method = RequestMethod.OPTIONS
+    )
+    public ResponseEntity exportRegstatisticsOptions() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        List<HttpMethod> methods = new ArrayList<HttpMethod>();
+        methods.add(HttpMethod.GET);
+        methods.add(HttpMethod.POST);
+        methods.add(HttpMethod.DELETE);
+        methods.add(HttpMethod.PUT);
+        methods.add(HttpMethod.PATCH);
+        httpHeaders.setAccessControlAllowMethods(methods);
+        httpHeaders.setAccessControlAllowOrigin("*");
+        List<String> headers = new ArrayList<String>();
+        headers.add("authorization");
+        httpHeaders.setAccessControlAllowHeaders(headers);
+        return new ResponseEntity(httpHeaders, HttpStatus.OK);
+    }
+    /**
+     *增加全部导出
+     */
+    @RequestMapping(
+            value = "/export/{stuType}/{sameId}",
+            method = RequestMethod.GET
+    )
+    public Map<String,Object> exportAllScholarshipX(
+            @RequestHeader(value = HEADER_AUTHORIZATION) String header,
+            @PathVariable("stuType") String stuType,
+            @PathVariable("sameId") String sameId) throws IOException {
+        byte[] bytes = null;
+        String tableName = "1".equals(stuType)  ? "v_exp_newstudent" : "v_exp_oldstudent";
+        String id[] = { sameId };
+        bytes = exportService.exportByFilter(tableName, "0", id);
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
+        //上传至文件服务器
+        String file = UploadFileServer.uploadFile(fileName, bytes);
+        Map<String, Object> fileMap = new ObjectMapper().readValue(file, Map.class);
+        return fileMap;
     }
 }
