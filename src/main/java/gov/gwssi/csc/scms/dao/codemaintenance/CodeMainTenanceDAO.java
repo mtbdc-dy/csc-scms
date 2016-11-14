@@ -65,6 +65,7 @@ public class CodeMainTenanceDAO extends BaseDAO
             codeDetailResult1.setTABLEEN(codeDetailResult.getTABLEEN());
             codeDetailResult1.setFULLNAME(map.get("updateby".toUpperCase()).toString());
             codeDetailResult1.setPARENTID(map.get("parentid".toUpperCase()).toString());
+            codeDetailResult1.setPROJECTCODE(map.get("projectcode".toUpperCase()).toString());
             System.out.println(map.get("projectid".toUpperCase()).toString());
             try
             {
@@ -239,14 +240,14 @@ public class CodeMainTenanceDAO extends BaseDAO
             HashMap          map = (HashMap) codeList.get(0);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             codeDetailResult1.setID(map.get("projectid".toUpperCase()).toString());
-            codeDetailResult1.setFUNDATTR(map.get("APPR".toUpperCase()).toString());
+            codeDetailResult1.setFUNDATTR(map.get("APPR".toUpperCase())!= null?map.get("APPR".toUpperCase()).toString():"");
             codeDetailResult1.setENABLED(map.get("enabled".toUpperCase()).toString());
             codeDetailResult1.setNAME(map.get("namech".toUpperCase()).toString());
             codeDetailResult1.setTABLEEN(codeDetailResult.getTABLEEN());
             codeDetailResult1.setFULLNAME(map.get("updateby".toUpperCase()).toString());
             codeDetailResult1.setPARENTID(map.get("parentid".toUpperCase()).toString());
             // 新增「项目编码」 by WangZishi 20160712
-            codeDetailResult1.setPROJECTCODE(map.get("projectcode".toUpperCase()).toString());
+            codeDetailResult1.setPROJECTCODE(map.get("projectcode".toUpperCase())!=null?map.get("projectcode".toUpperCase()).toString():"");
             System.out.println(map.get("projectid".toUpperCase()).toString());
             try
             {
