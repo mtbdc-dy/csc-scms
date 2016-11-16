@@ -65,7 +65,7 @@ public class CodeMainTenanceDAO extends BaseDAO
             codeDetailResult1.setTABLEEN(codeDetailResult.getTABLEEN());
             codeDetailResult1.setFULLNAME(map.get("updateby".toUpperCase()).toString());
             codeDetailResult1.setPARENTID(map.get("parentid".toUpperCase()).toString());
-            codeDetailResult1.setPROJECTCODE(map.get("projectcode".toUpperCase()).toString());
+            codeDetailResult1.setPROJECTCODE(map.get("projectcode".toUpperCase())==null?"":map.get("projectcode".toUpperCase()).toString());
             System.out.println(map.get("projectid".toUpperCase()).toString());
             try
             {
@@ -609,10 +609,11 @@ public class CodeMainTenanceDAO extends BaseDAO
         } else if (PROJECTS.equals(codeDetailResult.getTABLEEN()))
         {
             zdz = super.getDicIdByClassType(type);
+            String projectCode = codeDetailResult.getPROJECTCODE() == null ? "''" :"'" +codeDetailResult.getPROJECTCODE()+"'";
             sql = "insert into " + codeDetailResult.getTABLEEN()
                     // (PROJECTID, NAMEEN, NAMECH, APPR, PARENTID, TYPE, ENABLED, UPDATEBY, UPDATED, PROJECTCODE, CSC_OFFSET_LEFT, CSC_DATA, CSC_OFFSET_RIGHT, APP_DATE_START, APP_DATE_END, APP_OFFSET_START1, APP_OFFSET_END)
                     + "(projectId, nameEn, nameCh, parentId, type, enabled, updateBy, updated, projectCode)"
-                    + " values(f_scms_dim_id('" + type + "'), '', '" + codeDetailResult.getNAME() + "', '" + codeDetailResult.getPARENTID() + "', '" + type + "', '" + codeDetailResult.getENABLED() + "', '" + codeDetailResult.getFULLNAME() + "', SYSDATE, '" + codeDetailResult.getPROJECTCODE() + "')";
+                    + " values(f_scms_dim_id('" + type + "'), '', '" + codeDetailResult.getNAME() + "', '" + codeDetailResult.getPARENTID() + "', '" + type + "', '" + codeDetailResult.getENABLED() + "', '" + codeDetailResult.getFULLNAME() + "', SYSDATE, " + projectCode + ")";
             int n = super.updateBySql(sql);
             if (n == 1)
                 return zdz;
