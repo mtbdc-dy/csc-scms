@@ -5,12 +5,14 @@ import gov.gwssi.csc.scms.domain.query.CodeDetailResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lzs on 2015/7/13.
@@ -420,24 +422,20 @@ public class CodeMainTenanceDAO extends BaseDAO
         CodeDetailResult codeDetailResult1 = new CodeDetailResult();
         if (PROJECTS.equals(codeDetailResult.getTABLEEN()))
         {
-            if ("1".equals(codeDetailResult.getENABLED()))
+
+            sql = "update dim_project t set t.appr = '"+ codeDetailResult.getFUNDATTR()
+                    + "', t.namech ='" + codeDetailResult.getNAME()
+                    + "', t.enabled ='" + codeDetailResult.getENABLED() + "', t.updateby='" + codeDetailResult.getFULLNAME()
+                    + "', t.updated=sysdate, t.parentid='" + codeDetailResult.getPARENTID()
+                    + "', t.projectCode='" + codeDetailResult.getPROJECTCODE()
+                    + "' where t.projectid = '" + codeDetailResult.getID() + "'";
+            System.out.println("sql = " + sql);
+            int m = super.updateBySql(sql);
+            if (m == 0)
             {
-                sql = "update dim_project t set t.appr = '"+ codeDetailResult.getFUNDATTR()
-                        + "', t.namech ='" + codeDetailResult.getNAME()
-                        + "', t.enabled ='1', t.updateby='" + codeDetailResult.getFULLNAME()
-                        + "', t.updated=sysdate, t.parentid='" + codeDetailResult.getPARENTID()
-                        + "', t.projectCode='" + codeDetailResult.getPROJECTCODE()
-                        + "' where t.projectid = '" + codeDetailResult.getID() + "'";
-                System.out.println("sql = " + sql);
-                int m = super.updateBySql(sql);
-                if (m == 0)
-                {
-                    throw new RuntimeException("代码维护保存失败");
-                } else
-                {
-                    return codeDetailResult;
-                }
-            } else
+                throw new RuntimeException("代码维护保存失败");
+            }
+            if ("0".equals(codeDetailResult.getENABLED()))
             {
                 List list = new ArrayList();
                 list.add(codeDetailResult.getID());
@@ -445,22 +443,18 @@ public class CodeMainTenanceDAO extends BaseDAO
                 list.add(codeDetailResult.getFULLNAME());
 
                 String str = super.doStatementForRtn("p_scms_delete_dim", list);
-                return codeDetailResult;
             }
+            return codeDetailResult;
         } else if (CONTINENTS.equals(codeDetailResult.getTABLEEN()))
         {
-            if ("1".equals(codeDetailResult.getENABLED()))
+
+            sql = "update dim_region t set t.namech ='" + codeDetailResult.getNAME() + "',t.enabled ='" + codeDetailResult.getENABLED() + "',t.updateby='" + codeDetailResult.getFULLNAME() + "',t.updated =sysdate where t.regionid = '" + codeDetailResult.getID() + "'";
+            int m = super.updateBySql(sql);
+            if (m == 0)
             {
-                sql = "update dim_region t set t.namech ='" + codeDetailResult.getNAME() + "',t.enabled ='1',t.updateby='" + codeDetailResult.getFULLNAME() + "',t.updated =sysdate where t.regionid = '" + codeDetailResult.getID() + "'";
-                int m = super.updateBySql(sql);
-                if (m == 0)
-                {
-                    throw new RuntimeException("代码维护保存失败");
-                } else
-                {
-                    return codeDetailResult;
-                }
-            } else
+                throw new RuntimeException("代码维护保存失败");
+            }
+            if ("0".equals(codeDetailResult.getENABLED()))
             {
                 List list = new ArrayList();
                 list.add(codeDetailResult.getID());
@@ -468,22 +462,19 @@ public class CodeMainTenanceDAO extends BaseDAO
                 list.add(codeDetailResult.getFULLNAME());
 
                 String str = super.doStatementForRtn("p_scms_delete_dim", list);
-                return codeDetailResult;
+
             }
+            return codeDetailResult;
         } else if (SUBJECTS.equals(codeDetailResult.getTABLEEN()))
         {
-            if ("1".equals(codeDetailResult.getENABLED()))
+
+            sql = "update dim_subject t set t.appr ='"+ codeDetailResult.getFUNDSTANDARD() +"', t.SUBJECTNAMECH ='" + codeDetailResult.getNAME() + "',t.enabled ='" + codeDetailResult.getENABLED() + "',t.updateby='" + codeDetailResult.getFULLNAME() + "',t.updated =sysdate where t.subjectid = '" + codeDetailResult.getID() + "'";
+            int m = super.updateBySql(sql);
+            if (m == 0)
             {
-                sql = "update dim_subject t set t.appr ='"+ codeDetailResult.getFUNDSTANDARD() +"', t.SUBJECTNAMECH ='" + codeDetailResult.getNAME() + "',t.enabled ='1',t.updateby='" + codeDetailResult.getFULLNAME() + "',t.updated =sysdate where t.subjectid = '" + codeDetailResult.getID() + "'";
-                int m = super.updateBySql(sql);
-                if (m == 0)
-                {
-                    throw new RuntimeException("代码维护保存失败");
-                } else
-                {
-                    return codeDetailResult;
-                }
-            } else
+                throw new RuntimeException("代码维护保存失败");
+            }
+            if ("0".equals(codeDetailResult.getENABLED()))
             {
                 List list = new ArrayList();
                 list.add(codeDetailResult.getID());
@@ -491,99 +482,84 @@ public class CodeMainTenanceDAO extends BaseDAO
                 list.add(codeDetailResult.getFULLNAME());
 
                 String str = super.doStatementForRtn("p_scms_delete_dim", list);
-                return codeDetailResult;
+
             }
+            return codeDetailResult;
         } else if (ABNORMAL.equals(codeDetailResult.getTABLEEN()))
         {
-            if ("1".equals(codeDetailResult.getENABLED()))
+
+            sql = "update dim_anml t set t.ANML ='" + codeDetailResult.getNAME() + "',t.enabled ='" + codeDetailResult.getENABLED() + "',t.updateby='" + codeDetailResult.getFULLNAME() + "',t.updated =sysdate where t.anmlid = '" + codeDetailResult.getID() + "'";
+            int m = super.updateBySql(sql);
+            if (m == 0)
             {
-                sql = "update dim_anml t set t.ANML ='" + codeDetailResult.getNAME() + "',t.enabled ='1',t.updateby='" + codeDetailResult.getFULLNAME() + "',t.updated =sysdate where t.anmlid = '" + codeDetailResult.getID() + "'";
-                int m = super.updateBySql(sql);
-                if (m == 0)
-                {
-                    throw new RuntimeException("代码维护保存失败");
-                } else
-                {
-                    return codeDetailResult;
-                }
-            } else
+                throw new RuntimeException("代码维护保存失败");
+            }
+            if ("0".equals(codeDetailResult.getENABLED()))
             {
                 List list = new ArrayList();
                 list.add(codeDetailResult.getID());
                 list.add("dim_anml");
                 list.add(codeDetailResult.getFULLNAME());
-
                 String str = super.doStatementForRtn("p_scms_delete_dim", list);
-                return codeDetailResult;
             }
+            return codeDetailResult;
         } else if (UNIVERSITIES.equals(codeDetailResult.getTABLEEN()))
         {
-            if ("1".equals(codeDetailResult.getENABLED()))
+
+            sql = "update dim_univ t set t.UNIV ='" + codeDetailResult.getNAME() + "',t.enabled ='" + codeDetailResult.getENABLED() + "',t.updateby='" + codeDetailResult.getFULLNAME() + "',t.updated =sysdate,t.admindept = '" + codeDetailResult.getADMINDEPT() + "',t.type = '" + codeDetailResult.getTYPE() + "',t.code = '" + codeDetailResult.getCODE() + "' where t.univid = '" + codeDetailResult.getID() + "'";
+            int m = super.updateBySql(sql);
+            if (m == 0)
             {
-                sql = "update dim_univ t set t.UNIV ='" + codeDetailResult.getNAME() + "',t.enabled ='1',t.updateby='" + codeDetailResult.getFULLNAME() + "',t.updated =sysdate,t.admindept = '" + codeDetailResult.getADMINDEPT() + "',t.type = '" + codeDetailResult.getTYPE() + "',t.code = '" + codeDetailResult.getCODE() + "' where t.univid = '" + codeDetailResult.getID() + "'";
-                int m = super.updateBySql(sql);
-                if (m == 0)
-                {
-                    throw new RuntimeException("代码维护保存失败");
-                } else
-                {
-                    return codeDetailResult;
-                }
-            } else
+                throw new RuntimeException("代码维护保存失败");
+            }
+            if ("0".equals(codeDetailResult.getENABLED()))
             {
                 List list = new ArrayList();
                 list.add(codeDetailResult.getID());
                 list.add("dim_univ");
                 list.add(codeDetailResult.getFULLNAME());
-
                 String str = super.doStatementForRtn("p_scms_delete_dim", list);
-                return codeDetailResult;
             }
+            return codeDetailResult;
         } else if (TRANSLATE.equals(codeDetailResult.getTABLEEN()))
         {
-            if ("1".equals(codeDetailResult.getENABLED()))
+
+            sql = "update dim_translate t set t.NAMECH ='" + codeDetailResult.getNAME() + "',t.enabled ='" + codeDetailResult.getENABLED() + "',t.updateby='" + codeDetailResult.getFULLNAME() + "',t.updated =sysdate where t.translateid = '" + codeDetailResult.getID() + "'";
+            int m = super.updateBySql(sql);
+            if (m == 0)
             {
-                sql = "update dim_translate t set t.NAMECH ='" + codeDetailResult.getNAME() + "',t.enabled ='1',t.updateby='" + codeDetailResult.getFULLNAME() + "',t.updated =sysdate where t.translateid = '" + codeDetailResult.getID() + "'";
-                int m = super.updateBySql(sql);
-                if (m == 0)
-                {
-                    throw new RuntimeException("代码维护保存失败");
-                } else
-                {
-                    return codeDetailResult;
-                }
-            } else
+                throw new RuntimeException("代码维护保存失败");
+            }
+            if ("0".equals(codeDetailResult.getENABLED()))
             {
                 List list = new ArrayList();
                 list.add(codeDetailResult.getID());
                 list.add("dim_translate");
                 list.add(codeDetailResult.getFULLNAME());
                 String str = super.doStatementForRtn("p_scms_delete_dim", list);
-                return codeDetailResult;
+
             }
+            return codeDetailResult;
 
         } else if (DEPT.equals(codeDetailResult.getTABLEEN()))
         {
-            if ("1".equals(codeDetailResult.getENABLED()))
+
+            sql = "update dim_dept t set t.NAMECH ='" + codeDetailResult.getNAME() + "',t.enabled ='" + codeDetailResult.getENABLED() + "',t.updateby='" + codeDetailResult.getFULLNAME() + "',t.updated =sysdate where t.deptid = '" + codeDetailResult.getID() + "'";
+            int m = super.updateBySql(sql);
+            if (m == 0)
             {
-                sql = "update dim_dept t set t.NAMECH ='" + codeDetailResult.getNAME() + "',t.enabled ='1',t.updateby='" + codeDetailResult.getFULLNAME() + "',t.updated =sysdate where t.deptid = '" + codeDetailResult.getID() + "'";
-                int m = super.updateBySql(sql);
-                if (m == 0)
-                {
-                    throw new RuntimeException("代码维护保存失败");
-                } else
-                {
-                    return codeDetailResult;
-                }
-            } else
+                throw new RuntimeException("代码维护保存失败");
+            }
+            if ("0".equals(codeDetailResult.getENABLED()))
             {
                 List list = new ArrayList();
                 list.add(codeDetailResult.getID());
                 list.add("dim_dept");
                 list.add(codeDetailResult.getFULLNAME());
                 String str = super.doStatementForRtn("p_scms_delete_dim", list);
-                return codeDetailResult;
+
             }
+            return codeDetailResult;
 
         } else
         {
@@ -649,7 +625,9 @@ public class CodeMainTenanceDAO extends BaseDAO
         } else if (UNIVERSITIES.equals(codeDetailResult.getTABLEEN()))
         {
             zdz = super.getDicIdByClassType(type);
-            sql = "insert into " + codeDetailResult.getTABLEEN() + " (UNIVID,UNIV,PROVINCE,CODE,TYPE,ADMINDEPT,ENABLED,UPDATEBY,UPDATED) values(f_scms_dim_id('" + type + "'),'" + codeDetailResult.getNAME() + "','" + codeDetailResult.getPARENTID() + "','" + codeDetailResult.getCODE() + "','" + codeDetailResult.getTYPE() + "','" + codeDetailResult.getADMINDEPT() + "','" + codeDetailResult.getENABLED() + "','" + codeDetailResult.getFULLNAME() + "',SYSDATE)";
+            Map map = super.getJdbcTemplate().queryForMap("select MAX(CUSTOMSORT) maxsort from " + codeDetailResult.getTABLEEN());
+            int maxSort = ((BigDecimal) map.get("maxsort")).intValue() + 1;
+            sql = "insert into " + codeDetailResult.getTABLEEN() + " (UNIVID,UNIV,PROVINCE,CODE,TYPE,ADMINDEPT,ENABLED,UPDATEBY,UPDATED,CUSTOMSORT) values(f_scms_dim_id('" + type + "'),'" + codeDetailResult.getNAME() + "','" + codeDetailResult.getPARENTID() + "','" + codeDetailResult.getCODE() + "','" + codeDetailResult.getTYPE() + "','" + codeDetailResult.getADMINDEPT() + "','" + codeDetailResult.getENABLED() + "','" + codeDetailResult.getFULLNAME() + "',SYSDATE,"+ maxSort +")";
             int n = super.updateBySql(sql);
             if (n == 1)
             {
