@@ -207,4 +207,16 @@ public class CodeMainTenanceSpecs extends BaseService {
             }
         };
     }
+    public static Specification<CodemaintenanceAgency> filterIsLikeAgency() {
+        return new Specification<CodemaintenanceAgency>() {
+
+            @Override
+            public Predicate toPredicate(Root<CodemaintenanceAgency> codeMainTenance, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                Predicate predicate = cb.conjunction();
+
+                return predicate;
+            }
+        };
+    }
+
 }

@@ -28,6 +28,7 @@ public class CodeMainTenanceDAO extends BaseDAO
     public static final String UNIVERSITIES = "dim_univ";
     public static final String TRANSLATE    = "dim_translate";
     public static final String DEPT         = "dim_dept";
+    public static final String AGENCY       = "dim_agency";
 
     //获取代码维护列表
     public List getAllCodeList(String tableName, String chinaName)
@@ -221,7 +222,8 @@ public class CodeMainTenanceDAO extends BaseDAO
             }
             System.out.println(codeDetailResult1.getID());
             return codeDetailResult1;
-        } else
+        }
+        else
         {
             return null;
         }
@@ -422,13 +424,13 @@ public class CodeMainTenanceDAO extends BaseDAO
         CodeDetailResult codeDetailResult1 = new CodeDetailResult();
         if (PROJECTS.equals(codeDetailResult.getTABLEEN()))
         {
-
+            String projectCode = codeDetailResult.getPROJECTCODE() == null ? "''" :"'" +codeDetailResult.getPROJECTCODE()+"'";
             sql = "update dim_project t set t.appr = '"+ codeDetailResult.getFUNDATTR()
                     + "', t.namech ='" + codeDetailResult.getNAME()
                     + "', t.enabled ='" + codeDetailResult.getENABLED() + "', t.updateby='" + codeDetailResult.getFULLNAME()
                     + "', t.updated=sysdate, t.parentid='" + codeDetailResult.getPARENTID()
-                    + "', t.projectCode='" + codeDetailResult.getPROJECTCODE()
-                    + "' where t.projectid = '" + codeDetailResult.getID() + "'";
+                    + "', t.projectCode= " + projectCode
+                    + " where t.projectid = '" + codeDetailResult.getID() + "'";
             System.out.println("sql = " + sql);
             int m = super.updateBySql(sql);
             if (m == 0)
@@ -561,7 +563,15 @@ public class CodeMainTenanceDAO extends BaseDAO
             }
             return codeDetailResult;
 
-        } else
+        } else if(AGENCY.equals(codeDetailResult.getTABLEEN())){
+            sql = "update dim_agency set country = '" + codeDetailResult.getPARENTID() + "',code = '" + codeDetailResult.getCODE() + "',agency='" + codeDetailResult.getNAME() + "',enabled='" + codeDetailResult.getENABLED() + "',updateby='" + codeDetailResult.getFULLNAME() + "',updateat = sysdate where agencyid = '" + codeDetailResult.getID() + "'";
+            int m = super.updateBySql(sql);
+            if(m == 0){
+                throw new RuntimeException("代码维护保存失败");
+            }
+            return codeDetailResult;
+        }
+        else
         {
             throw new RuntimeException("代码维护保存失败");
         }
@@ -588,8 +598,8 @@ public class CodeMainTenanceDAO extends BaseDAO
             String projectCode = codeDetailResult.getPROJECTCODE() == null ? "''" :"'" +codeDetailResult.getPROJECTCODE()+"'";
             sql = "insert into " + codeDetailResult.getTABLEEN()
                     // (PROJECTID, NAMEEN, NAMECH, APPR, PARENTID, TYPE, ENABLED, UPDATEBY, UPDATED, PROJECTCODE, CSC_OFFSET_LEFT, CSC_DATA, CSC_OFFSET_RIGHT, APP_DATE_START, APP_DATE_END, APP_OFFSET_START1, APP_OFFSET_END)
-                    + "(projectId, nameEn, nameCh, parentId, type, enabled, updateBy, updated, projectCode)"
-                    + " values(f_scms_dim_id('" + type + "'), '', '" + codeDetailResult.getNAME() + "', '" + codeDetailResult.getPARENTID() + "', '" + type + "', '" + codeDetailResult.getENABLED() + "', '" + codeDetailResult.getFULLNAME() + "', SYSDATE, " + projectCode + ")";
+                    + "(projectId, nameEn, nameCh, parentId, type, enabled, updateBy, updated, projectCode, appr)"
+                    + " values(f_scms_dim_id('" + type + "'), '', '" + codeDetailResult.getNAME() + "', '" + codeDetailResult.getPARENTID() + "', '" + type + "', '" + codeDetailResult.getENABLED() + "', '" + codeDetailResult.getFULLNAME() + "', SYSDATE, " + projectCode + ",'" + codeDetailResult.getFUNDATTR() + "')";
             int n = super.updateBySql(sql);
             if (n == 1)
                 return zdz;
@@ -605,7 +615,7 @@ public class CodeMainTenanceDAO extends BaseDAO
         } else if (SUBJECTS.equals(codeDetailResult.getTABLEEN()))
         {
             zdz = super.getDicIdByClassType(type);
-            sql = "insert into " + codeDetailResult.getTABLEEN() + " values(f_scms_dim_id('" + type + "'),'" + codeDetailResult.getNAME() + "','','" + type + "','" + codeDetailResult.getPARENTID() + "','" + codeDetailResult.getENABLED() + "','" + codeDetailResult.getFULLNAME() + "',SYSDATE)";
+            sql = "insert into " + codeDetailResult.getTABLEEN() + " values(f_scms_dim_id('" + type + "'),'" + codeDetailResult.getNAME() + "','','"+ codeDetailResult.getFUNDSTANDARD() +"','" + type + "','" + codeDetailResult.getPARENTID() + "','" + codeDetailResult.getENABLED() + "','" + codeDetailResult.getFULLNAME() + "',SYSDATE)";
             int n = super.updateBySql(sql);
             if (n == 1)
             {
@@ -644,7 +654,17 @@ public class CodeMainTenanceDAO extends BaseDAO
                 return zdz;
             }
             return "";
-        } else
+        } else if(AGENCY.equals(codeDetailResult.getTABLEEN())){
+            zdz = super.getDicIdByClassType(type);
+            sql = "insert into " + codeDetailResult.getTABLEEN() + "(AGENCYID,AGENCY,COUNTRY,ENABLED,UPDATEBY,UPDATEAT,CODE) values(f_scms_dim_id('" + type + "'),'" + codeDetailResult.getNAME() + "','" + codeDetailResult.getPARENTID() + "','" + codeDetailResult.getENABLED() + "','" + codeDetailResult.getFULLNAME() + "',SYSDATE,'"+ codeDetailResult.getCODE() +"')";
+            int n = super.updateBySql(sql);
+            if (n == 1)
+            {
+                return zdz;
+            }
+            return "";
+        }
+        else
         {
             return "";
         }

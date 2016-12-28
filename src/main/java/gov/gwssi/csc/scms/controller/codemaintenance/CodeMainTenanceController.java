@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -104,7 +105,7 @@ public class CodeMainTenanceController
             JsonBody     jBody  = new ObjectMapper().readValue(codeJson, JsonBody.class);
             codeDetailResult = mapper.readValue(jBody.getValue(), CodeDetailResult.class);
             codeDetailResult = codeMainTenanceService.saveCode(codeDetailResult);
-            codeDetailResult = codeMainTenanceService.selectCode(codeDetailResult);
+            //codeDetailResult = codeMainTenanceService.selectCode(codeDetailResult);
         } catch (Exception e)
         {
             e.printStackTrace();
@@ -134,29 +135,33 @@ public class CodeMainTenanceController
 
     // 保存新增的代码
     @RequestMapping(value = "/new", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
-    public CodeDetailResult saveNewDetailCode(@RequestParam(value = "type") String type, @RequestParam(value = "flag") String flag,
+    public Map<String,String> saveNewDetailCode(@RequestParam(value = "type") String type,
             @RequestParam(value = "dim") String dim, @RequestBody String codeJson)
     {
         //按照分页（默认）要求，返回列表内容
-        String           detailCodeList   = null;
         CodeDetailResult codeDetailResult = null;
+        Map<String,String> result = new HashMap<String,String>();
+        result.put("result","0");
         try
         {
             ObjectMapper mapper = new ObjectMapper();
-            // mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             boolean  rv    = true;
             JsonBody jbosy = new ObjectMapper().readValue(codeJson, JsonBody.class);
             codeDetailResult = mapper.readValue(jbosy.getValue(), CodeDetailResult.class);
             codeDetailResult.setTABLEEN(dim);
 
             String zdz = codeMainTenanceService.saveNewCode(codeDetailResult, type);
-            codeDetailResult = codeMainTenanceService.selectCode(codeDetailResult, zdz);
+            if(zdz != null){
+                result.put("result","1");
+                result.put("id", zdz);
+            }
+            //codeDetailResult = codeMainTenanceService.selectCode(codeDetailResult, zdz);
         } catch (Exception e)
         {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        return codeDetailResult;
+        return result;
     }
 
     //分页查询
@@ -213,7 +218,12 @@ public class CodeMainTenanceController
                 Page<CodemaintanenceRegionSecond> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceRegionSecondsPagingByFilter(page, size);
                 Page<Map<String, Object>>         mapPage              = codeMainTenancesPage.map(new CodeMainTenanceRegion2Converter());
                 return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
-            } else if ("dim_region".equals(name) && "P".equals(type))
+            } else if("dim_agency".equals(name) && "AI".equals(type)){
+                Page<CodemaintenanceAgency> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceAgencyPagingByFilter(page, size);
+                Page<Map<String, Object>>         mapPage              = codeMainTenancesPage.map(new CodeMainTenanceAgencyConverter());
+                return new ResponseEntity<Page<Map<String, Object>>>(mapPage, HttpStatus.OK);
+            }
+            else if ("dim_region".equals(name) && "P".equals(type))
             {
                 Page<CodemaintanenceRegionThird> codeMainTenancesPage = codeMainTenanceService.getCodemaintanenceRegionThirdsPagingByFilter(page, size);
                 Page<Map<String, Object>>        mapPage              = codeMainTenancesPage.map(new CodeMainTenanceRegion3Converter());
