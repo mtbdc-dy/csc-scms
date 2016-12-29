@@ -21,7 +21,7 @@ public class UploadFileServer {
         String returnContent = "";
         String BOUNDARY = "011000010111000001101001"; //boundary就是request头和上传文件内容的分隔符
         try {
-            URL url = new URL("http://asms-api-file:3000/api/v3/file/upload?fileName=" + fileName);
+            URL url = new URL("http://asms-web-nginx/api/v3/file/tmp?fileName=" + fileName);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("POST");
             con.setDoOutput(true);
