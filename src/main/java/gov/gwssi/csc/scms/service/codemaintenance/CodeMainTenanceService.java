@@ -81,6 +81,9 @@ public class CodeMainTenanceService extends CodeMainTenanceSpecs
     @Autowired
     @Qualifier("codeMainTenanceTranslateRepository")
     private CodeMainTenanceTranslateRepository codeMainTenanceTranslateRepository;
+    @Autowired
+    @Qualifier("CodeMainTenanceAgencyRepository")
+    private CodeMainTenanceAgencyRepository codeMainTenanceAgencyRepository;
     @Qualifier("userRepository")
     @Autowired
     private UserRepository                     userRepository;
@@ -242,6 +245,11 @@ public class CodeMainTenanceService extends CodeMainTenanceSpecs
         Specification<CodemaintanenceTranslate> specA = filterIsLikeTranslate(classid);
 //        Specification<Ticket> specB = userIs(user);
         return codeMainTenanceTranslateRepository.findAll(where(specA), new PageRequest(page, size, Sort.Direction.ASC, "id"));
+    }
+    public Page<CodemaintenanceAgency> getCodemaintanenceAgencyPagingByFilter(Integer page, Integer size)
+    {
+        Specification<CodemaintenanceAgency> specA = filterIsLikeAgency();
+        return codeMainTenanceAgencyRepository.findAll(where(specA), new PageRequest(page, size, Sort.Direction.ASC, "id"));
     }
 }
 
