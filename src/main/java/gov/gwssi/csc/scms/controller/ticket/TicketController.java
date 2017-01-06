@@ -193,6 +193,17 @@ public class TicketController extends BaseService {
         }
     }
 
+    //根据学生id获取已提交机票信息
+    @RequestMapping(value = "/state/{studentId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
+    public Object getStudentByIdAndState(@PathVariable(value = "studentId") String studentId) {
+        try {
+            return ticketService.getTicketByStudentIdAndStateNot(studentId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
 
     //新增机票信息
     @RequestMapping(value = "/{studentId}", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
