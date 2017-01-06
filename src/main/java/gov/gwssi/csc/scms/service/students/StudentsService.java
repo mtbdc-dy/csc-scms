@@ -64,7 +64,7 @@ public class StudentsService extends StudentSpecs {
             Specification<Student> specB = userIs(user, mode , baseDAO);
 
             if ("freshregister".equals(mode)) {
-                return studentRepository.findAll(where(specA).and(isFreshRegister(user)).and(specB), new PageRequest(page, size, Sort.Direction.ASC, "cscId"));
+                return studentRepository.findAll(where(specA).and(isFreshRegister(user)).and(specB), new PageRequest(page, size, Sort.Direction.DESC, "cscId"));
             } else if ("oldregister".equals(mode)) {
                 return studentRepository.findAll(where(specA).and(isOldRegister(user)).and(specB), new PageRequest(page, size, Sort.Direction.ASC, "cscId"));
             } else if ("schoolstudent".equals(mode)) {

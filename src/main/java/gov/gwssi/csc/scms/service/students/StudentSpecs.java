@@ -162,16 +162,14 @@ public class StudentSpecs {
                 Expression e4 = null;
                 Expression e8 = null;
                 if("1".equals(userType)){ // 基金委用户
-                    e4 = cb.and(e1,cb.or(e2,e3));
-                    e8 = cb.and(e5,cb.or(e6,e7));
+//                    e4 = cb.and(e1,cb.or(e2,e3));
+//                    e8 = cb.and(e5,cb.or(e6,e7));
                 }else if("2".equals(userType)){ // 院校用户
                     e4 = cb.and(e1,cb.or(cb.and(e2,eCramSchool), cb.and(e3,eMajorSchool)));
                     e8 = cb.and(e5, cb.or(cb.and(e6,eCramSchool), cb.and(e7,eMajorSchool)));
+                    Expression e9 = cb.or(e4,e8);
+                    predicate.getExpressions().add(e9);
                 }
-
-                Expression e9 = cb.or(e4,e8);
-
-                predicate.getExpressions().add(e9);
                 return predicate;
             }
         };
