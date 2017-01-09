@@ -85,10 +85,11 @@ public class TicketSortSpecs extends BaseService {
                     date_2 = ds.parse(currentYear + "-03-01");
                     date_3 = ds.parse(currentYear + "-09-01");
                     date_4 = ds.parse(currentYear + "-12-31");
-                    if((calendar.after(date_1) || calendar.equals(date_1)) && calendar.before(date_2)){
+                    Date now = new Date();
+                    if((now.after(date_1) || now.equals(date_1)) && now.before(date_2)){
                         intialDate = ds.parse(preYear + "-09-01");
                         finalDate = date_2;
-                    }else if((calendar.after(date_2) || calendar.equals(date_2)) && calendar.before(date_3)){
+                    }else if((now.after(date_2) || now.equals(date_2)) && now.before(date_3)){
                         intialDate = date_2;
                         finalDate = date_3;
                     }else{
