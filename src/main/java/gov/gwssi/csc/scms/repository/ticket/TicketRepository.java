@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface TicketRepository extends CrudRepository<Ticket,String> , JpaSpecificationExecutor<Ticket> {
     List<Ticket> findByStudentId(String studentId);
-
+    List<Ticket> findByStudentIdAndStateNot(String studentId,String state);
     @Modifying
     @Query(value = "update Ticket ticket set ticket.pervalidDate = :pervalidDate where ticket.id = :id")
     int updateTicket(@Param("pervalidDate")Date pervalidDate, @Param("id")String id);

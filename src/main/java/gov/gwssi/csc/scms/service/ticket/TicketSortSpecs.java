@@ -66,21 +66,42 @@ public class TicketSortSpecs extends BaseService {
 
 
                 /**机票部分*/
-                Date finalDate = null;
+                Date date_1 = null;
+                Date date_2 = null;
+                Date date_3 = null;
+                Date date_4 = null;
                 Date intialDate = null;
+                Date finalDate = null;
                 int currentYear=0;
+                int preYear = 0;
+                int nextYear = 0;
                 try {
                     Calendar calendar = Calendar.getInstance();
                     currentYear = calendar.get(Calendar.YEAR);
+                    preYear = currentYear - 1;
+                    nextYear = currentYear + 1;
                     SimpleDateFormat ds = new SimpleDateFormat("yyyy-MM-dd");
-                    intialDate = ds.parse(currentYear + "-01-01");
-                    finalDate = ds.parse(currentYear + "-12-31");
-
+                    date_1 = ds.parse(currentYear + "-01-01");
+                    date_2 = ds.parse(currentYear + "-03-01");
+                    date_3 = ds.parse(currentYear + "-09-01");
+                    date_4 = ds.parse(currentYear + "-12-31");
+                    Date now = new Date();
+                    if((now.after(date_1) || now.equals(date_1)) && now.before(date_2)){
+                        intialDate = ds.parse(preYear + "-09-01");
+                        finalDate = date_2;
+                    }else if((now.after(date_2) || now.equals(date_2)) && now.before(date_3)){
+                        intialDate = date_2;
+                        finalDate = date_3;
+                    }else{
+                        intialDate = date_3;
+                        finalDate = ds.parse(nextYear + "-03-01");
+                    }
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                  predicate.getExpressions().add(cb.between(ticketSortRoot.get(TicketSort_.created), intialDate, finalDate));
-
+                predicate.getExpressions().add(cb.greaterThanOrEqualTo(ticketSortRoot.get(TicketSort_.created), intialDate));
+                predicate.getExpressions().add(cb.lessThan(ticketSortRoot.get(TicketSort_.created), finalDate));
+                predicate.getExpressions().add(cb.equal(ticketSortRoot.get(TicketSort_.type), "BF0002"));
 
                 if (filter.getTicketState() != null) {
                     if(filter.getTicketState().equals("AT0006")){
@@ -96,10 +117,10 @@ public class TicketSortSpecs extends BaseService {
                         predicate.getExpressions().add(cb.in(ticketSortRoot.get(TicketSort_.state)).value("AT0002").value("AT0005").value("AT0003").value("AT0004"));
                     }
                 }
-                if (filter.getTicketType() != null) {
-                    predicate.getExpressions().add(cb.like(ticketSortRoot.get(TicketSort_.type), filter.getTicketType()));
-
-                }
+//                if (filter.getTicketType() != null) {
+//                    predicate.getExpressions().add(cb.like(ticketSortRoot.get(TicketSort_.type), filter.getTicketType()));
+//
+//                }
                 /**学生主表部分*/
                 if (needStudent) {
                     Join<TicketSort, Student> student = ticketSortRoot.join(TicketSort_.student);

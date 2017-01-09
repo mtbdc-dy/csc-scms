@@ -193,6 +193,14 @@ public class TicketService extends TicketSortSpecs {
         }
         return tickets;
     }
+    //根据学生id获取已提交机票信息
+    public List<Ticket> getTicketByStudentIdAndStateNot(String studentId) {
+        List<Ticket> tickets = ticketRepository.findByStudentIdAndStateNot(studentId,"AT0001");
+        for (int i = 0; i < tickets.size(); i++) {
+            tickets.get(i).setStudent(null);
+        }
+        return tickets;
+    }
 
     //增加机票信息
     public Ticket addTicket(Ticket ticket, List<OperationLog> operationLogs) {
