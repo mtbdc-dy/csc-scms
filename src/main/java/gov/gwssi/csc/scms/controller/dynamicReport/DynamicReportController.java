@@ -25,6 +25,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.awt.print.Pageable;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -49,11 +50,13 @@ public class DynamicReportController extends BaseService {
             value = "/configurations",
             method = RequestMethod.GET,
             headers = {"Accept=application/json;charset=utf-8"},
-            params = {"filter"}
+            params = {"filter","page","size"}
     )
     public ResponseEntity<Page<Configuration>> getConfigurations(
             @RequestHeader(value = "Authorization") String jwt,
-            @RequestParam(value = "filter") String filterJSON) throws UnsupportedEncodingException {
+            @RequestParam(value = "filter") String filterJSON,
+            @RequestParam(value = "page") Integer pageNo,
+            @RequestParam(value = "size") Integer pageSize) throws UnsupportedEncodingException {
         Map<String, Object> user = JWTUtil.decode(jwt);
         assert user != null;
         String userName = String.valueOf(user.get("fullName"));
@@ -63,7 +66,7 @@ public class DynamicReportController extends BaseService {
         Page<Configuration> configurations = null;
         try {
             Filter filter = new ObjectMapper().readValue(content, valueType);
-            configurations = service.getAllConfigurationsByFilterAndUserName(filter, userName);
+            configurations = service.getAllConfigurationsByFilterAndUserName(filter, userName,pageNo,pageSize);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -3,8 +3,6 @@ package gov.gwssi.csc.scms.service.dynamicReport;
 import gov.gwssi.csc.scms.dao.BaseDAO;
 import gov.gwssi.csc.scms.domain.dictionary.DictTreeJson;
 import gov.gwssi.csc.scms.domain.dynamicReport.*;
-import gov.gwssi.csc.scms.domain.dynamicReport.ASMSConfiguration.*;
-import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.*;
 import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.Condition;
 import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.Configuration;
 import gov.gwssi.csc.scms.domain.dynamicReport.Configuration.GroupCondition;
@@ -21,13 +19,14 @@ import gov.gwssi.csc.scms.repository.dynamicReport.*;
 import gov.gwssi.csc.scms.service.dictionary.TranslateDictService;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -88,13 +87,13 @@ public class DynamicReportService extends DynamicReportSpecs {
         return configurationRepository.findAll(filterIsLike(filter), new PageRequest(0, 20));
     }
 
-    public Page<Configuration> getAllConfigurationsByFilterAndUserName(Filter filter, String userName) {
+    public Page<Configuration> getAllConfigurationsByFilterAndUserName(Filter filter, String userName, Integer pageNo, Integer pageSize) {
         return configurationRepository.findAll(
                 where(
                         where(isPublic()).and(filterIsLike(filter))
                 ).or(
                         where(userNameIsLike(userName)).and(filterIsLike(filter))
-                ), new PageRequest(0, 20));
+                ), new PageRequest(pageNo, pageSize, Sort.Direction.DESC, "updated"));
     }
 
     public void deleteConfigurations(String id) {
