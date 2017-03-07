@@ -503,8 +503,8 @@ public class DynamicReportService extends DynamicReportSpecs {
             row = body.get(x - xOff);
             for (int y = 0; y < row.getCells().size(); y++) {
                 String value = row.getCells().get(y).getValue();
-                String codeValue = allCode.get(value);
-                value = codeValue != null ? codeValue : value;
+//                String codeValue = allCode.get(value);
+//                value = codeValue != null ? codeValue : value;
                 getCell(x, y, sheet).setCellValue(value);
                 getCell(x, y, sheet).setCellStyle(contentStyle);
                 if (y < yOff - 1) {
