@@ -393,10 +393,12 @@ public class DynamicReportService extends DynamicReportSpecs {
 
         if (header != null && header.size() != 0) {
             createExportHeader(header, sheet, workbook);
+            createExportBody(body, sheet, workbook, true);
         } else {
             createExportHeaderFromASMS(header1, sheet, workbook);
+            createExportBody(body, sheet, workbook, false);
         }
-        createExportBody(body, sheet, workbook);
+
 
         if (outputStream != null) {
             workbook.write(outputStream);
@@ -487,7 +489,7 @@ public class DynamicReportService extends DynamicReportSpecs {
         return style;
     }
 
-    private void createExportBody(List<Row> body, Sheet sheet, Workbook workbook) {
+    private void createExportBody(List<Row> body, Sheet sheet, Workbook workbook, Boolean isManage) {
         CellStyle contentStyle = createContentStyle(workbook);
         CellStyle columnHeaderContentStyle = createColumnHeaderContentStyle(workbook, contentStyle);
         CellStyle rightColumnHeaderContentStyle = createRightColumnHeaderContentStyle(workbook, columnHeaderContentStyle);
@@ -503,8 +505,10 @@ public class DynamicReportService extends DynamicReportSpecs {
             row = body.get(x - xOff);
             for (int y = 0; y < row.getCells().size(); y++) {
                 String value = row.getCells().get(y).getValue();
-//                String codeValue = allCode.get(value);
-//                value = codeValue != null ? codeValue : value;
+                if(isManage) {
+                    String codeValue = allCode.get(value);
+                    value = codeValue != null ? codeValue : value;
+                }
                 getCell(x, y, sheet).setCellValue(value);
                 getCell(x, y, sheet).setCellStyle(contentStyle);
                 if (y < yOff - 1) {
