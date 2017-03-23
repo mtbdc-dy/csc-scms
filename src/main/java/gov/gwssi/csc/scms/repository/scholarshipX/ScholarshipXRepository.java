@@ -17,4 +17,5 @@ public interface ScholarshipXRepository extends CrudRepository<ScholarshipX,Stri
     List<ScholarshipX> findBySchoolAndYearAndSchReview(String school,long year,String schReview);
     List<ScholarshipX> findBySchoolAndYear(String school,long year);
     List<ScholarshipX> findByStudentId(String studentId);
+    List<ScholarshipX> findByStudentIdAndYear(String studentId,long year);
 }

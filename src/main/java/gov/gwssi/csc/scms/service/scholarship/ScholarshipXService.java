@@ -578,7 +578,8 @@ public class ScholarshipXService extends ScholarshipXSpecs {
     //新增学生时首先校验该学生是否已经存在于奖学金列表中
     public Map<String,String> verifyScholarshipXStudent(String studentId){
         Map<String,String> result = new HashMap<String, String>();
-        List<ScholarshipX> scholarshipXs= scholarshipXRepository.findByStudentId(studentId);
+        long year = Calendar.getInstance().get(Calendar.YEAR);
+        List<ScholarshipX> scholarshipXs= scholarshipXRepository.findByStudentIdAndYear(studentId,year);
         if(scholarshipXs.size()>0){
             result.put("result","failed");
         }else{
