@@ -239,6 +239,18 @@ public class StudentSpecs {
         };
     }
 
+    public static Specification<Student> isSchoolStudentAbnormal() {
+        return new Specification<Student>() {
+            @Override
+            public Predicate toPredicate(Root<Student> student, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                Predicate predicate = cb.conjunction();
+                Join<Student, SchoolRoll> schoolRoll = student.join(Student_.schoolRoll);
+                predicate.getExpressions().add(cb.equal(schoolRoll.get(SchoolRoll_.registed), "AX0002"));
+                return predicate;
+            }
+        };
+    }
+
     public static Specification<Student> isLeaveStudent() {
         return new Specification<Student>() {
             @Override

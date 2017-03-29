@@ -86,6 +86,12 @@ public class AbnormalSpecs extends BaseService {
                     Date end = DateConvert.convert(filter.getAbnormalDateEnd(),"end");
                     predicate.getExpressions().add(cb.lessThan(abnormal.get(Abnormal_.applyTime), end));
                 }
+                if(filter.getAbnormalType() != null){
+                    predicate.getExpressions().add(cb.equal(abnormal.get(Abnormal_.reasonTypeId),filter.getAbnormalType()));
+                }
+                if(filter.getAbnormal() != null){
+                    predicate.getExpressions().add(cb.equal(abnormal.get(Abnormal_.reasonId),filter.getAbnormal()));
+                }
 
 
                 /**学生主表部分*/

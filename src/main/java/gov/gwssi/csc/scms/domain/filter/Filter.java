@@ -21,11 +21,14 @@ public class Filter {
     private String abnormalState = null;     // 异动处理状态
     private Date abnormalDateBegin = null;   // 异动申请起始日期
     private Date abnormalDateEnd = null;     // 异动申请终止日期
+    private String abnormalType = null;      // 异动原因类别
+    private String abnormal = null;      // 异动原因
     private String ticketState = null;       // 异动处理状态
     private String preSta = null;            // 保险订购状态 add by gc
     private String schReview = null;         // 奖学金评审结果 add by gc
     private String schResult = null;         // 奖学金处理结果 add by gc
     private String cscResult = null;
+    private String cscReview = null;
     private int year = 0;                    // 奖学金评审年度
     private Character state = null;          // 奖学金评审状态
     private String schoolState = null;    // 奖学金 学校状态
@@ -97,6 +100,30 @@ public class Filter {
 
     // add by lzs20150511 添加 mode 字段用来区分新增学生列表时候，返回不同列表
     private String mode = null; // 区分学生列表
+
+    public String getCscReview() {
+        return cscReview;
+    }
+
+    public void setCscReview(String cscReview) {
+        this.cscReview = cscReview;
+    }
+
+    public String getAbnormalType() {
+        return abnormalType;
+    }
+
+    public void setAbnormalType(String abnormalType) {
+        this.abnormalType = abnormalType;
+    }
+
+    public String getAbnormal() {
+        return abnormal;
+    }
+
+    public void setAbnormal(String abnormal) {
+        this.abnormal = abnormal;
+    }
 
     public Date getAbnormalDateBegin()
     {
