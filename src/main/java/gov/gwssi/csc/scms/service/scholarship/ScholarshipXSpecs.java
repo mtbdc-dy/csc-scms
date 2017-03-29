@@ -63,7 +63,11 @@ public class ScholarshipXSpecs extends BaseService {
 
                 /**奖学金部分*/
                 if (filter.getSchReview() != null) {
-                    predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.schReview), filter.getSchReview()));
+                    if ("2".equals(filter.getSchoolState()))
+                        predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.cscReview), filter.getSchReview()));
+                    else {
+                        predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.schReview), filter.getSchReview()));
+                    }
                 }
                 if(filter.getYear() != 0){
                     predicate.getExpressions().add(cb.equal(scholarshipX.get(ScholarshipX_.year), filter.getYear()));
@@ -77,6 +81,13 @@ public class ScholarshipXSpecs extends BaseService {
                 }
                 if(filter.getCscReview() != null){
                     predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.cscReview), filter.getCscReview()));
+                }
+                if(filter.getCscResult() != null){
+                    if ("2".equals(filter.getSchoolState())) {
+                        predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.cscResult), filter.getCscResult()));
+                    }else{
+                        predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.schResult), filter.getCscResult()));
+                    }
                 }
                 predicate.getExpressions().add(cb.like(scholarshipX.get(ScholarshipX_.school), school));
 
