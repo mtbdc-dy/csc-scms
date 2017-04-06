@@ -79,7 +79,12 @@ public class StudentService extends BaseService {
         if (scholarships.size() > 0) {
             Collections.sort(scholarships);
             Collections.reverse(scholarships);
-            lastScholarship = scholarships.get(0);
+        }
+        for(int i=0;i<scholarships.size();i++){
+            if("2".equals(scholarships.get(i).getSchoolSta())){
+                lastScholarship = scholarships.get(i);
+                break;
+            }
         }
 
         if (student.getSchoolRoll() != null) {
