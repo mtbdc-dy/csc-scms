@@ -5,6 +5,7 @@ import com.jolbox.bonecp.BoneCPDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -24,6 +25,7 @@ import java.util.Properties;
 @PropertySource(value = "classpath:db.properties")
 @EnableTransactionManagement(proxyTargetClass = true)
 @EnableJpaRepositories("gov.gwssi.csc.scms.repository")
+@EnableAspectJAutoProxy
 @Configuration
 public class DatabaseConfig {
 
@@ -75,7 +77,7 @@ public class DatabaseConfig {
         System.out.println("dataSource===" + dataSource);
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setGenerateDdl(true);
-        vendorAdapter.setShowSql(true);
+//        vendorAdapter.setShowSql(true);
         vendorAdapter.setDatabasePlatform(env.getProperty("hibernate.dialect"));
         vendorAdapter.setDatabase(Database.ORACLE);
 
