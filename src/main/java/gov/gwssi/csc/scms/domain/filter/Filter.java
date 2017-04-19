@@ -52,6 +52,7 @@ public class Filter {
     //日志查询模块
     private  String businessModule = null;
     private  String optType = null;
+    private  String createBy = null;
     //报到进度统计 省和市字段
     private String province = null;//省市
     private String university = null;//学校
@@ -100,6 +101,14 @@ public class Filter {
 
     // add by lzs20150511 添加 mode 字段用来区分新增学生列表时候，返回不同列表
     private String mode = null; // 区分学生列表
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
 
     public String getCscReview() {
         return cscReview;

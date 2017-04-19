@@ -41,8 +41,15 @@ public class OperationLogSpecs extends BaseService {
                     Date end = DateConvert.convert(filter.getEndTime(),"end");
                     predicate.getExpressions().add(cb.lessThan(operationLog.get(OperationLog_.createD), end));
                 }
-                predicate.getExpressions().add(cb.equal(operationLog.get(OperationLog_.createBy), userId));
-
+                if(filter.getCscId() != null){
+                    predicate.getExpressions().add(cb.equal(operationLog.get(OperationLog_.cscId), filter.getCscId()));
+                }
+                if(filter.getPassportName() != null){
+                    predicate.getExpressions().add(cb.equal(operationLog.get(OperationLog_.passportName), filter.getPassportName()));
+                }
+                if(filter.getCreateBy() != null){
+                    predicate.getExpressions().add(cb.equal(operationLog.get(OperationLog_.createBy), filter.getCreateBy()));
+                }
                 return predicate;
             }
         };
