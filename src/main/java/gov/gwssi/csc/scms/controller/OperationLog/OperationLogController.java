@@ -179,7 +179,7 @@ public class OperationLogController {
             @RequestParam(value = "size") Integer size,
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         try {
-            Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
+            Filter filter = new ObjectMapper().readValue(URLDecoder.decode(filterJSON, "utf-8"), Filter.class);
             User user = userService.getUserByJWT(header);
             Page<OperationLog> operationLogsPage = operationLogService.getOptLogsPagingByFilter(filter, page, size, mode, user);
             Page<Map<String, Object>> mapPage = operationLogsPage.map(new OperationLogConverter());
