@@ -1,6 +1,7 @@
 package gov.gwssi.csc.scms.controller.scholarshipJ;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.RuntimeJsonMappingException;
 import gov.gwssi.csc.scms.domain.filter.Filter;
 import gov.gwssi.csc.scms.domain.scholarship.Scholarship;
 import gov.gwssi.csc.scms.domain.scholarship.ScholarshipDetail;
@@ -265,7 +266,23 @@ public class ScholarshipJController {
         }
         return result;
     }
-
+    /**
+     * 基金委退回
+     */
+    @RequestMapping(
+            value="/sendBacking/{scholarshipId}",
+            method = RequestMethod.GET,
+            headers = {"Accept=application/json"})
+    public void sendBack(
+            @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
+            @PathVariable String scholarshipId){
+        try{
+            scholarshipJService.sendBacking(scholarshipId);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 
 
 }

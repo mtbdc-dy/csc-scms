@@ -2,6 +2,7 @@ package gov.gwssi.csc.scms.service.scholarship;
 
 import gov.gwssi.csc.scms.dao.scholarshipJ.ScholarshipJDAO;
 import gov.gwssi.csc.scms.domain.filter.Filter;
+import gov.gwssi.csc.scms.domain.scholarship.Scholarship;
 import gov.gwssi.csc.scms.domain.scholarship.ScholarshipDetail;
 import gov.gwssi.csc.scms.domain.scholarship.ScholarshipJ;
 import gov.gwssi.csc.scms.domain.user.User;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -100,5 +102,20 @@ public class ScholarshipJService extends ScholarshipJSpecs {
         result.put("cscQualCount",cscQualCount);
         result.put("cscUnQualCount",cscUnQualCount);
         return result;
+    }
+    @Transactional
+    public void sendBacking(String scholarshipId){
+        try {
+            Scholarship scholarship = scholarshipRepository.findById(scholarshipId);
+            scholarship.setSchoolSta("3"); //该校该年度记录的状态为3（已退回）
+            scholarship.setCscQual(scholarship.getSchoolQual());
+            scholarship.setCscUnQual(scholarship.getSchoolUnQual());//基金委合格、不合格人数，改为与院校一致
+            scholarshipRepository.save(scholarship);
+            scholarshipDetailRepository.sendBacking(scholarshipId);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
     }
 }
