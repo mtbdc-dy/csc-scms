@@ -198,7 +198,6 @@ public class ScholarshipXController {
 
 
     //新增一个学生，到奖学金评审记录当中，对奖学金详细子表进行新增保存
-    @Transactional
     @RequestMapping(value = "/{studentId}", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
     public ScholarshipXResultObject saveScholarshipX(@PathVariable(value = "studentId") String studentId,
                                                      @RequestBody String scholarshipJson, @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) {
@@ -227,41 +226,8 @@ public class ScholarshipXController {
 
                 String id = scholarshipXService.savenewScholarshipDetail(scholarshipDetail, user);//插入新增记录
 
-                //子表全部保存完成后，对主表的合格，不合格人数进行重新统计并更新主表
-                //效率太低
-//                int year = Calendar.getInstance().get(Calendar.YEAR);
-//                String school = user.getNode().getNodeId();
-//                Iterable scholarshipXlist = scholarshipXService.findScholarshipXBySchoolAndYear(school, year);
-//                int qualNum = 0;//合格人数
-//                int unqualNum = 0;//不合格人数
-//                Timestamp ts = new Timestamp(System.currentTimeMillis());
-//                for (Iterator iter = scholarshipXlist.iterator(); iter.hasNext(); ) {
-//                    ScholarshipX strX = (ScholarshipX) iter.next();
-//                    if ("AQ0001".equals(strX.getSchReview())) {
-//                        qualNum++;
-//                    } else {
-//                        unqualNum++;
-//                    }
-//                }
-                //更改为如下方式
-                Timestamp ts = new Timestamp(System.currentTimeMillis());
-                Scholarship scholarship = scholarshipXService.findScholarshipOne(scholarshipDetail.getScholarship().getId());
-                long qualNum = scholarship.getSchoolQual();//合格人数
-                long unqualNum = scholarship.getSchoolUnQual();//不合格人数
-                if("AQ0001".equals(scholarshipDetail.getSchReview())){
-                    qualNum++;
-                }else{
-                    unqualNum++;
-                }
-                scholarship.setSchoolQual(qualNum);
-                scholarship.setSchoolUnQual(unqualNum);
-                scholarship.setUpdated(ts);//同时对主表的更新人和更新时间，进行更新
-                scholarship.setUpdateBy(user.getUserId());
-                scholarshipXService.saveScholarship(scholarship, null);
-                System.out.println("**********1*************");
                 ScholarshipXResultObject scholarshipXResult = scholarshipXService.getScholarshipXAndStu(scholarshipDetail.getId());
                 System.out.println(scholarshipXResult.getId() + " " + scholarshipXResult.getPassportName());
-                System.out.println("***********2************");
                 return scholarshipXResult;
             }
         } catch (Exception e) {
