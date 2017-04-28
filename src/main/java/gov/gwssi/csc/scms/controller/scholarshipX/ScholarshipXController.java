@@ -243,53 +243,7 @@ public class ScholarshipXController {
             User user = userService.getUserByJWT(header);
             String[] id1;
             id1 = id.split(",");
-            //获取主表id
-            ScholarshipDetail ssD = scholarshipXService.getScholarshipDetailById(id1[1]);
-            String scholarshipId = ssD.getScholarship().getId();
-
-            List<ScholarshipXResultObject> scholarshipXResultObjectList = new ArrayList<ScholarshipXResultObject>();
-            for (int i = 1; i < id1.length; i++) {
-                ScholarshipDetail scholarshipDetail = scholarshipXService.deleteScholarshipDetailById(user, id1[i]);//保存日志
-                if (scholarshipDetail == null) {
-                    throw new NoSuchAbnormalException("cannot delete the scholarshipX,id=" + id1[i]);
-                }
-            }
-            //子表全部保存完成后，对主表的合格，不合格人数进行重新统计并更新主表
-            //效率太低
-            int qualNum = 0;//合格人数
-            int unqualNum = 0;//不合格人数
-            Timestamp ts = new Timestamp(System.currentTimeMillis());
-//            int year = ts.getYear() + 1900;
-            int year = Calendar.getInstance().get(Calendar.YEAR);
-            String school = user.getNode().getNodeId();
-            List<ScholarshipX> scholarshipXlist = scholarshipXService.findScholarshipXBySchoolAndYear(school, year);
-
-            for (Iterator iter = scholarshipXlist.iterator(); iter.hasNext(); ) {
-                ScholarshipX strX = (ScholarshipX) iter.next();
-//                if (strX.getYear() == year && strX.getSchool().equals(school)) {
-                if ("AQ0001".equals(strX.getSchReview())) {
-                    qualNum++;
-                } else {
-                    unqualNum++;
-                }
-//                }
-            }
-            //更改为如下方式
-            Scholarship scholarship = scholarshipXService.findScholarshipOne(scholarshipId);
-            scholarship.setSchoolQual((long) qualNum);
-            scholarship.setSchoolUnQual((long) unqualNum);
-            scholarship.setUpdated(ts);//同时对主表的更新人和更新时间，进行更新
-            scholarship.setUpdateBy(user.getUserId());
-            scholarshipXService.saveScholarship(scholarship, null);//对主表进行更新
-//            Iterable scholarshipXlist1 = scholarshipXService.findScholarshipXAll();
-//            for (Iterator iter = scholarshipXlist1.iterator(); iter.hasNext(); ) {
-//                ScholarshipX strX = (ScholarshipX) iter.next();
-//                if (strX.getYear() == year && strX.getSchool().equals(school)) {
-//                    ScholarshipXResultObject scholarshipXResult = scholarshipXService.getScholarshipXAndStu(strX.getId());
-//                    scholarshipXResultObjectList.add(scholarshipXResult);
-//                }
-//            }
-//            return scholarshipXResultObjectList;
+            Scholarship scholarship = scholarshipXService.deleteScholarshipDetails(id1,user);
             return scholarship;
         } catch (Exception e) {
             e.printStackTrace();

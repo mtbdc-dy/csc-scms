@@ -16,6 +16,7 @@ import gov.gwssi.csc.scms.domain.user.User;
 import gov.gwssi.csc.scms.repository.scholarshipX.ScholarshipDetailRepository;
 import gov.gwssi.csc.scms.repository.scholarshipX.ScholarshipRepository;
 import gov.gwssi.csc.scms.repository.scholarshipX.ScholarshipXRepository;
+import gov.gwssi.csc.scms.service.abnormal.NoSuchAbnormalException;
 import gov.gwssi.csc.scms.service.log.OperationLogService;
 import gov.gwssi.csc.scms.service.student.StudentService;
 import gov.gwssi.csc.scms.service.user.UserService;
@@ -494,6 +495,46 @@ public class ScholarshipXService extends ScholarshipXSpecs {
             scholarshipXResultObject = scholarshipXList.get(0);
         }
         return scholarshipXResultObject;
+    }
+
+    @Transactional
+    public Scholarship deleteScholarshipDetails(String[] id1,User user){
+        try{
+            //获取主表id
+            ScholarshipDetail ssD = getScholarshipDetailById(id1[1]);
+            String scholarshipId = ssD.getScholarship().getId();
+            long qualNum = 0;//合格人数
+            long unqualNum = 0;//不合格人数
+
+            ScholarshipDetail scholarshipDetail = null;
+            for (int i = 1; i < id1.length; i++) {
+                scholarshipDetail = deleteScholarshipDetailById(user, id1[i]);//保存日志
+                if (scholarshipDetail == null) {
+                    throw new NoSuchAbnormalException("cannot delete the scholarshipX,id=" + id1[i]);
+                }
+                if("AQ0001".equals(scholarshipDetail.getSchReview())){
+                    qualNum++;
+                }else{
+                    unqualNum++;
+                }
+            }
+            //子表全部保存完成后，对主表的合格，不合格人数进行重新统计并更新主表
+            Timestamp ts = new Timestamp(System.currentTimeMillis());
+            Scholarship scholarship = findScholarshipOne(scholarshipId);
+            qualNum = scholarship.getSchoolQual() - qualNum;
+            unqualNum = scholarship.getSchoolUnQual() - unqualNum;
+            scholarship.setSchoolQual(qualNum);
+            scholarship.setSchoolUnQual(unqualNum);
+            scholarship.setUpdated(ts);//同时对主表的更新人和更新时间，进行更新
+            scholarship.setUpdateBy(user.getUserId());
+            saveScholarship(scholarship, null);//对主表进行更新
+            return scholarship;
+
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
     }
 
     //删除奖学金子表记录
