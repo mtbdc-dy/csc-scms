@@ -62,6 +62,7 @@ public class ScholarshipXService extends ScholarshipXSpecs {
     private BaseDAO baseDAO;
 
     //生成奖学金评审清单
+    @Transactional
     public Map<String,String> getScholarshipXList(User user) {
 
         List listParameter = new ArrayList();

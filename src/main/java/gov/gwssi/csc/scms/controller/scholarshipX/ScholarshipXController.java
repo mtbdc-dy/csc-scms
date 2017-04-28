@@ -54,7 +54,7 @@ public class ScholarshipXController {
 
     //用户在前台点击生奖学金评审列表，返回列表
     @RequestMapping(value = "/new", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public Map<String,String> getScholarshipXs(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
+    public Map<String, String> getScholarshipXs(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
         User user = null;
         List<OperationLog> operationLogs = null;
         try {
@@ -64,7 +64,7 @@ public class ScholarshipXController {
         } catch (UserIdentityError userIdentityError) {
             userIdentityError.printStackTrace();
         }
-        Map<String,String> result = scholarshipXService.getScholarshipXList(user);//保存日志
+        Map<String, String> result = scholarshipXService.getScholarshipXList(user);//保存日志
 
         return result;
     }
@@ -111,6 +111,7 @@ public class ScholarshipXController {
     }
 
     //修改奖学金评审管理信息
+    @Transactional
     @RequestMapping(value = "/save/{school}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public List<ScholarshipXResultObject> modScholarshipXdetail(@PathVariable(value = "school") String school,
                                                                 @RequestBody String scholarshipJson, @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) {
@@ -138,30 +139,30 @@ public class ScholarshipXController {
                 Timestamp ts = new Timestamp(System.currentTimeMillis());
 //                int year = ts.getYear() + 1900;
                 int year = Calendar.getInstance().get(Calendar.YEAR);
-                if(user.getUserType().equals("2")){
+                if (user.getUserType().equals("2")) {
                     school = user.getNode().getNodeId();
                 }
-                List<ScholarshipX> scholarshipXlist = scholarshipXService.findScholarshipXBySchoolAndYear(school,year);
+                List<ScholarshipX> scholarshipXlist = scholarshipXService.findScholarshipXBySchoolAndYear(school, year);
                 if (user.getUserType().equals("2")) {//学校用户
                     for (Iterator iter = scholarshipXlist.iterator(); iter.hasNext(); ) {
                         ScholarshipX strX = (ScholarshipX) iter.next();
 //                        if (strX.getYear() == year && strX.getSchool().equals(school)) {
-                            if ("AQ0001".equals(strX.getSchReview())) {
-                                qualNum++;
-                            } else {
-                                unqualNum++;
-                            }
+                        if ("AQ0001".equals(strX.getSchReview())) {
+                            qualNum++;
+                        } else {
+                            unqualNum++;
+                        }
 //                        }
                     }
                 } else {
                     for (Iterator iter = scholarshipXlist.iterator(); iter.hasNext(); ) {
                         ScholarshipX strX = (ScholarshipX) iter.next();
 //                        if (strX.getYear() == year && strX.getSchool().equals(school)) {
-                            if ("AQ0001".equals(strX.getCscReview())) {
-                                qualNum++;
-                            } else {
-                                unqualNum++;
-                            }
+                        if ("AQ0001".equals(strX.getCscReview())) {
+                            qualNum++;
+                        } else {
+                            unqualNum++;
+                        }
 //                        }
                     }
                 }
@@ -197,6 +198,7 @@ public class ScholarshipXController {
 
 
     //新增一个学生，到奖学金评审记录当中，对奖学金详细子表进行新增保存
+    @Transactional
     @RequestMapping(value = "/{studentId}", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
     public ScholarshipXResultObject saveScholarshipX(@PathVariable(value = "studentId") String studentId,
                                                      @RequestBody String scholarshipJson, @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) {
@@ -226,32 +228,40 @@ public class ScholarshipXController {
                 String id = scholarshipXService.savenewScholarshipDetail(scholarshipDetail, user);//插入新增记录
 
                 //子表全部保存完成后，对主表的合格，不合格人数进行重新统计并更新主表
-                Iterable scholarshipXlist = scholarshipXService.findScholarshipXAll();
-                int qualNum = 0;//合格人数
-                int unqualNum = 0;//不合格人数
+                //效率太低
+//                int year = Calendar.getInstance().get(Calendar.YEAR);
+//                String school = user.getNode().getNodeId();
+//                Iterable scholarshipXlist = scholarshipXService.findScholarshipXBySchoolAndYear(school, year);
+//                int qualNum = 0;//合格人数
+//                int unqualNum = 0;//不合格人数
+//                Timestamp ts = new Timestamp(System.currentTimeMillis());
+//                for (Iterator iter = scholarshipXlist.iterator(); iter.hasNext(); ) {
+//                    ScholarshipX strX = (ScholarshipX) iter.next();
+//                    if ("AQ0001".equals(strX.getSchReview())) {
+//                        qualNum++;
+//                    } else {
+//                        unqualNum++;
+//                    }
+//                }
+                //更改为如下方式
                 Timestamp ts = new Timestamp(System.currentTimeMillis());
-//                int year = ts.getYear() + 1900;
-                int year = Calendar.getInstance().get(Calendar.YEAR);
-                String school = user.getNode().getNodeId();
-
-                for (Iterator iter = scholarshipXlist.iterator(); iter.hasNext(); ) {
-                    ScholarshipX strX = (ScholarshipX) iter.next();
-                    if (strX.getYear() == year && strX.getSchool().equals(school)) {
-                        if ("AQ0001".equals(strX.getSchReview())) {
-                            qualNum++;
-                        } else {
-                            unqualNum++;
-                        }
-                    }
-                }
                 Scholarship scholarship = scholarshipXService.findScholarshipOne(scholarshipDetail.getScholarship().getId());
-                scholarship.setSchoolQual((long) qualNum);
-                scholarship.setSchoolUnQual((long) unqualNum);
+                long qualNum = scholarship.getSchoolQual();//合格人数
+                long unqualNum = scholarship.getSchoolUnQual();//不合格人数
+                if("AQ0001".equals(scholarshipDetail.getSchReview())){
+                    qualNum++;
+                }else{
+                    unqualNum++;
+                }
+                scholarship.setSchoolQual(qualNum);
+                scholarship.setSchoolUnQual(unqualNum);
                 scholarship.setUpdated(ts);//同时对主表的更新人和更新时间，进行更新
                 scholarship.setUpdateBy(user.getUserId());
                 scholarshipXService.saveScholarship(scholarship, null);
+                System.out.println("**********1*************");
                 ScholarshipXResultObject scholarshipXResult = scholarshipXService.getScholarshipXAndStu(scholarshipDetail.getId());
-
+                System.out.println(scholarshipXResult.getId() + " " + scholarshipXResult.getPassportName());
+                System.out.println("***********2************");
                 return scholarshipXResult;
             }
         } catch (Exception e) {
@@ -262,6 +272,7 @@ public class ScholarshipXController {
 
 
     //删除
+    @Transactional
     @RequestMapping(value = "/{id}/{log}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
     public Scholarship deleteScholarshipDetail(@PathVariable("id") String id, @PathVariable("log") String log, @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) {
         try {
@@ -280,25 +291,26 @@ public class ScholarshipXController {
                 }
             }
             //子表全部保存完成后，对主表的合格，不合格人数进行重新统计并更新主表
-
+            //效率太低
             int qualNum = 0;//合格人数
             int unqualNum = 0;//不合格人数
             Timestamp ts = new Timestamp(System.currentTimeMillis());
 //            int year = ts.getYear() + 1900;
             int year = Calendar.getInstance().get(Calendar.YEAR);
             String school = user.getNode().getNodeId();
-            List<ScholarshipX> scholarshipXlist = scholarshipXService.findScholarshipXBySchoolAndYear(school,year);
+            List<ScholarshipX> scholarshipXlist = scholarshipXService.findScholarshipXBySchoolAndYear(school, year);
 
             for (Iterator iter = scholarshipXlist.iterator(); iter.hasNext(); ) {
                 ScholarshipX strX = (ScholarshipX) iter.next();
 //                if (strX.getYear() == year && strX.getSchool().equals(school)) {
-                    if ("AQ0001".equals(strX.getSchReview())) {
-                        qualNum++;
-                    } else {
-                        unqualNum++;
-                    }
+                if ("AQ0001".equals(strX.getSchReview())) {
+                    qualNum++;
+                } else {
+                    unqualNum++;
+                }
 //                }
             }
+            //更改为如下方式
             Scholarship scholarship = scholarshipXService.findScholarshipOne(scholarshipId);
             scholarship.setSchoolQual((long) qualNum);
             scholarship.setSchoolUnQual((long) unqualNum);
@@ -322,6 +334,7 @@ public class ScholarshipXController {
     }
 
     //学校用户提交奖学金评审列表
+    @Transactional
     @RequestMapping(value = "/sub", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public List<ScholarshipXResultObject> subScholarship(@RequestBody String scholarshipJson, @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) {
         try {
@@ -352,11 +365,11 @@ public class ScholarshipXController {
                     ScholarshipX strX = (ScholarshipX) iter.next();
 //                    if (strX.getYear() == year && strX.getSchool().equals(school)) {
 //                        scholarshipId = strX.getScholarshipId();
-                        if ("AQ0001".equals(strX.getSchReview())) {
-                            qualNum++;
-                        } else {
-                            unqualNum++;
-                        }
+                    if ("AQ0001".equals(strX.getSchReview())) {
+                        qualNum++;
+                    } else {
+                        unqualNum++;
+                    }
 //                    }
                 }
                 scholarshipId = scholarshipXlist.get(0).getScholarshipId();
@@ -436,19 +449,19 @@ public class ScholarshipXController {
     }
 
     /**
-     *增加全部导出
+     * 增加全部导出
      */
     @RequestMapping(
             value = "/all",
             method = RequestMethod.GET,
             params = {"filter"}
     )
-    public Map<String,Object> exportAllScholarshipX(
+    public Map<String, Object> exportAllScholarshipX(
             @RequestHeader(value = HEADER_AUTHORIZATION) String header,
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         byte[] bytes = null;
         Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
-        String id[] = scholarshipXService.getAllScholarshipXByFilter(filter,header);
+        String id[] = scholarshipXService.getAllScholarshipXByFilter(filter, header);
 
         String tableName = "v_scholarship_lastyear";
         bytes = exportService.exportByFilter(tableName, "0", id);
@@ -545,9 +558,9 @@ public class ScholarshipXController {
 
     //新增学生时首先校验该学生是否已经存在于奖学金列表中
     @RequestMapping(value = "/{studentId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public Map<String,String> verifyInsuranceStudent(@PathVariable(value = "studentId") String studentId) {
+    public Map<String, String> verifyInsuranceStudent(@PathVariable(value = "studentId") String studentId) {
         try {
-            Map<String,String> result = scholarshipXService.verifyScholarshipXStudent(studentId);
+            Map<String, String> result = scholarshipXService.verifyScholarshipXStudent(studentId);
             return result;
         } catch (Exception e) {
             e.printStackTrace();
@@ -557,10 +570,10 @@ public class ScholarshipXController {
 
     //进入院校奖学金界面时首先查询该院校当年奖学金状态SCHOOLSTA，若为未提交，或者查询结果为空，显示生成按钮，否则不显示生成按钮
     @RequestMapping(value = "/schoolSta/{school}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public Map<String,String> getSchoolSta(@PathVariable(value = "school") String school) {
+    public Map<String, String> getSchoolSta(@PathVariable(value = "school") String school) {
         try {
             int year = Calendar.getInstance().get(Calendar.YEAR);
-            Map<String,String> result = scholarshipXService.getSchoolSta(school,year);
+            Map<String, String> result = scholarshipXService.getSchoolSta(school, year);
             return result;
         } catch (Exception e) {
             e.printStackTrace();
