@@ -111,7 +111,6 @@ public class ScholarshipXController {
     }
 
     //修改奖学金评审管理信息
-    @Transactional
     @RequestMapping(value = "/save/{school}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public List<ScholarshipXResultObject> modScholarshipXdetail(@PathVariable(value = "school") String school,
                                                                 @RequestBody String scholarshipJson, @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) {
@@ -238,7 +237,6 @@ public class ScholarshipXController {
 
 
     //删除
-    @Transactional
     @RequestMapping(value = "/{id}/{log}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
     public Scholarship deleteScholarshipDetail(@PathVariable("id") String id, @PathVariable("log") String log, @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) {
         try {
@@ -300,7 +298,6 @@ public class ScholarshipXController {
     }
 
     //学校用户提交奖学金评审列表
-    @Transactional
     @RequestMapping(value = "/sub", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public List<ScholarshipXResultObject> subScholarship(@RequestBody String scholarshipJson, @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) {
         try {
