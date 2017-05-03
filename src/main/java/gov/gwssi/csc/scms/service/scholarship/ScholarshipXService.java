@@ -245,12 +245,150 @@ public class ScholarshipXService extends ScholarshipXSpecs {
         return sb.toString();
     }
 
+    @Transactional
+    public void saveScholarshipDetails(List<ScholarshipDetail> ScholarshipDetails,User user,String school){
+        ScholarshipDetail scholarshipDetail;
+        ScholarshipX scholarshipX;
+        long qualToUnqualNum = 0;//合格变为不合格人数
+        long unqualToQualNum = 0;//不合格变为合格人数
+        if(user.getUserType().equals("2")) { //学校用户
+            for (int i = 0; i < ScholarshipDetails.size(); i++) {
+                scholarshipDetail = ScholarshipDetails.get(i);
+                //更新记录，保存日志
+                scholarshipX = findOne(scholarshipDetail.getId());
+                if(!scholarshipDetail.getSchReview().equals(scholarshipX.getSchReview())){
+                    if("AQ0001".equals(scholarshipX.getSchReview())){
+                        qualToUnqualNum++;
+                    }else{
+                        unqualToQualNum++;
+                    }
+                }
+                saveScholarshipDetail(scholarshipDetail, user, scholarshipX);
+            }
+        }else{ //基金委用户
+            for (int i = 0; i < ScholarshipDetails.size(); i++) {
+                scholarshipDetail = ScholarshipDetails.get(i);
+                scholarshipX = findOne(scholarshipDetail.getId());
+                if(!scholarshipDetail.getCscReview().equals(scholarshipX.getCscReview())){
+                    if("AQ0001".equals(scholarshipX.getCscReview())){
+                        qualToUnqualNum++;
+                    }else{
+                        unqualToQualNum++;
+                    }
+                }
+                //更新记录，保存日志
+                saveScholarshipDetail(scholarshipDetail, user, scholarshipX);
+            }
+        }
+
+        //子表全部保存完成后，对主表的合格，不合格人数进行重新统计并更新主表
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+//        int year = Calendar.getInstance().get(Calendar.YEAR);
+//        if (user.getUserType().equals("2")) {
+//            school = user.getNode().getNodeId();
+//        }
+        //效率太低
+//        List<ScholarshipX> scholarshipXlist = findScholarshipXBySchoolAndYear(school, year);
+//        if (user.getUserType().equals("2")) {//学校用户
+//            for (Iterator iter = scholarshipXlist.iterator(); iter.hasNext(); ) {
+//                ScholarshipX strX = (ScholarshipX) iter.next();
+//                if ("AQ0001".equals(strX.getSchReview())) {
+//                    qualNum++;
+//                } else {
+//                    unqualNum++;
+//                }
+//            }
+//        } else {
+//            for (Iterator iter = scholarshipXlist.iterator(); iter.hasNext(); ) {
+//                ScholarshipX strX = (ScholarshipX) iter.next();
+//                if ("AQ0001".equals(strX.getCscReview())) {
+//                    qualNum++;
+//                } else {
+//                    unqualNum++;
+//                }
+//            }
+//        }
+        //替换为如下方式
+        Scholarship scholarship = findScholarshipOne(ScholarshipDetails.get(0).getScholarship().getId());
+        long qualNum = 0;
+        long unqualNum = 0;
+        if (user.getUserType().equals("2")) {//学校用户
+            qualNum = scholarship.getSchoolQual() - qualToUnqualNum + unqualToQualNum;
+            unqualNum = scholarship.getSchoolUnQual() + qualToUnqualNum - unqualToQualNum;
+            scholarship.setSchoolQual(qualNum);
+            scholarship.setSchoolUnQual(unqualNum);
+
+        } else {//基金委用户进入进行修改时，更新csc的人数
+            qualNum = scholarship.getCscQual() - qualToUnqualNum + unqualToQualNum;
+            unqualNum = scholarship.getCscUnQual() + qualToUnqualNum - unqualToQualNum;
+            scholarship.setCscQual(qualNum);
+            scholarship.setCscUnQual(unqualNum);
+
+        }
+        scholarship.setUpdated(ts);//同时对主表的更新人和更新时间，进行更新
+        scholarship.setUpdateBy(user.getUserId());
+        saveScholarship(scholarship, null);
+    }
+
+    @Transactional
+    public void subScholarship(List<ScholarshipDetail> ScholarshipDetails,User user){
+        ScholarshipDetail scholarshipDetail;
+        ScholarshipX scholarshipX;
+        long qualToUnqualNum = 0;//合格变为不合格人数
+        long unqualToQualNum = 0;//不合格变为合格人数
+        for (int i = 0; i < ScholarshipDetails.size(); i++) {
+            scholarshipDetail = ScholarshipDetails.get(i);
+            scholarshipX = findOne(scholarshipDetail.getId());
+            if(!scholarshipDetail.getSchReview().equals(scholarshipX.getSchReview())){
+                if("AQ0001".equals(scholarshipX.getSchReview())){
+                    qualToUnqualNum++;
+                }else{
+                    unqualToQualNum++;
+                }
+            }
+            saveScholarshipDetail(scholarshipDetail, user, scholarshipX);
+        }
+        //子表全部保存完成后，对主表的合格，不合格人数进行重新统计并更新主表
+//        String school = user.getNode().getNodeId();
+//        int qualNum = 0;//合格人数
+//        int unqualNum = 0;//不合格人数
+//        String scholarshipId = "";
+//        int year = Calendar.getInstance().get(Calendar.YEAR);
+//        List<ScholarshipX> scholarshipXlist = findScholarshipXBySchoolAndYear(school, year);
+//        for (Iterator iter = scholarshipXlist.iterator(); iter.hasNext(); ) {
+//            ScholarshipX strX = (ScholarshipX) iter.next();
+//            if ("AQ0001".equals(strX.getSchReview())) {
+//                qualNum++;
+//            } else {
+//                unqualNum++;
+//            }
+//        }
+        long qualNum = 0;//合格人数
+        long unqualNum = 0;//不合格人数
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        Scholarship scholarship = findScholarshipOne(ScholarshipDetails.get(0).getScholarship().getId());
+        qualNum = scholarship.getSchoolQual() - qualToUnqualNum + unqualToQualNum;
+        unqualNum = scholarship.getSchoolUnQual() + qualToUnqualNum - unqualToQualNum;
+        scholarship.setSchoolQual(qualNum);
+        scholarship.setSchoolUnQual(unqualNum);
+        scholarship.setCscQual(qualNum);//提交时把人数，赋值给基金委的对应字段
+        scholarship.setCscUnQual(unqualNum);//提交时把人数，赋值给基金委的对应字段
+        scholarship.setUpdated(ts);//同时对主表的更新人和更新时间，进行更新
+        scholarship.setUpdateBy(user.getUserId());
+        //对主表的状态进行更新，学校提交状态，和学校提交时间
+        scholarship.setSchoolSta("1");//已提交
+        scholarship.setSchoolDate(ts);//评审提交时间
+        scholarship.setCscSta("0");//设置默认的基金委提交状态为“未提交”
+        saveScholarship(scholarship, user, "1");//记录提交日志
+    }
+
     //保存修改后奖学金字表的值
     @Transactional
-    public String saveScholarshipDetail(ScholarshipDetail scholarshipDetail, User user) {
+    public long saveScholarshipDetail(ScholarshipDetail scholarshipDetail, User user, ScholarshipX scholarshipX) {
+        long flag = 0;
         //记录日志
         List<OperationLog> operationLogs = new ArrayList<OperationLog>();
-        ScholarshipX scholarshipX = findOne(scholarshipDetail.getId());
+
         OperationLog operationLog = new OperationLog();
         operationLog.setOptType("2");//修改
         operationLog.setModule("奖学金年度评审管理");
@@ -263,6 +401,9 @@ public class ScholarshipXService extends ScholarshipXSpecs {
         String before = "";
         String after = "";
         if (user.getUserType().equals("1")) {//基金委用户
+            if(!scholarshipX.getCscReview().equals(scholarshipDetail.getCscReview())){
+                flag = 1;
+            }
             String reasonB = (scholarshipX.getCscReason() != null) ? scholarshipX.getCscReason() : "-";//对null的情况进行转化
             String reasonA = (scholarshipDetail.getCscReason() != null) ? scholarshipDetail.getCscReason() : "-";//对null的情况进行转化
             String sTB = (scholarshipX.getCscStartTime() != null) ? formatter.format(scholarshipX.getCscStartTime()) : "-";
@@ -272,6 +413,9 @@ public class ScholarshipXService extends ScholarshipXSpecs {
             before = baseDAO.getNameCHByTranslateId(scholarshipX.getCscReview()) + "/" + baseDAO.getNameCHByTranslateId(scholarshipX.getCscResult()) + "/" + reasonB + "/" + sTB + "/" + eTB;
             after = baseDAO.getNameCHByTranslateId(scholarshipDetail.getCscReview()) + "/" + baseDAO.getNameCHByTranslateId(scholarshipDetail.getCscResult()) + "/" + reasonA + "/" + sTA + "/" + eTA;
         } else if (user.getUserType().equals("2")) {//学校用户
+            if(!scholarshipX.getSchReview().equals(scholarshipDetail.getSchReview())){
+                flag = 1;
+            }
             String reasonB = (scholarshipX.getSchReason() != null) ? scholarshipX.getSchReason() : "-";//对null的情况进行转化
             String reasonA = (scholarshipDetail.getSchReason() != null) ? scholarshipDetail.getSchReason() : "-";//对null的情况进行转化
             String sTB = (scholarshipX.getSchStartTime() != null) ? formatter.format(scholarshipX.getSchStartTime()) : "-";
@@ -299,7 +443,7 @@ public class ScholarshipXService extends ScholarshipXSpecs {
         }
 
         scholarshipDetailRepository.save(scholarshipDetail);
-        return scholarshipDetail.getId();
+        return flag;
     }
 
     //更新主表信息
