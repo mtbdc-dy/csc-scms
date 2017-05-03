@@ -711,7 +711,7 @@ public class ScholarshipXService extends ScholarshipXSpecs {
 
     //增加全部导出
     @Transactional
-    public String[] getAllScholarshipXByFilter(Filter filter,String header) {
+    public List<ScholarshipX> getAllScholarshipXByFilter(Filter filter,String header) {
         List<ScholarshipX> scholarshipXes;
         try {
             User user = userService.getUserByJWT(header);
@@ -731,16 +731,11 @@ public class ScholarshipXService extends ScholarshipXSpecs {
             Specification<ScholarshipX> specA = filterIsLike(filter, user, school);
             Specification<ScholarshipX> specB = userIs(user,baseDAO);
             scholarshipXes = scholarshipXRepository.findAll(where(specA).and(specB),new Sort(Sort.Direction.ASC,"cscId"));
+            return scholarshipXes;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        String result[]=new String[scholarshipXes.size()];
-        for(int i=0;i<scholarshipXes.size();i++){
-            String id = scholarshipXes.get(i).getId();
-            result[i] = id;
-        }
-        return result;
     }
 
     //分页查询

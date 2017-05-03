@@ -282,10 +282,18 @@ public class ScholarshipXController {
             @RequestParam(value = "filter") String filterJSON) throws IOException {
         byte[] bytes = null;
         Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
-        String id[] = scholarshipXService.getAllScholarshipXByFilter(filter, header);
-
+        List<ScholarshipX> scholarshipXes = scholarshipXService.getAllScholarshipXByFilter(filter, header);
+        String result[]=new String[scholarshipXes.size()];
+        for(int i=0;i<scholarshipXes.size();i++){
+            String id = scholarshipXes.get(i).getId();
+            result[i] = id;
+        }
         String tableName = "v_scholarship_lastyear";
-        bytes = exportService.exportByFilter(tableName, "0", id);
+        String type = "0";
+        if("2".equals(scholarshipXes.get(0).getSchoolSta())){ //已批复
+            type = "2";
+        }
+        bytes = exportService.exportByFilter(tableName, type, result);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
         //上传至文件服务器
