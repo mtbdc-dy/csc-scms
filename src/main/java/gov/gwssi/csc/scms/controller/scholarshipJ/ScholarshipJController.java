@@ -78,8 +78,8 @@ public class ScholarshipJController {
                 scholarship.setSchoolSta("2");//已批复
                 scholarship.setSchoolQual(scholarship.getCscQual());//人数
                 scholarship.setSchoolUnQual(scholarship.getCscUnQual());
-                scholarshipXService.saveScholarship(scholarship, user,"2");//对主表进行更新,并保存批复日志
-
+                //scholarshipXService.saveScholarship(scholarship, user,"2");//对主表进行更新,并保存批复日志
+                scholarshipXService.saveScholarship(scholarship, user); //优化 不保存批复日志
                 //对子表进行更新，批复后，把csc的相关值，都赋值给school的相关字段
 //                List detailList = scholarshipJService.findDetailListBy(id[i]);//找到主表对应的所有子表
 //                for ( int j=0;j<detailList.size();j++) {
