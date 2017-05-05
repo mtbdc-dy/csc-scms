@@ -9,4 +9,5 @@ import org.springframework.data.repository.CrudRepository;
  */
 public interface ScholarshipRepository extends CrudRepository<Scholarship, String> {
     Scholarship findById(String id);
+    Scholarship findBySchoolAndYear(String school,long year);
 }

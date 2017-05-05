@@ -693,9 +693,13 @@ public class ScholarshipXService extends ScholarshipXSpecs {
             if (filter.getYear() == 0)
                 filter.setYear(Calendar.getInstance().get(Calendar.YEAR));
 
-            List<ScholarshipX> list = scholarshipXRepository.findBySchoolAndYear(school, filter.getYear());
-            if(list != null && list.size()>0){
-                ScholarshipX scholarship = list.get(0);
+//            List<ScholarshipX> list = scholarshipXRepository.findBySchoolAndYear(school, filter.getYear());
+//            if(list != null && list.size()>0){
+//                ScholarshipX scholarship = list.get(0);
+//                filter.setSchoolState(scholarship.getSchoolSta());
+//            }
+            Scholarship scholarship = scholarshipRepository.findBySchoolAndYear(school,filter.getYear());
+            if(scholarship != null){
                 filter.setSchoolState(scholarship.getSchoolSta());
             }
             ///////////!!!!IMPORTANT!!!!//////////////
@@ -721,9 +725,13 @@ public class ScholarshipXService extends ScholarshipXSpecs {
             if (filter.getYear() == 0)
                 filter.setYear(Calendar.getInstance().get(Calendar.YEAR));
 
-            List<ScholarshipX> list = scholarshipXRepository.findBySchoolAndYear(school, filter.getYear());
-            if(list != null && list.size()>0){
-                ScholarshipX scholarship = list.get(0);
+//            List<ScholarshipX> list = scholarshipXRepository.findBySchoolAndYear(school, filter.getYear());
+//            if(list != null && list.size()>0){
+//                ScholarshipX scholarship = list.get(0);
+//                filter.setSchoolState(scholarship.getSchoolSta());
+//            }
+            Scholarship scholarship = scholarshipRepository.findBySchoolAndYear(school,filter.getYear());
+            if(scholarship != null){
                 filter.setSchoolState(scholarship.getSchoolSta());
             }
             ///////////!!!!IMPORTANT!!!!//////////////
