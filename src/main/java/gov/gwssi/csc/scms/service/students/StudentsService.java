@@ -75,6 +75,8 @@ public class StudentsService extends StudentSpecs {
                 return studentRepository.findAll(where(specA).and(isLeaveStudent()).and(specB), new PageRequest(page, size, Sort.Direction.ASC, "cscId"));
             } else if ("leaveChina".equals(mode)) {
                 return studentRepository.findAll(where(specA).and(isLeaveChina()).and(specB), new PageRequest(page, size, Sort.Direction.ASC, "cscId"));
+            } else if("2".equals(user.getUserType()) && "integratedquery".equals(mode)){
+                return studentRepository.findAll(where(specA).and(isSchoolIntegratedquery(user)),new PageRequest(page, size, Sort.Direction.ASC, "cscId"));
             } else {
                 return studentRepository.findAll(where(specA).and(specB), new PageRequest(page, size, Sort.Direction.ASC, "cscId"));
             }

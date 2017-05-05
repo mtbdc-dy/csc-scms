@@ -565,14 +565,15 @@ public class StudentService extends BaseService {
             log_registerYear.setAfter(currentYear+"");
             operationLogs.add(log_registerYear);
             //记录日志 离华日期
-            String oldLeaveDateStr = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(oldLeaveDate);
-            OperationLog log_leaveDate = new OperationLog(operationLog);
-            log_leaveDate.setColumnEN("LEAVEDATE");
-            log_leaveDate.setColumnCH("离华日期");
-            log_leaveDate.setBefore(oldLeaveDateStr);
-            log_leaveDate.setAfter(null);
-            operationLogs.add(log_leaveDate);
-
+            if(oldLeaveDate != null){
+                String oldLeaveDateStr = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(oldLeaveDate);
+                OperationLog log_leaveDate = new OperationLog(operationLog);
+                log_leaveDate.setColumnEN("LEAVEDATE");
+                log_leaveDate.setColumnCH("离华日期");
+                log_leaveDate.setBefore(oldLeaveDateStr);
+                log_leaveDate.setAfter(null);
+                operationLogs.add(log_leaveDate);
+            }
             //记录日志 离华原因
             OperationLog log_leaveReason = new OperationLog(operationLog);
             log_leaveReason.setColumnEN("LEAVEREASON");
