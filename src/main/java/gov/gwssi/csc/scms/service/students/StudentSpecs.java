@@ -249,12 +249,12 @@ public class StudentSpecs {
                 Expression e1 = cb.equal(schoolRoll.get(SchoolRoll_.currentUniversity), nodeId);
 
                 Expression e2 = cb.equal(schoolRoll.get(SchoolRoll_.registed), "AX0001");
-                Expression e3 = cb.isNotNull(schoolRoll.get(SchoolRoll_.cramUniversity));
+                Expression e3 = cb.isNotNull(cb.trim(schoolRoll.get(SchoolRoll_.cramUniversity)));
                 Expression e4 = cb.equal(schoolRoll.get(SchoolRoll_.cramUniversity),nodeId);
                 Expression e5 = cb.and(cb.and(e2,e3),e4);
 
-                Expression e7 = cb.isNull(schoolRoll.get(SchoolRoll_.cramUniversity));
-                Expression e8 = cb.isNotNull(schoolRoll.get(SchoolRoll_.majorUniversity));
+                Expression e7 = cb.isNull(cb.trim(schoolRoll.get(SchoolRoll_.cramUniversity)));
+                Expression e8 = cb.isNotNull(cb.trim(schoolRoll.get(SchoolRoll_.majorUniversity)));
                 Expression e9 = cb.equal(schoolRoll.get(SchoolRoll_.majorUniversity),nodeId);
                 Expression e10 = cb.and(cb.and(cb.and(e2,e7),e8),e9);
 
