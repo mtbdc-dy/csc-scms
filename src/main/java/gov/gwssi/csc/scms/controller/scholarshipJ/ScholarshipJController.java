@@ -76,8 +76,9 @@ public class ScholarshipJController {
                 scholarship.setCscDate(ts);
                 //对学校的相关字段进行更新
                 scholarship.setSchoolSta("2");//已批复
-                scholarship.setSchoolQual(scholarship.getCscQual());//人数
-                scholarship.setSchoolUnQual(scholarship.getCscUnQual());
+                //批复时不需要把基金委合格不合格人数赋值给院校
+//                scholarship.setSchoolQual(scholarship.getCscQual());//人数
+//                scholarship.setSchoolUnQual(scholarship.getCscUnQual());
                 //scholarshipXService.saveScholarship(scholarship, user,"2");//对主表进行更新,并保存批复日志
                 scholarshipXService.saveScholarship(scholarship, user); //优化 不保存批复日志
                 //对子表进行更新，批复后，把csc的相关值，都赋值给school的相关字段
