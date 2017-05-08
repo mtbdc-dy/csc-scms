@@ -63,6 +63,8 @@ public class ScholarshipX implements Comparable<ScholarshipX>
     @Column
     private String updateby;
     @Column
+    private Date   created;
+    @Column
     private String schoolSta;
     @Column
     private String cscSta;
@@ -345,11 +347,19 @@ public class ScholarshipX implements Comparable<ScholarshipX>
         this.student = student;
     }
 
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
     @Override
     public int compareTo(ScholarshipX that)
     {
         int result = ((Long) this.getYear()).compareTo(that.getYear());
-        result = result == 0 ? this.getUpdated().compareTo(that.getUpdated()) : result;
+        result = result == 0 ? this.getCreated().compareTo(that.getCreated()) : result;
         return result;
     }
 }
