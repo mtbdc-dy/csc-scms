@@ -28,6 +28,7 @@ import org.springframework.http.*;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
@@ -188,6 +189,20 @@ public class ScholarshipXController {
             Scholarship scholarship = scholarshipXService.deleteScholarshipDetails(id1,user);
             return scholarship;
         } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    @RequestMapping(value = "/submitChecking/{scholarshipId}/{school}",method = RequestMethod.GET)
+    public List<String> submitChecking(
+            @PathVariable("scholarshipId") String scholarshipId,
+            @PathVariable("school") String school,
+            @RequestHeader(value=JWTUtil.HEADER_AUTHORIZATION) String header){
+        try{
+            List<String> cscIds = scholarshipXService.submitChecking(scholarshipId,school);
+            return cscIds;
+        }catch (Exception e){
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -386,10 +401,12 @@ public class ScholarshipXController {
     }
 
     //新增学生时首先校验该学生是否已经存在于奖学金列表中
-    @RequestMapping(value = "/{studentId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
-    public Map<String, String> verifyInsuranceStudent(@PathVariable(value = "studentId") String studentId) {
+    @RequestMapping(value = "/addChecking/{studentId}/{scholarshipId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
+    public Map<String, Integer> verifyInsuranceStudent(
+            @PathVariable(value = "studentId") String studentId,
+            @PathVariable(value = "scholarshipId") String scholarshipId) {
         try {
-            Map<String, String> result = scholarshipXService.verifyScholarshipXStudent(studentId);
+            Map<String, Integer> result = scholarshipXService.verifyScholarshipXStudent(studentId,scholarshipId);
             return result;
         } catch (Exception e) {
             e.printStackTrace();

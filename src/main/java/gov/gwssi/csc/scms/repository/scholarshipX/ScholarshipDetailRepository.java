@@ -17,4 +17,8 @@ public interface ScholarshipDetailRepository extends CrudRepository<ScholarshipD
     @Modifying
     @Query(value="update SCMS_SCHOLARSHIP_DETAIL set CSCREVIEW = Schreview,Cscresult = Schresult,Cscreason = Schreason where SCHOLARSHIPID = :scholarshipId",nativeQuery = true)
     void sendBacking(@Param(value="scholarshipId") String scholarshipId);
+    @Query(value="select t.cscid from scms.scms_scholarship_detail detail,scms.scms_schoolroll s,scms.scms_student t"+
+                " where detail.studentid = s.studentid and s.studentid = t.id" +
+                " and detail.scholarshipid = :scholarshipId and s.currentuniversity <> :school",nativeQuery = true)
+    List<String> submitChecking(@Param(value="scholarshipId") String scholarshipId,@Param(value="school") String school);
 }

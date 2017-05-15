@@ -28,6 +28,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.criteria.CriteriaBuilder;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -328,6 +330,12 @@ public class ScholarshipXService extends ScholarshipXSpecs {
         scholarship.setUpdated(ts);//同时对主表的更新人和更新时间，进行更新
         scholarship.setUpdateBy(user.getUserId());
         saveScholarship(scholarship, null);
+    }
+
+    @Transactional
+    public List<String> submitChecking(String scholarshipId,String school){
+        List<String> cscIds = scholarshipDetailRepository.submitChecking(scholarshipId,school);
+        return cscIds;
     }
 
     @Transactional
@@ -761,15 +769,22 @@ public class ScholarshipXService extends ScholarshipXSpecs {
     }
 
     //新增学生时首先校验该学生是否已经存在于奖学金列表中
-    public Map<String,String> verifyScholarshipXStudent(String studentId){
-        Map<String,String> result = new HashMap<String, String>();
+    @Transactional
+    public Map<String,Integer> verifyScholarshipXStudent(String studentId,String scholarshipId){
+        Map<String,Integer> result = new HashMap<String, Integer>();
         long year = Calendar.getInstance().get(Calendar.YEAR);
         List<ScholarshipX> scholarshipXs= scholarshipXRepository.findByStudentIdAndYear(studentId,year);
-        if(scholarshipXs.size()>0){
-            result.put("result","failed");
-        }else{
-            result.put("result","success");
+        Integer flag=1;
+        for(int i=0;i<scholarshipXs.size();i++){
+            if(!scholarshipId.equals(scholarshipXs.get(i).getScholarshipId()) && ("1".equals(scholarshipXs.get(i).getSchoolSta()) || "2".equals(scholarshipXs.get(i).getSchoolSta()))){
+                flag = 2; // 该学生已存在于其他学校的奖学金列表中,且已提交
+                break;
+            }else if(scholarshipId.equals(scholarshipXs.get(i).getScholarshipId())){
+                flag = 3; // 该学生已存在于本校的奖学金列表中
+                break;
+            }
         }
+        result.put("result",flag);
         return result;
     }
 
