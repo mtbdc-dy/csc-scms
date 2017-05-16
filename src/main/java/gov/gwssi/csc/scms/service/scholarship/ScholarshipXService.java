@@ -70,48 +70,49 @@ public class ScholarshipXService extends ScholarshipXSpecs {
         List listParameter = new ArrayList();
         List<ScholarshipXResultObject> ScholarshipXResultObjectList;
         listParameter.add(user.getUserId());//传入userid
-        scholarshipXDAO.doSt("p_scms_scholarship", listParameter);//调用存储生成当年需评审的奖学金记录
-        int startPosition, pageSize;
-
-        String sql = getSql(user);
-        if (sql == null) {
-            return null;
-        }
-        startPosition = FilterObject.OFFSETDEFULT;
-        pageSize = FilterObject.PAGESIZEDEFULT;
-
-        ScholarshipXResultObjectList = super.getBaseDao().getObjectListByHQL(sql, ScholarshipXResultObject.class, startPosition, pageSize);
-
-        List<OperationLog> operationLogs = new ArrayList<OperationLog>();
-        for (int i = 0; i < ScholarshipXResultObjectList.size(); i++) {//每个学生插入一条日志
-            if (ScholarshipXResultObjectList.get(i).getSchReason() == null
-                    && ScholarshipXResultObjectList.get(i).getSchStartTime() == null &&
-                    ScholarshipXResultObjectList.get(i).getSchEndTime() == null) {//三项全为空的才插入
-                OperationLog operationLog = new OperationLog();
-                operationLog.setOptType("1");//新增
-                operationLog.setModule("奖学金年度评审管理");
-                operationLog.setModuleId("BG0006");
-                operationLog.setStudentId(ScholarshipXResultObjectList.get(i).getStudentId());
-                operationLog.setCscId(ScholarshipXResultObjectList.get(i).getCscId());
-                operationLog.setPassportName(ScholarshipXResultObjectList.get(i).getPassportName());
-                String after = baseDAO.getNameCHByTranslateId(ScholarshipXResultObjectList.get(i).getSchReview()) + "/" + baseDAO.getNameCHByTranslateId(ScholarshipXResultObjectList.get(i).getSchResult()) + "/" + "-" + "/" + "-" + "/" + "-";
-                operationLog.setBefore("");
-                operationLog.setAfter(after);
-                operationLog.setColumnEN("");
-                operationLog.setColumnCH("");
-                operationLog.setTableEN("scms_scholarship_detail");
-                operationLog.setTableCH("奖学金评审信息表");
-                operationLog.setNodeId(user.getNode().getNodeId());
-                operationLog.setNodeType(user.getNode().getNodeType());
-                operationLog.setCreateBy(user.getUserId());
-                operationLog.setCreateD(new java.util.Date());
-                operationLogs.add(operationLog);
-            }
-
-        }
-        operationLogService.saveOperationLog(operationLogs);//保存日志
+        String retValue = scholarshipXDAO.doSt("p_scms_scholarship", listParameter);//调用存储生成当年需评审的奖学金记录
         Map<String,String> result = new HashMap<String, String>();
-        result.put("result","success");
+        result.put("result",retValue);
+        if("0".equals(retValue)){
+            int startPosition, pageSize;
+            String sql = getSql(user);
+            if (sql == null) {
+                return null;
+            }
+            startPosition = FilterObject.OFFSETDEFULT;
+            pageSize = FilterObject.PAGESIZEDEFULT;
+
+            ScholarshipXResultObjectList = super.getBaseDao().getObjectListByHQL(sql, ScholarshipXResultObject.class, startPosition, pageSize);
+
+            List<OperationLog> operationLogs = new ArrayList<OperationLog>();
+            for (int i = 0; i < ScholarshipXResultObjectList.size(); i++) {//每个学生插入一条日志
+                if (ScholarshipXResultObjectList.get(i).getSchReason() == null
+                        && ScholarshipXResultObjectList.get(i).getSchStartTime() == null &&
+                        ScholarshipXResultObjectList.get(i).getSchEndTime() == null) {//三项全为空的才插入
+                    OperationLog operationLog = new OperationLog();
+                    operationLog.setOptType("1");//新增
+                    operationLog.setModule("奖学金年度评审管理");
+                    operationLog.setModuleId("BG0006");
+                    operationLog.setStudentId(ScholarshipXResultObjectList.get(i).getStudentId());
+                    operationLog.setCscId(ScholarshipXResultObjectList.get(i).getCscId());
+                    operationLog.setPassportName(ScholarshipXResultObjectList.get(i).getPassportName());
+                    String after = baseDAO.getNameCHByTranslateId(ScholarshipXResultObjectList.get(i).getSchReview()) + "/" + baseDAO.getNameCHByTranslateId(ScholarshipXResultObjectList.get(i).getSchResult()) + "/" + "-" + "/" + "-" + "/" + "-";
+                    operationLog.setBefore("");
+                    operationLog.setAfter(after);
+                    operationLog.setColumnEN("");
+                    operationLog.setColumnCH("");
+                    operationLog.setTableEN("scms_scholarship_detail");
+                    operationLog.setTableCH("奖学金评审信息表");
+                    operationLog.setNodeId(user.getNode().getNodeId());
+                    operationLog.setNodeType(user.getNode().getNodeType());
+                    operationLog.setCreateBy(user.getUserId());
+                    operationLog.setCreateD(new java.util.Date());
+                    operationLogs.add(operationLog);
+                }
+
+            }
+            operationLogService.saveOperationLog(operationLogs);//保存日志
+        }
         return result;
 
     }
@@ -776,8 +777,8 @@ public class ScholarshipXService extends ScholarshipXSpecs {
         List<ScholarshipX> scholarshipXs= scholarshipXRepository.findByStudentIdAndYear(studentId,year);
         Integer flag=1;
         for(int i=0;i<scholarshipXs.size();i++){
-            if(!scholarshipId.equals(scholarshipXs.get(i).getScholarshipId()) && ("1".equals(scholarshipXs.get(i).getSchoolSta()) || "2".equals(scholarshipXs.get(i).getSchoolSta()))){
-                flag = 2; // 该学生已存在于其他学校的奖学金列表中,且已提交
+            if(!scholarshipId.equals(scholarshipXs.get(i).getScholarshipId())){
+                flag = 2; // 该学生已存在于其他学校的奖学金列表中
                 break;
             }else if(scholarshipId.equals(scholarshipXs.get(i).getScholarshipId())){
                 flag = 3; // 该学生已存在于本校的奖学金列表中

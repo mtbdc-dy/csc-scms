@@ -291,16 +291,19 @@ public class BaseDAO {
     public int updateBySql(String sql) {
         List<Map> objectList;
         EntityManager em = null;
-
+        int num=0;
         try {
             em = entityManagerFactory.createEntityManager();
             //em.joinTransaction();
             //创建原生SQL查询QUERY实例
             em.getTransaction().begin();
             Query query = em.createNativeQuery(sql);
-            int num = query.executeUpdate();
+            num = query.executeUpdate();
             em.getTransaction().commit();
 //            em.flush();
+            return num;
+        } catch (Exception e){
+            em.getTransaction().rollback();
             return num;
         } finally {
             if (em != null) {

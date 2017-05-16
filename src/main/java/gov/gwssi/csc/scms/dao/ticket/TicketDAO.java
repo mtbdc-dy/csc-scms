@@ -21,10 +21,7 @@ import java.io.InputStream;
 import java.io.PushbackInputStream;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by lzs on 2015/6/1.
@@ -276,5 +273,31 @@ public class TicketDAO extends BaseDAO {
             studentId = ((Map) list.get(0)).get("STUDENTID").toString();
         }
         return studentId;
+    }
+
+    public int updateState(String[] ids){
+        List<String> idsList = Arrays.asList(ids);
+        List<List<String>> lists = new ArrayList<List<String>>();
+        int           fromIndex  = 0;
+        int           toIndex    = idsList.size();
+        int           limitIndex = 1000;
+        while (fromIndex < toIndex)
+        {
+            toIndex = Math.min(limitIndex, toIndex);
+            lists.add(idsList.subList(fromIndex, toIndex));
+            fromIndex = toIndex;
+            toIndex = idsList.size();
+            limitIndex += 1000;
+        }
+        String sql = "update SCMS.SCMS_AIRTICKET set STATE = 'AT0005' where STATE = 'AT0002'";
+        String inString;
+        for (int i=0;i<lists.size();i++)
+        {
+            inString = "";
+            for (String id : lists.get(i)) inString += "'" + id + "',";
+            sql += " and id in(" + inString.substring(0, inString.length() - 1) + ")";
+        }
+        int count = super.updateBySql(sql);
+        return count;
     }
 }

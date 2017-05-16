@@ -11,9 +11,9 @@ import java.util.List;
  */
 @Service("scholarshipXDAO")
 public class ScholarshipXDAO extends BaseDAO {
-    public void doSt(String name, List list){
-        super.doStatementForRtn(name,list);
-
+    public String doSt(String name, List list){
+        String result = super.doStatementForRtn(name,list);
+        return result;
     }
 
 }

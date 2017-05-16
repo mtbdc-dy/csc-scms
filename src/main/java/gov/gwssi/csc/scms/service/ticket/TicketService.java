@@ -24,6 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -252,14 +253,16 @@ public class TicketService extends TicketSortSpecs {
     }
 
     //修改机票State为已导出
-    public void updateTicketState(String[] ids) {
-        for (int i = 0; i < ids.length; i++) {
-            Ticket ticket = ticketRepository.findOne(ids[i]);
-            if("AT0002".equals(ticket.getState())){
-                ticket.setState("AT0005");
-                ticketRepository.save(ticket);
-            }
-        }
+    public int updateTicketState(String[] ids) {
+//        for (int i = 0; i < ids.length; i++) {
+//            Ticket ticket = ticketRepository.findOne(ids[i]);
+//            if("AT0002".equals(ticket.getState())){
+//                ticket.setState("AT0005");
+//                ticketRepository.save(ticket);
+//            }
+//        }
+        int count = ticketDAO.updateState(ids);
+        return count;
     }
 
     //分页查询
