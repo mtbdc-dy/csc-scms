@@ -61,6 +61,7 @@ public class Filter {
     private  String tableName = null;
     //机票类型
     private  String ticketType = null;
+    private String appropriation = null;
     /**
      * 隐藏查询条件
      */
@@ -828,5 +829,13 @@ public class Filter {
 
     public void setDispatchType(String dispatchType) {
         this.dispatchType = dispatchType;
+    }
+
+    public String getAppropriation() {
+        return appropriation;
+    }
+
+    public void setAppropriation(String appropriation) {
+        this.appropriation = appropriation;
     }
 }
