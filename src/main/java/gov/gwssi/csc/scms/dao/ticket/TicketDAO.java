@@ -276,28 +276,21 @@ public class TicketDAO extends BaseDAO {
     }
 
     public int updateState(String[] ids){
-        List<String> idsList = Arrays.asList(ids);
-        List<List<String>> lists = new ArrayList<List<String>>();
-        int           fromIndex  = 0;
-        int           toIndex    = idsList.size();
-        int           limitIndex = 1000;
-        while (fromIndex < toIndex)
-        {
-            toIndex = Math.min(limitIndex, toIndex);
-            lists.add(idsList.subList(fromIndex, toIndex));
-            fromIndex = toIndex;
-            toIndex = idsList.size();
-            limitIndex += 1000;
+        StringBuffer sql = new StringBuffer("update SCMS.SCMS_AIRTICKET set STATE = 'AT0005' where STATE = 'AT0002' and ID in (");
+        //you cant have a list with more than 1000 elements in a single "where" condition if you are working with Oracle DB
+        int index = 0;
+        for(int i=0;i<ids.length;i++){
+            sql.append("'").append(ids[i]).append("',");
+            index++;
+            if(index == 1000){
+                sql.deleteCharAt(sql.length()-1).append(") OR ID in (");
+                index = 0;
+            }
         }
-        String sql = "update SCMS.SCMS_AIRTICKET set STATE = 'AT0005' where STATE = 'AT0002'";
-        String inString;
-        for (int i=0;i<lists.size();i++)
-        {
-            inString = "";
-            for (String id : lists.get(i)) inString += "'" + id + "',";
-            sql += " or id in(" + inString.substring(0, inString.length() - 1) + ")";
-        }
-        int count = super.updateBySql(sql);
+
+        String updateSql =sql.deleteCharAt(sql.length()-1).append(")").toString();
+        int count = this.updateBySql(updateSql);
         return count;
+
     }
 }
