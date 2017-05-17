@@ -618,7 +618,7 @@ public class InsuranceDAO extends BaseDAO {
     }
     @Transactional
     public void updateInsurancePrestaBySql(String[] id){
-        StringBuffer sql = new StringBuffer("update SCMS_INSURANCE set PRESTA = 'AV0002' where PRESTA = 'AV0001' and ID in (");
+        StringBuffer sql = new StringBuffer("update SCMS_INSURANCE set PRESTA = 'AV0002' where PRESTA = 'AV0001' and (ID in (");
         //you cant have a list with more than 1000 elements in a single "where" condition if you are working with Oracle DB
         int index = 0;
         for(int i=0;i<id.length;i++){
@@ -630,7 +630,7 @@ public class InsuranceDAO extends BaseDAO {
             }
         }
 
-        String updateSql =sql.deleteCharAt(sql.length()-1).append(")").toString();
+        String updateSql =sql.deleteCharAt(sql.length()-1).append("))").toString();
         this.updateBySql(updateSql);
     }
 

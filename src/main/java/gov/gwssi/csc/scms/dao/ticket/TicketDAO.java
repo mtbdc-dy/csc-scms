@@ -276,7 +276,7 @@ public class TicketDAO extends BaseDAO {
     }
 
     public int updateState(String[] ids){
-        StringBuffer sql = new StringBuffer("update SCMS.SCMS_AIRTICKET set STATE = 'AT0005' where STATE = 'AT0002' and ID in (");
+        StringBuffer sql = new StringBuffer("update SCMS.SCMS_AIRTICKET set STATE = 'AT0005' where STATE = 'AT0002' and (ID in (");
         //you cant have a list with more than 1000 elements in a single "where" condition if you are working with Oracle DB
         int index = 0;
         for(int i=0;i<ids.length;i++){
@@ -288,7 +288,7 @@ public class TicketDAO extends BaseDAO {
             }
         }
 
-        String updateSql =sql.deleteCharAt(sql.length()-1).append(")").toString();
+        String updateSql =sql.deleteCharAt(sql.length()-1).append("))").toString();
         int count = this.updateBySql(updateSql);
         return count;
 
