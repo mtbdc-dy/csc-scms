@@ -77,7 +77,7 @@ public class DatabaseConfig {
         System.out.println("dataSource===" + dataSource);
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setGenerateDdl(true);
-        vendorAdapter.setShowSql(true);
+//        vendorAdapter.setShowSql(true);
         vendorAdapter.setDatabasePlatform(env.getProperty("hibernate.dialect"));
         vendorAdapter.setDatabase(Database.ORACLE);
 
