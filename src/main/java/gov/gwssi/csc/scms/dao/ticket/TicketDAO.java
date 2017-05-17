@@ -295,7 +295,7 @@ public class TicketDAO extends BaseDAO {
         {
             inString = "";
             for (String id : lists.get(i)) inString += "'" + id + "',";
-            sql += " and id in(" + inString.substring(0, inString.length() - 1) + ")";
+            sql += " or id in(" + inString.substring(0, inString.length() - 1) + ")";
         }
         int count = super.updateBySql(sql);
         return count;
