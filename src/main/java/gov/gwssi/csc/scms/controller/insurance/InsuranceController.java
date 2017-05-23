@@ -202,7 +202,7 @@ public class InsuranceController {
         byte[] bytes = null;
 
         String tableName = "v_exp_insurance";
-        bytes = exportService.exportByFilter(tableName, "0", id);
+        bytes = exportService.exportByFilter(tableName, "0", id, "");
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
 
@@ -255,7 +255,7 @@ public class InsuranceController {
         String id[] = insuranceService.getAllInsuranceBySql(filter,mode,header);
 
         String tableName = "v_exp_insurance";
-        bytes = exportService.exportByFilter(tableName, "0", id);
+        bytes = exportService.exportByFilter(tableName, "0", id, "");
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
         //上传至文件服务器

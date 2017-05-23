@@ -115,7 +115,7 @@ public class AppropriationController {
         byte[] bytes = null;
 
         String tableName = "v_exp_appropriation";
-        bytes = exportService.exportByFilter(tableName,"0", id);
+        bytes = exportService.exportByFilter(tableName,"0", id, "");
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
 

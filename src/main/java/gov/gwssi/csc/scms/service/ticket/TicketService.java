@@ -24,7 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -286,7 +286,7 @@ public class TicketService extends TicketSortSpecs {
             User user = userService.getUserByJWT(header);
             Specification<TicketSort> specA = filterIsLike(filter, user);
             Specification<TicketSort> specB = userIs(user,baseDAO);
-            return ticketSortRepository.findAll(where(specA).and(specB), new PageRequest(page, size, Sort.Direction.ASC,"customSort"));
+            return ticketSortRepository.findAll(where(specA).and(specB), new PageRequest(page, size, Sort.Direction.ASC,"customSort","student.cscId"));
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -300,7 +300,7 @@ public class TicketService extends TicketSortSpecs {
             User user = userService.getUserByJWT(header);
             Specification<TicketSort> specA = filterIsLike(filter, user);
             Specification<TicketSort> specB = userIs(user,baseDAO);
-            ticketSorts = ticketSortRepository.findAll(where(specA).and(specB));
+            ticketSorts = ticketSortRepository.findAll(where(specA).and(specB),new Sort(Sort.Direction.ASC,"customSort","student.cscId"));
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);

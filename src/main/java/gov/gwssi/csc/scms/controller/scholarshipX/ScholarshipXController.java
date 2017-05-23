@@ -252,7 +252,7 @@ public class ScholarshipXController {
         byte[] bytes = null;
 
         String tableName = "v_scholarship_lastyear";
-        bytes = exportService.exportByFilter(tableName, "0", id);
+        bytes = exportService.exportByFilter(tableName, "0", id, "");
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
 
@@ -308,7 +308,7 @@ public class ScholarshipXController {
         if("2".equals(scholarshipXes.get(0).getSchoolSta())){ //已批复
             type = "2";
         }
-        bytes = exportService.exportByFilter(tableName, type, result);
+        bytes = exportService.exportByFilter(tableName, type, result, "");
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
         //上传至文件服务器

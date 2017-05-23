@@ -46,7 +46,7 @@ public class exportTest extends UnitTestBase {
         String tableName = "v_exp_appropriation" ;
         String ids = "201509079782";
         String id[] = ids.split(",");
-        exportService.exportByFilter(tableName,"0", id);
+        exportService.exportByFilter(tableName,"0", id, "");
 
     }
 

@@ -138,7 +138,7 @@ public class ScholarshipJController {
            id1=ids.split(",");//转化后的id数组
         }
         String tableName = "v_scholarship_lastyear";//对主表对应的所有信息以学生为单位导出
-        bytes = exportService.exportByFilter(tableName,"1", id1);
+        bytes = exportService.exportByFilter(tableName,"1", id1, "");
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
 
@@ -219,7 +219,7 @@ public class ScholarshipJController {
             id1=ids.split(",");//转化后的id数组
         }
         String tableName = "v_scholarship_lastyear";//对主表对应的所有信息以学生为单位导出
-        bytes = exportService.exportByFilter(tableName, "1", id1);
+        bytes = exportService.exportByFilter(tableName, "1", id1, "");
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
         //上传至文件服务器

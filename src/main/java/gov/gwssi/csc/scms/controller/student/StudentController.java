@@ -386,7 +386,7 @@ public class StudentController {
         byte[] bytes = null;
 
         String tableName = "v_exp_register";
-        bytes = exportService.exportByFilter(tableName,"0", id);
+        bytes = exportService.exportByFilter(tableName,"0", id, "");
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
 
@@ -432,7 +432,7 @@ public class StudentController {
         String [] id = studentsService.getStudentsAllByFilter(filter, mode, header);
 
         String tableName = "v_exp_register";
-        bytes = exportService.exportByFilter(tableName,"0", id);
+        bytes = exportService.exportByFilter(tableName,"0", id, "");
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
 

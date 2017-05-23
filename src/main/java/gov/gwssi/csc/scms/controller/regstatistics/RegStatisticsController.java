@@ -127,7 +127,7 @@ public class RegStatisticsController {
         byte[] bytes = null;
         String tableName = "1".equals(stuType)  ? "v_exp_newstudent" : "v_exp_oldstudent";
         String id[] = { sameId };
-        bytes = exportService.exportByFilter(tableName, "0", id);
+        bytes = exportService.exportByFilter(tableName, "0", id, "");
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
         //上传至文件服务器

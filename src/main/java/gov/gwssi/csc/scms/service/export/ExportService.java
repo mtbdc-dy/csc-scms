@@ -23,7 +23,7 @@ public class ExportService extends BaseService
     @Autowired
     private ExportDAO           exportDAO;
 
-    public byte[] exportByFilter(String tableName, String subTable, String[] ids)
+    public byte[] exportByFilter(String tableName, String subTable, String[] ids, String orderBy)
     {
         ids = ids == null ? new String[0] : ids;
         List<List<String>> idsList = splitList(Arrays.asList(ids));
@@ -55,7 +55,7 @@ public class ExportService extends BaseService
 
         titleExcel = getTitle(exportList);
         sql = getSql(seachList, sql, tableName, headArrayCount, headArray, headArray1, columnLength);
-        List<Map>      resultList = this.getResult(sql, idsList);
+        List<Map>      resultList = this.getResult(sql, idsList, orderBy);
         List<String[]> recordList = getRecordList(headArray1, resultList);//结果集展示数组
 
         String hjh[] = null;// {"合计","3","5","6","7","8","9","10"};
@@ -113,7 +113,7 @@ public class ExportService extends BaseService
             sql = getSql(seachList, sql, tableName, headArrayCount, headArray, headArray1, columnLength);
             headArrays.add(headArray);
             columnLengths.add(columnLength);
-            List<Map> resultList = this.getResult(sql, idsList);
+            List<Map> resultList = this.getResult(sql, idsList, "");
             recordLists.add(getRecordList(headArray1, resultList));
         }
         String hjh[] = null;// {"合计","3","5","6","7","8","9","10"};
@@ -291,7 +291,7 @@ public class ExportService extends BaseService
         return lists;
     }
 
-    private List<Map> getResult(String sql, List<List<String>> idsList)
+    private List<Map> getResult(String sql, List<List<String>> idsList, String orderBy)
     {
         List<Map> result = new ArrayList<Map>();
         String    tempSql;
@@ -303,6 +303,7 @@ public class ExportService extends BaseService
             inString = "";
             for (String id : ids) inString += "'" + id + "',";
             tempSql += " and id in(" + inString.substring(0, inString.length() - 1) + ")";
+            tempSql += orderBy;
             result.addAll(exportDAO.getListBySql(tempSql));
         }
 

@@ -367,7 +367,7 @@ public class TicketController extends BaseService {
         byte[] bytes = null;
 
         String tableName = "v_exp_airticket";
-        bytes = exportService.exportByFilter(tableName, "0", id);
+        bytes = exportService.exportByFilter(tableName, "0", id, "");
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
 
@@ -421,7 +421,8 @@ public class TicketController extends BaseService {
         Filter filter = new ObjectMapper().readValue(filterJSON, Filter.class);
         String id[] = ticketService.getAllTicketsByFilter(filter, header);
         String tableName = "v_exp_airticket";
-        bytes = exportService.exportByFilter(tableName, "0", id);
+        String orderBy = " order by customsort,cscid";
+        bytes = exportService.exportByFilter(tableName, "0", id, orderBy);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String fileName = tableName + ts.getTime() + ".xls"; // 组装附件名称和格式
         //上传至文件服务器
