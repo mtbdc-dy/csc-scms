@@ -96,6 +96,16 @@ public class BasicInfo implements Cloneable{
      */
     private String remark;
     /**
+     * 受理机构编号
+     */
+    @Column(name="AGENCY_NO")
+    private String agencyNo;
+    /**
+     * 受理机构名称
+     */
+    @Column(name="AGENCY")
+    private String agency;
+    /**
      * 学生
      */
     @JsonIgnore
@@ -277,6 +287,22 @@ public class BasicInfo implements Cloneable{
 
     public void setDispatchType(String dispatchType) {
         this.dispatchType = dispatchType;
+    }
+
+    public String getAgencyNo() {
+        return agencyNo;
+    }
+
+    public void setAgencyNo(String agencyNo) {
+        this.agencyNo = agencyNo;
+    }
+
+    public String getAgency() {
+        return agency;
+    }
+
+    public void setAgency(String agency) {
+        this.agency = agency;
     }
 
     @Override

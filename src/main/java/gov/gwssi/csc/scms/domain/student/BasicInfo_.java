@@ -31,6 +31,9 @@ public abstract class BasicInfo_ {
     public static volatile SingularAttribute<BasicInfo, Date> createDate;
     public static volatile SingularAttribute<BasicInfo, String> projectName;
     public static volatile SingularAttribute<BasicInfo, String> passportName;
+    public static volatile SingularAttribute<BasicInfo, String> agencyNo;
+    public static volatile SingularAttribute<BasicInfo, String> agency;
+
 
 }
 
