@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by tianjing on 2015/8/7.
+ * 公告维护控制器
  */
 @RestController
 @RequestMapping(value = "/announcement")
@@ -19,6 +20,7 @@ public class AnnouncementController {
     @Autowired
     private AnnouncementService announcementService;
 
+    //查询公告
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
     public Announcement getAnnouncement() {
         try {
@@ -30,6 +32,7 @@ public class AnnouncementController {
         }
     }
 
+    //修改公告
     @RequestMapping(method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public Announcement editGrade(@RequestBody String announcementJson) {
         try {

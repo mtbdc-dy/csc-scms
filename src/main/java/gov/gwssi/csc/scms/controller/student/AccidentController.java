@@ -19,6 +19,7 @@ import java.util.List;
 
 /**
  * Created by tianjing on 2015/7/31.
+ * 突发事件控制器
  */
 
 @RestController
@@ -33,6 +34,12 @@ public class AccidentController {
     @Autowired
     private StudentService studentService;
 
+    /**
+     * 新增突发事件
+     * @param studentId 学生id
+     * @param accidentJson 突发事件信息
+     * @return
+     */
     @RequestMapping(value = "/{studentId}/accidents", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
     public Accident putAccident(@PathVariable(value = "studentId") String studentId,
                                 @RequestBody String accidentJson) {
@@ -61,7 +68,13 @@ public class AccidentController {
         }
     }
 
-    //删除
+    /**
+     * 删除突发事件
+     * @param header
+     * @param studentId 学生id
+     * @param accidentId 突发事件id
+     * @return
+     */
     @RequestMapping(value = "/{studentId}/accidents/{accidentId}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
     public Accident deleteAccident(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header, @PathVariable(value = "studentId") String studentId, @PathVariable(value = "accidentId") String accidentId) {
         try {
@@ -78,7 +91,13 @@ public class AccidentController {
         }
     }
 
-    //修改
+    /**
+     * 修改突发事件
+     * @param studentId 学生id
+     * @param accidentId 突发事件id
+     * @param accidentJson 突发事件信息
+     * @return
+     */
     @RequestMapping(value = "/{studentId}/accidents/{accidentId}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public Accident editAccident(@PathVariable(value = "studentId") String studentId, @PathVariable(value = "accidentId") String accidentId,
                                  @RequestBody String accidentJson) {

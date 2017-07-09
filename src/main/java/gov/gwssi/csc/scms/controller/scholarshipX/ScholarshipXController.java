@@ -36,7 +36,7 @@ import java.util.*;
 
 /**
  * Created by gc on 2015/7/17.
- * 保险管理控制器
+ * 奖学金评审管理（院校用户）控制器
  */
 @RestController
 @RequestMapping(value = "/scholarshipX")
@@ -51,7 +51,12 @@ public class ScholarshipXController {
     @Autowired
     private ScholarshipXService scholarshipXService;
 
-    //用户在前台点击生奖学金评审列表，返回列表
+    /**
+     * 生成奖学金列表，调用存储过程p_scms_scholarship
+     * @param header
+     * @return
+     * @throws NoSuchUserException
+     */
     @RequestMapping(value = "/new", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public Map<String, String> getScholarshipXs(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
         User user = null;
@@ -68,7 +73,7 @@ public class ScholarshipXController {
         return result;
     }
 
-    //学校用户在前台点击查询，返回列表
+    //学校用户在前台点击查询，返回列表，此API没有用到
     @RequestMapping(value = "/select", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<ScholarshipXResultObject> getScholarshipXsByConditions(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
                                                                        @RequestParam(value = "filter") String filter) throws NoSuchUserException {
@@ -194,6 +199,13 @@ public class ScholarshipXController {
         }
     }
 
+    /**
+     * 提交奖学金评审列表时校验该奖学金评审列表的学生当前院校是否都为该院校
+     * @param scholarshipId
+     * @param school
+     * @param header
+     * @return
+     */
     @RequestMapping(value = "/submitChecking/{scholarshipId}/{school}",method = RequestMethod.GET)
     public List<String> submitChecking(
             @PathVariable("scholarshipId") String scholarshipId,
@@ -237,7 +249,7 @@ public class ScholarshipXController {
     }
 
     /**
-     * 导出奖学金评审信息
+     * 导出奖学金评审信息，此API没有用到
      * GET /scholarshipX?ids=1,2,3 HTTP/1.1
      * Accept: application/octet-stream
      *
@@ -285,7 +297,7 @@ public class ScholarshipXController {
     }
 
     /**
-     * 增加全部导出
+     * 导出奖学金评审信息
      */
     @RequestMapping(
             value = "/all",
@@ -317,8 +329,7 @@ public class ScholarshipXController {
         return fileMap;
     }
 
-    // 基金委跳转进来的相关操作
-    // 基金委用户在前台点击查询，返回列表
+    // 基金委用户在前台点击查询，返回列表，此API没有用到
     @RequestMapping(value = "/select/{school}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<ScholarshipXResultObject> getScholarshipXsByConditionsJ(@PathVariable("school") String school, @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
                                                                         @RequestParam(value = "filter") String filter) throws NoSuchUserException {

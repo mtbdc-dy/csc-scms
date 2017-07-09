@@ -32,6 +32,7 @@ import java.util.Map;
 
 /**
  * Created by tianjing on 2015/7/16.
+ * 预警名单管理控制器
  */
 @RestController
 @RequestMapping(value = "/blacklist")
@@ -46,6 +47,7 @@ public class WarningController {
     @Autowired
     private StudentService studentService;
 
+    //此API没有用到
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
     public List<WarningResultObject> getStudentsByConditions(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
                                                              @RequestParam(value = "filter") String filter) {
@@ -73,7 +75,12 @@ public class WarningController {
         }
     }
 
-
+    /**
+     *新增预警名单
+     * @param studentId 新增预警名单学生id
+     * @param warningJson 新增预警名单内容
+     * @return
+     */
     @RequestMapping(value = "/{studentId}", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
     public Map<String, Object> putWarning(@PathVariable(value = "studentId") String studentId,
                                           @RequestBody String warningJson) {
@@ -97,7 +104,12 @@ public class WarningController {
         }
     }
 
-    //删除
+    /**
+     * 删除预警名单
+     * @param warningId
+     * @param studentId
+     * @return
+     */
     @RequestMapping(value = "/{warningId}/{studentId}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
     public Warning deleteWarning(@PathVariable("warningId") String warningId, @PathVariable("studentId") String studentId) {
         try {
@@ -114,6 +126,11 @@ public class WarningController {
         }
     }
 
+    /**
+     * 获取某一学生的预警信息
+     * @param studentId
+     * @return
+     */
     @RequestMapping(value = "/{studentId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
     public Warning getWarningByStudentId(@PathVariable(value = "studentId") String studentId) {
         try {

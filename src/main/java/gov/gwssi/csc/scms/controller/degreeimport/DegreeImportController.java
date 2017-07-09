@@ -34,6 +34,7 @@ import java.util.Vector;
 
 /**
  * Created by LiZhiSheng on 2015/8/18.
+ * 数据导入（学籍注册信息导入和学历学位信息导入）模块控制器
  */
 @RestController
 @RequestMapping(value = "/degreeimport")
@@ -44,23 +45,17 @@ public class DegreeImportController {
     private DegreeImportDao importDao;
     @Autowired
     private ImportLogService importLogService;
-//public static Map<String,List> MAP = new HashMap<String, List>();
-    //点击查询返回代码维护列表
-//    @RequestMapping(value = "/degree", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
-//    public List getALLCode(@RequestParam(value = "begin") String begin, @RequestParam(value = "end") String end) {
-//        //按照分页（默认）要求，返回列表内容
-//        List proAndUnivList = null;
-//        if (begin == null || "null".equals(begin)) {
-//            begin = "";
-//        }
-//        if (end == null || "null".equals(end) || "undefined".equals(end)) {
-//            end = "";
-//        }
-//        proAndUnivList = importDao.getList(begin, end);
-//        //System.out.println("hehe="+MAP.get("111"));
-//        return proAndUnivList;
-//    }
-    //分页查询
+
+    /**
+     * 查询导入列表
+     * @param header
+     * @param mode
+     * @param page
+     * @param size
+     * @param filterJSON
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(
             value = "/degree",
             method = RequestMethod.GET,
@@ -101,7 +96,15 @@ public class DegreeImportController {
 
 
     }
-    //保存数据到数据库
+
+    /**
+     * 导入学籍注册信息或者学历学位信息
+     * @param filename
+     * @param key
+     * @param request
+     * @param header
+     * @throws Exception
+     */
     @RequestMapping(
             method = RequestMethod.POST,
             headers = "Accept=application/json; charset=utf-8"
@@ -130,7 +133,7 @@ public class DegreeImportController {
             e.printStackTrace();
         }
         String userName = user.getFullName();
-        System.out.println("InsuranceController.importInsurance");
+        System.out.println("DegreeImportController.importInsurance");
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
         System.out.println("isMultipart = " + isMultipart);
         String id = importDao.saveInitFile(fileName,userName);

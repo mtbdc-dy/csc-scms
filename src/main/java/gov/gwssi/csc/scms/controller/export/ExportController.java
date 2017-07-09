@@ -34,13 +34,7 @@ public class ExportController {
     @Autowired
     private StudentsService studentsService;
 
-    /**
-     * 导出保险信息
-     * GET /insurance?ids=1,2,3 HTTP/1.1
-     * Accept: application/octet-stream
-     *
-     * @param id 需要导出的保险信息ID
-     */
+    //此API没有用到
     @RequestMapping(
             method = RequestMethod.GET,
             params = {"id"},
@@ -91,6 +85,27 @@ public class ExportController {
         return new ResponseEntity(httpHeaders, HttpStatus.OK);
     }
 
+    /**
+     * 导出学生信息，根据查询参数filter查询得到需要导出的学生id，指定导出视图数组viewName
+     * 导出视图数组viewName
+     * 基本信息：v_sheet1_basic_info
+     * 来华前概况：v_sheet2_profiles_history
+     * 申请信息：v_sheet3_registration_info
+     * 商议信息：v_sheet4_discuss
+     * 学籍信息：v_sheet5_schoolroll
+     * 相关地址：v_sheet6_related_address
+     * 突发事件：v_sheet7_accident
+     * 机票信息：v_sheet8_airticket
+     * 学习成绩：v_sheet9_grade
+     * 校友信息：v_sheet10_school_fellow
+     * 调用导出服务exportService的exportByFilter方法得到导出Excel的字节数组，上传至文件服务器，返回文件路径，
+     * 前台根据文件路径请求文件服务器下载Excel文件。导出配置，在导出配置表SCMS_INI_EXPORT进行配置各sheet页导出信息
+     * @param header
+     * @param mode 模块名称
+     * @param filterJSON 查询条件
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(
             value = "/all",
             method = RequestMethod.GET,

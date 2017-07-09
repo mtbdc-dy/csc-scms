@@ -69,8 +69,12 @@ public class TicketController extends BaseService {
     @Autowired
     private ExportService exportService;
 
-
-    //学校用户在前台点击生成机票管理列表，返回列表
+    /**
+     * 生成机票订购名单，调用存储过程p_scms_airticket
+     * @param header
+     * @return
+     * @throws NoSuchUserException
+     */
     @RequestMapping(value = "/new", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public Map<String, String> getTickets(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
         User user = null;
@@ -90,7 +94,7 @@ public class TicketController extends BaseService {
         return map;
     }
 
-    //学校用户在前台点击查询，返回列表
+    //此API没有用到
     @RequestMapping(value = "/select", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<TicketResultObject> getTicketsByConditions(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
                                                            @RequestParam(value = "filter") String filter) throws NoSuchUserException {
@@ -126,7 +130,7 @@ public class TicketController extends BaseService {
 //        }
     }
 
-    //修改机票管理
+    //此API没有用到
     @RequestMapping(value = "/save", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public List<Ticket> modTicket(@RequestBody String ticketJson, @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws Exception {
 
@@ -139,7 +143,12 @@ public class TicketController extends BaseService {
         return returnTickets;
     }
 
-    //学校用户提交机票管理
+    /**
+     * 提交机票信息
+     * @param ticketJson
+     * @param header
+     * @return
+     */
     @RequestMapping(value = "/sub", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public List<Ticket> subTicket(@RequestBody String ticketJson, @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) {
         try {
@@ -182,7 +191,11 @@ public class TicketController extends BaseService {
         }
     }
 
-
+    /**
+     * 查询某一学生机票信息
+     * @param studentId 学生id
+     * @return
+     */
     @RequestMapping(value = "/{studentId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
     public Object getStudentGroupById(@PathVariable(value = "studentId") String studentId) {
         try {
@@ -193,7 +206,11 @@ public class TicketController extends BaseService {
         }
     }
 
-    //根据学生id获取已提交机票信息
+    /**
+     * 查询某一学生已提交机票信息
+     * @param studentId 学生id
+     * @return
+     */
     @RequestMapping(value = "/state/{studentId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
     public Object getStudentByIdAndState(@PathVariable(value = "studentId") String studentId) {
         try {
@@ -204,8 +221,12 @@ public class TicketController extends BaseService {
         }
     }
 
-
-    //新增机票信息
+    /**
+     * 新增机票信息
+     * @param studentId 学生id
+     * @param ticketJson 机票信息
+     * @return
+     */
     @RequestMapping(value = "/{studentId}", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
     public Ticket putTicket(@PathVariable(value = "studentId") String studentId, @RequestBody String ticketJson) {
         try {
@@ -233,7 +254,13 @@ public class TicketController extends BaseService {
         }
     }
 
-    //删除机票信息
+    /**
+     * 删除机票信息
+     * @param header
+     * @param ticketId 机票id
+     * @param studentId 学生id
+     * @return
+     */
     @RequestMapping(value = "/{ticketId}/{studentId}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
     public Ticket deleteAccident(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header, @PathVariable(value = "ticketId") String ticketId, @PathVariable(value = "studentId") String studentId) {
         try {
@@ -249,7 +276,12 @@ public class TicketController extends BaseService {
         }
     }
 
-    //修改
+    /**
+     * 修改机票信息
+     * @param studentId 学生id
+     * @param ticketJson 机票信息
+     * @return
+     */
     @RequestMapping(value = "/{studentId}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public Ticket editTicket(@PathVariable(value = "studentId") String studentId, @RequestBody String ticketJson) {
         try {
@@ -352,7 +384,7 @@ public class TicketController extends BaseService {
     }
 
     /**
-     * 导出机票信息
+     * 导出机票信息,此API没有用到
      * GET
      * Accept: application/octet-stream
      *
@@ -461,7 +493,18 @@ public class TicketController extends BaseService {
 //            throw new RuntimeException(e);
 //        }
 //    }
-//分页查询 增加院校排序
+
+    /**
+     * 查询机票列表
+     * @param header
+     * @param mode 模块名称
+     * @param fields 显示字段
+     * @param page 第几页
+     * @param size 每页记录数
+     * @param filterJSON 查询条件
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(
             method = RequestMethod.GET,
             headers = {"Accept=application/json"},
@@ -484,7 +527,13 @@ public class TicketController extends BaseService {
         }
     }
 
-    //统计机票状态
+    /**
+     * 统计机票状态（未导出、已导出和已反馈）
+     * @param header
+     * @param filterJSON 查询条件
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(
             value = "/ticketStateNum",
             method = RequestMethod.GET,

@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * Created by tianj on 2015/8/21.
+ * 学习成绩附件控制器
  */
 
 @RestController
@@ -26,6 +27,12 @@ public class GradeAttachmentController {
     @Autowired
     private GradeAttachmentService gradeAttachmentService;
 
+    /**
+     * 新增学习成绩附件
+     * @param studentId 学生id
+     * @param gradeAttachmentJson 学习成绩附件信息
+     * @return
+     */
     @RequestMapping(value = "/{studentId}/gradeattachments", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
     public GradeAttachment addGradeAttachment(@PathVariable(value = "studentId") String studentId,
                                     @RequestBody String gradeAttachmentJson) {
@@ -51,6 +58,11 @@ public class GradeAttachmentController {
         }
     }
 
+    /**
+     * 获取学生学习成绩附件信息
+     * @param studentId 学生id
+     * @return
+     */
     @RequestMapping(value = "/{studentId}/gradeattachments", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<GradeAttachment> getGradeAttachment(@PathVariable(value = "studentId") String studentId) {
         try {

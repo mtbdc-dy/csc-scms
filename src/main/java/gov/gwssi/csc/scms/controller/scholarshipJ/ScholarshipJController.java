@@ -26,7 +26,7 @@ import java.util.*;
 
 /**
  * Created by gc on 2015/8/18.
- * 奖学金评审管理控制器
+ * 奖学金评审管理（基金委用户）控制器
  */
 @RestController
 @RequestMapping(value = "/scholarshipJ")

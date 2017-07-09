@@ -45,7 +45,7 @@ import java.util.*;
 
 /**
  * Created by gc on 2015/8/26.
- * 保险管理控制器
+ * 预计保险管理控制器
  */
 @RestController
 @RequestMapping(value = "/insurancej")
@@ -61,7 +61,7 @@ public class InsurancejController {
     @Autowired
     private InsuranceDAO importDao;
     public static Map<String,List> MAP = new HashMap<String, List>();
-    //点击查询返回代码维护列表
+    //点击查询返回代码维护列表,此API没有用到
     @RequestMapping(value = "/getkey", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
     public List getValue(@RequestParam(value = "key") String key) {
         //按照分页（默认）要求，返回列表内容
@@ -78,7 +78,13 @@ public class InsurancejController {
 
 
     }
-    //用户在前台点击生成机票管理列表，返回列表
+
+    /**
+     * 生成预计投保清单，调用存储过程p_scms_insurance，传入参数’0’表示预计投保清单
+     * @param header
+     * @return
+     * @throws NoSuchUserException
+     */
     @RequestMapping(value = "/new", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public Map<String,String> getInsurances(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
         User user = null;
@@ -93,7 +99,7 @@ public class InsurancejController {
         return result;
     }
 
-    //学校用户在前台点击查询，返回列表
+    //学校用户在前台点击查询，返回列表，此API没有用到
     @RequestMapping(value = "/select", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<InsuranceResultObject> getInsurancesByConditions(
             @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
@@ -123,7 +129,13 @@ public class InsurancejController {
 
     }
 
-    //保存保险信息
+    /**
+     * 新增预计保险信息
+     * @param studentId 学生id
+     * @param insuranceJson 预计保险信息
+     * @param header
+     * @return
+     */
     @RequestMapping(value = "/{studentId}", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
     public InsuranceResultObject saveInsurance(
             @PathVariable(value = "studentId") String studentId,
@@ -159,8 +171,12 @@ public class InsurancejController {
         }
     }
 
-
-    //删除保险信息
+    /**
+     * 删除预计保险信息
+     * @param id 保险id
+     * @param log 日志信息
+     * @return
+     */
     @RequestMapping(value = "/{id}/{log}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
     public List<InsuranceResultObject> deleteInsurance(@PathVariable("id") String id, @PathVariable("log") String log) {
         try {
@@ -190,7 +206,7 @@ public class InsurancejController {
     }
 
     /**
-     * 导出保险信息
+     * 导出保险信息，此API没有用到
      * GET /insurance?ids=1,2,3 HTTP/1.1
      * Accept: application/octet-stream
      *
@@ -218,8 +234,8 @@ public class InsurancejController {
     }
 
     /**
-     * 导入保险信息
-     * POST /insurance
+     * 导入预计保险信息
+     * POST /insurancej
      *
      * @return
      */
@@ -276,7 +292,11 @@ public class InsurancejController {
         return new ResponseEntity<List<String>>(list1, HttpStatus.OK);
     }
 
-    //新增学生时首先校验该学生是否已经存在于预计保险列表中
+    /**
+     * 新增学生时首先校验该学生是否已经存在于预计保险列表中
+     * @param studentId 学生id
+     * @return
+     */
     @RequestMapping(value = "/{studentId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public Map<String,String> verifyInsuranceJStudent(@PathVariable(value = "studentId") String studentId) {
         try {

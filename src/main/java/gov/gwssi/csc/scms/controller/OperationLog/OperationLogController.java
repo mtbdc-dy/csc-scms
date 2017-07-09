@@ -29,7 +29,7 @@ import java.util.Map;
 
 /**
  * Created by Lei on 2015-06-11.
- * 日志查询API
+ * 日志查询控制器
  */
 
 @RestController
@@ -140,8 +140,17 @@ public class OperationLogController {
             throw new RuntimeException(e);
         }
     }
-    //学籍变化记录 分页
-    //分页查询
+
+    /**
+     * 查询学籍变化记录
+     * @param header
+     * @param studentId 学生id
+     * @param page 第几页
+     * @param size 每页记录数
+     * @param filterJSON 查询条件
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(
             value = "/changelog/{studentId}",
             method = RequestMethod.GET,
@@ -165,7 +174,16 @@ public class OperationLogController {
         }
     }
 
-    //分页查询
+    /**
+     * 查询日志列表
+     * @param header
+     * @param mode 模块名称
+     * @param page 第几页
+     * @param size 每页记录数
+     * @param filterJSON 查询条件
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(
             value = "/queryLog",
             method = RequestMethod.GET,

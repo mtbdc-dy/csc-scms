@@ -34,7 +34,7 @@ import java.util.Map;
 
 /**
  * Created by lzs on 2015/4/23.
- * 移动申请控制器
+ * 异动申请控制器
  */
 @RestController
 @RequestMapping("/abnormal")
@@ -48,7 +48,7 @@ public class AbnormalController {
     @Autowired
     private SchoolRollService schoolRollService;
 
-    //学校用户在前台点击异动申请菜单后，返回异动申请列表
+    //学校用户在前台点击异动申请菜单后，返回异动申请列表（不用）
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
     public List<AbnormalResultObject> getAbnormalsByConditions(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
                                                                @RequestParam(value = "filter") String filter) {
@@ -83,7 +83,7 @@ public class AbnormalController {
     }
 
 
-    //保存新增的异动申请
+    //新增异动申请
 
     @RequestMapping(value = "/{studentId}/{flag}", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
     public Map<String, Object> putAbnormal(@PathVariable(value = "studentId") String studentId, @PathVariable(value = "flag") String flag,
@@ -121,7 +121,7 @@ public class AbnormalController {
         }
     }
 
-    //修改新增的异动申请
+    //修改异动申请
     @RequestMapping(value = "/{studentId}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public Map<String, Object> modAbnormal(@PathVariable(value = "studentId") String studentId, @RequestBody String abnormalJson) {
         try {
@@ -174,7 +174,7 @@ public class AbnormalController {
         }
     }
 
-    //分页查询
+    //分页查询异动申请列表
     @RequestMapping(
             method = RequestMethod.GET,
             headers = {"Accept=application/json"},

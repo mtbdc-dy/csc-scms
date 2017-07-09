@@ -25,6 +25,7 @@ import java.util.Map;
 
 /**
  * Created by LiZhiSheng on 2015/8/10.
+ * 报到期限设置控制器
  */
 @RestController
 @RequestMapping(value = "/timeset")
@@ -33,24 +34,13 @@ public class TimeSetController {
     private TimeSetService timeSetService;
     @Autowired
     private UserService userService;
-
-    //点击查询返回列表
-//    @RequestMapping(value = "/newstu",method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
-//    public List getALLCode(@RequestParam(value = "pro") String pro,@RequestParam(value = "univ") String univ) {
-//        //按照分页（默认）要求，返回列表内容
-//        List proAndUnivList = null;
-//        if(pro ==null||"null".equals(pro)){
-//            pro = "";
-//        }
-//        if(univ ==null||"null".equals(univ)||"undefined".equals(univ)){
-//            univ = "";
-//        }
-//        proAndUnivList = timeSetService.findProAndUniv(pro, univ);
-//
-//        return proAndUnivList;
-//    }
-
-    //设置选中院校新生报到期限
+    /**
+     * 设置选中院校新生报到期限
+     * @param header
+     * @param ids 需要设置报到期限的院校id univid
+     * @param begin 报到期限起
+     * @param end 报到期限止
+     */
     @RequestMapping(value = "/newstus",
             method = RequestMethod.PUT,
             headers = {"Accept=application/json; charset=utf-8;"})
@@ -69,7 +59,16 @@ public class TimeSetController {
         }
     }
 
-    //设置全部院校报到期限
+    /**
+     * 设置全部院校报到期限
+     * 若模块名称为new，则为所有院校设置新生报到期限
+     * 若模块名称为old，则为所有院校设置老生报到期限
+     * @param header
+     * @param mode 模块名称
+     * @param filterJSON 查询条件
+     * @param begin 报到期限起
+     * @param end 报到期限止
+     */
     @RequestMapping(value = "/allSchools",
             method = RequestMethod.PUT,
             headers = {"Accept=application/json; charset=utf-8;"},
@@ -100,8 +99,7 @@ public class TimeSetController {
         }
     }
 
-    //老生
-    //点击查询返回列表
+    //老生查询返回列表，此API没有用到
     @RequestMapping(value = "/oldstu", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
     public List getALLOld(@RequestParam(value = "pro") String pro, @RequestParam(value = "univ") String univ) {
         //按照分页（默认）要求，返回列表内容
@@ -117,7 +115,13 @@ public class TimeSetController {
         return proAndUnivList;
     }
 
-    //设置选中院校老生报到期限
+    /**
+     * 设置选中院校老生报到期限
+     * @param header
+     * @param ids 需要设置报到期限的院校id univid
+     * @param begin 报到期限起
+     * @param end 报到期限止
+     */
     @RequestMapping(value = "/oldstus",
             method = RequestMethod.PUT,
             headers = {"Accept=application/json; charset=utf-8;"})
@@ -139,7 +143,16 @@ public class TimeSetController {
         }
     }
 
-    //分页查询 老生
+    /**
+     * 查询老生报到期限设置
+     * @param header
+     * @param mode 模块名称
+     * @param page 第几页
+     * @param size 每页记录数
+     * @param filterJSON 查询条件
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(
             value = "/oldstu",
             method = RequestMethod.GET,
@@ -163,7 +176,16 @@ public class TimeSetController {
         }
     }
 
-    //分页查询 新生
+    /**
+     * 查询新生报到期限设置
+     * @param header
+     * @param mode 模块名称
+     * @param page 第几页
+     * @param size 每页记录数
+     * @param filterJSON 查询条件
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(
             value = "/newstu",
             method = RequestMethod.GET,
@@ -188,7 +210,9 @@ public class TimeSetController {
     }
 
     /**
-     * 新生注册前查询操作人员（学校用户）的报到期限设置，若系统时间不在之内，则返回false,否则返回true
+     * 新生注册前查询操作人员（学校用户）的报到期限设置，若系统时间不在新生报到期限之内，则返回false,否则返回true
+     * @param nodeId 院校id
+     * @return
      */
     @RequestMapping(value = "/freshRegister/{nodeId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public Map<String, String> getFreshRegisterTimeSet(@PathVariable(value = "nodeId") String nodeId) {
@@ -202,7 +226,9 @@ public class TimeSetController {
     }
 
     /**
-     * 老生注册前查询操作人员（学校用户）的报到期限设置，若系统时间不在之内，则返回false,否则返回true
+     * 老生注册前查询操作人员（学校用户）的报到期限设置，若系统时间不在老生报到期限之内，则返回false,否则返回true
+     * @param nodeId 院校id
+     * @return
      */
     @RequestMapping(value = "/oldRegister/{nodeId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public Map<String, String> getOldRegisterTimeSet(@PathVariable(value = "nodeId") String nodeId) {

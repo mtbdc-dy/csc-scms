@@ -19,6 +19,7 @@ import java.util.List;
 
 /**
  * Created by tianjing on 2015/8/4.
+ * 学习成绩控制器
  */
 
 @RestController
@@ -33,6 +34,12 @@ public class GradeController {
     @Autowired
     private GradeService gradeService;
 
+    /**
+     * 新增学习成绩
+     * @param studentId 学生id
+     * @param gradeJson 学习成绩信息
+     * @return
+     */
     @RequestMapping(value = "/{studentId}/grades", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
     public Grade putGrade(@PathVariable(value = "studentId") String studentId,
                           @RequestBody String gradeJson) {
@@ -61,7 +68,13 @@ public class GradeController {
         }
     }
 
-    //删除
+    /**
+     * 删除学习成绩
+     * @param header
+     * @param studentId 学生id
+     * @param gradeId 学习成绩id
+     * @return
+     */
     @RequestMapping(value = "/{studentId}/grades/{gradeId}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
     public Grade deleteGrade(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header, @PathVariable(value = "studentId") String studentId, @PathVariable(value = "gradeId") String gradeId) {
         try {
@@ -79,7 +92,12 @@ public class GradeController {
         }
     }
 
-    //修改
+    /**
+     * 修改学习成绩
+     * @param studentId 学生id
+     * @param gradeJson 学习成绩信息
+     * @return
+     */
     @RequestMapping(value = "/{studentId}/grades", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public Grade editGrade(@PathVariable(value = "studentId") String studentId, @RequestBody String gradeJson) {
         try {

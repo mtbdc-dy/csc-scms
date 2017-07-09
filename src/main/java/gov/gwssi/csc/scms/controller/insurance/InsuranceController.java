@@ -64,7 +64,7 @@ public class InsuranceController {
     private InsuranceDAO importDao;
     public static Map<String, List> MAP = new HashMap<String, List>();
 
-    //点击查询返回代码维护列表
+    //点击查询返回代码维护列表，此API没有用到
     @RequestMapping(value = "/getkey", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
     public List getValue(@RequestParam(value = "key") String key) {
         //按照分页（默认）要求，返回列表内容
@@ -81,7 +81,12 @@ public class InsuranceController {
 
     }
 
-    //用户在前台点击生成保险管理列表，返回列表
+    /**
+     * 生成投保清单，调用存储过程p_scms_insurance，传入参数’1’表示正式投保清单
+     * @param header
+     * @return
+     * @throws NoSuchUserException
+     */
     @RequestMapping(value = "/new", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public Map<String,String> getInsurances(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header) throws NoSuchUserException {
         User user = null;
@@ -96,7 +101,7 @@ public class InsuranceController {
         return result;
     }
 
-    //学校用户在前台点击查询，返回列表
+    //学校用户在前台点击查询，返回列表，此API没有用到
     @RequestMapping(value = "/select", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public List<InsuranceResultObject> getInsurancesByConditions(
             @RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header,
@@ -126,7 +131,13 @@ public class InsuranceController {
 
     }
 
-    //保存保险信息
+    /**
+     * 新增保险信息
+     * @param studentId 学生id
+     * @param insuranceJson 保险信息
+     * @param header
+     * @return
+     */
     @RequestMapping(value = "/{studentId}", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
     public InsuranceResultObject saveInsurance(
             @PathVariable(value = "studentId") String studentId,
@@ -162,8 +173,12 @@ public class InsuranceController {
         }
     }
 
-
-    //删除保险信息
+    /**
+     * 删除保险信息
+     * @param id 保险id
+     * @param log 日志信息
+     * @return
+     */
     @RequestMapping(value = "/{id}/{log}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
     public List<InsuranceResultObject> deleteInsurance(@PathVariable("id") String id, @PathVariable("log") String log) {
         try {
@@ -187,7 +202,7 @@ public class InsuranceController {
     }
 
     /**
-     * 导出保险信息
+     * 导出保险信息，此API没有用到
      * GET /insurance?ids=1,2,3 HTTP/1.1
      * Accept: application/octet-stream
      *
@@ -236,7 +251,15 @@ public class InsuranceController {
     }
 
     /**
-     * 增加全部导出
+     * 导出保险信息，首先查询得到需导出保险id,配置导出视图v_exp_insurance，调用导出工具类导出保险信息列表
+     * 与预计投保名单管理导出API共用，根据模块名称判断是正式投保名单还是预计投保名单
+     * 若为正式投保名单导出，模块名称为insurance
+     * 若为预计投保名单导出，模块名称为insurancej
+     * @param header
+     * @param filterJSON 查询条件
+     * @param mode 模块名称
+     * @return
+     * @throws IOException
      */
     @RequestMapping(
             value = "/all",
@@ -338,7 +361,20 @@ public class InsuranceController {
         return new ResponseEntity(httpHeaders, HttpStatus.OK);
     }*/
 
-//分页查询
+    /**
+     * 查询保险信息列表，查询预计保险信息列表
+     * 与预计投保名单管理查询API共用，根据模块名称判断是正式投保名单还是预计投保名单
+     * 若为正式投保名单查询，模块名称为insurance，查询条件设置保险种类字段insurSta为‘1’
+     * 若为预计投保名单查询，模块名称为insurancej，查询条件设置保险种类字段insurSta为‘0’
+     * @param header
+     * @param mode 模块名称
+     * @param fields 查询字段
+     * @param page 第几页
+     * @param size 每页记录数
+     * @param filterJSON 查询条件
+     * @return
+     * @throws IOException
+     */
     @Transactional
     @RequestMapping(
             method = RequestMethod.GET,
@@ -363,7 +399,15 @@ public class InsuranceController {
         }
     }
 
-    //统计保险状态 已导出 未导出 已反馈
+    /**
+     * 统计保险列表状态（未导出，已导出，已反馈）
+     * 与预计投保名单管理统计保险列表状态API共用，根据模块名称判断是正式投保名单还是预计投保名单。
+     * @param header
+     * @param mode 模块名称
+     * @param filterJSON 查询条件
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(
             value = "/statusNum",
             method = RequestMethod.GET,
@@ -383,7 +427,11 @@ public class InsuranceController {
         return result;
     }
 
-    //新增学生时首先校验该学生是否已经存在于保险列表中
+    /**
+     * 新增学生时首先校验该学生是否已经存在于保险列表中
+     * @param studentId 学生id
+     * @return
+     */
     @RequestMapping(value = "/{studentId}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8")
     public Map<String,String> verifyInsuranceStudent(@PathVariable(value = "studentId") String studentId) {
         try {

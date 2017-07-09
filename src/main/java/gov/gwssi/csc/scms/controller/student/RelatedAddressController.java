@@ -19,6 +19,7 @@ import java.util.List;
 
 /**
  * Created by tianjing on 2015/7/24.
+ * 相关地址控制器
  */
 @RestController
 @RequestMapping(value = "/relatedaddress")
@@ -31,6 +32,13 @@ public class RelatedAddressController {
 
     @Autowired
     private StudentService studentService;
+
+    /**
+     * 新增相关地址
+     * @param studentId 学生id
+     * @param addressJson 相关地址信息
+     * @return
+     */
 
     @RequestMapping(value = "/{studentId}", method = RequestMethod.POST, headers = "Accept=application/json; charset=utf-8")
     public RelatedAddress putRelatedAddress(@PathVariable(value = "studentId") String studentId,
@@ -61,7 +69,13 @@ public class RelatedAddressController {
         }
     }
 
-    //删除
+    /**
+     * 删除相关地址
+     * @param header
+     * @param studentId 学生id
+     * @param addressId 相关地址id
+     * @return
+     */
     @RequestMapping(value = "/{studentId}/{addressId}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
     public RelatedAddress deleteAddress(@RequestHeader(value = JWTUtil.HEADER_AUTHORIZATION) String header, @PathVariable(value = "studentId") String studentId, @PathVariable(value = "addressId") String addressId) {
         try {
@@ -78,7 +92,13 @@ public class RelatedAddressController {
         }
     }
 
-    //修改
+    /**
+     * 修改相关地址
+     * @param studentId 学生id
+     * @param addressId 相关地址id
+     * @param addressJson 相关地址信息
+     * @return
+     */
     @RequestMapping(value = "/{studentId}/{addressId}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
     public RelatedAddress editRelatedAddress(@PathVariable(value = "studentId") String studentId, @PathVariable(value = "addressId") String addressId,
                                              @RequestBody String addressJson) {

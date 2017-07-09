@@ -35,7 +35,7 @@ public class CodeMainTenanceController
     @Autowired
     private UserService            userService;
 
-    //点击查询返回代码维护列表
+    //点击查询返回代码维护列表（不用）
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
     public List getALLCode(@RequestParam(value = "chinaName") String chinaName, @RequestParam(value = "tableName") String tableName)
     {
@@ -164,7 +164,7 @@ public class CodeMainTenanceController
         return result;
     }
 
-    //分页查询
+    //查询代码维护列表
     @RequestMapping(
             value = "/newstu",
             method = RequestMethod.GET,
@@ -190,7 +190,7 @@ public class CodeMainTenanceController
         }
     }
 
-    //分页查询
+    //根据参数name和type查询某一代码表
     @RequestMapping(
             value = "/region",
             method = RequestMethod.GET,

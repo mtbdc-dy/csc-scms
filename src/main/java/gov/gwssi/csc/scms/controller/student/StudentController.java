@@ -55,7 +55,7 @@ public class StudentController {
     private StudentsService studentsService;
 
     /**
-     * 学籍信息管理相关操作，获取学生列表
+     * 学籍信息管理相关操作，获取学生列表，此API没有用到
      * 请求信息为Json格式对应的StudentFilterObject类
      */
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
@@ -93,7 +93,7 @@ public class StudentController {
 
 
     /**
-     * 在校生学籍信息管理相关操作，获取学生列表
+     * 在校生学籍信息管理相关操作，获取学生列表，此API没有用到
      * 请求信息为Json格式对应的StudentFilterObject类
      */
     @RequestMapping(value = "/schoolstudent", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
@@ -130,7 +130,7 @@ public class StudentController {
     }
 
     /**
-     * 离校生学籍信息管理相关操作，获取学生列表
+     * 离校生学籍信息管理相关操作，获取学生列表，此API没有用到
      * 请求信息为Json格式对应的StudentFilterObject类
      */
     @RequestMapping(value = "/leavestudent", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
@@ -166,7 +166,11 @@ public class StudentController {
         }
     }
 
-
+    /**
+     * 查询某一学生详细信息
+     * @param id 学生id
+     * @return
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
     public Student getStudentById(@PathVariable(value = "id") String id) {
         try {
@@ -183,7 +187,7 @@ public class StudentController {
     }
 
     /**
-     *根据日志修改学生数据项
+     *根据日志修改学生信息数据项
      * @param logJson 日志对象 从日志中获取修改的表和数据项
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json; charset=utf-8")
@@ -211,6 +215,11 @@ public class StudentController {
         return result;
     }
 
+    /**
+     * 删除某一学生
+     * @param id 学生id
+     * @return
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json; charset=utf-8")
     public Student deleteStudent(@PathVariable(value = "id") String id) {
         try {
@@ -270,10 +279,14 @@ public class StudentController {
 //    }
 
     /**
-     * 新生老生注册功能
-     *
-     * @param studentId
-     * @param mode 区分是注册 还是 放弃来华
+     * 新生注册模块放弃来华功能和老生注册模块确认注册功能
+     * 放弃来华功能：修改学籍信息表，将报到状态修改为AW0003
+     * 确认注册功能：修改学籍信息表，将"是否报到"改为是(AX0002)，将报到状态改为老生报到(AW0004)，
+     *             将注册年度设置为当前年，同时修改学籍状态、当前省市和当前院校（若汉补截止时间>12.31（当年），
+     *             则修改学籍状态为汉补，当前省市为汉补省市，当前院校为汉补院校；若专业开始时间<12.31（当年），
+     *             则修改学籍状态为专业，当前省市为专业省市，当前院校为专业院校）
+     * @param studentId 学生id
+     * @param mode 区分是确认注册 还是 放弃来华
      * @param body 修改后的数据项和日志
      * @return
      */
@@ -299,9 +312,9 @@ public class StudentController {
     }
 
     /**
-     * 手动离华管理
-     *
-     * @param studentIds :"["1","2"...]"
+     * 离华管理，确认离华功能
+     *修改学籍信息表是否离华为是，离华原因，离华日期，学籍状态为’BB0004’
+     * @param studentIds :"["1","2"...]"学生id
      * @param body 修改后的数据项和日志
      * @return
      */
@@ -329,6 +342,7 @@ public class StudentController {
         }
     }
 
+    //此API没有用到
     private Object updateStudentGroup(String group, String body) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         Object groupObject = null;
@@ -371,7 +385,7 @@ public class StudentController {
     }
 
     /**
-     * 导出报到注册信息
+     * 导出报到注册信息，此API没有用到
      * GET
      * Accept: application/octet-stream
      *
@@ -417,6 +431,18 @@ public class StudentController {
         httpHeaders.setAccessControlAllowHeaders(headers);
         return new ResponseEntity(httpHeaders, HttpStatus.OK);
     }
+
+    /**
+     * 新生注册模块导出，老生注册模块导出
+     * 导出视图v_exp_register
+     * @param header
+     * @param mode 模块名称
+     *             若模块名称mode为freshregister，则为新生注册导出
+     *             若模块名称mode为oldregister，则为老生注册导出
+     * @param filterJSON 查询条件
+     * @return
+     * @throws IOException
+     */
 
     @RequestMapping(
             value = "/all",

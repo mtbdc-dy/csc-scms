@@ -36,7 +36,7 @@ import java.util.Map;
 
 /**
  * Created by Wangrui on 2015-06-22.
- * 日志查询API
+ * 报到进度统计控制器
  */
 
 @RestController
@@ -51,6 +51,7 @@ public class RegStatisticsController {
     private ExportService exportService;
     private static final String HEADER_AUTHORIZATION = JWTUtil.HEADER_AUTHORIZATION;
 
+    //此API没有用到
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json; charset=utf-8;Cache-Control=no-cache")
     public List<RegStatistics> getRegStatistics(@RequestParam("type") String type,
                                         @RequestParam("province") String province,
@@ -68,7 +69,19 @@ public class RegStatisticsController {
             throw new RuntimeException(e);
         }
     }
-    //分页统计
+
+    /**
+     * 新生统计/老生统计
+     * type为1代表新生统计，type为2代表老生统计。调用存储过程p_scms_stats_register，生成批次号sameId。
+     * @param header
+     * @param mode 模块名称
+     * @param page 第几页
+     * @param size 每页记录数
+     * @param type 区分是新生统计还是老生统计
+     * @param filterJSON 查询条件
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(
             value = "/{type}",
             method = RequestMethod.GET,
@@ -114,7 +127,8 @@ public class RegStatisticsController {
         return new ResponseEntity(httpHeaders, HttpStatus.OK);
     }
     /**
-     *增加全部导出
+     * 新生统计导出功能和老生统计导出功能
+     * stuType为1代表新生统计导出，type为2代表老生统计导出
      */
     @RequestMapping(
             value = "/export/{stuType}/{sameId}",

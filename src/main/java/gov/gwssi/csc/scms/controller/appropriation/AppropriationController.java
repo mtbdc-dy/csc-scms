@@ -56,7 +56,7 @@ public class AppropriationController {
 //        System.out.println();
 //        return allList;
 //    }
-    //分页统计
+    //经费统计分页查询
     @RequestMapping(
             value = "statistics",
             method = RequestMethod.GET,
